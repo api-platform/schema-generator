@@ -15,6 +15,7 @@ Use [Composer](http://getcomposer.org).
 Generates Doctrine entities from Schema.org vocables.
 
 Usage:
+
     php vendor/bin/schema.php my-output-directory/ [config.yml]
 
 ### Configuration
@@ -59,5 +60,6 @@ Extracts property's cardinality.
 When the cardinality cannot be automatically extracted, it's value is set to `unknown`.
 
 Usage:
+
     php vendor/bin/schema.php schema:extract-cardinalities
 
