@@ -4,11 +4,14 @@ Various tools to generate a data model based on [Schema.org](http://schema.org) 
 
 *This project is a work in progress. It is not finished yet.*
 
+[![Build Status](https://travis-ci.org/dunglas/php-schema.org-model.png?branch=master)](https://travis-ci.org/dunglas/php-schema.org-model)
+
+
 ## Installation
 
 Use [Composer](http://getcomposer.org).
 
-   composer require dunglas/php-schema.org-model
+    composer require dunglas/php-schema.org-model
 
 ## Doctrine entities generator
 
