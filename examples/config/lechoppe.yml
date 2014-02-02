@@ -1,0 +1,93 @@
+#
+# (c) Kévin Dunglas <dunglas@gmail.com>
+#
+# This source file is subject to the MIT license that is bundled
+# with this source code in the file LICENSE.
+#
+
+header: |
+  /*
+   * This file is part of the L'Échoppe package.
+   *
+   * (c) Kévin Dunglas <dunglas@gmail.com>
+   *
+   * For the full copyright and license information, please view the LICENSE
+   * file that was distributed with this source code.
+   */
+namespace: Echoppe\CoreBundle\Entity
+author: Kévin Dunglas <dunglas@gmail.com>
+check_is_goodrelations: true
+types:
+  Thing:
+#    doctrine_inheritance: mapped_superclass
+    properties:
+      - name
+      - description
+      - image
+  Product:
+#    doctrine_inheritance: mapped_superclass
+    properties:
+      - brand
+      - color
+      - depth
+      - gtin13
+      - gtin14
+      - gtin8
+      - height
+      - itemCondition
+      - mpn
+      - offers
+      - productId
+      - releaseDate
+      - sku
+      - weight
+      - width
+  Brand:
+    properties:
+      - logo
+  ImageObject:
+    properties:
+      - caption
+  QuantitativeValue:
+    properties:
+      - maxValue
+      - minValue
+      - unitCode
+      - value
+  ProductModel:
+    properties:
+      - isVariantOf
+  SomeProducts:
+    properties:
+      - inventoryLevel
+  Offer:
+    properties:
+      - acceptedPaymentMethod
+      - addOn
+      - availability
+      - availabilityStarts
+      - availabilityEnds
+      - availableDeliveryMethod
+      - category
+      - deliveryLeadTime
+      - eligibleCustomerType
+      - eligibleDuration
+      - eligibleQuantity
+      - eligibleRegion
+      - eligibleTransactionVolume
+      - includesObject
+      - inventoryLevel
+      - itemCondition
+      - itemOffered
+      - priceSpecification
+      - validFrom
+      - validThrough
+      - warranty
+  PriceSpecification: ~
+  TypeAndQuantityNode:
+  OfferItemCondition: ~
+  PaymentMethod: ~
+  ItemAvailability: ~
+  DeliveryMethod: ~
+  BusinessEntityType: ~
+  WarrantyPromise: ~

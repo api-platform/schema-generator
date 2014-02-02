@@ -1,7 +1,7 @@
 {
-    "name": "dunglas/php-schema-org-model",
+    "name": "dunglas/php-schema.org-model",
     "type": "library",
-    "description": "Generate a PHP model layer from Schema.org",
+    "description": "Various tools to generate a data model based on Schema.org vocables",
     "keywords": ["schema.org", "model", "doctrine", "entity"],
     "homepage": "http://dunglas.fr",
     "license": "MIT",
@@ -21,8 +21,12 @@
         "ext-json": "*",
         "doctrine/orm": "~2.4",
         "symfony/console": "~2.4",
+        "symfony/yaml": "~2.4",
+        "symfony/config": "~2.4",
         "symfony/validator": "~2.4",
-        "twig/twig": "~1.15"
-    }
+        "twig/twig": "~1.15",
+        "psr/log": "~1.0"
+    },
+    "bin": ["bin/schema", "bin/schema.php"]
 }
 
