@@ -1,42 +1,45 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Rating
- *
+ * 
  * @link http://schema.org/Rating
+ * 
+ * @ORM\MappedSuperclass
  */
 class Rating extends Intangible
 {
     /**
-     * Best Rating (Number)
-     *
-     * @var float The highest value allowed in this rating system. If bestRating is omitted, 5 is assumed.
+     * Best Rating
+     * 
+     * @var float $bestRating The highest value allowed in this rating system. If bestRating is omitted, 5 is assumed.
+     * 
+     * @Assert\Type(type="float")
+     * @ORM\Column(type="float")
      */
-    protected $bestRatingNumber;
-    /**
-     * Best Rating (Text)
-     *
-     * @var string The highest value allowed in this rating system. If bestRating is omitted, 5 is assumed.
-     */
-    protected $bestRatingText;
+    private $bestRating;
     /**
      * Rating Value
-     *
-     * @var string The rating for the content.
+     * 
+     * @var string $ratingValue The rating for the content.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $ratingValue;
+    private $ratingValue;
     /**
-     * Worst Rating (Number)
-     *
-     * @var float The lowest value allowed in this rating system. If worstRating is omitted, 1 is assumed.
+     * Worst Rating
+     * 
+     * @var float $worstRating The lowest value allowed in this rating system. If worstRating is omitted, 1 is assumed.
+     * 
+     * @Assert\Type(type="float")
+     * @ORM\Column(type="float")
      */
-    protected $worstRatingNumber;
-    /**
-     * Worst Rating (Text)
-     *
-     * @var string The lowest value allowed in this rating system. If worstRating is omitted, 1 is assumed.
-     */
-    protected $worstRatingText;
+    private $worstRating;
 }

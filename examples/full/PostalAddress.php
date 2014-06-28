@@ -1,48 +1,72 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Postal Address
- *
+ * 
  * @link http://schema.org/PostalAddress
+ * 
+ * @ORM\Entity
  */
 class PostalAddress extends ContactPoint
 {
     /**
      * Address Country
-     *
-     * @var Country The country. For example, USA. You can also provide the two-letter <a href="http://en.wikipedia.org/wiki/ISO_3166-1">ISO 3166-1 alpha-2 country code</a>.
+     * 
+     * @var Country $addressCountry The country. For example, USA. You can also provide the two-letter ISO 3166-1 alpha-2 country code.
+     * 
+     * @ORM\ManyToOne(targetEntity="Country")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $addressCountry;
+    private $addressCountry;
     /**
      * Address Locality
-     *
-     * @var string The locality. For example, Mountain View.
+     * 
+     * @var string $addressLocality The locality. For example, Mountain View.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $addressLocality;
+    private $addressLocality;
     /**
      * Address Region
-     *
-     * @var string The region. For example, CA.
+     * 
+     * @var string $addressRegion The region. For example, CA.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $addressRegion;
+    private $addressRegion;
     /**
      * Postal Code
-     *
-     * @var string The postal code. For example, 94043.
+     * 
+     * @var string $postalCode The postal code. For example, 94043.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $postalCode;
+    private $postalCode;
     /**
      * Post Office Box Number
-     *
-     * @var string The post offce box number for PO box addresses.
+     * 
+     * @var string $postOfficeBoxNumber The post offce box number for PO box addresses.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $postOfficeBoxNumber;
+    private $postOfficeBoxNumber;
     /**
      * Street Address
-     *
-     * @var string The street address. For example, 1600 Amphitheatre Pkwy.
+     * 
+     * @var string $streetAddress The street address. For example, 1600 Amphitheatre Pkwy.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $streetAddress;
+    private $streetAddress;
 }

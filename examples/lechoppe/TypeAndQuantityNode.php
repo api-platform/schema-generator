@@ -11,30 +11,17 @@
 
 namespace Echoppe\CoreBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Type And Quantity Node
- *
+ * 
  * @author Kévin Dunglas <dunglas@gmail.com>
  * @link http://schema.org/TypeAndQuantityNode
+ * 
+ * @ORM\Entity
  */
 class TypeAndQuantityNode extends StructuredValue
 {
-    /**
-     * Amount of This Good
-     *
-     * @var float The quantity of the goods included in the offer.
-     */
-    protected $amountOfThisGood;
-    /**
-     * Type of Good
-     *
-     * @var Product The product that this structured value is referring to.
-     */
-    protected $typeOfGood;
-    /**
-     * Unit Code
-     *
-     * @var string The unit of measurement given using the UN/CEFACT Common Code (3 characters).
-     */
-    protected $unitCode;
 }

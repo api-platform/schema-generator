@@ -1,24 +1,34 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Play Action
- *
+ * 
  * @link http://schema.org/PlayAction
+ * 
+ * @ORM\MappedSuperclass
  */
 class PlayAction extends Action
 {
     /**
      * Audience
-     *
-     * @var Audience The intended audience of the item, i.e. the group for whom the item was created.
+     * 
+     * @var Audience $audience The intended audience of the item, i.e. the group for whom the item was created.
+     * 
+     * @ORM\ManyToOne(targetEntity="Audience")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $audience;
+    private $audience;
     /**
      * Event
-     *
-     * @var Event Upcoming or past event associated with this place or organization.
+     * 
+     * @var Event $event Upcoming or past event associated with this place or organization.
+     * 
      */
-    protected $event;
+    private $event;
 }

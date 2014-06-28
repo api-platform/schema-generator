@@ -1,11 +1,17 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Dentist
- *
+ * 
  * @link http://schema.org/Dentist
+ * 
+ * @ORM\Entity
  */
 class Dentist extends MedicalOrganization
 {

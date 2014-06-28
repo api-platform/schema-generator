@@ -1,30 +1,45 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Review
- *
+ * 
  * @link http://schema.org/Review
+ * 
+ * @ORM\Entity
  */
 class Review extends CreativeWork
 {
     /**
      * Item Reviewed
-     *
-     * @var Thing The item that is being reviewed/rated.
+     * 
+     * @var Thing $itemReviewed The item that is being reviewed/rated.
+     * 
+     * @ORM\ManyToOne(targetEntity="Thing")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $itemReviewed;
+    private $itemReviewed;
     /**
      * Review Body
-     *
-     * @var string The actual body of the review
+     * 
+     * @var string $reviewBody The actual body of the review
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $reviewBody;
+    private $reviewBody;
     /**
      * Review Rating
-     *
-     * @var Rating The rating given in this review. Note that reviews can themselves be rated. The <code>reviewRating</code> applies to rating given by the review. The <code>aggregateRating</code> property applies to the review itself, as a creative work.
+     * 
+     * @var Rating $reviewRating The rating given in this review. Note that reviews can themselves be rated. The reviewRating applies to rating given by the review. The aggregateRating property applies to the review itself, as a creative work.
+     * 
+     * @ORM\ManyToOne(targetEntity="Rating")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $reviewRating;
+    private $reviewRating;
 }

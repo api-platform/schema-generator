@@ -1,48 +1,71 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Clip
- *
+ * 
  * @link http://schema.org/Clip
+ * 
+ * @ORM\MappedSuperclass
  */
 class Clip extends CreativeWork
 {
     /**
      * Clip Number
-     *
-     * @var integer Position of the clip within an ordered group of clips.
+     * 
+     * @var integer $clipNumber Position of the clip within an ordered group of clips.
+     * 
+     * @Assert\Type(type="integer")
+     * @ORM\Column(type="integer")
      */
-    protected $clipNumber;
+    private $clipNumber;
     /**
      * Part of Episode
-     *
-     * @var Episode The episode to which this clip belongs.
+     * 
+     * @var Episode $partOfEpisode The episode to which this clip belongs.
+     * 
+     * @ORM\ManyToOne(targetEntity="Episode")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $partOfEpisode;
+    private $partOfEpisode;
     /**
      * Part of Season
-     *
-     * @var Season The season to which this episode belongs.
+     * 
+     * @var Season $partOfSeason The season to which this episode belongs.
+     * 
+     * @ORM\ManyToOne(targetEntity="Season")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $partOfSeason;
+    private $partOfSeason;
     /**
      * Part of Series
-     *
-     * @var Series The series to which this episode or season belongs.
+     * 
+     * @var Series $partOfSeries The series to which this episode or season belongs.
+     * 
+     * @ORM\ManyToOne(targetEntity="Series")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $partOfSeries;
+    private $partOfSeries;
     /**
      * Position
-     *
-     * @var string Free text to define other than pure numerical ranking of an episode or a season in an ordered list of items (further formatting restrictions may apply within particular user groups).
+     * 
+     * @var string $position Free text to define other than pure numerical ranking of an episode or a season in an ordered list of items (further formatting restrictions may apply within particular user groups).
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $position;
+    private $position;
     /**
      * Publication
-     *
-     * @var PublicationEvent A publication event associated with the episode, clip or media object.
+     * 
+     * @var PublicationEvent $publication A publication event associated with the episode, clip or media object.
+     * 
+     * @ORM\ManyToOne(targetEntity="PublicationEvent")
      */
-    protected $publication;
+    private $publication;
 }

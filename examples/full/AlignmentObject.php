@@ -1,42 +1,63 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Alignment Object
- *
+ * 
  * @link http://schema.org/AlignmentObject
+ * 
+ * @ORM\Entity
  */
 class AlignmentObject extends Intangible
 {
     /**
      * Alignment Type
-     *
-     * @var string A category of alignment between the learning resource and the framework node. Recommended values include: 'assesses', 'teaches', 'requires', 'textComplexity', 'readingLevel', 'educationalSubject', and 'educationLevel'.
+     * 
+     * @var string $alignmentType A category of alignment between the learning resource and the framework node. Recommended values include: 'assesses', 'teaches', 'requires', 'textComplexity', 'readingLevel', 'educationalSubject', and 'educationLevel'.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $alignmentType;
+    private $alignmentType;
     /**
      * Educational Framework
-     *
-     * @var string The framework to which the resource being described is aligned.
+     * 
+     * @var string $educationalFramework The framework to which the resource being described is aligned.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $educationalFramework;
+    private $educationalFramework;
     /**
      * Target Description
-     *
-     * @var string The description of a node in an established educational framework.
+     * 
+     * @var string $targetDescription The description of a node in an established educational framework.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $targetDescription;
+    private $targetDescription;
     /**
      * Target Name
-     *
-     * @var string The name of a node in an established educational framework.
+     * 
+     * @var string $targetName The name of a node in an established educational framework.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $targetName;
+    private $targetName;
     /**
      * Target Url
-     *
-     * @var string The URL of a node in an established educational framework.
+     * 
+     * @var string $targetUrl The URL of a node in an established educational framework.
+     * 
+     * @Assert\Url
+     * @ORM\Column
      */
-    protected $targetUrl;
+    private $targetUrl;
 }

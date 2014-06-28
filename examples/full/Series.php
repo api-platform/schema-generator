@@ -1,90 +1,123 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Series
- *
+ * 
  * @link http://schema.org/Series
+ * 
+ * @ORM\MappedSuperclass
  */
 class Series extends CreativeWork
 {
     /**
      * Actor
-     *
-     * @var Person A cast member of the movie, tv/radio series, season, episode, or video.
+     * 
+     * @var Person $actor A cast member of the movie, tv/radio series, season, episode, or video.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
      */
-    protected $actor;
+    private $actor;
     /**
      * Director
-     *
-     * @var Person The director of the movie, tv/radio episode or series.
+     * 
+     * @var Person $director The director of the movie, tv/radio episode or series.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $director;
+    private $director;
     /**
      * End Date
-     *
-     * @var \DateTime The end date and time of the event or item (in <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601 date format</a>).
+     * 
+     * @var \DateTime $endDate The end date and time of the event or item (in ISO 8601 date format).
+     * 
+     * @Assert\Date
+     * @ORM\Column(type="date")
      */
-    protected $endDate;
+    private $endDate;
     /**
      * Episode
-     *
-     * @var Episode An episode of a TV/radio series or season
+     * 
+     * @var Episode $episode An episode of a TV/radio series or season
+     * 
+     * @ORM\ManyToOne(targetEntity="Episode")
      */
-    protected $episode;
+    private $episode;
     /**
-     * Music by (Person)
-     *
-     * @var Person The composer of the movie or TV/radio soundtrack.
+     * Music by
+     * 
+     * @var Person $musicBy The composer of the movie or TV/radio soundtrack.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $musicByPerson;
-    /**
-     * Music by (MusicGroup)
-     *
-     * @var MusicGroup The composer of the movie or TV/radio soundtrack.
-     */
-    protected $musicByMusicGroup;
+    private $musicBy;
     /**
      * Number of Episodes
-     *
-     * @var float The number of episodes in this season or series.
+     * 
+     * @var float $numberOfEpisodes The number of episodes in this season or series.
+     * 
+     * @Assert\Type(type="float")
+     * @ORM\Column(type="float")
      */
-    protected $numberOfEpisodes;
+    private $numberOfEpisodes;
     /**
      * Number of Seasons
-     *
-     * @var float The number of seasons in this series.
+     * 
+     * @var float $numberOfSeasons The number of seasons in this series.
+     * 
+     * @Assert\Type(type="float")
+     * @ORM\Column(type="float")
      */
-    protected $numberOfSeasons;
+    private $numberOfSeasons;
     /**
      * Producer
-     *
-     * @var Person The producer of the movie, tv/radio series, season, or episode, or video.
+     * 
+     * @var Person $producer The producer of the movie, tv/radio series, season, or episode, or video.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $producer;
+    private $producer;
     /**
      * Production Company
-     *
-     * @var Organization The production company or studio that made the movie, tv/radio series, season, or episode, or media object.
+     * 
+     * @var Organization $productionCompany The production company or studio that made the movie, tv/radio series, season, or episode, or media object.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $productionCompany;
+    private $productionCompany;
     /**
      * Season
-     *
-     * @var Season A season in a tv/radio series.
+     * 
+     * @var Season $season A season in a tv/radio series.
+     * 
+     * @ORM\ManyToOne(targetEntity="Season")
      */
-    protected $season;
+    private $season;
     /**
      * Start Date
-     *
-     * @var \DateTime The start date and time of the event or item (in <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601 date format</a>).
+     * 
+     * @var \DateTime $startDate The start date and time of the event or item (in ISO 8601 date format).
+     * 
+     * @Assert\Date
+     * @ORM\Column(type="date")
      */
-    protected $startDate;
+    private $startDate;
     /**
      * Trailer
-     *
-     * @var VideoObject The trailer of a movie or tv/radio series, season, or episode.
+     * 
+     * @var VideoObject $trailer The trailer of a movie or tv/radio series, season, or episode.
+     * 
+     * @ORM\ManyToOne(targetEntity="VideoObject")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $trailer;
+    private $trailer;
 }

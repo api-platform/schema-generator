@@ -11,18 +11,25 @@
 
 namespace Echoppe\CoreBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Product Model
- *
+ * 
  * @author Kévin Dunglas <dunglas@gmail.com>
  * @link http://schema.org/ProductModel
+ * 
+ * @ORM\Entity
  */
 class ProductModel extends Product
 {
     /**
      * Is Variant of
-     *
-     * @var ProductModel A pointer to a base product from which this product is a variant. It is safe to infer that the variant inherits all product features from the base model, unless defined locally. This is not transitive.
+     * 
+     * @var ProductModel $isVariantOf A pointer to a base product from which this product is a variant. It is safe to infer that the variant inherits all product features from the base model, unless defined locally. This is not transitive.
+     * 
+     * @ORM\OneToOne(targetEntity="ProductModel")
      */
-    protected $isVariantOf;
+    private $isVariantOf;
 }

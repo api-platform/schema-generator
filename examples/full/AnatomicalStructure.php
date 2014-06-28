@@ -1,66 +1,92 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Anatomical Structure
- *
+ * 
  * @link http://schema.org/AnatomicalStructure
+ * 
+ * @ORM\MappedSuperclass
  */
 class AnatomicalStructure extends MedicalEntity
 {
     /**
      * Associated Pathophysiology
-     *
-     * @var string If applicable, a description of the pathophysiology associated with the anatomical system, including potential abnormal changes in the mechanical, physical, and biochemical functions of the system.
+     * 
+     * @var string $associatedPathophysiology If applicable, a description of the pathophysiology associated with the anatomical system, including potential abnormal changes in the mechanical, physical, and biochemical functions of the system.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $associatedPathophysiology;
+    private $associatedPathophysiology;
     /**
      * Body Location
-     *
-     * @var string Location in the body of the anatomical structure.
+     * 
+     * @var string $bodyLocation Location in the body of the anatomical structure.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $bodyLocation;
+    private $bodyLocation;
     /**
      * Connected to
-     *
-     * @var AnatomicalStructure Other anatomical structures to which this structure is connected.
+     * 
+     * @var AnatomicalStructure $connectedTo Other anatomical structures to which this structure is connected.
+     * 
      */
-    protected $connectedTo;
+    private $connectedTo;
     /**
      * Diagram
-     *
-     * @var ImageObject An image containing a diagram that illustrates the structure and/or its component substructures and/or connections with other structures.
+     * 
+     * @var ImageObject $diagram An image containing a diagram that illustrates the structure and/or its component substructures and/or connections with other structures.
+     * 
+     * @ORM\ManyToOne(targetEntity="ImageObject")
      */
-    protected $diagram;
+    private $diagram;
     /**
      * Function
-     *
-     * @var string Function of the anatomical structure.
+     * 
+     * @var string $function Function of the anatomical structure.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $function;
+    private $function;
     /**
      * Part of System
-     *
-     * @var AnatomicalSystem The anatomical or organ system that this structure is part of.
+     * 
+     * @var AnatomicalSystem $partOfSystem The anatomical or organ system that this structure is part of.
+     * 
+     * @ORM\ManyToOne(targetEntity="AnatomicalSystem")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $partOfSystem;
+    private $partOfSystem;
     /**
      * Related Condition
-     *
-     * @var MedicalCondition A medical condition associated with this anatomy.
+     * 
+     * @var MedicalCondition $relatedCondition A medical condition associated with this anatomy.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalCondition")
      */
-    protected $relatedCondition;
+    private $relatedCondition;
     /**
      * Related Therapy
-     *
-     * @var MedicalTherapy A medical therapy related to this anatomy.
+     * 
+     * @var MedicalTherapy $relatedTherapy A medical therapy related to this anatomy.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalTherapy")
      */
-    protected $relatedTherapy;
+    private $relatedTherapy;
     /**
      * Sub Structure
-     *
-     * @var AnatomicalStructure Component (sub-)structure(s) that comprise this anatomical structure.
+     * 
+     * @var AnatomicalStructure $subStructure Component (sub-)structure(s) that comprise this anatomical structure.
+     * 
      */
-    protected $subStructure;
+    private $subStructure;
 }

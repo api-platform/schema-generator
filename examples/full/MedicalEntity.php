@@ -1,48 +1,65 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Medical Entity
- *
+ * 
  * @link http://schema.org/MedicalEntity
+ * 
+ * @ORM\MappedSuperclass
  */
 class MedicalEntity extends Thing
 {
     /**
      * Code
-     *
-     * @var MedicalCode A medical code for the entity, taken from a controlled vocabulary or ontology such as ICD-9, DiseasesDB, MeSH, SNOMED-CT, RxNorm, etc.
+     * 
+     * @var MedicalCode $code A medical code for the entity, taken from a controlled vocabulary or ontology such as ICD-9, DiseasesDB, MeSH, SNOMED-CT, RxNorm, etc.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalCode")
      */
-    protected $code;
+    private $code;
     /**
      * Guideline
-     *
-     * @var MedicalGuideline A medical guideline related to this entity.
+     * 
+     * @var MedicalGuideline $guideline A medical guideline related to this entity.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalGuideline")
      */
-    protected $guideline;
+    private $guideline;
     /**
      * Medicine System
-     *
-     * @var MedicineSystem The system of medicine that includes this MedicalEntity, for example 'evidence-based', 'homeopathic', 'chiropractic', etc.
+     * 
+     * @var MedicineSystem $medicineSystem The system of medicine that includes this MedicalEntity, for example 'evidence-based', 'homeopathic', 'chiropractic', etc.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicineSystem")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $medicineSystem;
+    private $medicineSystem;
     /**
      * Recognizing Authority
-     *
-     * @var Organization If applicable, the organization that officially recognizes this entity as part of its endorsed system of medicine.
+     * 
+     * @var Organization $recognizingAuthority If applicable, the organization that officially recognizes this entity as part of its endorsed system of medicine.
+     * 
      */
-    protected $recognizingAuthority;
+    private $recognizingAuthority;
     /**
      * Relevant Specialty
-     *
-     * @var MedicalSpecialty If applicable, a medical specialty in which this entity is relevant.
+     * 
+     * @var MedicalSpecialty $relevantSpecialty If applicable, a medical specialty in which this entity is relevant.
+     * 
      */
-    protected $relevantSpecialty;
+    private $relevantSpecialty;
     /**
      * Study
-     *
-     * @var MedicalStudy A medical study or trial related to this entity.
+     * 
+     * @var MedicalStudy $study A medical study or trial related to this entity.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalStudy")
      */
-    protected $study;
+    private $study;
 }

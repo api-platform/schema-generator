@@ -1,48 +1,45 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Geo Coordinates
- *
+ * 
  * @link http://schema.org/GeoCoordinates
+ * 
+ * @ORM\Entity
  */
 class GeoCoordinates extends StructuredValue
 {
     /**
-     * Elevation (Text)
-     *
-     * @var string The elevation of a location.
+     * Elevation
+     * 
+     * @var string $elevation The elevation of a location.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $elevationText;
+    private $elevation;
     /**
-     * Elevation (Number)
-     *
-     * @var float The elevation of a location.
+     * Latitude
+     * 
+     * @var float $latitude The latitude of a location. For example 37.42242.
+     * 
+     * @Assert\Type(type="float")
+     * @ORM\Column(type="float")
      */
-    protected $elevationNumber;
+    private $latitude;
     /**
-     * Latitude (Number)
-     *
-     * @var float The latitude of a location. For example <code>37.42242</code>.
+     * Longitude
+     * 
+     * @var float $longitude The longitude of a location. For example -122.08585.
+     * 
+     * @Assert\Type(type="float")
+     * @ORM\Column(type="float")
      */
-    protected $latitudeNumber;
-    /**
-     * Latitude (Text)
-     *
-     * @var string The latitude of a location. For example <code>37.42242</code>.
-     */
-    protected $latitudeText;
-    /**
-     * Longitude (Number)
-     *
-     * @var float The longitude of a location. For example <code>-122.08585</code>.
-     */
-    protected $longitudeNumber;
-    /**
-     * Longitude (Text)
-     *
-     * @var string The longitude of a location. For example <code>-122.08585</code>.
-     */
-    protected $longitudeText;
+    private $longitude;
 }

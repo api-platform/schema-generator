@@ -1,36 +1,42 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Cook Action
- *
+ * 
  * @link http://schema.org/CookAction
+ * 
+ * @ORM\Entity
  */
 class CookAction extends CreateAction
 {
     /**
-     * Food Establishment (FoodEstablishment)
-     *
-     * @var FoodEstablishment A sub property of location. The specific food establishment where the action occurreed.
+     * Food Establishment
+     * 
+     * @var FoodEstablishment $foodEstablishment A sub property of location. The specific food establishment where the action occurreed.
+     * 
+     * @ORM\ManyToOne(targetEntity="FoodEstablishment")
      */
-    protected $foodEstablishmentFoodEstablishment;
-    /**
-     * Food Establishment (Place)
-     *
-     * @var Place A sub property of location. The specific food establishment where the action occurreed.
-     */
-    protected $foodEstablishmentPlace;
+    private $foodEstablishment;
     /**
      * Food Event
-     *
-     * @var FoodEvent A sub property of location. The specific food event where the action occurred.
+     * 
+     * @var FoodEvent $foodEvent A sub property of location. The specific food event where the action occurred.
+     * 
+     * @ORM\ManyToOne(targetEntity="FoodEvent")
      */
-    protected $foodEvent;
+    private $foodEvent;
     /**
      * Recipe
-     *
-     * @var Recipe A sub property of instrument. The recipe/instructions used to perform the action.
+     * 
+     * @var Recipe $recipe A sub property of instrument. The recipe/instructions used to perform the action.
+     * 
+     * @ORM\ManyToOne(targetEntity="Recipe")
      */
-    protected $recipe;
+    private $recipe;
 }

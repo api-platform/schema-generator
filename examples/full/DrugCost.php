@@ -1,54 +1,72 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Drug Cost
- *
+ * 
  * @link http://schema.org/DrugCost
+ * 
+ * @ORM\Entity
  */
 class DrugCost extends MedicalIntangible
 {
     /**
      * Applicable Location
-     *
-     * @var AdministrativeArea The location in which the status applies.
+     * 
+     * @var AdministrativeArea $applicableLocation The location in which the status applies.
+     * 
+     * @ORM\ManyToOne(targetEntity="AdministrativeArea")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $applicableLocation;
+    private $applicableLocation;
     /**
      * Cost Category
-     *
-     * @var DrugCostCategory The category of cost, such as wholesale, retail, reimbursement cap, etc.
+     * 
+     * @var DrugCostCategory $costCategory The category of cost, such as wholesale, retail, reimbursement cap, etc.
+     * 
+     * @ORM\ManyToOne(targetEntity="DrugCostCategory")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $costCategory;
+    private $costCategory;
     /**
      * Cost Currency
-     *
-     * @var string The currency (in 3-letter <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217 format</a>) of the drug cost.
+     * 
+     * @var string $costCurrency The currency (in 3-letter ISO 4217 format) of the drug cost.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $costCurrency;
+    private $costCurrency;
     /**
      * Cost Origin
-     *
-     * @var string Additional details to capture the origin of the cost data. For example, 'Medicare Part B'.
+     * 
+     * @var string $costOrigin Additional details to capture the origin of the cost data. For example, 'Medicare Part B'.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $costOrigin;
+    private $costOrigin;
     /**
-     * Cost Per Unit (Number)
-     *
-     * @var float The cost per unit of the drug.
+     * Cost Per Unit
+     * 
+     * @var float $costPerUnit The cost per unit of the drug.
+     * 
+     * @Assert\Type(type="float")
+     * @ORM\Column(type="float")
      */
-    protected $costPerUnitNumber;
-    /**
-     * Cost Per Unit (Text)
-     *
-     * @var string The cost per unit of the drug.
-     */
-    protected $costPerUnitText;
+    private $costPerUnit;
     /**
      * Drug Unit
-     *
-     * @var string The unit in which the drug is measured, e.g. '5 mg tablet'.
+     * 
+     * @var string $drugUnit The unit in which the drug is measured, e.g. '5 mg tablet'.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $drugUnit;
+    private $drugUnit;
 }

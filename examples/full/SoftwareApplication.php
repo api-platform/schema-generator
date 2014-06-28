@@ -1,180 +1,197 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Software Application
- *
+ * 
  * @link http://schema.org/SoftwareApplication
+ * 
+ * @ORM\MappedSuperclass
  */
 class SoftwareApplication extends CreativeWork
 {
     /**
-     * Application Category (Text)
-     *
-     * @var string Type of software application, e.g. "Game, Multimedia".
+     * Application Category
+     * 
+     * @var string $applicationCategory Type of software application, e.g. "Game, Multimedia".
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $applicationCategoryText;
+    private $applicationCategory;
     /**
-     * Application Category (URL)
-     *
-     * @var string Type of software application, e.g. "Game, Multimedia".
+     * Application Sub Category
+     * 
+     * @var string $applicationSubCategory Subcategory of the application, e.g. "Arcade Game".
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $applicationCategoryURL;
-    /**
-     * Application Sub Category (Text)
-     *
-     * @var string Subcategory of the application, e.g. "Arcade Game".
-     */
-    protected $applicationSubCategoryText;
-    /**
-     * Application Sub Category (URL)
-     *
-     * @var string Subcategory of the application, e.g. "Arcade Game".
-     */
-    protected $applicationSubCategoryURL;
+    private $applicationSubCategory;
     /**
      * Application Suite
-     *
-     * @var string The name of the application suite to which the application belongs (e.g. Excel belongs to Office)
+     * 
+     * @var string $applicationSuite The name of the application suite to which the application belongs (e.g. Excel belongs to Office)
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $applicationSuite;
+    private $applicationSuite;
     /**
      * Countries Not Supported
-     *
-     * @var string Countries for which the application is not supported. You can also provide the two-letter ISO 3166-1 alpha-2 country code.
+     * 
+     * @var string $countriesNotSupported Countries for which the application is not supported. You can also provide the two-letter ISO 3166-1 alpha-2 country code.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $countriesNotSupported;
+    private $countriesNotSupported;
     /**
      * Countries Supported
-     *
-     * @var string Countries for which the application is supported. You can also provide the two-letter ISO 3166-1 alpha-2 country code.
+     * 
+     * @var string $countriesSupported Countries for which the application is supported. You can also provide the two-letter ISO 3166-1 alpha-2 country code.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $countriesSupported;
+    private $countriesSupported;
     /**
      * Device
-     *
-     * @var string Device required to run the application. Used in cases where a specific make/model is required to run the application.
+     * 
+     * @var string $device Device required to run the application. Used in cases where a specific make/model is required to run the application.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $device;
+    private $device;
     /**
      * Download Url
-     *
-     * @var string If the file can be downloaded, URL to download the binary.
+     * 
+     * @var string $downloadUrl If the file can be downloaded, URL to download the binary.
+     * 
+     * @Assert\Url
+     * @ORM\Column
      */
-    protected $downloadUrl;
+    private $downloadUrl;
     /**
-     * Feature List (Text)
-     *
-     * @var string Features or modules provided by this application (and possibly required by other applications).
+     * Feature List
+     * 
+     * @var string $featureList Features or modules provided by this application (and possibly required by other applications).
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $featureListText;
-    /**
-     * Feature List (URL)
-     *
-     * @var string Features or modules provided by this application (and possibly required by other applications).
-     */
-    protected $featureListURL;
+    private $featureList;
     /**
      * File Format
-     *
-     * @var string MIME format of the binary (e.g. application/zip).
+     * 
+     * @var string $fileFormat MIME format of the binary (e.g. application/zip).
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $fileFormat;
+    private $fileFormat;
     /**
      * File Size
-     *
-     * @var integer Size of the application / package (e.g. 18MB). In the absence of a unit (MB, KB etc.), KB will be assumed.
+     * 
+     * @var integer $fileSize Size of the application / package (e.g. 18MB). In the absence of a unit (MB, KB etc.), KB will be assumed.
+     * 
+     * @Assert\Type(type="integer")
+     * @ORM\Column(type="integer")
      */
-    protected $fileSize;
+    private $fileSize;
     /**
      * Install Url
-     *
-     * @var string URL at which the app may be installed, if different from the URL of the item.
+     * 
+     * @var string $installUrl URL at which the app may be installed, if different from the URL of the item.
+     * 
+     * @Assert\Url
+     * @ORM\Column
      */
-    protected $installUrl;
+    private $installUrl;
     /**
-     * Memory Requirements (Text)
-     *
-     * @var string Minimum memory requirements.
+     * Memory Requirements
+     * 
+     * @var string $memoryRequirements Minimum memory requirements.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $memoryRequirementsText;
-    /**
-     * Memory Requirements (URL)
-     *
-     * @var string Minimum memory requirements.
-     */
-    protected $memoryRequirementsURL;
+    private $memoryRequirements;
     /**
      * Operating System
-     *
-     * @var string Operating systems supported (Windows 7, OSX 10.6, Android 1.6).
+     * 
+     * @var string $operatingSystem Operating systems supported (Windows 7, OSX 10.6, Android 1.6).
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $operatingSystem;
+    private $operatingSystem;
     /**
      * Permissions
-     *
-     * @var string Permission(s) required to run the app (for example, a mobile app may require full internet access or may run only on wifi).
+     * 
+     * @var string $permissions Permission(s) required to run the app (for example, a mobile app may require full internet access or may run only on wifi).
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $permissions;
+    private $permissions;
     /**
      * Processor Requirements
-     *
-     * @var string Processor architecture required to run the application (e.g. IA64).
+     * 
+     * @var string $processorRequirements Processor architecture required to run the application (e.g. IA64).
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $processorRequirements;
+    private $processorRequirements;
     /**
-     * Release Notes (Text)
-     *
-     * @var string Description of what changed in this version.
+     * Release Notes
+     * 
+     * @var string $releaseNotes Description of what changed in this version.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $releaseNotesText;
+    private $releaseNotes;
     /**
-     * Release Notes (URL)
-     *
-     * @var string Description of what changed in this version.
+     * Requirements
+     * 
+     * @var string $requirements Component dependency requirements for application. This includes runtime environments and shared libraries that are not included in the application distribution package, but required to run the application (Examples: DirectX, Java or .NET runtime).
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $releaseNotesURL;
+    private $requirements;
     /**
-     * Requirements (Text)
-     *
-     * @var string Component dependency requirements for application. This includes runtime environments and shared libraries that are not included in the application distribution package, but required to run the application (Examples: DirectX, Java or .NET runtime).
+     * Screenshot
+     * 
+     * @var ImageObject $screenshot A link to a screenshot image of the app.
+     * 
+     * @ORM\ManyToOne(targetEntity="ImageObject")
      */
-    protected $requirementsText;
-    /**
-     * Requirements (URL)
-     *
-     * @var string Component dependency requirements for application. This includes runtime environments and shared libraries that are not included in the application distribution package, but required to run the application (Examples: DirectX, Java or .NET runtime).
-     */
-    protected $requirementsURL;
-    /**
-     * Screenshot (ImageObject)
-     *
-     * @var ImageObject A link to a screenshot image of the app.
-     */
-    protected $screenshotImageObject;
-    /**
-     * Screenshot (URL)
-     *
-     * @var string A link to a screenshot image of the app.
-     */
-    protected $screenshotURL;
+    private $screenshot;
     /**
      * Software Version
-     *
-     * @var string Version of the software instance.
+     * 
+     * @var string $softwareVersion Version of the software instance.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $softwareVersion;
+    private $softwareVersion;
     /**
-     * Storage Requirements (Text)
-     *
-     * @var string Storage requirements (free space required).
+     * Storage Requirements
+     * 
+     * @var string $storageRequirements Storage requirements (free space required).
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $storageRequirementsText;
-    /**
-     * Storage Requirements (URL)
-     *
-     * @var string Storage requirements (free space required).
-     */
-    protected $storageRequirementsURL;
+    private $storageRequirements;
 }

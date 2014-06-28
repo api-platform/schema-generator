@@ -1,42 +1,43 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Communicate Action
- *
+ * 
  * @link http://schema.org/CommunicateAction
+ * 
+ * @ORM\MappedSuperclass
  */
 class CommunicateAction extends InteractAction
 {
     /**
      * About
-     *
-     * @var Thing The subject matter of the content.
+     * 
+     * @var Thing $about The subject matter of the content.
+     * 
+     * @ORM\ManyToOne(targetEntity="Thing")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $about;
+    private $about;
     /**
      * Language
-     *
-     * @var Language A sub property of instrument. The languaged used on this action.
+     * 
+     * @var Language $language A sub property of instrument. The languaged used on this action.
+     * 
+     * @ORM\ManyToOne(targetEntity="Language")
      */
-    protected $language;
+    private $language;
     /**
-     * Recipient (Organization)
-     *
-     * @var Organization A sub property of participant. The participant who is at the receiving end of the action.
+     * Recipient
+     * 
+     * @var Organization $recipient A sub property of participant. The participant who is at the receiving end of the action.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
      */
-    protected $recipientOrganization;
-    /**
-     * Recipient (Audience)
-     *
-     * @var Audience A sub property of participant. The participant who is at the receiving end of the action.
-     */
-    protected $recipientAudience;
-    /**
-     * Recipient (Person)
-     *
-     * @var Person A sub property of participant. The participant who is at the receiving end of the action.
-     */
-    protected $recipientPerson;
+    private $recipient;
 }

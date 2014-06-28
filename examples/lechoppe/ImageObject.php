@@ -11,18 +11,26 @@
 
 namespace Echoppe\CoreBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Image Object
- *
+ * 
  * @author Kévin Dunglas <dunglas@gmail.com>
  * @link http://schema.org/ImageObject
+ * 
+ * @ORM\Entity
  */
 class ImageObject extends MediaObject
 {
     /**
      * Caption
-     *
-     * @var string The caption for this object.
+     * 
+     * @var string $caption The caption for this object.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $caption;
+    private $caption;
 }

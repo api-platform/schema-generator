@@ -1,42 +1,42 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Physician
- *
+ * 
  * @link http://schema.org/Physician
+ * 
+ * @ORM\Entity
  */
 class Physician extends MedicalOrganization
 {
     /**
-     * Available Service (MedicalTest)
-     *
-     * @var MedicalTest A medical service available from this provider.
+     * Available Service
+     * 
+     * @var MedicalTest $availableService A medical service available from this provider.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalTest")
      */
-    protected $availableServiceMedicalTest;
-    /**
-     * Available Service (MedicalProcedure)
-     *
-     * @var MedicalProcedure A medical service available from this provider.
-     */
-    protected $availableServiceMedicalProcedure;
-    /**
-     * Available Service (MedicalTherapy)
-     *
-     * @var MedicalTherapy A medical service available from this provider.
-     */
-    protected $availableServiceMedicalTherapy;
+    private $availableService;
     /**
      * Hospital Affiliation
-     *
-     * @var Hospital A hospital with which the physician or office is affiliated.
+     * 
+     * @var Hospital $hospitalAffiliation A hospital with which the physician or office is affiliated.
+     * 
+     * @ORM\ManyToOne(targetEntity="Hospital")
      */
-    protected $hospitalAffiliation;
+    private $hospitalAffiliation;
     /**
      * Medical Specialty
-     *
-     * @var MedicalSpecialty A medical specialty of the provider.
+     * 
+     * @var MedicalSpecialty $medicalSpecialty A medical specialty of the provider.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalSpecialty")
      */
-    protected $medicalSpecialty;
+    private $medicalSpecialty;
 }

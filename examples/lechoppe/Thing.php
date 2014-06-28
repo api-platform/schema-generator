@@ -11,30 +11,44 @@
 
 namespace Echoppe\CoreBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Thing
- *
+ * 
  * @author Kévin Dunglas <dunglas@gmail.com>
  * @link http://schema.org/Thing
+ * 
+ * @ORM\MappedSuperclass
  */
 class Thing
 {
     /**
      * Description
-     *
-     * @var string A short description of the item.
+     * 
+     * @var string $description A short description of the item.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $description;
+    private $description;
     /**
      * Image
-     *
-     * @var string URL of an image of the item.
+     * 
+     * @var string $image URL of an image of the item.
+     * 
+     * @Assert\Url
+     * @ORM\Column
      */
-    protected $image;
+    private $image;
     /**
      * Name
-     *
-     * @var string The name of the item.
+     * 
+     * @var string $name The name of the item.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $name;
+    private $name;
 }

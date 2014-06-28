@@ -1,48 +1,59 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Anatomical System
- *
+ * 
  * @link http://schema.org/AnatomicalSystem
+ * 
+ * @ORM\Entity
  */
 class AnatomicalSystem extends MedicalEntity
 {
     /**
      * Associated Pathophysiology
-     *
-     * @var string If applicable, a description of the pathophysiology associated with the anatomical system, including potential abnormal changes in the mechanical, physical, and biochemical functions of the system.
+     * 
+     * @var string $associatedPathophysiology If applicable, a description of the pathophysiology associated with the anatomical system, including potential abnormal changes in the mechanical, physical, and biochemical functions of the system.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $associatedPathophysiology;
+    private $associatedPathophysiology;
     /**
-     * Comprised of (AnatomicalStructure)
-     *
-     * @var AnatomicalStructure The underlying anatomical structures, such as organs, that comprise the anatomical system.
+     * Comprised of
+     * 
+     * @var AnatomicalStructure $comprisedOf The underlying anatomical structures, such as organs, that comprise the anatomical system.
+     * 
+     * @ORM\ManyToOne(targetEntity="AnatomicalStructure")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $comprisedOfAnatomicalStructure;
-    /**
-     * Comprised of (AnatomicalSystem)
-     *
-     * @var AnatomicalSystem The underlying anatomical structures, such as organs, that comprise the anatomical system.
-     */
-    protected $comprisedOfAnatomicalSystem;
+    private $comprisedOf;
     /**
      * Related Condition
-     *
-     * @var MedicalCondition A medical condition associated with this anatomy.
+     * 
+     * @var MedicalCondition $relatedCondition A medical condition associated with this anatomy.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalCondition")
      */
-    protected $relatedCondition;
+    private $relatedCondition;
     /**
      * Related Structure
-     *
-     * @var AnatomicalStructure Related anatomical structure(s) that are not part of the system but relate or connect to it, such as vascular bundles associated with an organ system.
+     * 
+     * @var AnatomicalStructure $relatedStructure Related anatomical structure(s) that are not part of the system but relate or connect to it, such as vascular bundles associated with an organ system.
+     * 
      */
-    protected $relatedStructure;
+    private $relatedStructure;
     /**
      * Related Therapy
-     *
-     * @var MedicalTherapy A medical therapy related to this anatomy.
+     * 
+     * @var MedicalTherapy $relatedTherapy A medical therapy related to this anatomy.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalTherapy")
      */
-    protected $relatedTherapy;
+    private $relatedTherapy;
 }

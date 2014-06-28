@@ -1,36 +1,34 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Transfer Action
- *
+ * 
  * @link http://schema.org/TransferAction
+ * 
+ * @ORM\MappedSuperclass
  */
 class TransferAction extends Action
 {
     /**
-     * From Location (Place)
-     *
-     * @var Place A sub property of location. The original location of the object or the agent before the action.
+     * From Location
+     * 
+     * @var Place $fromLocation A sub property of location. The original location of the object or the agent before the action.
+     * 
+     * @ORM\ManyToOne(targetEntity="Place")
      */
-    protected $fromLocationPlace;
+    private $fromLocation;
     /**
-     * From Location (Number)
-     *
-     * @var float A sub property of location. The original location of the object or the agent before the action.
+     * To Location
+     * 
+     * @var Place $toLocation A sub property of location. The final location of the object or the agent after the action.
+     * 
+     * @ORM\ManyToOne(targetEntity="Place")
      */
-    protected $fromLocationNumber;
-    /**
-     * To Location (Place)
-     *
-     * @var Place A sub property of location. The final location of the object or the agent after the action.
-     */
-    protected $toLocationPlace;
-    /**
-     * To Location (Number)
-     *
-     * @var float A sub property of location. The final location of the object or the agent after the action.
-     */
-    protected $toLocationNumber;
+    private $toLocation;
 }

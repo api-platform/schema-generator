@@ -1,84 +1,126 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Nutrition Information
- *
+ * 
  * @link http://schema.org/NutritionInformation
+ * 
+ * @ORM\Entity
  */
 class NutritionInformation extends StructuredValue
 {
     /**
      * Calories
-     *
-     * @var Energy The number of calories
+     * 
+     * @var Energy $calories The number of calories
+     * 
+     * @ORM\ManyToOne(targetEntity="Energy")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $calories;
+    private $calories;
     /**
      * Carbohydrate Content
-     *
-     * @var Mass The number of grams of carbohydrates.
+     * 
+     * @var Mass $carbohydrateContent The number of grams of carbohydrates.
+     * 
+     * @ORM\ManyToOne(targetEntity="Mass")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $carbohydrateContent;
+    private $carbohydrateContent;
     /**
      * Cholesterol Content
-     *
-     * @var Mass The number of milligrams of cholesterol.
+     * 
+     * @var Mass $cholesterolContent The number of milligrams of cholesterol.
+     * 
+     * @ORM\ManyToOne(targetEntity="Mass")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $cholesterolContent;
+    private $cholesterolContent;
     /**
      * Fat Content
-     *
-     * @var Mass The number of grams of fat.
+     * 
+     * @var Mass $fatContent The number of grams of fat.
+     * 
+     * @ORM\ManyToOne(targetEntity="Mass")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $fatContent;
+    private $fatContent;
     /**
      * Fiber Content
-     *
-     * @var Mass The number of grams of fiber.
+     * 
+     * @var Mass $fiberContent The number of grams of fiber.
+     * 
+     * @ORM\ManyToOne(targetEntity="Mass")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $fiberContent;
+    private $fiberContent;
     /**
      * Protein Content
-     *
-     * @var Mass The number of grams of protein.
+     * 
+     * @var Mass $proteinContent The number of grams of protein.
+     * 
+     * @ORM\ManyToOne(targetEntity="Mass")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $proteinContent;
+    private $proteinContent;
     /**
      * Saturated Fat Content
-     *
-     * @var Mass The number of grams of saturated fat.
+     * 
+     * @var Mass $saturatedFatContent The number of grams of saturated fat.
+     * 
+     * @ORM\ManyToOne(targetEntity="Mass")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $saturatedFatContent;
+    private $saturatedFatContent;
     /**
      * Serving Size
-     *
-     * @var string The serving size, in terms of the number of volume or mass
+     * 
+     * @var string $servingSize The serving size, in terms of the number of volume or mass
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $servingSize;
+    private $servingSize;
     /**
      * Sodium Content
-     *
-     * @var Mass The number of milligrams of sodium.
+     * 
+     * @var Mass $sodiumContent The number of milligrams of sodium.
+     * 
+     * @ORM\ManyToOne(targetEntity="Mass")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $sodiumContent;
+    private $sodiumContent;
     /**
      * Sugar Content
-     *
-     * @var Mass The number of grams of sugar.
+     * 
+     * @var Mass $sugarContent The number of grams of sugar.
+     * 
+     * @ORM\ManyToOne(targetEntity="Mass")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $sugarContent;
+    private $sugarContent;
     /**
      * Trans Fat Content
-     *
-     * @var Mass The number of grams of trans fat.
+     * 
+     * @var Mass $transFatContent The number of grams of trans fat.
+     * 
+     * @ORM\ManyToOne(targetEntity="Mass")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $transFatContent;
+    private $transFatContent;
     /**
      * Unsaturated Fat Content
-     *
-     * @var Mass The number of grams of unsaturated fat.
+     * 
+     * @var Mass $unsaturatedFatContent The number of grams of unsaturated fat.
+     * 
+     * @ORM\ManyToOne(targetEntity="Mass")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $unsaturatedFatContent;
+    private $unsaturatedFatContent;
 }

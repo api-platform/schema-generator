@@ -15,79 +15,96 @@ header: |
    * file that was distributed with this source code.
    */
 namespace: Echoppe\CoreBundle\Entity
+#namespaces:
+#  interface: Echoppe\CoreBundle\Model
+#  entity: Echoppe\CoreBundle\Entity
 author: Kévin Dunglas <dunglas@gmail.com>
-check_is_goodrelations: true
+checkIsGoodRelations: true
 types:
   Thing:
-#    doctrine_inheritance: mapped_superclass
     properties:
-      - name
-      - description
-      - image
+      name: ~
+      description: ~
+      image: ~
   Product:
-#    doctrine_inheritance: mapped_superclass
     properties:
-      - brand
-      - color
-      - depth
-      - gtin13
-      - gtin14
-      - gtin8
-      - height
-      - itemCondition
-      - mpn
-      - offers
-      - productId
-      - releaseDate
-      - sku
-      - weight
-      - width
+      brand: ~
+      color: ~
+      depth: ~
+      gtin13: ~
+      gtin14: ~
+      gtin8: ~
+      height: ~
+      itemCondition: ~
+      mpn: ~
+      offers: ~
+      productId: ~
+      releaseDate: ~
+      sku: ~
+      weight: ~
+      width: ~
   Brand:
+    parent: Thing
     properties:
-      - logo
+      logo: { range: ImageObject }
   ImageObject:
     properties:
-      - caption
+      caption: ~
   QuantitativeValue:
     properties:
-      - maxValue
-      - minValue
-      - unitCode
-      - value
+      maxValue: ~
+      minValue: ~
+      unitCode: ~
+      value: ~
   ProductModel:
     properties:
-      - isVariantOf
+      isVariantOf: ~
   SomeProducts:
     properties:
-      - inventoryLevel
+      inventoryLevel: ~
   Offer:
+    parent: Thing
     properties:
-      - acceptedPaymentMethod
-      - addOn
-      - availability
-      - availabilityStarts
-      - availabilityEnds
-      - availableDeliveryMethod
-      - category
-      - deliveryLeadTime
-      - eligibleCustomerType
-      - eligibleDuration
-      - eligibleQuantity
-      - eligibleRegion
-      - eligibleTransactionVolume
-      - includesObject
-      - inventoryLevel
-      - itemCondition
-      - itemOffered
-      - priceSpecification
-      - validFrom
-      - validThrough
-      - warranty
+      acceptedPaymentMethod: ~
+      addOn: ~
+      availability: ~
+      availabilityStarts: ~
+      availabilityEnds: ~
+      availableDeliveryMethod: ~
+      category: { range: Text }
+      deliveryLeadTime: ~
+      eligibleCustomerType: ~
+      eligibleDuration: ~
+      eligibleQuantity: ~
+      eligibleRegion: ~
+      eligibleTransactionVolume: ~
+      includesObject: ~
+      inventoryLevel: ~
+      itemCondition: ~
+      priceSpecification: ~
+      validFrom: ~
+      validThrough: ~
+#      warranty: ~
+  StructuredValue:
+      parent: Thing
   PriceSpecification: ~
-  TypeAndQuantityNode:
-  OfferItemCondition: ~
-  PaymentMethod: ~
-  ItemAvailability: ~
-  DeliveryMethod: ~
-  BusinessEntityType: ~
-  WarrantyPromise: ~
+  DeliveryChargeSpecification: ~
+  PaymentChargeSpecification: ~
+  UnitPriceSpecification:
+    properties: { }
+  TypeAndQuantityNode: ~
+  OfferItemCondition:
+    parent: false
+  PaymentMethod:
+    parent: false
+  ItemAvailability:
+    parent: false
+  DeliveryMethod:
+    parent: false
+  BusinessEntityType:
+    parent: false
+#  WarrantyPromise: ~
+#  WarrantyScope:
+#    parent: false
+  MediaObject: ~
+  CreativeWork: ~

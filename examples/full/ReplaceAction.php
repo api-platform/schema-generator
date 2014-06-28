@@ -1,24 +1,34 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Replace Action
- *
+ * 
  * @link http://schema.org/ReplaceAction
+ * 
+ * @ORM\Entity
  */
 class ReplaceAction extends UpdateAction
 {
     /**
      * Replacee
-     *
-     * @var Thing A sub property of object. The object that is being replaced.
+     * 
+     * @var Thing $replacee A sub property of object. The object that is being replaced.
+     * 
+     * @ORM\ManyToOne(targetEntity="Thing")
      */
-    protected $replacee;
+    private $replacee;
     /**
      * Replacer
-     *
-     * @var Thing A sub property of object. The object that replaces.
+     * 
+     * @var Thing $replacer A sub property of object. The object that replaces.
+     * 
+     * @ORM\ManyToOne(targetEntity="Thing")
      */
-    protected $replacer;
+    private $replacer;
 }

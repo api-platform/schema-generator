@@ -1,24 +1,35 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Medical Risk Estimator
- *
+ * 
  * @link http://schema.org/MedicalRiskEstimator
+ * 
+ * @ORM\MappedSuperclass
  */
 class MedicalRiskEstimator extends MedicalEntity
 {
     /**
      * Estimates Risk of
-     *
-     * @var MedicalEntity The condition, complication, or symptom whose risk is being estimated.
+     * 
+     * @var MedicalEntity $estimatesRiskOf The condition, complication, or symptom whose risk is being estimated.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalEntity")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $estimatesRiskOf;
+    private $estimatesRiskOf;
     /**
      * Included Risk Factor
-     *
-     * @var MedicalRiskFactor A modifiable or non-modifiable risk factor included in the calculation, e.g. age, coexisting condition.
+     * 
+     * @var MedicalRiskFactor $includedRiskFactor A modifiable or non-modifiable risk factor included in the calculation, e.g. age, coexisting condition.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalRiskFactor")
      */
-    protected $includedRiskFactor;
+    private $includedRiskFactor;
 }

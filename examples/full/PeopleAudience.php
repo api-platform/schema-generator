@@ -1,54 +1,79 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * People Audience
- *
+ * 
  * @link http://schema.org/PeopleAudience
+ * 
+ * @ORM\MappedSuperclass
  */
 class PeopleAudience extends Audience
 {
     /**
      * Health Condition
-     *
-     * @var MedicalCondition Expectations for health conditions of target audience
+     * 
+     * @var MedicalCondition $healthCondition Expectations for health conditions of target audience
+     * 
      */
-    protected $healthCondition;
+    private $healthCondition;
     /**
      * Required Gender
-     *
-     * @var string Audiences defined by a person's gender.
+     * 
+     * @var string $requiredGender Audiences defined by a person's gender.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $requiredGender;
+    private $requiredGender;
     /**
      * Required Max Age
-     *
-     * @var integer Audiences defined by a person's maximum age.
+     * 
+     * @var integer $requiredMaxAge Audiences defined by a person's maximum age.
+     * 
+     * @Assert\Type(type="integer")
+     * @ORM\Column(type="integer")
      */
-    protected $requiredMaxAge;
+    private $requiredMaxAge;
     /**
      * Required Min Age
-     *
-     * @var integer Audiences defined by a person's minimum age.
+     * 
+     * @var integer $requiredMinAge Audiences defined by a person's minimum age.
+     * 
+     * @Assert\Type(type="integer")
+     * @ORM\Column(type="integer")
      */
-    protected $requiredMinAge;
+    private $requiredMinAge;
     /**
      * Suggested Gender
-     *
-     * @var string The gender of the person or audience.
+     * 
+     * @var string $suggestedGender The gender of the person or audience.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $suggestedGender;
+    private $suggestedGender;
     /**
      * Suggested Max Age
-     *
-     * @var float Maximal age recommended for viewing content
+     * 
+     * @var float $suggestedMaxAge Maximal age recommended for viewing content
+     * 
+     * @Assert\Type(type="float")
+     * @ORM\Column(type="float")
      */
-    protected $suggestedMaxAge;
+    private $suggestedMaxAge;
     /**
      * Suggested Min Age
-     *
-     * @var float Minimal age recommended for viewing content
+     * 
+     * @var float $suggestedMinAge Minimal age recommended for viewing content
+     * 
+     * @Assert\Type(type="float")
+     * @ORM\Column(type="float")
      */
-    protected $suggestedMinAge;
+    private $suggestedMinAge;
 }

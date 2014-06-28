@@ -1,78 +1,107 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Parcel Delivery
- *
+ * 
  * @link http://schema.org/ParcelDelivery
+ * 
+ * @ORM\Entity
  */
 class ParcelDelivery extends Intangible
 {
     /**
      * Carrier
-     *
-     * @var Organization The party responsible for the parcel delivery.
+     * 
+     * @var Organization $carrier The party responsible for the parcel delivery.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $carrier;
+    private $carrier;
     /**
      * Delivery Address
-     *
-     * @var PostalAddress Destination address.
+     * 
+     * @var PostalAddress $deliveryAddress Destination address.
+     * 
      */
-    protected $deliveryAddress;
+    private $deliveryAddress;
     /**
      * Delivery Status
-     *
-     * @var DeliveryEvent New entry added as the package passes through each leg of its journey (from shipment to final delivery).
+     * 
+     * @var DeliveryEvent $deliveryStatus New entry added as the package passes through each leg of its journey (from shipment to final delivery).
+     * 
      */
-    protected $deliveryStatus;
+    private $deliveryStatus;
     /**
      * Expected Arrival From
-     *
-     * @var \DateTime The earliest date the package may arrive.
+     * 
+     * @var \DateTime $expectedArrivalFrom The earliest date the package may arrive.
+     * 
+     * @Assert\DateTime
+     * @ORM\Column(type="datetime")
      */
-    protected $expectedArrivalFrom;
+    private $expectedArrivalFrom;
     /**
      * Expected Arrival Until
-     *
-     * @var \DateTime The latest date the package may arrive.
+     * 
+     * @var \DateTime $expectedArrivalUntil The latest date the package may arrive.
+     * 
+     * @Assert\DateTime
+     * @ORM\Column(type="datetime")
      */
-    protected $expectedArrivalUntil;
+    private $expectedArrivalUntil;
     /**
      * Has Delivery Method
-     *
-     * @var DeliveryMethod Method used for delivery or shipping.
+     * 
+     * @var DeliveryMethod $hasDeliveryMethod Method used for delivery or shipping.
+     * 
      */
-    protected $hasDeliveryMethod;
+    private $hasDeliveryMethod;
     /**
      * Item Shipped
-     *
-     * @var Product Item(s) being shipped.
+     * 
+     * @var Product $itemShipped Item(s) being shipped.
+     * 
      */
-    protected $itemShipped;
+    private $itemShipped;
     /**
      * Origin Address
-     *
-     * @var PostalAddress Shipper's address.
+     * 
+     * @var PostalAddress $originAddress Shipper's address.
+     * 
      */
-    protected $originAddress;
+    private $originAddress;
     /**
      * Part of Order
-     *
-     * @var Order The overall order the items in this delivery were included in.
+     * 
+     * @var Order $partOfOrder The overall order the items in this delivery were included in.
+     * 
+     * @ORM\ManyToOne(targetEntity="Order")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $partOfOrder;
+    private $partOfOrder;
     /**
      * Tracking Number
-     *
-     * @var string Shipper tracking number.
+     * 
+     * @var string $trackingNumber Shipper tracking number.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $trackingNumber;
+    private $trackingNumber;
     /**
      * Tracking Url
-     *
-     * @var string Tracking url for the parcel delivery.
+     * 
+     * @var string $trackingUrl Tracking url for the parcel delivery.
+     * 
+     * @Assert\Url
+     * @ORM\Column
      */
-    protected $trackingUrl;
+    private $trackingUrl;
 }

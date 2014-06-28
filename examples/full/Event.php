@@ -1,108 +1,129 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Event
- *
+ * 
  * @link http://schema.org/Event
+ * 
+ * @ORM\MappedSuperclass
  */
 class Event extends Thing
 {
     /**
-     * Attendee (Organization)
-     *
-     * @var Organization A person or organization attending the event.
+     * Attendee
+     * 
+     * @var Organization $attendee A person or organization attending the event.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
      */
-    protected $attendeeOrganization;
-    /**
-     * Attendee (Person)
-     *
-     * @var Person A person or organization attending the event.
-     */
-    protected $attendeePerson;
+    private $attendee;
     /**
      * Door Time
-     *
-     * @var \DateTime The time admission will commence.
+     * 
+     * @var \DateTime $doorTime The time admission will commence.
+     * 
+     * @Assert\DateTime
+     * @ORM\Column(type="datetime")
      */
-    protected $doorTime;
+    private $doorTime;
     /**
      * Duration
-     *
-     * @var Duration The duration of the item (movie, audio recording, event, etc.) in <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601 date format</a>.
+     * 
+     * @var Duration $duration The duration of the item (movie, audio recording, event, etc.) in ISO 8601 date format.
+     * 
+     * @ORM\ManyToOne(targetEntity="Duration")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $duration;
+    private $duration;
     /**
      * End Date
-     *
-     * @var \DateTime The end date and time of the event or item (in <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601 date format</a>).
+     * 
+     * @var \DateTime $endDate The end date and time of the event or item (in ISO 8601 date format).
+     * 
+     * @Assert\Date
+     * @ORM\Column(type="date")
      */
-    protected $endDate;
+    private $endDate;
     /**
      * Event Status
-     *
-     * @var EventStatusType An eventStatus of an event represents its status; particularly useful when an event is cancelled or rescheduled.
+     * 
+     * @var EventStatusType $eventStatus An eventStatus of an event represents its status; particularly useful when an event is cancelled or rescheduled.
+     * 
+     * @ORM\ManyToOne(targetEntity="EventStatusType")
      */
-    protected $eventStatus;
+    private $eventStatus;
     /**
-     * Location (PostalAddress)
-     *
-     * @var PostalAddress The location of the event, organization or action.
+     * Location
+     * 
+     * @var PostalAddress $location The location of the event, organization or action.
+     * 
+     * @ORM\ManyToOne(targetEntity="PostalAddress")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $locationPostalAddress;
-    /**
-     * Location (Place)
-     *
-     * @var Place The location of the event, organization or action.
-     */
-    protected $locationPlace;
+    private $location;
     /**
      * Offers
-     *
-     * @var Offer An offer to sell this item—for example, an offer to sell a product, the DVD of a movie, or tickets to an event.
+     * 
+     * @var Offer $offers An offer to transfer some rights to an item or to provide a service—for example, an offer to sell tickets to an event, to rent the DVD of a movie, to stream a TV show over the internet, to repair a motorcycle, or to loan a book.
+     * 
+     * @ORM\ManyToOne(targetEntity="Offer")
      */
-    protected $offers;
+    private $offers;
     /**
-     * Performer (Organization)
-     *
-     * @var Organization A performer at the event—for example, a presenter, musician, musical group or actor.
+     * Performer
+     * 
+     * @var Organization $performer A performer at the event—for example, a presenter, musician, musical group or actor.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
      */
-    protected $performerOrganization;
-    /**
-     * Performer (Person)
-     *
-     * @var Person A performer at the event—for example, a presenter, musician, musical group or actor.
-     */
-    protected $performerPerson;
+    private $performer;
     /**
      * Previous Start Date
-     *
-     * @var \DateTime Used in conjunction with eventStatus for rescheduled or cancelled events. This property contains the previously scheduled start date. For rescheduled events, the startDate property should be used for the newly scheduled start date. In the (rare) case of an event that has been postponed and rescheduled multiple times, this field may be repeated.
+     * 
+     * @var \DateTime $previousStartDate Used in conjunction with eventStatus for rescheduled or cancelled events. This property contains the previously scheduled start date. For rescheduled events, the startDate property should be used for the newly scheduled start date. In the (rare) case of an event that has been postponed and rescheduled multiple times, this field may be repeated.
+     * 
+     * @Assert\Date
+     * @ORM\Column(type="date")
      */
-    protected $previousStartDate;
+    private $previousStartDate;
     /**
      * Start Date
-     *
-     * @var \DateTime The start date and time of the event or item (in <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601 date format</a>).
+     * 
+     * @var \DateTime $startDate The start date and time of the event or item (in ISO 8601 date format).
+     * 
+     * @Assert\Date
+     * @ORM\Column(type="date")
      */
-    protected $startDate;
+    private $startDate;
     /**
      * Sub Event
-     *
-     * @var Event An Event that is part of this event. For example, a conference event includes many presentations, each are a subEvent of the conference.
+     * 
+     * @var Event $subEvent An Event that is part of this event. For example, a conference event includes many presentations, each are a subEvent of the conference.
+     * 
+     * @ORM\ManyToOne(targetEntity="Event")
      */
-    protected $subEvent;
+    private $subEvent;
     /**
      * Super Event
-     *
-     * @var Event An event that this event is a part of. For example, a collection of individual music performances might each have a music festival as their superEvent.
+     * 
+     * @var Event $superEvent An event that this event is a part of. For example, a collection of individual music performances might each have a music festival as their superEvent.
+     * 
+     * @ORM\ManyToOne(targetEntity="Event")
      */
-    protected $superEvent;
+    private $superEvent;
     /**
      * Typical Age Range
-     *
-     * @var string The typical expected age range, e.g. '7-9', '11-'.
+     * 
+     * @var string $typicalAgeRange The typical expected age range, e.g. '7-9', '11-'.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $typicalAgeRange;
+    private $typicalAgeRange;
 }

@@ -1,24 +1,26 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Search Action
- *
+ * 
  * @link http://schema.org/SearchAction
+ * 
+ * @ORM\Entity
  */
 class SearchAction extends Action
 {
     /**
-     * Query (Class)
-     *
-     * @var Class A sub property of instrument. The query used on this action.
+     * Query
+     * 
+     * @var Class $query A sub property of instrument. The query used on this action.
+     * 
+     * @ORM\ManyToOne(targetEntity="Class")
      */
-    protected $queryClass;
-    /**
-     * Query (Text)
-     *
-     * @var string A sub property of instrument. The query used on this action.
-     */
-    protected $queryText;
+    private $query;
 }

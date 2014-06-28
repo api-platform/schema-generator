@@ -1,48 +1,62 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Quantitative Value
- *
+ * 
  * @link http://schema.org/QuantitativeValue
+ * 
+ * @ORM\Entity
  */
 class QuantitativeValue extends StructuredValue
 {
     /**
      * Max Value
-     *
-     * @var float The upper of the product characteristic.
+     * 
+     * @var float $maxValue The upper of the product characteristic.
+     * 
+     * @Assert\Type(type="float")
+     * @ORM\Column(type="float")
      */
-    protected $maxValue;
+    private $maxValue;
     /**
      * Min Value
-     *
-     * @var float The lower value of the product characteristic.
+     * 
+     * @var float $minValue The lower value of the product characteristic.
+     * 
+     * @Assert\Type(type="float")
+     * @ORM\Column(type="float")
      */
-    protected $minValue;
+    private $minValue;
     /**
      * Unit Code
-     *
-     * @var string The unit of measurement given using the UN/CEFACT Common Code (3 characters).
+     * 
+     * @var string $unitCode The unit of measurement given using the UN/CEFACT Common Code (3 characters).
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $unitCode;
+    private $unitCode;
     /**
      * Value
-     *
-     * @var float The value of the product characteristic.
+     * 
+     * @var float $value The value of the product characteristic.
+     * 
+     * @Assert\Type(type="float")
+     * @ORM\Column(type="float")
      */
-    protected $value;
+    private $value;
     /**
-     * Value Reference (Enumeration)
-     *
-     * @var Enumeration A pointer to a secondary value that provides additional information on the original value, e.g. a reference temperature.
+     * Value Reference
+     * 
+     * @var Enumeration $valueReference A pointer to a secondary value that provides additional information on the original value, e.g. a reference temperature.
+     * 
+     * @ORM\ManyToOne(targetEntity="Enumeration")
      */
-    protected $valueReferenceEnumeration;
-    /**
-     * Value Reference (StructuredValue)
-     *
-     * @var StructuredValue A pointer to a secondary value that provides additional information on the original value, e.g. a reference temperature.
-     */
-    protected $valueReferenceStructuredValue;
+    private $valueReference;
 }

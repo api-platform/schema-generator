@@ -1,84 +1,121 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Dietary Supplement
- *
+ * 
  * @link http://schema.org/DietarySupplement
+ * 
+ * @ORM\Entity
  */
 class DietarySupplement extends MedicalTherapy
 {
     /**
      * Active Ingredient
-     *
-     * @var string An active ingredient, typically chemical compounds and/or biologic substances.
+     * 
+     * @var string $activeIngredient An active ingredient, typically chemical compounds and/or biologic substances.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $activeIngredient;
+    private $activeIngredient;
     /**
      * Background
-     *
-     * @var string Descriptive information establishing a historical perspective on the supplement. May include the rationale for the name, the population where the supplement first came to prominence, etc.
+     * 
+     * @var string $background Descriptive information establishing a historical perspective on the supplement. May include the rationale for the name, the population where the supplement first came to prominence, etc.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $background;
+    private $background;
     /**
      * Dosage Form
-     *
-     * @var string A dosage form in which this drug/supplement is available, e.g. 'tablet', 'suspension', 'injection'.
+     * 
+     * @var string $dosageForm A dosage form in which this drug/supplement is available, e.g. 'tablet', 'suspension', 'injection'.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $dosageForm;
+    private $dosageForm;
     /**
      * Is Proprietary
-     *
-     * @var boolean True if this item's name is a proprietary/brand name (vs. generic name).
+     * 
+     * @var boolean $isProprietary True if this item's name is a proprietary/brand name (vs. generic name).
+     * 
+     * @Assert\Type(type="boolean")
+     * @ORM\Column(type="boolean")
      */
-    protected $isProprietary;
+    private $isProprietary;
     /**
      * Legal Status
-     *
-     * @var DrugLegalStatus The drug or supplement's legal status, including any controlled substance schedules that apply.
+     * 
+     * @var DrugLegalStatus $legalStatus The drug or supplement's legal status, including any controlled substance schedules that apply.
+     * 
+     * @ORM\ManyToOne(targetEntity="DrugLegalStatus")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $legalStatus;
+    private $legalStatus;
     /**
      * Manufacturer
-     *
-     * @var Organization The manufacturer of the product.
+     * 
+     * @var Organization $manufacturer The manufacturer of the product.
+     * 
+     * @ORM\OneToOne(targetEntity="Organization")
      */
-    protected $manufacturer;
+    private $manufacturer;
     /**
      * Maximum Intake
-     *
-     * @var MaximumDoseSchedule Recommended intake of this supplement for a given population as defined by a specific recommending authority.
+     * 
+     * @var MaximumDoseSchedule $maximumIntake Recommended intake of this supplement for a given population as defined by a specific recommending authority.
+     * 
      */
-    protected $maximumIntake;
+    private $maximumIntake;
     /**
      * Mechanism of Action
-     *
-     * @var string The specific biochemical interaction through which this drug or supplement produces its pharmacological effect.
+     * 
+     * @var string $mechanismOfAction The specific biochemical interaction through which this drug or supplement produces its pharmacological effect.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $mechanismOfAction;
+    private $mechanismOfAction;
     /**
      * Non Proprietary Name
-     *
-     * @var string The generic name of this drug or supplement.
+     * 
+     * @var string $nonProprietaryName The generic name of this drug or supplement.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $nonProprietaryName;
+    private $nonProprietaryName;
     /**
      * Recommended Intake
-     *
-     * @var RecommendedDoseSchedule Recommended intake of this supplement for a given population as defined by a specific recommending authority.
+     * 
+     * @var RecommendedDoseSchedule $recommendedIntake Recommended intake of this supplement for a given population as defined by a specific recommending authority.
+     * 
      */
-    protected $recommendedIntake;
+    private $recommendedIntake;
     /**
      * Safety Consideration
-     *
-     * @var string Any potential safety concern associated with the supplement. May include interactions with other drugs and foods, pregnancy, breastfeeding, known adverse reactions, and documented efficacy of the supplement.
+     * 
+     * @var string $safetyConsideration Any potential safety concern associated with the supplement. May include interactions with other drugs and foods, pregnancy, breastfeeding, known adverse reactions, and documented efficacy of the supplement.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $safetyConsideration;
+    private $safetyConsideration;
     /**
      * Target Population
-     *
-     * @var string Characteristics of the population for which this is intended, or which typically uses it, e.g. 'adults'.
+     * 
+     * @var string $targetPopulation Characteristics of the population for which this is intended, or which typically uses it, e.g. 'adults'.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $targetPopulation;
+    private $targetPopulation;
 }

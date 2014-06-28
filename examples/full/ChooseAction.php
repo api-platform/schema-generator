@@ -1,24 +1,27 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Choose Action
- *
+ * 
  * @link http://schema.org/ChooseAction
+ * 
+ * @ORM\MappedSuperclass
  */
 class ChooseAction extends AssessAction
 {
     /**
-     * Option (Text)
-     *
-     * @var string A sub property of object. The options subject to this action.
+     * Option
+     * 
+     * @var string $option A sub property of object. The options subject to this action.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $optionText;
-    /**
-     * Option (Thing)
-     *
-     * @var Thing A sub property of object. The options subject to this action.
-     */
-    protected $optionThing;
+    private $option;
 }

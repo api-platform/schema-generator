@@ -11,11 +11,16 @@
 
 namespace Echoppe\CoreBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Item Availability
- *
+ * 
  * @author Kévin Dunglas <dunglas@gmail.com>
  * @link http://schema.org/ItemAvailability
+ * 
+ * @ORM\Entity
  */
 class ItemAvailability extends Enumeration
 {

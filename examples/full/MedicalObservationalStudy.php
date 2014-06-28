@@ -1,18 +1,25 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Medical Observational Study
- *
+ * 
  * @link http://schema.org/MedicalObservationalStudy
+ * 
+ * @ORM\Entity
  */
 class MedicalObservationalStudy extends MedicalStudy
 {
     /**
      * Study Design
-     *
-     * @var MedicalObservationalStudyDesign Specifics about the observational study design (enumerated).
+     * 
+     * @var MedicalObservationalStudyDesign $studyDesign Specifics about the observational study design (enumerated).
+     * 
      */
-    protected $studyDesign;
+    private $studyDesign;
 }

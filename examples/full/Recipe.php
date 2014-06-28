@@ -1,72 +1,106 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Recipe
- *
+ * 
  * @link http://schema.org/Recipe
+ * 
+ * @ORM\Entity
  */
 class Recipe extends CreativeWork
 {
     /**
      * Cooking Method
-     *
-     * @var string The method of cooking, such as Frying, Steaming, ...
+     * 
+     * @var string $cookingMethod The method of cooking, such as Frying, Steaming, ...
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $cookingMethod;
+    private $cookingMethod;
     /**
      * Cook Time
-     *
-     * @var Duration The time it takes to actually cook the dish, in <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601 duration format</a>.
+     * 
+     * @var Duration $cookTime The time it takes to actually cook the dish, in ISO 8601 duration format.
+     * 
+     * @ORM\ManyToOne(targetEntity="Duration")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $cookTime;
+    private $cookTime;
     /**
      * Ingredients
-     *
-     * @var string An ingredient used in the recipe.
+     * 
+     * @var string $ingredients An ingredient used in the recipe.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $ingredients;
+    private $ingredients;
     /**
      * Nutrition
-     *
-     * @var NutritionInformation Nutrition information about the recipe.
+     * 
+     * @var NutritionInformation $nutrition Nutrition information about the recipe.
+     * 
      */
-    protected $nutrition;
+    private $nutrition;
     /**
      * Prep Time
-     *
-     * @var Duration The length of time it takes to prepare the recipe, in <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601 duration format</a>.
+     * 
+     * @var Duration $prepTime The length of time it takes to prepare the recipe, in ISO 8601 duration format.
+     * 
+     * @ORM\ManyToOne(targetEntity="Duration")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $prepTime;
+    private $prepTime;
     /**
      * Recipe Category
-     *
-     * @var string The category of the recipe—for example, appetizer, entree, etc.
+     * 
+     * @var string $recipeCategory The category of the recipe—for example, appetizer, entree, etc.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $recipeCategory;
+    private $recipeCategory;
     /**
      * Recipe Cuisine
-     *
-     * @var string The cuisine of the recipe (for example, French or Ethopian).
+     * 
+     * @var string $recipeCuisine The cuisine of the recipe (for example, French or Ethopian).
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $recipeCuisine;
+    private $recipeCuisine;
     /**
      * Recipe Instructions
-     *
-     * @var string The steps to make the dish.
+     * 
+     * @var string $recipeInstructions The steps to make the dish.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $recipeInstructions;
+    private $recipeInstructions;
     /**
      * Recipe Yield
-     *
-     * @var string The quantity produced by the recipe (for example, number of people served, number of servings, etc).
+     * 
+     * @var string $recipeYield The quantity produced by the recipe (for example, number of people served, number of servings, etc).
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $recipeYield;
+    private $recipeYield;
     /**
      * Total Time
-     *
-     * @var Duration The total time it takes to prepare and cook the recipe, in <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601 duration format</a>.
+     * 
+     * @var Duration $totalTime The total time it takes to prepare and cook the recipe, in ISO 8601 duration format.
+     * 
+     * @ORM\ManyToOne(targetEntity="Duration")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $totalTime;
+    private $totalTime;
 }

@@ -1,42 +1,63 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Book
- *
+ * 
  * @link http://schema.org/Book
+ * 
+ * @ORM\Entity
  */
 class Book extends CreativeWork
 {
     /**
      * Book Edition
-     *
-     * @var string The edition of the book.
+     * 
+     * @var string $bookEdition The edition of the book.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $bookEdition;
+    private $bookEdition;
     /**
      * Book Format
-     *
-     * @var BookFormatType The format of the book.
+     * 
+     * @var BookFormatType $bookFormat The format of the book.
+     * 
+     * @ORM\ManyToOne(targetEntity="BookFormatType")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $bookFormat;
+    private $bookFormat;
     /**
      * Illustrator
-     *
-     * @var Person The illustrator of the book.
+     * 
+     * @var Person $illustrator The illustrator of the book.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $illustrator;
+    private $illustrator;
     /**
      * ISBN
-     *
-     * @var string The ISBN of the book.
+     * 
+     * @var string $isbn The ISBN of the book.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $isbn;
+    private $isbn;
     /**
      * Number of Pages
-     *
-     * @var integer The number of pages in the book.
+     * 
+     * @var integer $numberOfPages The number of pages in the book.
+     * 
+     * @Assert\Type(type="integer")
+     * @ORM\Column(type="integer")
      */
-    protected $numberOfPages;
+    private $numberOfPages;
 }

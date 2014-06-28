@@ -1,42 +1,61 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Video Object
- *
+ * 
  * @link http://schema.org/VideoObject
+ * 
+ * @ORM\Entity
  */
 class VideoObject extends MediaObject
 {
     /**
      * Caption
-     *
-     * @var string The caption for this object.
+     * 
+     * @var string $caption The caption for this object.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $caption;
+    private $caption;
     /**
      * Thumbnail
-     *
-     * @var ImageObject Thumbnail image for an image or video.
+     * 
+     * @var ImageObject $thumbnail Thumbnail image for an image or video.
+     * 
      */
-    protected $thumbnail;
+    private $thumbnail;
     /**
      * Transcript
-     *
-     * @var string If this MediaObject is an AudioObject or VideoObject, the transcript of that object.
+     * 
+     * @var string $transcript If this MediaObject is an AudioObject or VideoObject, the transcript of that object.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $transcript;
+    private $transcript;
     /**
      * Video Frame Size
-     *
-     * @var string The frame size of the video.
+     * 
+     * @var string $videoFrameSize The frame size of the video.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $videoFrameSize;
+    private $videoFrameSize;
     /**
      * Video Quality
-     *
-     * @var string The quality of the video.
+     * 
+     * @var string $videoQuality The quality of the video.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $videoQuality;
+    private $videoQuality;
 }

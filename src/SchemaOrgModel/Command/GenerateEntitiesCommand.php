@@ -10,13 +10,13 @@
 namespace SchemaOrgModel\Command;
 
 use SchemaOrgModel\EntitiesGenerator;
-use SchemaOrgModel\Logger\ConsoleLogger;
 use SchemaOrgModel\Config\EntitiesGeneratorConfiguration;
 use SchemaOrgModel\GoodRelationsBridge;
 use SchemaOrgModel\CardinalitiesExtractor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Config\Definition\Processor;

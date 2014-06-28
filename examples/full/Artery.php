@@ -1,30 +1,45 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Artery
- *
+ * 
  * @link http://schema.org/Artery
+ * 
+ * @ORM\Entity
  */
 class Artery extends Vessel
 {
     /**
      * Arterial Branch
-     *
-     * @var AnatomicalStructure The branches that comprise the arterial structure.
+     * 
+     * @var AnatomicalStructure $arterialBranch The branches that comprise the arterial structure.
+     * 
+     * @ORM\ManyToOne(targetEntity="AnatomicalStructure")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $arterialBranch;
+    private $arterialBranch;
     /**
      * Source
-     *
-     * @var AnatomicalStructure The anatomical or organ system that the artery originates from.
+     * 
+     * @var AnatomicalStructure $source The anatomical or organ system that the artery originates from.
+     * 
+     * @ORM\ManyToOne(targetEntity="AnatomicalStructure")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $source;
+    private $source;
     /**
      * Supply to
-     *
-     * @var AnatomicalStructure The area to which the artery supplies blood to.
+     * 
+     * @var AnatomicalStructure $supplyTo The area to which the artery supplies blood to.
+     * 
+     * @ORM\ManyToOne(targetEntity="AnatomicalStructure")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $supplyTo;
+    private $supplyTo;
 }

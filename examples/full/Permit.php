@@ -1,54 +1,81 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Permit
- *
+ * 
  * @link http://schema.org/Permit
+ * 
+ * @ORM\MappedSuperclass
  */
 class Permit extends Intangible
 {
     /**
      * Issued by
-     *
-     * @var Organization The organization issuing the permit.
+     * 
+     * @var Organization $issuedBy The organization issuing the permit.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $issuedBy;
+    private $issuedBy;
     /**
      * Issued Through
-     *
-     * @var Service The service through with the permit was granted.
+     * 
+     * @var Service $issuedThrough The service through with the permit was granted.
+     * 
+     * @ORM\ManyToOne(targetEntity="Service")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $issuedThrough;
+    private $issuedThrough;
     /**
      * Permit Audience
-     *
-     * @var Audience The target audience for this permit.
+     * 
+     * @var Audience $permitAudience The target audience for this permit.
+     * 
+     * @ORM\ManyToOne(targetEntity="Audience")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $permitAudience;
+    private $permitAudience;
     /**
      * Valid for
-     *
-     * @var Duration The time validity of the permit.
+     * 
+     * @var Duration $validFor The time validity of the permit.
+     * 
+     * @ORM\ManyToOne(targetEntity="Duration")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $validFor;
+    private $validFor;
     /**
      * Valid From
-     *
-     * @var \DateTime The date when the item becomes valid.
+     * 
+     * @var \DateTime $validFrom The date when the item becomes valid.
+     * 
+     * @Assert\DateTime
+     * @ORM\Column(type="datetime")
      */
-    protected $validFrom;
+    private $validFrom;
     /**
      * Valid in
-     *
-     * @var AdministrativeArea The geographic area where the permit is valid.
+     * 
+     * @var AdministrativeArea $validIn The geographic area where the permit is valid.
+     * 
+     * @ORM\ManyToOne(targetEntity="AdministrativeArea")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $validIn;
+    private $validIn;
     /**
      * Valid Until
-     *
-     * @var \DateTime The date when the item is no longer valid.
+     * 
+     * @var \DateTime $validUntil The date when the item is no longer valid.
+     * 
+     * @Assert\Date
+     * @ORM\Column(type="date")
      */
-    protected $validUntil;
+    private $validUntil;
 }

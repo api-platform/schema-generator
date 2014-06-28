@@ -1,198 +1,264 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Demand
- *
+ * 
  * @link http://schema.org/Demand
+ * 
+ * @ORM\Entity
  */
 class Demand extends Intangible
 {
     /**
      * Accepted Payment Method
-     *
-     * @var PaymentMethod The payment method(s) accepted by seller for this offer.
+     * 
+     * @var PaymentMethod $acceptedPaymentMethod The payment method(s) accepted by seller for this offer.
+     * 
+     * @ORM\ManyToOne(targetEntity="PaymentMethod")
      */
-    protected $acceptedPaymentMethod;
+    private $acceptedPaymentMethod;
     /**
      * Advance Booking Requirement
-     *
-     * @var QuantitativeValue The amount of time that is required between accepting the offer and the actual usage of the resource or service.
+     * 
+     * @var QuantitativeValue $advanceBookingRequirement The amount of time that is required between accepting the offer and the actual usage of the resource or service.
+     * 
+     * @ORM\OneToOne(targetEntity="QuantitativeValue")
      */
-    protected $advanceBookingRequirement;
+    private $advanceBookingRequirement;
     /**
      * Availability
-     *
-     * @var ItemAvailability The availability of this item—for example In stock, Out of stock, Pre-order, etc.
+     * 
+     * @var ItemAvailability $availability The availability of this item—for example In stock, Out of stock, Pre-order, etc.
+     * 
+     * @ORM\ManyToOne(targetEntity="ItemAvailability")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $availability;
+    private $availability;
     /**
      * Availability Ends
-     *
-     * @var \DateTime The end of the availability of the product or service included in the offer.
+     * 
+     * @var \DateTime $availabilityEnds The end of the availability of the product or service included in the offer.
+     * 
+     * @Assert\DateTime
+     * @ORM\Column(type="datetime")
      */
-    protected $availabilityEnds;
+    private $availabilityEnds;
     /**
      * Availability Starts
-     *
-     * @var \DateTime The beginning of the availability of the product or service included in the offer.
+     * 
+     * @var \DateTime $availabilityStarts The beginning of the availability of the product or service included in the offer.
+     * 
+     * @Assert\DateTime
+     * @ORM\Column(type="datetime")
      */
-    protected $availabilityStarts;
+    private $availabilityStarts;
     /**
      * Available At or From
-     *
-     * @var Place The place(s) from which the offer can be obtained (e.g. store locations).
+     * 
+     * @var Place $availableAtOrFrom The place(s) from which the offer can be obtained (e.g. store locations).
+     * 
+     * @ORM\ManyToOne(targetEntity="Place")
      */
-    protected $availableAtOrFrom;
+    private $availableAtOrFrom;
     /**
      * Available Delivery Method
-     *
-     * @var DeliveryMethod The delivery method(s) available for this offer.
+     * 
+     * @var DeliveryMethod $availableDeliveryMethod The delivery method(s) available for this offer.
+     * 
+     * @ORM\ManyToOne(targetEntity="DeliveryMethod")
      */
-    protected $availableDeliveryMethod;
+    private $availableDeliveryMethod;
     /**
      * Business Function
-     *
-     * @var BusinessFunction The business function (e.g. sell, lease, repair, dispose) of the offer or component of a bundle (TypeAndQuantityNode). The default is http://purl.org/goodrelations/v1#Sell.
+     * 
+     * @var BusinessFunction $businessFunction The business function (e.g. sell, lease, repair, dispose) of the offer or component of a bundle (TypeAndQuantityNode). The default is http://purl.org/goodrelations/v1#Sell.
+     * 
+     * @ORM\ManyToOne(targetEntity="BusinessFunction")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $businessFunction;
+    private $businessFunction;
     /**
      * Delivery Lead Time
-     *
-     * @var QuantitativeValue The typical delay between the receipt of the order and the goods leaving the warehouse.
+     * 
+     * @var QuantitativeValue $deliveryLeadTime The typical delay between the receipt of the order and the goods leaving the warehouse.
+     * 
+     * @ORM\OneToOne(targetEntity="QuantitativeValue")
      */
-    protected $deliveryLeadTime;
+    private $deliveryLeadTime;
     /**
      * Eligible Customer Type
-     *
-     * @var BusinessEntityType The type(s) of customers for which the given offer is valid.
+     * 
+     * @var BusinessEntityType $eligibleCustomerType The type(s) of customers for which the given offer is valid.
+     * 
+     * @ORM\ManyToOne(targetEntity="BusinessEntityType")
      */
-    protected $eligibleCustomerType;
+    private $eligibleCustomerType;
     /**
      * Eligible Duration
-     *
-     * @var QuantitativeValue The duration for which the given offer is valid.
+     * 
+     * @var QuantitativeValue $eligibleDuration The duration for which the given offer is valid.
+     * 
+     * @ORM\OneToOne(targetEntity="QuantitativeValue")
      */
-    protected $eligibleDuration;
+    private $eligibleDuration;
     /**
      * Eligible Quantity
-     *
-     * @var QuantitativeValue The interval and unit of measurement of ordering quantities for which the offer or price specification is valid. This allows e.g. specifying that a certain freight charge is valid only for a certain quantity.
+     * 
+     * @var QuantitativeValue $eligibleQuantity The interval and unit of measurement of ordering quantities for which the offer or price specification is valid. This allows e.g. specifying that a certain freight charge is valid only for a certain quantity.
+     * 
+     * @ORM\OneToOne(targetEntity="QuantitativeValue")
      */
-    protected $eligibleQuantity;
+    private $eligibleQuantity;
     /**
-     * Eligible Region (Text)
-     *
-     * @var string The ISO 3166-1 (ISO 3166-1 alpha-2) or ISO 3166-2 code, or the GeoShape for the geo-political region(s) for which the offer or delivery charge specification is valid.
+     * Eligible Region
+     * 
+     * @var string $eligibleRegion The ISO 3166-1 (ISO 3166-1 alpha-2) or ISO 3166-2 code, or the GeoShape for the geo-political region(s) for which the offer or delivery charge specification is valid.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $eligibleRegionText;
-    /**
-     * Eligible Region (GeoShape)
-     *
-     * @var GeoShape The ISO 3166-1 (ISO 3166-1 alpha-2) or ISO 3166-2 code, or the GeoShape for the geo-political region(s) for which the offer or delivery charge specification is valid.
-     */
-    protected $eligibleRegionGeoShape;
+    private $eligibleRegion;
     /**
      * Eligible Transaction Volume
-     *
-     * @var PriceSpecification The transaction volume, in a monetary unit, for which the offer or price specification is valid, e.g. for indicating a minimal purchasing volume, to express free shipping above a certain order volume, or to limit the acceptance of credit cards to purchases to a certain minimal amount.
+     * 
+     * @var PriceSpecification $eligibleTransactionVolume The transaction volume, in a monetary unit, for which the offer or price specification is valid, e.g. for indicating a minimal purchasing volume, to express free shipping above a certain order volume, or to limit the acceptance of credit cards to purchases to a certain minimal amount.
+     * 
+     * @ORM\OneToOne(targetEntity="PriceSpecification")
      */
-    protected $eligibleTransactionVolume;
+    private $eligibleTransactionVolume;
     /**
      * Gtin13
-     *
-     * @var string The GTIN-13 code of the product, or the product to which the offer refers. This is equivalent to 13-digit ISBN codes and EAN UCC-13. Former 12-digit UPC codes can be converted into a GTIN-13 code by simply adding a preceeding zero.
+     * 
+     * @var string $gtin13 The GTIN-13 code of the product, or the product to which the offer refers. This is equivalent to 13-digit ISBN codes and EAN UCC-13. Former 12-digit UPC codes can be converted into a GTIN-13 code by simply adding a preceeding zero.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $gtin13;
+    private $gtin13;
     /**
      * Gtin14
-     *
-     * @var string The GTIN-14 code of the product, or the product to which the offer refers.
+     * 
+     * @var string $gtin14 The GTIN-14 code of the product, or the product to which the offer refers.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $gtin14;
+    private $gtin14;
     /**
      * Gtin8
-     *
-     * @var string The GTIN-8 code of the product, or the product to which the offer refers. This code is also known as EAN/UCC-8 or 8-digit EAN.
+     * 
+     * @var string $gtin8 The GTIN-8 code of the product, or the product to which the offer refers. This code is also known as EAN/UCC-8 or 8-digit EAN.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $gtin8;
+    private $gtin8;
     /**
      * Includes Object
-     *
-     * @var TypeAndQuantityNode This links to a node or nodes indicating the exact quantity of the products included in the offer.
+     * 
+     * @var TypeAndQuantityNode $includesObject This links to a node or nodes indicating the exact quantity of the products included in the offer.
+     * 
+     * @ORM\ManyToOne(targetEntity="TypeAndQuantityNode")
      */
-    protected $includesObject;
+    private $includesObject;
     /**
      * Inventory Level
-     *
-     * @var QuantitativeValue The current approximate inventory level for the item or items.
+     * 
+     * @var QuantitativeValue $inventoryLevel The current approximate inventory level for the item or items.
+     * 
+     * @ORM\OneToOne(targetEntity="QuantitativeValue")
      */
-    protected $inventoryLevel;
+    private $inventoryLevel;
     /**
      * Item Condition
-     *
-     * @var OfferItemCondition A predefined value from OfferItemCondition or a textual description of the condition of the product or service, or the products or services included in the offer.
+     * 
+     * @var OfferItemCondition $itemCondition A predefined value from OfferItemCondition or a textual description of the condition of the product or service, or the products or services included in the offer.
+     * 
+     * @ORM\ManyToOne(targetEntity="OfferItemCondition")
      */
-    protected $itemCondition;
+    private $itemCondition;
     /**
      * Item Offered
-     *
-     * @var Product The item being sold.
+     * 
+     * @var Product $itemOffered The item being offered.
+     * 
+     * @ORM\OneToOne(targetEntity="Product")
      */
-    protected $itemOffered;
+    private $itemOffered;
     /**
      * Mpn
-     *
-     * @var string The Manufacturer Part Number (MPN) of the product, or the product to which the offer refers.
+     * 
+     * @var string $mpn The Manufacturer Part Number (MPN) of the product, or the product to which the offer refers.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $mpn;
+    private $mpn;
     /**
      * Price Specification
-     *
-     * @var PriceSpecification One or more detailed price specifications, indicating the unit price and delivery or payment charges.
+     * 
+     * @var PriceSpecification $priceSpecification One or more detailed price specifications, indicating the unit price and delivery or payment charges.
+     * 
+     * @ORM\ManyToOne(targetEntity="PriceSpecification")
      */
-    protected $priceSpecification;
+    private $priceSpecification;
     /**
-     * Seller (Organization)
-     *
-     * @var Organization The seller.
+     * Seller
+     * 
+     * @var Organization $seller The organization or person making the offer.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $sellerOrganization;
-    /**
-     * Seller (Person)
-     *
-     * @var Person The seller.
-     */
-    protected $sellerPerson;
+    private $seller;
     /**
      * Serial Number
-     *
-     * @var string The serial number or any alphanumeric identifier of a particular product. When attached to an offer, it is a shortcut for the serial number of the product included in the offer.
+     * 
+     * @var string $serialNumber The serial number or any alphanumeric identifier of a particular product. When attached to an offer, it is a shortcut for the serial number of the product included in the offer.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $serialNumber;
+    private $serialNumber;
     /**
      * Sku
-     *
-     * @var string The Stock Keeping Unit (SKU), i.e. a merchant-specific identifier for a product or service, or the product to which the offer refers.
+     * 
+     * @var string $sku The Stock Keeping Unit (SKU), i.e. a merchant-specific identifier for a product or service, or the product to which the offer refers.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $sku;
+    private $sku;
     /**
      * Valid From
-     *
-     * @var \DateTime The date when the item becomes valid.
+     * 
+     * @var \DateTime $validFrom The date when the item becomes valid.
+     * 
+     * @Assert\DateTime
+     * @ORM\Column(type="datetime")
      */
-    protected $validFrom;
+    private $validFrom;
     /**
      * Valid Through
-     *
-     * @var \DateTime The end of the validity of offer, price specification, or opening hours data.
+     * 
+     * @var \DateTime $validThrough The end of the validity of offer, price specification, or opening hours data.
+     * 
+     * @Assert\DateTime
+     * @ORM\Column(type="datetime")
      */
-    protected $validThrough;
+    private $validThrough;
     /**
      * Warranty
-     *
-     * @var WarrantyPromise The warranty promise(s) included in the offer.
+     * 
+     * @var WarrantyPromise $warranty The warranty promise(s) included in the offer.
+     * 
+     * @ORM\ManyToOne(targetEntity="WarrantyPromise")
      */
-    protected $warranty;
+    private $warranty;
 }

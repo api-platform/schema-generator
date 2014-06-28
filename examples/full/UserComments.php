@@ -1,48 +1,61 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * User Comments
- *
+ * 
  * @link http://schema.org/UserComments
+ * 
+ * @ORM\Entity
  */
 class UserComments extends UserInteraction
 {
     /**
      * Comment Text
-     *
-     * @var string The text of the UserComment.
+     * 
+     * @var string $commentText The text of the UserComment.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $commentText;
+    private $commentText;
     /**
      * Comment Time
-     *
-     * @var \DateTime The time at which the UserComment was made.
+     * 
+     * @var \DateTime $commentTime The time at which the UserComment was made.
+     * 
+     * @Assert\Date
+     * @ORM\Column(type="date")
      */
-    protected $commentTime;
+    private $commentTime;
     /**
-     * Creator (Organization)
-     *
-     * @var Organization The creator/author of this CreativeWork or UserComments. This is the same as the Author property for CreativeWork.
+     * Creator
+     * 
+     * @var Organization $creator The creator/author of this CreativeWork or UserComments. This is the same as the Author property for CreativeWork.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $creatorOrganization;
-    /**
-     * Creator (Person)
-     *
-     * @var Person The creator/author of this CreativeWork or UserComments. This is the same as the Author property for CreativeWork.
-     */
-    protected $creatorPerson;
+    private $creator;
     /**
      * Discusses
-     *
-     * @var CreativeWork Specifies the CreativeWork associated with the UserComment.
+     * 
+     * @var CreativeWork $discusses Specifies the CreativeWork associated with the UserComment.
+     * 
      */
-    protected $discusses;
+    private $discusses;
     /**
      * Reply to Url
-     *
-     * @var string The URL at which a reply may be posted to the specified UserComment.
+     * 
+     * @var string $replyToUrl The URL at which a reply may be posted to the specified UserComment.
+     * 
+     * @Assert\Url
+     * @ORM\Column
      */
-    protected $replyToUrl;
+    private $replyToUrl;
 }

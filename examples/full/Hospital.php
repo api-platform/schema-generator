@@ -1,36 +1,34 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Hospital
- *
+ * 
  * @link http://schema.org/Hospital
+ * 
+ * @ORM\Entity
  */
 class Hospital extends CivicStructure
 {
     /**
-     * Available Service (MedicalTest)
-     *
-     * @var MedicalTest A medical service available from this provider.
+     * Available Service
+     * 
+     * @var MedicalTest $availableService A medical service available from this provider.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalTest")
      */
-    protected $availableServiceMedicalTest;
-    /**
-     * Available Service (MedicalProcedure)
-     *
-     * @var MedicalProcedure A medical service available from this provider.
-     */
-    protected $availableServiceMedicalProcedure;
-    /**
-     * Available Service (MedicalTherapy)
-     *
-     * @var MedicalTherapy A medical service available from this provider.
-     */
-    protected $availableServiceMedicalTherapy;
+    private $availableService;
     /**
      * Medical Specialty
-     *
-     * @var MedicalSpecialty A medical specialty of the provider.
+     * 
+     * @var MedicalSpecialty $medicalSpecialty A medical specialty of the provider.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalSpecialty")
      */
-    protected $medicalSpecialty;
+    private $medicalSpecialty;
 }

@@ -1,84 +1,115 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Episode
- *
+ * 
  * @link http://schema.org/Episode
+ * 
+ * @ORM\MappedSuperclass
  */
 class Episode extends CreativeWork
 {
     /**
      * Actor
-     *
-     * @var Person A cast member of the movie, tv/radio series, season, episode, or video.
+     * 
+     * @var Person $actor A cast member of the movie, tv/radio series, season, episode, or video.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
      */
-    protected $actor;
+    private $actor;
     /**
      * Director
-     *
-     * @var Person The director of the movie, tv/radio episode or series.
+     * 
+     * @var Person $director The director of the movie, tv/radio episode or series.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $director;
+    private $director;
     /**
      * Episode Number
-     *
-     * @var integer Position of the episode within an ordered group of episodes.
+     * 
+     * @var integer $episodeNumber Position of the episode within an ordered group of episodes.
+     * 
+     * @Assert\Type(type="integer")
+     * @ORM\Column(type="integer")
      */
-    protected $episodeNumber;
+    private $episodeNumber;
     /**
-     * Music by (Person)
-     *
-     * @var Person The composer of the movie or TV/radio soundtrack.
+     * Music by
+     * 
+     * @var Person $musicBy The composer of the movie or TV/radio soundtrack.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $musicByPerson;
-    /**
-     * Music by (MusicGroup)
-     *
-     * @var MusicGroup The composer of the movie or TV/radio soundtrack.
-     */
-    protected $musicByMusicGroup;
+    private $musicBy;
     /**
      * Part of Season
-     *
-     * @var Season The season to which this episode belongs.
+     * 
+     * @var Season $partOfSeason The season to which this episode belongs.
+     * 
+     * @ORM\ManyToOne(targetEntity="Season")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $partOfSeason;
+    private $partOfSeason;
     /**
      * Part of Series
-     *
-     * @var Series The series to which this episode or season belongs.
+     * 
+     * @var Series $partOfSeries The series to which this episode or season belongs.
+     * 
+     * @ORM\ManyToOne(targetEntity="Series")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $partOfSeries;
+    private $partOfSeries;
     /**
      * Position
-     *
-     * @var string Free text to define other than pure numerical ranking of an episode or a season in an ordered list of items (further formatting restrictions may apply within particular user groups).
+     * 
+     * @var string $position Free text to define other than pure numerical ranking of an episode or a season in an ordered list of items (further formatting restrictions may apply within particular user groups).
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $position;
+    private $position;
     /**
      * Producer
-     *
-     * @var Person The producer of the movie, tv/radio series, season, or episode, or video.
+     * 
+     * @var Person $producer The producer of the movie, tv/radio series, season, or episode, or video.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $producer;
+    private $producer;
     /**
      * Production Company
-     *
-     * @var Organization The production company or studio that made the movie, tv/radio series, season, or episode, or media object.
+     * 
+     * @var Organization $productionCompany The production company or studio that made the movie, tv/radio series, season, or episode, or media object.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $productionCompany;
+    private $productionCompany;
     /**
      * Publication
-     *
-     * @var PublicationEvent A publication event associated with the episode, clip or media object.
+     * 
+     * @var PublicationEvent $publication A publication event associated with the episode, clip or media object.
+     * 
+     * @ORM\ManyToOne(targetEntity="PublicationEvent")
      */
-    protected $publication;
+    private $publication;
     /**
      * Trailer
-     *
-     * @var VideoObject The trailer of a movie or tv/radio series, season, or episode.
+     * 
+     * @var VideoObject $trailer The trailer of a movie or tv/radio series, season, or episode.
+     * 
+     * @ORM\ManyToOne(targetEntity="VideoObject")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $trailer;
+    private $trailer;
 }

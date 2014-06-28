@@ -1,60 +1,74 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Qualitative Value
- *
+ * 
  * @link http://schema.org/QualitativeValue
+ * 
+ * @ORM\Entity
  */
 class QualitativeValue extends Enumeration
 {
     /**
      * Equal
-     *
-     * @var QualitativeValue This ordering relation for qualitative values indicates that the subject is equal to the object.
+     * 
+     * @var QualitativeValue $equal This ordering relation for qualitative values indicates that the subject is equal to the object.
+     * 
+     * @ORM\ManyToOne(targetEntity="QualitativeValue")
      */
-    protected $equal;
+    private $equal;
     /**
      * Greater
-     *
-     * @var QualitativeValue This ordering relation for qualitative values indicates that the subject is greater than the object.
+     * 
+     * @var QualitativeValue $greater This ordering relation for qualitative values indicates that the subject is greater than the object.
+     * 
+     * @ORM\ManyToOne(targetEntity="QualitativeValue")
      */
-    protected $greater;
+    private $greater;
     /**
      * Greater or Equal
-     *
-     * @var QualitativeValue This ordering relation for qualitative values indicates that the subject is greater than or equal to the object.
+     * 
+     * @var QualitativeValue $greaterOrEqual This ordering relation for qualitative values indicates that the subject is greater than or equal to the object.
+     * 
+     * @ORM\ManyToOne(targetEntity="QualitativeValue")
      */
-    protected $greaterOrEqual;
+    private $greaterOrEqual;
     /**
      * Lesser
-     *
-     * @var QualitativeValue This ordering relation for qualitative values indicates that the subject is lesser than the object.
+     * 
+     * @var QualitativeValue $lesser This ordering relation for qualitative values indicates that the subject is lesser than the object.
+     * 
+     * @ORM\ManyToOne(targetEntity="QualitativeValue")
      */
-    protected $lesser;
+    private $lesser;
     /**
      * Lesser or Equal
-     *
-     * @var QualitativeValue This ordering relation for qualitative values indicates that the subject is lesser than or equal to the object.
+     * 
+     * @var QualitativeValue $lesserOrEqual This ordering relation for qualitative values indicates that the subject is lesser than or equal to the object.
+     * 
+     * @ORM\ManyToOne(targetEntity="QualitativeValue")
      */
-    protected $lesserOrEqual;
+    private $lesserOrEqual;
     /**
      * Non Equal
-     *
-     * @var QualitativeValue This ordering relation for qualitative values indicates that the subject is not equal to the object.
+     * 
+     * @var QualitativeValue $nonEqual This ordering relation for qualitative values indicates that the subject is not equal to the object.
+     * 
+     * @ORM\ManyToOne(targetEntity="QualitativeValue")
      */
-    protected $nonEqual;
+    private $nonEqual;
     /**
-     * Value Reference (Enumeration)
-     *
-     * @var Enumeration A pointer to a secondary value that provides additional information on the original value, e.g. a reference temperature.
+     * Value Reference
+     * 
+     * @var Enumeration $valueReference A pointer to a secondary value that provides additional information on the original value, e.g. a reference temperature.
+     * 
+     * @ORM\ManyToOne(targetEntity="Enumeration")
      */
-    protected $valueReferenceEnumeration;
-    /**
-     * Value Reference (StructuredValue)
-     *
-     * @var StructuredValue A pointer to a secondary value that provides additional information on the original value, e.g. a reference temperature.
-     */
-    protected $valueReferenceStructuredValue;
+    private $valueReference;
 }

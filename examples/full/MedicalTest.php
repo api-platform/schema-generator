@@ -1,42 +1,57 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Medical Test
- *
+ * 
  * @link http://schema.org/MedicalTest
+ * 
+ * @ORM\MappedSuperclass
  */
 class MedicalTest extends MedicalEntity
 {
     /**
      * Affected by
-     *
-     * @var Drug Drugs that affect the test's results.
+     * 
+     * @var Drug $affectedBy Drugs that affect the test's results.
+     * 
      */
-    protected $affectedBy;
+    private $affectedBy;
     /**
      * Normal Range
-     *
-     * @var string Range of acceptable values for a typical patient, when applicable.
+     * 
+     * @var string $normalRange Range of acceptable values for a typical patient, when applicable.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $normalRange;
+    private $normalRange;
     /**
      * Sign Detected
-     *
-     * @var MedicalSign A sign detected by the test.
+     * 
+     * @var MedicalSign $signDetected A sign detected by the test.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalSign")
      */
-    protected $signDetected;
+    private $signDetected;
     /**
      * Used to Diagnose
-     *
-     * @var MedicalCondition A condition the test is used to diagnose.
+     * 
+     * @var MedicalCondition $usedToDiagnose A condition the test is used to diagnose.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalCondition")
      */
-    protected $usedToDiagnose;
+    private $usedToDiagnose;
     /**
      * Uses Device
-     *
-     * @var MedicalDevice Device used to perform the test.
+     * 
+     * @var MedicalDevice $usesDevice Device used to perform the test.
+     * 
      */
-    protected $usesDevice;
+    private $usesDevice;
 }

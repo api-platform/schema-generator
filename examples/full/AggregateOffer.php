@@ -1,42 +1,45 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Aggregate Offer
- *
+ * 
  * @link http://schema.org/AggregateOffer
+ * 
+ * @ORM\Entity
  */
 class AggregateOffer extends Offer
 {
     /**
-     * High Price (Number)
-     *
-     * @var float The highest price of all offers available.
+     * High Price
+     * 
+     * @var float $highPrice The highest price of all offers available.
+     * 
+     * @Assert\Type(type="float")
+     * @ORM\Column(type="float")
      */
-    protected $highPriceNumber;
+    private $highPrice;
     /**
-     * High Price (Text)
-     *
-     * @var string The highest price of all offers available.
+     * Low Price
+     * 
+     * @var float $lowPrice The lowest price of all offers available.
+     * 
+     * @Assert\Type(type="float")
+     * @ORM\Column(type="float")
      */
-    protected $highPriceText;
-    /**
-     * Low Price (Number)
-     *
-     * @var float The lowest price of all offers available.
-     */
-    protected $lowPriceNumber;
-    /**
-     * Low Price (Text)
-     *
-     * @var string The lowest price of all offers available.
-     */
-    protected $lowPriceText;
+    private $lowPrice;
     /**
      * Offer Count
-     *
-     * @var integer The number of offers for the product.
+     * 
+     * @var integer $offerCount The number of offers for the product.
+     * 
+     * @Assert\Type(type="integer")
+     * @ORM\Column(type="integer")
      */
-    protected $offerCount;
+    private $offerCount;
 }

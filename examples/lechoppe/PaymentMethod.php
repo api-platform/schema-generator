@@ -11,11 +11,16 @@
 
 namespace Echoppe\CoreBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Payment Method
- *
+ * 
  * @author Kévin Dunglas <dunglas@gmail.com>
  * @link http://schema.org/PaymentMethod
+ * 
+ * @ORM\MappedSuperclass
  */
 class PaymentMethod extends Enumeration
 {

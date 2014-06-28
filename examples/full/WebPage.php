@@ -1,72 +1,91 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Web Page
- *
+ * 
  * @link http://schema.org/WebPage
+ * 
+ * @ORM\MappedSuperclass
  */
 class WebPage extends CreativeWork
 {
     /**
      * Breadcrumb
-     *
-     * @var string A set of links that can help a user understand and navigate a website hierarchy.
+     * 
+     * @var string $breadcrumb A set of links that can help a user understand and navigate a website hierarchy.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $breadcrumb;
+    private $breadcrumb;
     /**
      * Is Part of
-     *
-     * @var CollectionPage Indicates the collection or gallery to which the item belongs.
+     * 
+     * @var CollectionPage $isPartOf Indicates the collection or gallery to which the item belongs.
+     * 
+     * @ORM\ManyToOne(targetEntity="CollectionPage")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $isPartOf;
+    private $isPartOf;
     /**
      * Last Reviewed
-     *
-     * @var \DateTime Date on which the content on this web page was last reviewed for accuracy and/or completeness.
+     * 
+     * @var \DateTime $lastReviewed Date on which the content on this web page was last reviewed for accuracy and/or completeness.
+     * 
+     * @Assert\Date
+     * @ORM\Column(type="date")
      */
-    protected $lastReviewed;
+    private $lastReviewed;
     /**
      * Main Content of Page
-     *
-     * @var WebPageElement Indicates if this web page element is the main subject of the page.
+     * 
+     * @var WebPageElement $mainContentOfPage Indicates if this web page element is the main subject of the page.
+     * 
      */
-    protected $mainContentOfPage;
+    private $mainContentOfPage;
     /**
      * Primary Image of Page
-     *
-     * @var ImageObject Indicates the main image on the page
+     * 
+     * @var ImageObject $primaryImageOfPage Indicates the main image on the page
+     * 
      */
-    protected $primaryImageOfPage;
+    private $primaryImageOfPage;
     /**
      * Related Link
-     *
-     * @var string A link related to this web page, for example to other related web pages.
+     * 
+     * @var string $relatedLink A link related to this web page, for example to other related web pages.
+     * 
+     * @Assert\Url
+     * @ORM\Column
      */
-    protected $relatedLink;
+    private $relatedLink;
     /**
-     * Reviewed by (Organization)
-     *
-     * @var Organization People or organizations that have reviewed the content on this web page for accuracy and/or completeness.
+     * Reviewed by
+     * 
+     * @var Organization $reviewedBy People or organizations that have reviewed the content on this web page for accuracy and/or completeness.
+     * 
      */
-    protected $reviewedByOrganization;
-    /**
-     * Reviewed by (Person)
-     *
-     * @var Person People or organizations that have reviewed the content on this web page for accuracy and/or completeness.
-     */
-    protected $reviewedByPerson;
+    private $reviewedBy;
     /**
      * Significant Link
-     *
-     * @var string One of the more significant URLs on the page. Typically, these are the non-navigation links that are clicked on the most.
+     * 
+     * @var string $significantLink One of the more significant URLs on the page. Typically, these are the non-navigation links that are clicked on the most.
+     * 
+     * @Assert\Url
+     * @ORM\Column
      */
-    protected $significantLink;
+    private $significantLink;
     /**
      * Specialty
-     *
-     * @var Specialty One of the domain specialities to which this web page's content applies.
+     * 
+     * @var Specialty $specialty One of the domain specialities to which this web page's content applies.
+     * 
      */
-    protected $specialty;
+    private $specialty;
 }

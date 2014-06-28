@@ -1,24 +1,35 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Publication Event
- *
+ * 
  * @link http://schema.org/PublicationEvent
+ * 
+ * @ORM\MappedSuperclass
  */
 class PublicationEvent extends Event
 {
     /**
      * Free
-     *
-     * @var boolean A flag to signal that the publication is accessible for free.
+     * 
+     * @var boolean $free A flag to signal that the publication is accessible for free.
+     * 
+     * @Assert\Type(type="boolean")
+     * @ORM\Column(type="boolean")
      */
-    protected $free;
+    private $free;
     /**
      * Published On
-     *
-     * @var BroadcastService A broadcast service associated with the publication event
+     * 
+     * @var BroadcastService $publishedOn A broadcast service associated with the publication event
+     * 
+     * @ORM\ManyToOne(targetEntity="BroadcastService")
      */
-    protected $publishedOn;
+    private $publishedOn;
 }

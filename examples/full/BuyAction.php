@@ -1,30 +1,35 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Buy Action
- *
+ * 
  * @link http://schema.org/BuyAction
+ * 
+ * @ORM\Entity
  */
 class BuyAction extends TradeAction
 {
     /**
-     * Vendor (Organization)
-     *
-     * @var Organization A sub property of participant. The seller.The participant/person/organization that sold the object.
+     * Vendor
+     * 
+     * @var Organization $vendor A sub property of participant. The seller.The participant/person/organization that sold the object.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
      */
-    protected $vendorOrganization;
-    /**
-     * Vendor (Person)
-     *
-     * @var Person A sub property of participant. The seller.The participant/person/organization that sold the object.
-     */
-    protected $vendorPerson;
+    private $vendor;
     /**
      * Warranty Promise
-     *
-     * @var WarrantyPromise The warranty promise(s) included in the offer.
+     * 
+     * @var WarrantyPromise $warrantyPromise The warranty promise(s) included in the offer.
+     * 
+     * @ORM\ManyToOne(targetEntity="WarrantyPromise")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $warrantyPromise;
+    private $warrantyPromise;
 }

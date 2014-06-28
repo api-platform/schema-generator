@@ -11,11 +11,16 @@
 
 namespace Echoppe\CoreBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Delivery Method
- *
+ * 
  * @author Kévin Dunglas <dunglas@gmail.com>
  * @link http://schema.org/DeliveryMethod
+ * 
+ * @ORM\MappedSuperclass
  */
 class DeliveryMethod extends Enumeration
 {

@@ -1,36 +1,54 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Music Recording
- *
+ * 
  * @link http://schema.org/MusicRecording
+ * 
+ * @ORM\Entity
  */
 class MusicRecording extends CreativeWork
 {
     /**
      * By Artist
-     *
-     * @var MusicGroup The artist that performed this album or recording.
+     * 
+     * @var MusicGroup $byArtist The artist that performed this album or recording.
+     * 
+     * @ORM\ManyToOne(targetEntity="MusicGroup")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $byArtist;
+    private $byArtist;
     /**
      * Duration
-     *
-     * @var Duration The duration of the item (movie, audio recording, event, etc.) in <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601 date format</a>.
+     * 
+     * @var Duration $duration The duration of the item (movie, audio recording, event, etc.) in ISO 8601 date format.
+     * 
+     * @ORM\ManyToOne(targetEntity="Duration")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $duration;
+    private $duration;
     /**
      * In Album
-     *
-     * @var MusicAlbum The album to which this recording belongs.
+     * 
+     * @var MusicAlbum $inAlbum The album to which this recording belongs.
+     * 
+     * @ORM\ManyToOne(targetEntity="MusicAlbum")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $inAlbum;
+    private $inAlbum;
     /**
      * In Playlist
-     *
-     * @var MusicPlaylist The playlist to which this recording belongs.
+     * 
+     * @var MusicPlaylist $inPlaylist The playlist to which this recording belongs.
+     * 
+     * @ORM\ManyToOne(targetEntity="MusicPlaylist")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $inPlaylist;
+    private $inPlaylist;
 }

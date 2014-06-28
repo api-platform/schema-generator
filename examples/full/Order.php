@@ -1,132 +1,169 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Order
- *
+ * 
  * @link http://schema.org/Order
+ * 
+ * @ORM\Entity
  */
 class Order extends Intangible
 {
     /**
      * Accepted Offer
-     *
-     * @var Offer The offer(s) -- e.g., product, quantity and price combinations -- included in the order.
+     * 
+     * @var Offer $acceptedOffer The offer(s) -- e.g., product, quantity and price combinations -- included in the order.
+     * 
+     * @ORM\ManyToOne(targetEntity="Offer")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $acceptedOffer;
+    private $acceptedOffer;
     /**
      * Billing Address
-     *
-     * @var PostalAddress The billing address for the order.
+     * 
+     * @var PostalAddress $billingAddress The billing address for the order.
+     * 
+     * @ORM\ManyToOne(targetEntity="PostalAddress")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $billingAddress;
+    private $billingAddress;
     /**
      * Confirmation Number
-     *
-     * @var string A number that confirms the given order.
+     * 
+     * @var string $confirmationNumber A number that confirms the given order.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $confirmationNumber;
+    private $confirmationNumber;
     /**
-     * Customer (Organization)
-     *
-     * @var Organization Party placing the order.
+     * Customer
+     * 
+     * @var Organization $customer Party placing the order.
+     * 
      */
-    protected $customerOrganization;
+    private $customer;
     /**
-     * Customer (Person)
-     *
-     * @var Person Party placing the order.
+     * Discount
+     * 
+     * @var float $discount Any discount applied (to an Order).
+     * 
+     * @Assert\Type(type="float")
+     * @ORM\Column(type="float")
      */
-    protected $customerPerson;
-    /**
-     * Discount (Number)
-     *
-     * @var float Any discount applied (to an Order).
-     */
-    protected $discountNumber;
-    /**
-     * Discount (Text)
-     *
-     * @var string Any discount applied (to an Order).
-     */
-    protected $discountText;
+    private $discount;
     /**
      * Discount Code
-     *
-     * @var string Code used to redeem a discount.
+     * 
+     * @var string $discountCode Code used to redeem a discount.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $discountCode;
+    private $discountCode;
     /**
      * Discount Currency
-     *
-     * @var string The currency (in 3-letter ISO 4217 format) of the discount.
+     * 
+     * @var string $discountCurrency The currency (in 3-letter ISO 4217 format) of the discount.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $discountCurrency;
+    private $discountCurrency;
     /**
      * Is Gift
-     *
-     * @var boolean Was the offer accepted as a gift for someone other than the buyer.
+     * 
+     * @var boolean $isGift Was the offer accepted as a gift for someone other than the buyer.
+     * 
+     * @Assert\Type(type="boolean")
+     * @ORM\Column(type="boolean")
      */
-    protected $isGift;
+    private $isGift;
     /**
-     * Merchant (Organization)
-     *
-     * @var Organization The party taking the order (e.g. Amazon.com is a merchant for many sellers).
+     * Merchant
+     * 
+     * @var Organization $merchant The party taking the order (e.g. Amazon.com is a merchant for many sellers).
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $merchantOrganization;
-    /**
-     * Merchant (Person)
-     *
-     * @var Person The party taking the order (e.g. Amazon.com is a merchant for many sellers).
-     */
-    protected $merchantPerson;
+    private $merchant;
     /**
      * Order Date
-     *
-     * @var \DateTime Date order was placed.
+     * 
+     * @var \DateTime $orderDate Date order was placed.
+     * 
+     * @Assert\DateTime
+     * @ORM\Column(type="datetime")
      */
-    protected $orderDate;
+    private $orderDate;
     /**
      * Ordered Item
-     *
-     * @var Product The item ordered.
+     * 
+     * @var Product $orderedItem The item ordered.
+     * 
+     * @ORM\ManyToOne(targetEntity="Product")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $orderedItem;
+    private $orderedItem;
     /**
      * Order Number
-     *
-     * @var string The identifier of the transaction.
+     * 
+     * @var string $orderNumber The identifier of the transaction.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $orderNumber;
+    private $orderNumber;
     /**
      * Order Status
-     *
-     * @var OrderStatus The current status of the order.
+     * 
+     * @var OrderStatus $orderStatus The current status of the order.
+     * 
+     * @ORM\ManyToOne(targetEntity="OrderStatus")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $orderStatus;
+    private $orderStatus;
     /**
      * Payment Due
-     *
-     * @var \DateTime The date that payment is due.
+     * 
+     * @var \DateTime $paymentDue The date that payment is due.
+     * 
+     * @Assert\DateTime
+     * @ORM\Column(type="datetime")
      */
-    protected $paymentDue;
+    private $paymentDue;
     /**
      * Payment Method
-     *
-     * @var PaymentMethod The name of the credit card or other method of payment for the order.
+     * 
+     * @var PaymentMethod $paymentMethod The name of the credit card or other method of payment for the order.
+     * 
+     * @ORM\ManyToOne(targetEntity="PaymentMethod")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $paymentMethod;
+    private $paymentMethod;
     /**
      * Payment Method Id
-     *
-     * @var string An identifier for the method of payment used (e.g. the last 4 digits of the credit card).
+     * 
+     * @var string $paymentMethodId An identifier for the method of payment used (e.g. the last 4 digits of the credit card).
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $paymentMethodId;
+    private $paymentMethodId;
     /**
      * Payment Url
-     *
-     * @var string The URL for sending a payment.
+     * 
+     * @var string $paymentUrl The URL for sending a payment.
+     * 
+     * @Assert\Url
+     * @ORM\Column
      */
-    protected $paymentUrl;
+    private $paymentUrl;
 }

@@ -1,355 +1,460 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Creative Work
- *
+ * 
  * @link http://schema.org/CreativeWork
+ * 
+ * @ORM\MappedSuperclass
  */
 class CreativeWork extends Thing
 {
     /**
      * About
-     *
-     * @var Thing The subject matter of the content.
+     * 
+     * @var Thing $about The subject matter of the content.
+     * 
+     * @ORM\ManyToOne(targetEntity="Thing")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $about;
+    private $about;
     /**
      * Accessibility API
-     *
-     * @var string Indicates that the resource is compatible with the referenced accessibility API (<a href="http://www.w3.org/wiki/WebSchemas/Accessibility">WebSchemas wiki lists possible values</a>).
-
+     * 
+     * @var string $accessibilityAPI Indicates that the resource is compatible with the referenced accessibility API (WebSchemas wiki lists possible values).
+     
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $accessibilityAPI;
+    private $accessibilityAPI;
     /**
      * Accessibility Control
-     *
-     * @var string Identifies input methods that are sufficient to fully control the described resource (<a href="http://www.w3.org/wiki/WebSchemas/Accessibility">WebSchemas wiki lists possible values</a>).
+     * 
+     * @var string $accessibilityControl Identifies input methods that are sufficient to fully control the described resource (WebSchemas wiki lists possible values).
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $accessibilityControl;
+    private $accessibilityControl;
     /**
      * Accessibility Feature
-     *
-     * @var string Content features of the resource, such as accessible media, alternatives and supported enhancements for accessibility (<a href="http://www.w3.org/wiki/WebSchemas/Accessibility">WebSchemas wiki lists possible values</a>).
+     * 
+     * @var string $accessibilityFeature Content features of the resource, such as accessible media, alternatives and supported enhancements for accessibility (WebSchemas wiki lists possible values).
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $accessibilityFeature;
+    private $accessibilityFeature;
     /**
      * Accessibility Hazard
-     *
-     * @var string A characteristic of the described resource that is physiologically dangerous to some users. Related to WCAG 2.0 guideline 2.3. (<a href="http://www.w3.org/wiki/WebSchemas/Accessibility">WebSchemas wiki lists possible values</a>)
+     * 
+     * @var string $accessibilityHazard A characteristic of the described resource that is physiologically dangerous to some users. Related to WCAG 2.0 guideline 2.3. (WebSchemas wiki lists possible values)
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $accessibilityHazard;
+    private $accessibilityHazard;
     /**
      * Accountable Person
-     *
-     * @var Person Specifies the Person that is legally accountable for the CreativeWork.
+     * 
+     * @var Person $accountablePerson Specifies the Person that is legally accountable for the CreativeWork.
+     * 
      */
-    protected $accountablePerson;
+    private $accountablePerson;
     /**
      * Aggregate Rating
-     *
-     * @var AggregateRating The overall rating, based on a collection of reviews or ratings, of the item.
+     * 
+     * @var AggregateRating $aggregateRating The overall rating, based on a collection of reviews or ratings, of the item.
+     * 
+     * @ORM\ManyToOne(targetEntity="AggregateRating")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $aggregateRating;
+    private $aggregateRating;
     /**
      * Alternative Headline
-     *
-     * @var string A secondary title of the CreativeWork.
+     * 
+     * @var string $alternativeHeadline A secondary title of the CreativeWork.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $alternativeHeadline;
+    private $alternativeHeadline;
     /**
      * Associated Media
-     *
-     * @var MediaObject The media objects that encode this creative work. This property is a synonym for encodings.
+     * 
+     * @var MediaObject $associatedMedia The media objects that encode this creative work. This property is a synonym for encodings.
+     * 
+     * @ORM\ManyToOne(targetEntity="MediaObject")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $associatedMedia;
+    private $associatedMedia;
     /**
      * Audience
-     *
-     * @var Audience The intended audience of the item, i.e. the group for whom the item was created.
+     * 
+     * @var Audience $audience The intended audience of the item, i.e. the group for whom the item was created.
+     * 
+     * @ORM\ManyToOne(targetEntity="Audience")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $audience;
+    private $audience;
     /**
      * Audio
-     *
-     * @var AudioObject An embedded audio object.
+     * 
+     * @var AudioObject $audio An embedded audio object.
+     * 
+     * @ORM\ManyToOne(targetEntity="AudioObject")
      */
-    protected $audio;
+    private $audio;
     /**
-     * Author (Organization)
-     *
-     * @var Organization The author of this content. Please note that author is special in that HTML 5 provides a special mechanism for indicating authorship via the rel tag. That is equivalent to this and may be used interchangeably.
+     * Author
+     * 
+     * @var Organization $author The author of this content. Please note that author is special in that HTML 5 provides a special mechanism for indicating authorship via the rel tag. That is equivalent to this and may be used interchangeably.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $authorOrganization;
-    /**
-     * Author (Person)
-     *
-     * @var Person The author of this content. Please note that author is special in that HTML 5 provides a special mechanism for indicating authorship via the rel tag. That is equivalent to this and may be used interchangeably.
-     */
-    protected $authorPerson;
+    private $author;
     /**
      * Award
-     *
-     * @var string An award won by this person or for this creative work.
+     * 
+     * @var string $award An award won by this person or for this creative work.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $award;
+    private $award;
     /**
-     * Citation (CreativeWork)
-     *
-     * @var CreativeWork A citation or reference to another creative work, such as another publication, web page, scholarly article, etc. NOTE: Candidate for promotion to ScholarlyArticle.
+     * Citation
+     * 
+     * @var CreativeWork $citation A citation or reference to another creative work, such as another publication, web page, scholarly article, etc.
+     * 
+     * @ORM\ManyToOne(targetEntity="CreativeWork")
      */
-    protected $citationCreativeWork;
-    /**
-     * Citation (Text)
-     *
-     * @var string A citation or reference to another creative work, such as another publication, web page, scholarly article, etc. NOTE: Candidate for promotion to ScholarlyArticle.
-     */
-    protected $citationText;
+    private $citation;
     /**
      * Comment
-     *
-     * @var UserComments Comments, typically from users, on this CreativeWork.
+     * 
+     * @var UserComments $comment Comments, typically from users, on this CreativeWork.
+     * 
      */
-    protected $comment;
+    private $comment;
     /**
      * Content Location
-     *
-     * @var Place The location of the content.
+     * 
+     * @var Place $contentLocation The location of the content.
+     * 
+     * @ORM\ManyToOne(targetEntity="Place")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $contentLocation;
+    private $contentLocation;
     /**
      * Content Rating
-     *
-     * @var string Official rating of a piece of content—for example,'MPAA PG-13'.
+     * 
+     * @var string $contentRating Official rating of a piece of content—for example,'MPAA PG-13'.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $contentRating;
+    private $contentRating;
     /**
-     * Contributor (Organization)
-     *
-     * @var Organization A secondary contributor to the CreativeWork.
+     * Contributor
+     * 
+     * @var Organization $contributor A secondary contributor to the CreativeWork.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
      */
-    protected $contributorOrganization;
+    private $contributor;
     /**
-     * Contributor (Person)
-     *
-     * @var Person A secondary contributor to the CreativeWork.
+     * Copyright Holder
+     * 
+     * @var Organization $copyrightHolder The party holding the legal copyright to the CreativeWork.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $contributorPerson;
-    /**
-     * Copyright Holder (Organization)
-     *
-     * @var Organization The party holding the legal copyright to the CreativeWork.
-     */
-    protected $copyrightHolderOrganization;
-    /**
-     * Copyright Holder (Person)
-     *
-     * @var Person The party holding the legal copyright to the CreativeWork.
-     */
-    protected $copyrightHolderPerson;
+    private $copyrightHolder;
     /**
      * Copyright Year
-     *
-     * @var float The year during which the claimed copyright for the CreativeWork was first asserted.
+     * 
+     * @var float $copyrightYear The year during which the claimed copyright for the CreativeWork was first asserted.
+     * 
+     * @Assert\Type(type="float")
+     * @ORM\Column(type="float")
      */
-    protected $copyrightYear;
+    private $copyrightYear;
     /**
-     * Creator (Organization)
-     *
-     * @var Organization The creator/author of this CreativeWork or UserComments. This is the same as the Author property for CreativeWork.
+     * Creator
+     * 
+     * @var Organization $creator The creator/author of this CreativeWork or UserComments. This is the same as the Author property for CreativeWork.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $creatorOrganization;
-    /**
-     * Creator (Person)
-     *
-     * @var Person The creator/author of this CreativeWork or UserComments. This is the same as the Author property for CreativeWork.
-     */
-    protected $creatorPerson;
+    private $creator;
     /**
      * Date Created
-     *
-     * @var \DateTime The date on which the CreativeWork was created.
+     * 
+     * @var \DateTime $dateCreated The date on which the CreativeWork was created.
+     * 
+     * @Assert\Date
+     * @ORM\Column(type="date")
      */
-    protected $dateCreated;
+    private $dateCreated;
     /**
      * Date Modified
-     *
-     * @var \DateTime The date on which the CreativeWork was most recently modified.
+     * 
+     * @var \DateTime $dateModified The date on which the CreativeWork was most recently modified.
+     * 
+     * @Assert\Date
+     * @ORM\Column(type="date")
      */
-    protected $dateModified;
+    private $dateModified;
     /**
      * Date Published
-     *
-     * @var \DateTime Date of first broadcast/publication.
+     * 
+     * @var \DateTime $datePublished Date of first broadcast/publication.
+     * 
+     * @Assert\Date
+     * @ORM\Column(type="date")
      */
-    protected $datePublished;
+    private $datePublished;
     /**
      * Discussion Url
-     *
-     * @var string A link to the page containing the comments of the CreativeWork.
+     * 
+     * @var string $discussionUrl A link to the page containing the comments of the CreativeWork.
+     * 
+     * @Assert\Url
+     * @ORM\Column
      */
-    protected $discussionUrl;
+    private $discussionUrl;
     /**
      * Editor
-     *
-     * @var Person Specifies the Person who edited the CreativeWork.
+     * 
+     * @var Person $editor Specifies the Person who edited the CreativeWork.
+     * 
      */
-    protected $editor;
+    private $editor;
     /**
      * Educational Alignment
-     *
-     * @var AlignmentObject An alignment to an established educational framework.
+     * 
+     * @var AlignmentObject $educationalAlignment An alignment to an established educational framework.
+     * 
+     * @ORM\ManyToOne(targetEntity="AlignmentObject")
      */
-    protected $educationalAlignment;
+    private $educationalAlignment;
     /**
      * Educational Use
-     *
-     * @var string The purpose of a work in the context of education; for example, 'assignment', 'group work'.
+     * 
+     * @var string $educationalUse The purpose of a work in the context of education; for example, 'assignment', 'group work'.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $educationalUse;
+    private $educationalUse;
     /**
      * Encoding
-     *
-     * @var MediaObject A media object that encode this CreativeWork.
+     * 
+     * @var MediaObject $encoding A media object that encode this CreativeWork.
+     * 
+     * @ORM\ManyToOne(targetEntity="MediaObject")
      */
-    protected $encoding;
+    private $encoding;
     /**
      * Genre
-     *
-     * @var string Genre of the creative work
+     * 
+     * @var string $genre Genre of the creative work
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $genre;
+    private $genre;
     /**
      * Headline
-     *
-     * @var string Headline of the article
+     * 
+     * @var string $headline Headline of the article
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $headline;
+    private $headline;
     /**
      * In Language
-     *
-     * @var string The language of the content. please use one of the language codes from the <a href="http://tools.ietf.org/html/bcp47">IETF BCP 47 standard.</a>
+     * 
+     * @var string $inLanguage The language of the content. please use one of the language codes from the IETF BCP 47 standard.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $inLanguage;
+    private $inLanguage;
     /**
      * Interaction Count
-     *
-     * @var string A count of a specific user interactions with this item—for example, <code>20 UserLikes</code>, <code>5 UserComments</code>, or <code>300 UserDownloads</code>. The user interaction type should be one of the sub types of <a href="http://schema.org/UserInteraction">UserInteraction</a>.
+     * 
+     * @var string $interactionCount A count of a specific user interactions with this item—for example, 20 UserLikes, 5 UserComments, or 300 UserDownloads. The user interaction type should be one of the sub types of UserInteraction.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $interactionCount;
+    private $interactionCount;
     /**
      * Interactivity Type
-     *
-     * @var string The predominant mode of learning supported by the learning resource. Acceptable values are 'active', 'expositive', or 'mixed'.
+     * 
+     * @var string $interactivityType The predominant mode of learning supported by the learning resource. Acceptable values are 'active', 'expositive', or 'mixed'.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $interactivityType;
+    private $interactivityType;
     /**
      * Is Based On Url
-     *
-     * @var string A resource that was used in the creation of this resource. This term can be repeated for multiple sources. For example, http://example.com/great-multiplication-intro.html
+     * 
+     * @var string $isBasedOnUrl A resource that was used in the creation of this resource. This term can be repeated for multiple sources. For example, http://example.com/great-multiplication-intro.html
+     * 
+     * @Assert\Url
+     * @ORM\Column
      */
-    protected $isBasedOnUrl;
+    private $isBasedOnUrl;
     /**
      * Is Family Friendly
-     *
-     * @var boolean Indicates whether this content is family friendly.
+     * 
+     * @var boolean $isFamilyFriendly Indicates whether this content is family friendly.
+     * 
+     * @Assert\Type(type="boolean")
+     * @ORM\Column(type="boolean")
      */
-    protected $isFamilyFriendly;
+    private $isFamilyFriendly;
     /**
      * Keywords
-     *
-     * @var string The keywords/tags used to describe this content.
+     * 
+     * @var string $keywords The keywords/tags used to describe this content.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $keywords;
+    private $keywords;
     /**
      * Learning Resource Type
-     *
-     * @var string The predominant type or kind characterizing the learning resource. For example, 'presentation', 'handout'.
+     * 
+     * @var string $learningResourceType The predominant type or kind characterizing the learning resource. For example, 'presentation', 'handout'.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $learningResourceType;
+    private $learningResourceType;
     /**
      * Mentions
-     *
-     * @var Thing Indicates that the CreativeWork contains a reference to, but is not necessarily about a concept.
+     * 
+     * @var Thing $mentions Indicates that the CreativeWork contains a reference to, but is not necessarily about a concept.
+     * 
      */
-    protected $mentions;
+    private $mentions;
     /**
      * Offers
-     *
-     * @var Offer An offer to sell this item—for example, an offer to sell a product, the DVD of a movie, or tickets to an event.
+     * 
+     * @var Offer $offers An offer to transfer some rights to an item or to provide a service—for example, an offer to sell tickets to an event, to rent the DVD of a movie, to stream a TV show over the internet, to repair a motorcycle, or to loan a book.
+     * 
+     * @ORM\ManyToOne(targetEntity="Offer")
      */
-    protected $offers;
+    private $offers;
     /**
-     * Provider (Organization)
-     *
-     * @var Organization The organization or agency that is providing the service.
+     * Provider
+     * 
+     * @var Organization $provider The organization or agency that is providing the service.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $providerOrganization;
-    /**
-     * Provider (Person)
-     *
-     * @var Person The organization or agency that is providing the service.
-     */
-    protected $providerPerson;
+    private $provider;
     /**
      * Publisher
-     *
-     * @var Organization The publisher of the creative work.
+     * 
+     * @var Organization $publisher The publisher of the creative work.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $publisher;
+    private $publisher;
     /**
      * Publishing Principles
-     *
-     * @var string Link to page describing the editorial principles of the organization primarily responsible for the creation of the CreativeWork.
+     * 
+     * @var string $publishingPrinciples Link to page describing the editorial principles of the organization primarily responsible for the creation of the CreativeWork.
+     * 
+     * @Assert\Url
+     * @ORM\Column
      */
-    protected $publishingPrinciples;
+    private $publishingPrinciples;
     /**
      * Review
-     *
-     * @var Review A review of the item.
+     * 
+     * @var Review $review A review of the item.
+     * 
+     * @ORM\ManyToOne(targetEntity="Review")
      */
-    protected $review;
+    private $review;
     /**
      * Source Organization
-     *
-     * @var Organization The Organization on whose behalf the creator was working.
+     * 
+     * @var Organization $sourceOrganization The Organization on whose behalf the creator was working.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $sourceOrganization;
+    private $sourceOrganization;
     /**
      * Text
-     *
-     * @var string The textual content of this CreativeWork.
+     * 
+     * @var string $text The textual content of this CreativeWork.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $text;
+    private $text;
     /**
      * Thumbnail Url
-     *
-     * @var string A thumbnail image relevant to the Thing.
+     * 
+     * @var string $thumbnailUrl A thumbnail image relevant to the Thing.
+     * 
+     * @Assert\Url
+     * @ORM\Column
      */
-    protected $thumbnailUrl;
+    private $thumbnailUrl;
     /**
      * Time Required
-     *
-     * @var Duration Approximate or typical time it takes to work with or through this learning resource for the typical intended target audience, e.g. 'P30M', 'P1H25M'.
+     * 
+     * @var Duration $timeRequired Approximate or typical time it takes to work with or through this learning resource for the typical intended target audience, e.g. 'P30M', 'P1H25M'.
+     * 
      */
-    protected $timeRequired;
+    private $timeRequired;
     /**
      * Typical Age Range
-     *
-     * @var string The typical expected age range, e.g. '7-9', '11-'.
+     * 
+     * @var string $typicalAgeRange The typical expected age range, e.g. '7-9', '11-'.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $typicalAgeRange;
+    private $typicalAgeRange;
     /**
      * Version
-     *
-     * @var float The version of the CreativeWork embodied by a specified resource.
+     * 
+     * @var float $version The version of the CreativeWork embodied by a specified resource.
+     * 
+     * @Assert\Type(type="float")
+     * @ORM\Column(type="float")
      */
-    protected $version;
+    private $version;
     /**
      * Video
-     *
-     * @var VideoObject An embedded video object.
+     * 
+     * @var VideoObject $video An embedded video object.
+     * 
+     * @ORM\ManyToOne(targetEntity="VideoObject")
      */
-    protected $video;
+    private $video;
 }

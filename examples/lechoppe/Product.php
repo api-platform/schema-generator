@@ -11,96 +11,136 @@
 
 namespace Echoppe\CoreBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Product
- *
+ * 
  * @author Kévin Dunglas <dunglas@gmail.com>
  * @link http://schema.org/Product
+ * 
+ * @ORM\MappedSuperclass
  */
 class Product extends Thing
 {
     /**
      * Brand
-     *
-     * @var Brand The brand(s) associated with a product or service, or the brand(s) maintained by an organization or business person.
+     * 
+     * @var Brand $brand The brand(s) associated with a product or service, or the brand(s) maintained by an organization or business person.
+     * 
+     * @ORM\ManyToOne(targetEntity="Brand")
      */
-    protected $brand;
+    private $brand;
     /**
      * Color
-     *
-     * @var string The color of the product.
+     * 
+     * @var string $color The color of the product.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $color;
+    private $color;
     /**
      * Depth
-     *
-     * @var QuantitativeValue The depth of the product.
+     * 
+     * @var QuantitativeValue $depth The depth of the product.
+     * 
+     * @ORM\OneToOne(targetEntity="QuantitativeValue")
      */
-    protected $depth;
+    private $depth;
     /**
      * Gtin13
-     *
-     * @var string The GTIN-13 code of the product, or the product to which the offer refers. This is equivalent to 13-digit ISBN codes and EAN UCC-13. Former 12-digit UPC codes can be converted into a GTIN-13 code by simply adding a preceeding zero.
+     * 
+     * @var string $gtin13 The GTIN-13 code of the product, or the product to which the offer refers. This is equivalent to 13-digit ISBN codes and EAN UCC-13. Former 12-digit UPC codes can be converted into a GTIN-13 code by simply adding a preceeding zero.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $gtin13;
+    private $gtin13;
     /**
      * Gtin14
-     *
-     * @var string The GTIN-14 code of the product, or the product to which the offer refers.
+     * 
+     * @var string $gtin14 The GTIN-14 code of the product, or the product to which the offer refers.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $gtin14;
+    private $gtin14;
     /**
      * Gtin8
-     *
-     * @var string The GTIN-8 code of the product, or the product to which the offer refers. This code is also known as EAN/UCC-8 or 8-digit EAN.
+     * 
+     * @var string $gtin8 The GTIN-8 code of the product, or the product to which the offer refers. This code is also known as EAN/UCC-8 or 8-digit EAN.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $gtin8;
+    private $gtin8;
     /**
      * Height
-     *
-     * @var QuantitativeValue The height of the item.
+     * 
+     * @var QuantitativeValue $height The height of the item.
+     * 
+     * @ORM\OneToOne(targetEntity="QuantitativeValue")
      */
-    protected $height;
+    private $height;
     /**
      * Item Condition
-     *
-     * @var OfferItemCondition A predefined value from OfferItemCondition or a textual description of the condition of the product or service, or the products or services included in the offer.
+     * 
+     * @var OfferItemCondition $itemCondition A predefined value from OfferItemCondition or a textual description of the condition of the product or service, or the products or services included in the offer.
+     * 
+     * @ORM\ManyToOne(targetEntity="OfferItemCondition")
      */
-    protected $itemCondition;
+    private $itemCondition;
     /**
      * Mpn
-     *
-     * @var string The Manufacturer Part Number (MPN) of the product, or the product to which the offer refers.
+     * 
+     * @var string $mpn The Manufacturer Part Number (MPN) of the product, or the product to which the offer refers.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $mpn;
+    private $mpn;
     /**
      * Offers
-     *
-     * @var Offer An offer to sell this item—for example, an offer to sell a product, the DVD of a movie, or tickets to an event.
+     * 
+     * @var Offer $offers An offer to transfer some rights to an item or to provide a service—for example, an offer to sell tickets to an event, to rent the DVD of a movie, to stream a TV show over the internet, to repair a motorcycle, or to loan a book.
+     * 
+     * @ORM\ManyToOne(targetEntity="Offer")
      */
-    protected $offers;
+    private $offers;
     /**
      * Release Date
-     *
-     * @var \DateTime The release date of a product or product model. This can be used to distinguish the exact variant of a product.
+     * 
+     * @var \DateTime $releaseDate The release date of a product or product model. This can be used to distinguish the exact variant of a product.
+     * 
+     * @Assert\Date
+     * @ORM\Column(type="date")
      */
-    protected $releaseDate;
+    private $releaseDate;
     /**
      * Sku
-     *
-     * @var string The Stock Keeping Unit (SKU), i.e. a merchant-specific identifier for a product or service, or the product to which the offer refers.
+     * 
+     * @var string $sku The Stock Keeping Unit (SKU), i.e. a merchant-specific identifier for a product or service, or the product to which the offer refers.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $sku;
+    private $sku;
     /**
      * Weight
-     *
-     * @var QuantitativeValue The weight of the product.
+     * 
+     * @var QuantitativeValue $weight The weight of the product.
+     * 
+     * @ORM\OneToOne(targetEntity="QuantitativeValue")
      */
-    protected $weight;
+    private $weight;
     /**
      * Width
-     *
-     * @var QuantitativeValue The width of the item.
+     * 
+     * @var QuantitativeValue $width The width of the item.
+     * 
+     * @ORM\OneToOne(targetEntity="QuantitativeValue")
      */
-    protected $width;
+    private $width;
 }

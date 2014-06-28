@@ -11,144 +11,176 @@
 
 namespace Echoppe\CoreBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Offer
- *
+ * 
  * @author Kévin Dunglas <dunglas@gmail.com>
  * @link http://schema.org/Offer
+ * 
+ * @ORM\MappedSuperclass
  */
-class Offer extends Intangible
+class Offer extends Thing
 {
     /**
      * Accepted Payment Method
-     *
-     * @var PaymentMethod The payment method(s) accepted by seller for this offer.
+     * 
+     * @var PaymentMethod $acceptedPaymentMethod The payment method(s) accepted by seller for this offer.
+     * 
+     * @ORM\ManyToOne(targetEntity="PaymentMethod")
      */
-    protected $acceptedPaymentMethod;
+    private $acceptedPaymentMethod;
     /**
      * Add On
-     *
-     * @var Offer An additional offer that can only be obtained in combination with the first base offer (e.g. supplements and extensions that are available for a surcharge).
+     * 
+     * @var Offer $addOn An additional offer that can only be obtained in combination with the first base offer (e.g. supplements and extensions that are available for a surcharge).
+     * 
+     * @ORM\ManyToOne(targetEntity="Offer")
      */
-    protected $addOn;
+    private $addOn;
     /**
      * Availability
-     *
-     * @var ItemAvailability The availability of this item—for example In stock, Out of stock, Pre-order, etc.
+     * 
+     * @var ItemAvailability $availability The availability of this item—for example In stock, Out of stock, Pre-order, etc.
+     * 
+     * @ORM\ManyToOne(targetEntity="ItemAvailability")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $availability;
+    private $availability;
     /**
      * Availability Ends
-     *
-     * @var \DateTime The end of the availability of the product or service included in the offer.
+     * 
+     * @var \DateTime $availabilityEnds The end of the availability of the product or service included in the offer.
+     * 
+     * @Assert\DateTime
+     * @ORM\Column(type="datetime")
      */
-    protected $availabilityEnds;
+    private $availabilityEnds;
     /**
      * Availability Starts
-     *
-     * @var \DateTime The beginning of the availability of the product or service included in the offer.
+     * 
+     * @var \DateTime $availabilityStarts The beginning of the availability of the product or service included in the offer.
+     * 
+     * @Assert\DateTime
+     * @ORM\Column(type="datetime")
      */
-    protected $availabilityStarts;
+    private $availabilityStarts;
     /**
      * Available Delivery Method
-     *
-     * @var DeliveryMethod The delivery method(s) available for this offer.
+     * 
+     * @var DeliveryMethod $availableDeliveryMethod The delivery method(s) available for this offer.
+     * 
+     * @ORM\ManyToOne(targetEntity="DeliveryMethod")
      */
-    protected $availableDeliveryMethod;
+    private $availableDeliveryMethod;
     /**
-     * Category (Text)
-     *
-     * @var string A category for the item. Greater signs or slashes can be used to informally indicate a category hierarchy.
+     * Category
+     * 
+     * @var string $category A category for the item. Greater signs or slashes can be used to informally indicate a category hierarchy.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $categoryText;
-    /**
-     * Category (Thing)
-     *
-     * @var Thing A category for the item. Greater signs or slashes can be used to informally indicate a category hierarchy.
-     */
-    protected $categoryThing;
+    private $category;
     /**
      * Delivery Lead Time
-     *
-     * @var QuantitativeValue The typical delay between the receipt of the order and the goods leaving the warehouse.
+     * 
+     * @var QuantitativeValue $deliveryLeadTime The typical delay between the receipt of the order and the goods leaving the warehouse.
+     * 
+     * @ORM\OneToOne(targetEntity="QuantitativeValue")
      */
-    protected $deliveryLeadTime;
+    private $deliveryLeadTime;
     /**
      * Eligible Customer Type
-     *
-     * @var BusinessEntityType The type(s) of customers for which the given offer is valid.
+     * 
+     * @var BusinessEntityType $eligibleCustomerType The type(s) of customers for which the given offer is valid.
+     * 
+     * @ORM\ManyToOne(targetEntity="BusinessEntityType")
      */
-    protected $eligibleCustomerType;
+    private $eligibleCustomerType;
     /**
      * Eligible Duration
-     *
-     * @var QuantitativeValue The duration for which the given offer is valid.
+     * 
+     * @var QuantitativeValue $eligibleDuration The duration for which the given offer is valid.
+     * 
+     * @ORM\OneToOne(targetEntity="QuantitativeValue")
      */
-    protected $eligibleDuration;
+    private $eligibleDuration;
     /**
      * Eligible Quantity
-     *
-     * @var QuantitativeValue The interval and unit of measurement of ordering quantities for which the offer or price specification is valid. This allows e.g. specifying that a certain freight charge is valid only for a certain quantity.
+     * 
+     * @var QuantitativeValue $eligibleQuantity The interval and unit of measurement of ordering quantities for which the offer or price specification is valid. This allows e.g. specifying that a certain freight charge is valid only for a certain quantity.
+     * 
+     * @ORM\OneToOne(targetEntity="QuantitativeValue")
      */
-    protected $eligibleQuantity;
+    private $eligibleQuantity;
     /**
      * Eligible Region
-     *
-     * @var string The ISO 3166-1 (ISO 3166-1 alpha-2) or ISO 3166-2 code, or the GeoShape for the geo-political region(s) for which the offer or delivery charge specification is valid.
+     * 
+     * @var string $eligibleRegion The ISO 3166-1 (ISO 3166-1 alpha-2) or ISO 3166-2 code, or the GeoShape for the geo-political region(s) for which the offer or delivery charge specification is valid.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $eligibleRegion;
+    private $eligibleRegion;
     /**
      * Eligible Transaction Volume
-     *
-     * @var PriceSpecification The transaction volume, in a monetary unit, for which the offer or price specification is valid, e.g. for indicating a minimal purchasing volume, to express free shipping above a certain order volume, or to limit the acceptance of credit cards to purchases to a certain minimal amount.
+     * 
+     * @var PriceSpecification $eligibleTransactionVolume The transaction volume, in a monetary unit, for which the offer or price specification is valid, e.g. for indicating a minimal purchasing volume, to express free shipping above a certain order volume, or to limit the acceptance of credit cards to purchases to a certain minimal amount.
+     * 
+     * @ORM\OneToOne(targetEntity="PriceSpecification")
      */
-    protected $eligibleTransactionVolume;
+    private $eligibleTransactionVolume;
     /**
      * Includes Object
-     *
-     * @var TypeAndQuantityNode This links to a node or nodes indicating the exact quantity of the products included in the offer.
+     * 
+     * @var TypeAndQuantityNode $includesObject This links to a node or nodes indicating the exact quantity of the products included in the offer.
+     * 
+     * @ORM\ManyToOne(targetEntity="TypeAndQuantityNode")
      */
-    protected $includesObject;
+    private $includesObject;
     /**
      * Inventory Level
-     *
-     * @var QuantitativeValue The current approximate inventory level for the item or items.
+     * 
+     * @var QuantitativeValue $inventoryLevel The current approximate inventory level for the item or items.
+     * 
+     * @ORM\OneToOne(targetEntity="QuantitativeValue")
      */
-    protected $inventoryLevel;
+    private $inventoryLevel;
     /**
      * Item Condition
-     *
-     * @var OfferItemCondition A predefined value from OfferItemCondition or a textual description of the condition of the product or service, or the products or services included in the offer.
+     * 
+     * @var OfferItemCondition $itemCondition A predefined value from OfferItemCondition or a textual description of the condition of the product or service, or the products or services included in the offer.
+     * 
+     * @ORM\ManyToOne(targetEntity="OfferItemCondition")
      */
-    protected $itemCondition;
-    /**
-     * Item Offered
-     *
-     * @var Product The item being sold.
-     */
-    protected $itemOffered;
+    private $itemCondition;
     /**
      * Price Specification
-     *
-     * @var PriceSpecification One or more detailed price specifications, indicating the unit price and delivery or payment charges.
+     * 
+     * @var PriceSpecification $priceSpecification One or more detailed price specifications, indicating the unit price and delivery or payment charges.
+     * 
+     * @ORM\ManyToOne(targetEntity="PriceSpecification")
      */
-    protected $priceSpecification;
+    private $priceSpecification;
     /**
      * Valid From
-     *
-     * @var \DateTime The date when the item becomes valid.
+     * 
+     * @var \DateTime $validFrom The date when the item becomes valid.
+     * 
+     * @Assert\DateTime
+     * @ORM\Column(type="datetime")
      */
-    protected $validFrom;
+    private $validFrom;
     /**
      * Valid Through
-     *
-     * @var \DateTime The end of the validity of offer, price specification, or opening hours data.
+     * 
+     * @var \DateTime $validThrough The end of the validity of offer, price specification, or opening hours data.
+     * 
+     * @Assert\DateTime
+     * @ORM\Column(type="datetime")
      */
-    protected $validThrough;
-    /**
-     * Warranty
-     *
-     * @var WarrantyPromise The warranty promise(s) included in the offer.
-     */
-    protected $warranty;
+    private $validThrough;
 }

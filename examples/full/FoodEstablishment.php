@@ -1,42 +1,45 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Food Establishment
- *
+ * 
  * @link http://schema.org/FoodEstablishment
+ * 
+ * @ORM\MappedSuperclass
  */
 class FoodEstablishment extends LocalBusiness
 {
     /**
-     * Accepts Reservations (Text)
-     *
-     * @var string Either <code>Yes/No</code>, or a URL at which reservations can be made.
+     * Accepts Reservations
+     * 
+     * @var string $acceptsReservations Either Yes/No, or a URL at which reservations can be made.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $acceptsReservationsText;
+    private $acceptsReservations;
     /**
-     * Accepts Reservations (URL)
-     *
-     * @var string Either <code>Yes/No</code>, or a URL at which reservations can be made.
+     * Menu
+     * 
+     * @var string $menu Either the actual menu or a URL of the menu.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $acceptsReservationsURL;
-    /**
-     * Menu (Text)
-     *
-     * @var string Either the actual menu or a URL of the menu.
-     */
-    protected $menuText;
-    /**
-     * Menu (URL)
-     *
-     * @var string Either the actual menu or a URL of the menu.
-     */
-    protected $menuURL;
+    private $menu;
     /**
      * Serves Cuisine
-     *
-     * @var string The cuisine of the restaurant.
+     * 
+     * @var string $servesCuisine The cuisine of the restaurant.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $servesCuisine;
+    private $servesCuisine;
 }

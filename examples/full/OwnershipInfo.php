@@ -1,42 +1,54 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Ownership Info
- *
+ * 
  * @link http://schema.org/OwnershipInfo
+ * 
+ * @ORM\Entity
  */
 class OwnershipInfo extends StructuredValue
 {
     /**
-     * Acquired From (Organization)
-     *
-     * @var Organization The organization or person from which the product was acquired.
+     * Acquired From
+     * 
+     * @var Organization $acquiredFrom The organization or person from which the product was acquired.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $acquiredFromOrganization;
-    /**
-     * Acquired From (Person)
-     *
-     * @var Person The organization or person from which the product was acquired.
-     */
-    protected $acquiredFromPerson;
+    private $acquiredFrom;
     /**
      * Owned From
-     *
-     * @var \DateTime The date and time of obtaining the product.
+     * 
+     * @var \DateTime $ownedFrom The date and time of obtaining the product.
+     * 
+     * @Assert\DateTime
+     * @ORM\Column(type="datetime")
      */
-    protected $ownedFrom;
+    private $ownedFrom;
     /**
      * Owned Through
-     *
-     * @var \DateTime The date and time of giving up ownership on the product.
+     * 
+     * @var \DateTime $ownedThrough The date and time of giving up ownership on the product.
+     * 
+     * @Assert\DateTime
+     * @ORM\Column(type="datetime")
      */
-    protected $ownedThrough;
+    private $ownedThrough;
     /**
      * Type of Good
-     *
-     * @var Product The product that this structured value is referring to.
+     * 
+     * @var Product $typeOfGood The product that this structured value is referring to.
+     * 
+     * @ORM\OneToOne(targetEntity="Product")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $typeOfGood;
+    private $typeOfGood;
 }

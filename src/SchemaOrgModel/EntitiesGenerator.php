@@ -42,7 +42,23 @@ class EntitiesGenerator
      * @var array
      */
     protected $config;
+    /**
+     * @var array
+     */
+    protected $annotationGenerators = [];
+    /**
+     * @var array
+     */
+    protected $cardinalities;
 
+    /**
+     * @param \Twig_Environment $twig
+     * @param LoggerInterface $logger
+     * @param \stdClass $schemaOrg
+     * @param CardinalitiesExtractor $cardinalitiesExtractor
+     * @param GoodRelationsBridge $goodRelationsBridge
+     * @param array $config
+     */
     public function __construct(
         \Twig_Environment $twig,
         LoggerInterface $logger,
@@ -59,11 +75,20 @@ class EntitiesGenerator
         $this->goodRelationsBridge = $goodRelationsBridge;
         $this->config = $config;
 
+        $this->cardinalities = $this->cardinalitiesExtractor->extract();
+
+        foreach ($config['annotationGenerators'] as $class) {
+            $generator = new $class($logger, $schemaOrg, $this->cardinalities, $config);
+
+            $this->annotationGenerators[] = $generator;
+        }
+
         $this->baseClass = [
             'header' => $this->config['header'],
             'namespace' => $this->config['namespace'],
-            'author' => $this->config['author'],
-            'field_visibility' => $this->config['field_visibility']
+            'fieldVisibility' => $this->config['fieldVisibility'],
+            'fields' => [],
+            'uses' => []
         ];
     }
 
@@ -72,6 +97,7 @@ class EntitiesGenerator
      */
     public function generate()
     {
+        $typesDefined = !empty($this->config['types']);
         $typesToGenerate = [];
 
         if (empty($this->config['types'])) {
@@ -84,71 +110,76 @@ class EntitiesGenerator
 
         foreach ($typesToGenerate as $typeId) {
             $type = $this->schemaOrg->types->$typeId;
-
-            if (count($type->supertypes) > 1) {
-                // Ignore multiple inheritance for now
-                $this->logger->notice(sprintf('The type %s has several supertypes. Using the first one.', $typeId));
-            }
+            $typeDefined = !empty($this->config['types'][$typeId]['properties']);
 
             $class = $this->baseClass;
 
             $class['label'] = $type->label;
-            $class['link'] = $type->url;
-            $class['name'] = $type->id;
-            $class['parent'] = count($type->supertypes) ? $type->supertypes[0] : false;
-            $class['fields'] = [];
+            $class['name'] = $typeId;
+            $class['uses'] = $this->generateUses($class['name']);
+            $class['annotations'] = $this->generateClassAnnotations($class['name']);
 
+            // Parent
+            $class['parent'] = $typeDefined ? $this->config['types'][$typeId]['parent'] : null;
+            if (null === $class['parent']) {
+                $numberOfSupertypes = count($type->supertypes);
+
+                if ($numberOfSupertypes > 1) {
+                    $this->logger->error(sprintf('The type "%s" has several supertypes. Using the first one.', $typeId));
+                }
+
+                $class['parent'] = $numberOfSupertypes ? $type->supertypes[0] : false;
+            }
+
+            if ($typesDefined && $class['parent'] && !isset($this->config['types'][$class['parent']])) {
+                $this->logger->error(sprintf('The type "%s" (parent of "%s") doesn\'t exist', $class['parent'], $class['name']));
+            }
+
+            // Fields
             foreach ($type->specific_properties as $propertyId) {
-                // Ignore properties not set in config file
-                if (!empty($this->config['types'][$typeId]['properties']) && !in_array($propertyId, $this->config['types'][$typeId]['properties'])) {
+                // Ignore properties not set if using a config file
+                if ($typesDefined && !isset($this->config['types'][$typeId]['properties'][$propertyId])) {
                     continue;
                 }
 
                 $property = $this->schemaOrg->properties->$propertyId;
-                if ($this->config['check_is_goodrelations']) {
+                if ($this->config['checkIsGoodRelations']) {
                     if (!$this->goodRelationsBridge->exist($propertyId)) {
-                        $this->logger->warning(sprintf('The property %s is not part of GoodRelations.', $propertyId));
+                        $this->logger->warning(sprintf('The property "%s" (type "%s") is not part of GoodRelations.', $propertyId, $typeId));
                     }
                 }
 
                 // Ignore or warn when properties are legacy
                 if (preg_match('/legacy spelling/', $property->comment)) {
                     if (empty($this->config['types'][$typeId]['properties'])) {
-                        $this->logger->info(sprintf('The property %s is legacy. Ignoring.', $propertyId));
+                        $this->logger->info(sprintf('The property "%s" (type "%s") is legacy. Ignoring.', $propertyId, $typeId));
 
                         continue;
                     } else {
-                        $this->logger->warning(sprintf('The property %s is legacy.', $propertyId));
+                        $this->logger->warning(sprintf('The property "%s" (type "%s") is legacy.', $propertyId, $typeId));
                     }
                 }
 
                 $ranges = [];
-                foreach ($property->ranges as $range) {
-                    if (empty($this->config['types']) || $this->isDatatype($range) || !empty($this->config['types'][$range])) {
-                        $ranges[] = $range;
+                if (isset($this->config['types'][$typeId]['properties'][$propertyId]['range']) && $this->config['types'][$typeId]['properties'][$propertyId]['range']) {
+                    $ranges[] = $this->config['types'][$typeId]['properties'][$propertyId]['range'];
+                } else {
+                    foreach ($property->ranges as $range) {
+                        if (!$typesDefined || $this->isDatatype($range) || !empty($this->config['types'][$range])) {
+                            $ranges[] = $range;
+                        }
                     }
                 }
 
                 $numberOfRanges = count($ranges);
-                if ($numberOfRanges === 1) {
-                    $class['fields'][] = [
-                        'label' => $property->label,
-                        'type' => self::toPhpType($ranges[0]),
-                        'id' => $property->id,
-                        'comment' => $property->comment
-                    ];
-                } elseif ($numberOfRanges > 1) {
-                    $this->logger->warning(sprintf('The property %s has several types. This is currently not fully supported.', $propertyId));
-
-                    foreach ($ranges as $range) {
-                        $class['fields'][] = [
-                            'label' => sprintf('%s (%s)', $property->label, $range),
-                            'type' => self::toPhpType($range),
-                            'id' => sprintf('%s%s', $property->id, $range),
-                            'comment' => $property->comment
-                        ];
-                    }
+                if ($numberOfRanges > 1) {
+                    $this->logger->error(sprintf('The property "%s" (type "%s") has several types. Using the first one.', $propertyId, $typeId));
                 }
+
+                $class['fields'][] = [
+                    'name' => $property->id,
+                    'annotations' => $this->generateFieldAnnotations($class['name'], $property->id, $ranges[0])
+                ];
             }
 
             file_put_contents(sprintf('%s/%s.php', $this->config['output'], $class['name']), $this->twig->render('class.php.twig', $class));
@@ -208,39 +239,52 @@ class EntitiesGenerator
     }
 
     /**
-     * Converts a Schema.org type to a PHP type
+     * Generates field's annotations
      *
-     * @param  string $type
-     * @return string
+     * @param  string $className
+     * @param  string $fieldName
+     * @param  string $range
+     * @return array
      */
-    private static function toPhpType($type)
+    private function generateFieldAnnotations($className, $fieldName, $range)
     {
-        switch ($type) {
-            case 'Boolean':
-                return 'boolean';
-                break;
-            case 'Date':
-                // No break
-            case 'DateTime':
-                // No break
-            case 'Time':
-                return '\DateTime';
-                break;
-            case 'Number':
-                // No break
-            case 'Float':
-                return 'float';
-                break;
-            case 'Integer':
-                return 'integer';
-                break;
-            case 'Text':
-                // No break
-            case 'URL':
-                return 'string';
-                break;
+        $annotations = [];
+        foreach ($this->annotationGenerators as $generator) {
+            $annotations = array_merge($annotations, $generator->generateFieldAnnotations($className, $fieldName, $range));
         }
 
-        return $type;
+        return $annotations;
+    }
+
+    /**
+     * Generates class annotations
+     *
+     * @param  string $className
+     * @return array
+     */
+    private function generateClassAnnotations($className)
+    {
+        $annotations = [];
+        foreach ($this->annotationGenerators as $generator) {
+            $annotations = array_merge($annotations, $generator->generateClassAnnotations($className));
+        }
+
+        return $annotations;
+    }
+
+    /**
+     * Generates uses
+     *
+     * @param  string $className
+     * @return array
+     */
+    private function generateUses($className)
+    {
+        $uses = [];
+        foreach ($this->annotationGenerators as $generator) {
+            $uses = array_merge($uses, $generator->generateUses($className));
+        }
+
+        return $uses;
     }
 }

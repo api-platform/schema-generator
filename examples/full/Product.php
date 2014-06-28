@@ -1,198 +1,229 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Product
- *
+ * 
  * @link http://schema.org/Product
+ * 
+ * @ORM\MappedSuperclass
  */
 class Product extends Thing
 {
     /**
      * Aggregate Rating
-     *
-     * @var AggregateRating The overall rating, based on a collection of reviews or ratings, of the item.
+     * 
+     * @var AggregateRating $aggregateRating The overall rating, based on a collection of reviews or ratings, of the item.
+     * 
+     * @ORM\ManyToOne(targetEntity="AggregateRating")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $aggregateRating;
+    private $aggregateRating;
     /**
      * Audience
-     *
-     * @var Audience The intended audience of the item, i.e. the group for whom the item was created.
+     * 
+     * @var Audience $audience The intended audience of the item, i.e. the group for whom the item was created.
+     * 
+     * @ORM\ManyToOne(targetEntity="Audience")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $audience;
+    private $audience;
     /**
-     * Brand (Organization)
-     *
-     * @var Organization The brand(s) associated with a product or service, or the brand(s) maintained by an organization or business person.
+     * Brand
+     * 
+     * @var Organization $brand The brand(s) associated with a product or service, or the brand(s) maintained by an organization or business person.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
      */
-    protected $brandOrganization;
-    /**
-     * Brand (Brand)
-     *
-     * @var Brand The brand(s) associated with a product or service, or the brand(s) maintained by an organization or business person.
-     */
-    protected $brandBrand;
+    private $brand;
     /**
      * Color
-     *
-     * @var string The color of the product.
+     * 
+     * @var string $color The color of the product.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $color;
+    private $color;
     /**
-     * Depth (Distance)
-     *
-     * @var Distance The depth of the product.
+     * Depth
+     * 
+     * @var Distance $depth The depth of the product.
+     * 
+     * @ORM\OneToOne(targetEntity="Distance")
      */
-    protected $depthDistance;
-    /**
-     * Depth (QuantitativeValue)
-     *
-     * @var QuantitativeValue The depth of the product.
-     */
-    protected $depthQuantitativeValue;
+    private $depth;
     /**
      * Gtin13
-     *
-     * @var string The GTIN-13 code of the product, or the product to which the offer refers. This is equivalent to 13-digit ISBN codes and EAN UCC-13. Former 12-digit UPC codes can be converted into a GTIN-13 code by simply adding a preceeding zero.
+     * 
+     * @var string $gtin13 The GTIN-13 code of the product, or the product to which the offer refers. This is equivalent to 13-digit ISBN codes and EAN UCC-13. Former 12-digit UPC codes can be converted into a GTIN-13 code by simply adding a preceeding zero.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $gtin13;
+    private $gtin13;
     /**
      * Gtin14
-     *
-     * @var string The GTIN-14 code of the product, or the product to which the offer refers.
+     * 
+     * @var string $gtin14 The GTIN-14 code of the product, or the product to which the offer refers.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $gtin14;
+    private $gtin14;
     /**
      * Gtin8
-     *
-     * @var string The GTIN-8 code of the product, or the product to which the offer refers. This code is also known as EAN/UCC-8 or 8-digit EAN.
+     * 
+     * @var string $gtin8 The GTIN-8 code of the product, or the product to which the offer refers. This code is also known as EAN/UCC-8 or 8-digit EAN.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $gtin8;
+    private $gtin8;
     /**
-     * Height (Distance)
-     *
-     * @var Distance The height of the item.
+     * Height
+     * 
+     * @var Distance $height The height of the item.
+     * 
+     * @ORM\OneToOne(targetEntity="Distance")
      */
-    protected $heightDistance;
-    /**
-     * Height (QuantitativeValue)
-     *
-     * @var QuantitativeValue The height of the item.
-     */
-    protected $heightQuantitativeValue;
+    private $height;
     /**
      * Is Accessory or Spare Part for
-     *
-     * @var Product A pointer to another product (or multiple products) for which this product is an accessory or spare part.
+     * 
+     * @var Product $isAccessoryOrSparePartFor A pointer to another product (or multiple products) for which this product is an accessory or spare part.
+     * 
+     * @ORM\ManyToOne(targetEntity="Product")
      */
-    protected $isAccessoryOrSparePartFor;
+    private $isAccessoryOrSparePartFor;
     /**
      * Is Consumable for
-     *
-     * @var Product A pointer to another product (or multiple products) for which this product is a consumable.
+     * 
+     * @var Product $isConsumableFor A pointer to another product (or multiple products) for which this product is a consumable.
+     * 
+     * @ORM\ManyToOne(targetEntity="Product")
      */
-    protected $isConsumableFor;
+    private $isConsumableFor;
     /**
      * Is Related to
-     *
-     * @var Product A pointer to another, somehow related product (or multiple products).
+     * 
+     * @var Product $isRelatedTo A pointer to another, somehow related product (or multiple products).
+     * 
+     * @ORM\ManyToOne(targetEntity="Product")
      */
-    protected $isRelatedTo;
+    private $isRelatedTo;
     /**
      * Is Similar to
-     *
-     * @var Product A pointer to another, functionally similar product (or multiple products).
+     * 
+     * @var Product $isSimilarTo A pointer to another, functionally similar product (or multiple products).
+     * 
+     * @ORM\ManyToOne(targetEntity="Product")
      */
-    protected $isSimilarTo;
+    private $isSimilarTo;
     /**
      * Item Condition
-     *
-     * @var OfferItemCondition A predefined value from OfferItemCondition or a textual description of the condition of the product or service, or the products or services included in the offer.
+     * 
+     * @var OfferItemCondition $itemCondition A predefined value from OfferItemCondition or a textual description of the condition of the product or service, or the products or services included in the offer.
+     * 
+     * @ORM\ManyToOne(targetEntity="OfferItemCondition")
      */
-    protected $itemCondition;
+    private $itemCondition;
     /**
-     * Logo (URL)
-     *
-     * @var string A logo associated with an organization.
+     * Logo
+     * 
+     * @var string $logo A logo associated with an organization.
+     * 
+     * @Assert\Url
+     * @ORM\Column
      */
-    protected $logoURL;
-    /**
-     * Logo (ImageObject)
-     *
-     * @var ImageObject A logo associated with an organization.
-     */
-    protected $logoImageObject;
+    private $logo;
     /**
      * Manufacturer
-     *
-     * @var Organization The manufacturer of the product.
+     * 
+     * @var Organization $manufacturer The manufacturer of the product.
+     * 
+     * @ORM\OneToOne(targetEntity="Organization")
      */
-    protected $manufacturer;
+    private $manufacturer;
     /**
-     * Model (ProductModel)
-     *
-     * @var ProductModel The model of the product. Use with the URL of a ProductModel or a textual representation of the model identifier. The URL of the ProductModel can be from an external source. It is recommended to additionally provide strong product identifiers via the gtin8/gtin13/gtin14 and mpn properties.
+     * Model
+     * 
+     * @var ProductModel $model The model of the product. Use with the URL of a ProductModel or a textual representation of the model identifier. The URL of the ProductModel can be from an external source. It is recommended to additionally provide strong product identifiers via the gtin8/gtin13/gtin14 and mpn properties.
+     * 
+     * @ORM\OneToOne(targetEntity="ProductModel")
      */
-    protected $modelProductModel;
-    /**
-     * Model (Text)
-     *
-     * @var string The model of the product. Use with the URL of a ProductModel or a textual representation of the model identifier. The URL of the ProductModel can be from an external source. It is recommended to additionally provide strong product identifiers via the gtin8/gtin13/gtin14 and mpn properties.
-     */
-    protected $modelText;
+    private $model;
     /**
      * Mpn
-     *
-     * @var string The Manufacturer Part Number (MPN) of the product, or the product to which the offer refers.
+     * 
+     * @var string $mpn The Manufacturer Part Number (MPN) of the product, or the product to which the offer refers.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $mpn;
+    private $mpn;
     /**
      * Offers
-     *
-     * @var Offer An offer to sell this item—for example, an offer to sell a product, the DVD of a movie, or tickets to an event.
+     * 
+     * @var Offer $offers An offer to transfer some rights to an item or to provide a service—for example, an offer to sell tickets to an event, to rent the DVD of a movie, to stream a TV show over the internet, to repair a motorcycle, or to loan a book.
+     * 
+     * @ORM\ManyToOne(targetEntity="Offer")
      */
-    protected $offers;
+    private $offers;
     /**
      * Product ID
-     *
-     * @var string The product identifier, such as ISBN. For example: <code>&lt;meta itemprop='productID' content='isbn:123-456-789'/&gt;</code>.
+     * 
+     * @var string $productID The product identifier, such as ISBN. For example: <meta itemprop='productID' content='isbn:123-456-789'/>.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $productID;
+    private $productID;
     /**
      * Release Date
-     *
-     * @var \DateTime The release date of a product or product model. This can be used to distinguish the exact variant of a product.
+     * 
+     * @var \DateTime $releaseDate The release date of a product or product model. This can be used to distinguish the exact variant of a product.
+     * 
+     * @Assert\Date
+     * @ORM\Column(type="date")
      */
-    protected $releaseDate;
+    private $releaseDate;
     /**
      * Review
-     *
-     * @var Review A review of the item.
+     * 
+     * @var Review $review A review of the item.
+     * 
+     * @ORM\ManyToOne(targetEntity="Review")
      */
-    protected $review;
+    private $review;
     /**
      * Sku
-     *
-     * @var string The Stock Keeping Unit (SKU), i.e. a merchant-specific identifier for a product or service, or the product to which the offer refers.
+     * 
+     * @var string $sku The Stock Keeping Unit (SKU), i.e. a merchant-specific identifier for a product or service, or the product to which the offer refers.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $sku;
+    private $sku;
     /**
      * Weight
-     *
-     * @var QuantitativeValue The weight of the product.
+     * 
+     * @var QuantitativeValue $weight The weight of the product.
+     * 
+     * @ORM\OneToOne(targetEntity="QuantitativeValue")
      */
-    protected $weight;
+    private $weight;
     /**
-     * Width (Distance)
-     *
-     * @var Distance The width of the item.
+     * Width
+     * 
+     * @var Distance $width The width of the item.
+     * 
+     * @ORM\OneToOne(targetEntity="Distance")
      */
-    protected $widthDistance;
-    /**
-     * Width (QuantitativeValue)
-     *
-     * @var QuantitativeValue The width of the item.
-     */
-    protected $widthQuantitativeValue;
+    private $width;
 }

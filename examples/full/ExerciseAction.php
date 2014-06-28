@@ -1,90 +1,107 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Exercise Action
- *
+ * 
  * @link http://schema.org/ExerciseAction
+ * 
+ * @ORM\Entity
  */
 class ExerciseAction extends PlayAction
 {
     /**
      * Course
-     *
-     * @var Place A sub property of location. The course where this action was taken.
+     * 
+     * @var Place $course A sub property of location. The course where this action was taken.
+     * 
+     * @ORM\ManyToOne(targetEntity="Place")
      */
-    protected $course;
+    private $course;
     /**
      * Diet
-     *
-     * @var Diet A sub property of instrument. The died used in this action.
+     * 
+     * @var Diet $diet A sub property of instrument. The died used in this action.
+     * 
+     * @ORM\ManyToOne(targetEntity="Diet")
      */
-    protected $diet;
+    private $diet;
     /**
      * Distance
-     *
-     * @var Distance A sub property of asset. The distance travelled.
+     * 
+     * @var Distance $distance A sub property of asset. The distance travelled.
+     * 
+     * @ORM\ManyToOne(targetEntity="Distance")
      */
-    protected $distance;
+    private $distance;
     /**
      * Exercise Plan
-     *
-     * @var ExercisePlan A sub property of instrument. The exercise plan used on this action.
+     * 
+     * @var ExercisePlan $exercisePlan A sub property of instrument. The exercise plan used on this action.
+     * 
+     * @ORM\ManyToOne(targetEntity="ExercisePlan")
      */
-    protected $exercisePlan;
+    private $exercisePlan;
     /**
      * Exercise Type
-     *
-     * @var string Type(s) of exercise or activity, such as strength training, flexibility training, aerobics, cardiac rehabilitation, etc.
+     * 
+     * @var string $exerciseType Type(s) of exercise or activity, such as strength training, flexibility training, aerobics, cardiac rehabilitation, etc.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $exerciseType;
+    private $exerciseType;
     /**
-     * From Location (Place)
-     *
-     * @var Place A sub property of location. The original location of the object or the agent before the action.
+     * From Location
+     * 
+     * @var Place $fromLocation A sub property of location. The original location of the object or the agent before the action.
+     * 
+     * @ORM\ManyToOne(targetEntity="Place")
      */
-    protected $fromLocationPlace;
-    /**
-     * From Location (Number)
-     *
-     * @var float A sub property of location. The original location of the object or the agent before the action.
-     */
-    protected $fromLocationNumber;
+    private $fromLocation;
     /**
      * Oponent
-     *
-     * @var Person A sub property of participant. The oponent on this action.
+     * 
+     * @var Person $oponent A sub property of participant. The oponent on this action.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
      */
-    protected $oponent;
+    private $oponent;
     /**
      * Sports Activity Location
-     *
-     * @var SportsActivityLocation A sub property of location. The sports activity location where this action occurred.
+     * 
+     * @var SportsActivityLocation $sportsActivityLocation A sub property of location. The sports activity location where this action occurred.
+     * 
+     * @ORM\ManyToOne(targetEntity="SportsActivityLocation")
      */
-    protected $sportsActivityLocation;
+    private $sportsActivityLocation;
     /**
      * Sports Event
-     *
-     * @var SportsEvent A sub property of location. The sports event where this action occurred.
+     * 
+     * @var SportsEvent $sportsEvent A sub property of location. The sports event where this action occurred.
+     * 
+     * @ORM\ManyToOne(targetEntity="SportsEvent")
      */
-    protected $sportsEvent;
+    private $sportsEvent;
     /**
      * Sports Team
-     *
-     * @var SportsTeam A sub property of participant. The sports team that participated on this action.
+     * 
+     * @var SportsTeam $sportsTeam A sub property of participant. The sports team that participated on this action.
+     * 
+     * @ORM\ManyToOne(targetEntity="SportsTeam")
      */
-    protected $sportsTeam;
+    private $sportsTeam;
     /**
-     * To Location (Place)
-     *
-     * @var Place A sub property of location. The final location of the object or the agent after the action.
+     * To Location
+     * 
+     * @var Place $toLocation A sub property of location. The final location of the object or the agent after the action.
+     * 
+     * @ORM\ManyToOne(targetEntity="Place")
      */
-    protected $toLocationPlace;
-    /**
-     * To Location (Number)
-     *
-     * @var float A sub property of location. The final location of the object or the agent after the action.
-     */
-    protected $toLocationNumber;
+    private $toLocation;
 }

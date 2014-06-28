@@ -1,48 +1,72 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Muscle
- *
+ * 
  * @link http://schema.org/Muscle
+ * 
+ * @ORM\Entity
  */
 class Muscle extends AnatomicalStructure
 {
     /**
      * Action
-     *
-     * @var string The movement the muscle generates.
+     * 
+     * @var string $action The movement the muscle generates.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $action;
+    private $action;
     /**
      * Antagonist
-     *
-     * @var Muscle The muscle whose action counteracts the specified muscle.
+     * 
+     * @var Muscle $antagonist The muscle whose action counteracts the specified muscle.
+     * 
+     * @ORM\ManyToOne(targetEntity="Muscle")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $antagonist;
+    private $antagonist;
     /**
      * Blood Supply
-     *
-     * @var Vessel The blood vessel that carries blood from the heart to the muscle.
+     * 
+     * @var Vessel $bloodSupply The blood vessel that carries blood from the heart to the muscle.
+     * 
+     * @ORM\ManyToOne(targetEntity="Vessel")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $bloodSupply;
+    private $bloodSupply;
     /**
      * Insertion
-     *
-     * @var AnatomicalStructure The place of attachment of a muscle, or what the muscle moves.
+     * 
+     * @var AnatomicalStructure $insertion The place of attachment of a muscle, or what the muscle moves.
+     * 
+     * @ORM\ManyToOne(targetEntity="AnatomicalStructure")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $insertion;
+    private $insertion;
     /**
      * Nerve
-     *
-     * @var Nerve The underlying innervation associated with the muscle.
+     * 
+     * @var Nerve $nerve The underlying innervation associated with the muscle.
+     * 
+     * @ORM\ManyToOne(targetEntity="Nerve")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $nerve;
+    private $nerve;
     /**
      * Origin
-     *
-     * @var AnatomicalStructure The place or point where a muscle arises.
+     * 
+     * @var AnatomicalStructure $origin The place or point where a muscle arises.
+     * 
+     * @ORM\ManyToOne(targetEntity="AnatomicalStructure")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $origin;
+    private $origin;
 }

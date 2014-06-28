@@ -1,48 +1,69 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Medical Study
- *
+ * 
  * @link http://schema.org/MedicalStudy
+ * 
+ * @ORM\MappedSuperclass
  */
 class MedicalStudy extends MedicalEntity
 {
     /**
      * Outcome
-     *
-     * @var string Expected or actual outcomes of the study.
+     * 
+     * @var string $outcome Expected or actual outcomes of the study.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $outcome;
+    private $outcome;
     /**
      * Population
-     *
-     * @var string Any characteristics of the population used in the study, e.g. 'males under 65'.
+     * 
+     * @var string $population Any characteristics of the population used in the study, e.g. 'males under 65'.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $population;
+    private $population;
     /**
      * Sponsor
-     *
-     * @var Organization Sponsor of the study.
+     * 
+     * @var Organization $sponsor Sponsor of the study.
+     * 
      */
-    protected $sponsor;
+    private $sponsor;
     /**
      * Status
-     *
-     * @var MedicalStudyStatus The status of the study (enumerated).
+     * 
+     * @var MedicalStudyStatus $status The status of the study (enumerated).
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalStudyStatus")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $status;
+    private $status;
     /**
      * Study Location
-     *
-     * @var AdministrativeArea The location in which the study is taking/took place.
+     * 
+     * @var AdministrativeArea $studyLocation The location in which the study is taking/took place.
+     * 
+     * @ORM\ManyToOne(targetEntity="AdministrativeArea")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $studyLocation;
+    private $studyLocation;
     /**
      * Study Subject
-     *
-     * @var MedicalEntity A subject of the study, i.e. one of the medical conditions, therapies, devices, drugs, etc. investigated by the study.
+     * 
+     * @var MedicalEntity $studySubject A subject of the study, i.e. one of the medical conditions, therapies, devices, drugs, etc. investigated by the study.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalEntity")
      */
-    protected $studySubject;
+    private $studySubject;
 }

@@ -1,294 +1,381 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Person
- *
+ * 
  * @link http://schema.org/Person
+ * 
+ * @ORM\Entity
  */
 class Person extends Thing
 {
     /**
      * Additional Name
-     *
-     * @var string An additional name for a Person, can be used for a middle name.
+     * 
+     * @var string $additionalName An additional name for a Person, can be used for a middle name.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $additionalName;
+    private $additionalName;
     /**
      * Address
-     *
-     * @var PostalAddress Physical address of the item.
+     * 
+     * @var PostalAddress $address Physical address of the item.
+     * 
      */
-    protected $address;
+    private $address;
     /**
      * Affiliation
-     *
-     * @var Organization An organization that this person is affiliated with. For example, a school/university, a club, or a team.
+     * 
+     * @var Organization $affiliation An organization that this person is affiliated with. For example, a school/university, a club, or a team.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
      */
-    protected $affiliation;
+    private $affiliation;
     /**
      * Alumni of
-     *
-     * @var EducationalOrganization An educational organizations that the person is an alumni of.
+     * 
+     * @var EducationalOrganization $alumniOf An educational organizations that the person is an alumni of.
+     * 
+     * @ORM\ManyToOne(targetEntity="EducationalOrganization")
      */
-    protected $alumniOf;
+    private $alumniOf;
     /**
      * Award
-     *
-     * @var string An award won by this person or for this creative work.
+     * 
+     * @var string $award An award won by this person or for this creative work.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $award;
+    private $award;
     /**
      * Birth Date
-     *
-     * @var \DateTime Date of birth.
+     * 
+     * @var \DateTime $birthDate Date of birth.
+     * 
+     * @Assert\Date
+     * @ORM\Column(type="date")
      */
-    protected $birthDate;
+    private $birthDate;
     /**
-     * Brand (Organization)
-     *
-     * @var Organization The brand(s) associated with a product or service, or the brand(s) maintained by an organization or business person.
+     * Brand
+     * 
+     * @var Organization $brand The brand(s) associated with a product or service, or the brand(s) maintained by an organization or business person.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
      */
-    protected $brandOrganization;
-    /**
-     * Brand (Brand)
-     *
-     * @var Brand The brand(s) associated with a product or service, or the brand(s) maintained by an organization or business person.
-     */
-    protected $brandBrand;
+    private $brand;
     /**
      * Children
-     *
-     * @var Person A child of the person.
+     * 
+     * @var Person $children A child of the person.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
      */
-    protected $children;
+    private $children;
     /**
      * Colleague
-     *
-     * @var Person A colleague of the person.
+     * 
+     * @var Person $colleague A colleague of the person.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
      */
-    protected $colleague;
+    private $colleague;
     /**
      * Contact Point
-     *
-     * @var ContactPoint A contact point for a person or organization.
+     * 
+     * @var ContactPoint $contactPoint A contact point for a person or organization.
+     * 
+     * @ORM\ManyToOne(targetEntity="ContactPoint")
      */
-    protected $contactPoint;
+    private $contactPoint;
     /**
      * Death Date
-     *
-     * @var \DateTime Date of death.
+     * 
+     * @var \DateTime $deathDate Date of death.
+     * 
+     * @Assert\Date
+     * @ORM\Column(type="date")
      */
-    protected $deathDate;
+    private $deathDate;
     /**
      * Duns
-     *
-     * @var string The Dun & Bradstreet DUNS number for identifying an organization or business person.
+     * 
+     * @var string $duns The Dun & Bradstreet DUNS number for identifying an organization or business person.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $duns;
+    private $duns;
     /**
      * Email
-     *
-     * @var string Email address.
+     * 
+     * @var string $email Email address.
+     * 
+     * @Assert\Email
+     * @ORM\Column
      */
-    protected $email;
+    private $email;
     /**
      * Family Name
-     *
-     * @var string Family name. In the U.S., the last name of an Person. This can be used along with givenName instead of the Name property.
+     * 
+     * @var string $familyName Family name. In the U.S., the last name of an Person. This can be used along with givenName instead of the Name property.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $familyName;
+    private $familyName;
     /**
      * Fax Number
-     *
-     * @var string The fax number.
+     * 
+     * @var string $faxNumber The fax number.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $faxNumber;
+    private $faxNumber;
     /**
      * Follows
-     *
-     * @var Person The most generic uni-directional social relation.
+     * 
+     * @var Person $follows The most generic uni-directional social relation.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
      */
-    protected $follows;
+    private $follows;
     /**
      * Gender
-     *
-     * @var string Gender of the person.
+     * 
+     * @var string $gender Gender of the person.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $gender;
+    private $gender;
     /**
      * Given Name
-     *
-     * @var string Given name. In the U.S., the first name of a Person. This can be used along with familyName instead of the Name property.
+     * 
+     * @var string $givenName Given name. In the U.S., the first name of a Person. This can be used along with familyName instead of the Name property.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $givenName;
+    private $givenName;
     /**
      * Global Location Number
-     *
-     * @var string The Global Location Number (GLN, sometimes also referred to as International Location Number or ILN) of the respective organization, person, or place. The GLN is a 13-digit number used to identify parties and physical locations.
+     * 
+     * @var string $globalLocationNumber The Global Location Number (GLN, sometimes also referred to as International Location Number or ILN) of the respective organization, person, or place. The GLN is a 13-digit number used to identify parties and physical locations.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $globalLocationNumber;
+    private $globalLocationNumber;
     /**
      * Has POS
-     *
-     * @var Place Points-of-Sales operated by the organization or person.
+     * 
+     * @var Place $hasPOS Points-of-Sales operated by the organization or person.
+     * 
+     * @ORM\ManyToOne(targetEntity="Place")
      */
-    protected $hasPOS;
+    private $hasPOS;
     /**
-     * Home Location (ContactPoint)
-     *
-     * @var ContactPoint A contact location for a person's residence.
+     * Home Location
+     * 
+     * @var ContactPoint $homeLocation A contact location for a person's residence.
+     * 
+     * @ORM\ManyToOne(targetEntity="ContactPoint")
      */
-    protected $homeLocationContactPoint;
-    /**
-     * Home Location (Place)
-     *
-     * @var Place A contact location for a person's residence.
-     */
-    protected $homeLocationPlace;
+    private $homeLocation;
     /**
      * Honorific Prefix
-     *
-     * @var string An honorific prefix preceding a Person's name such as Dr/Mrs/Mr.
+     * 
+     * @var string $honorificPrefix An honorific prefix preceding a Person's name such as Dr/Mrs/Mr.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $honorificPrefix;
+    private $honorificPrefix;
     /**
      * Honorific Suffix
-     *
-     * @var string An honorific suffix preceding a Person's name such as M.D. /PhD/MSCSW.
+     * 
+     * @var string $honorificSuffix An honorific suffix preceding a Person's name such as M.D. /PhD/MSCSW.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $honorificSuffix;
+    private $honorificSuffix;
     /**
      * Interaction Count
-     *
-     * @var string A count of a specific user interactions with this item—for example, <code>20 UserLikes</code>, <code>5 UserComments</code>, or <code>300 UserDownloads</code>. The user interaction type should be one of the sub types of <a href="http://schema.org/UserInteraction">UserInteraction</a>.
+     * 
+     * @var string $interactionCount A count of a specific user interactions with this item—for example, 20 UserLikes, 5 UserComments, or 300 UserDownloads. The user interaction type should be one of the sub types of UserInteraction.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $interactionCount;
+    private $interactionCount;
     /**
      * Isic V4
-     *
-     * @var string The International Standard of Industrial Classification of All Economic Activities (ISIC), Revision 4 code for a particular organization, business person, or place.
+     * 
+     * @var string $isicV4 The International Standard of Industrial Classification of All Economic Activities (ISIC), Revision 4 code for a particular organization, business person, or place.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $isicV4;
+    private $isicV4;
     /**
      * Job Title
-     *
-     * @var string The job title of the person (for example, Financial Manager).
+     * 
+     * @var string $jobTitle The job title of the person (for example, Financial Manager).
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $jobTitle;
+    private $jobTitle;
     /**
      * Knows
-     *
-     * @var Person The most generic bi-directional social/work relation.
+     * 
+     * @var Person $knows The most generic bi-directional social/work relation.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $knows;
+    private $knows;
     /**
      * Makes Offer
-     *
-     * @var Offer A pointer to products or services offered by the organization or person.
+     * 
+     * @var Offer $makesOffer A pointer to products or services offered by the organization or person.
+     * 
+     * @ORM\ManyToOne(targetEntity="Offer")
      */
-    protected $makesOffer;
+    private $makesOffer;
     /**
      * Member of
-     *
-     * @var Organization An organization to which the person belongs.
+     * 
+     * @var Organization $memberOf An organization to which the person belongs.
+     * 
+     * @ORM\ManyToOne(targetEntity="Organization")
      */
-    protected $memberOf;
+    private $memberOf;
     /**
      * Naics
-     *
-     * @var string The North American Industry Classification System (NAICS) code for a particular organization or business person.
+     * 
+     * @var string $naics The North American Industry Classification System (NAICS) code for a particular organization or business person.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $naics;
+    private $naics;
     /**
      * Nationality
-     *
-     * @var Country Nationality of the person.
+     * 
+     * @var Country $nationality Nationality of the person.
+     * 
      */
-    protected $nationality;
+    private $nationality;
     /**
-     * Owns (OwnershipInfo)
-     *
-     * @var OwnershipInfo Products owned by the organization or person.
+     * Owns
+     * 
+     * @var OwnershipInfo $owns Products owned by the organization or person.
+     * 
+     * @ORM\ManyToOne(targetEntity="OwnershipInfo")
      */
-    protected $ownsOwnershipInfo;
-    /**
-     * Owns (Product)
-     *
-     * @var Product Products owned by the organization or person.
-     */
-    protected $ownsProduct;
+    private $owns;
     /**
      * Parent
-     *
-     * @var Person A parent of this person.
+     * 
+     * @var Person $parent A parent of this person.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
      */
-    protected $parent;
+    private $parent;
     /**
      * Performer in
-     *
-     * @var Event Event that this person is a performer or participant in.
+     * 
+     * @var Event $performerIn Event that this person is a performer or participant in.
+     * 
      */
-    protected $performerIn;
+    private $performerIn;
     /**
      * Related to
-     *
-     * @var Person The most generic familial relation.
+     * 
+     * @var Person $relatedTo The most generic familial relation.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $relatedTo;
+    private $relatedTo;
     /**
      * Seeks
-     *
-     * @var Demand A pointer to products or services sought by the organization or person (demand).
+     * 
+     * @var Demand $seeks A pointer to products or services sought by the organization or person (demand).
+     * 
+     * @ORM\ManyToOne(targetEntity="Demand")
      */
-    protected $seeks;
+    private $seeks;
     /**
      * Sibling
-     *
-     * @var Person A sibling of the person.
+     * 
+     * @var Person $sibling A sibling of the person.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
      */
-    protected $sibling;
+    private $sibling;
     /**
      * Spouse
-     *
-     * @var Person The person's spouse.
+     * 
+     * @var Person $spouse The person's spouse.
+     * 
+     * @ORM\ManyToOne(targetEntity="Person")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $spouse;
+    private $spouse;
     /**
      * Tax ID
-     *
-     * @var string The Tax / Fiscal ID of the organization or person, e.g. the TIN in the US or the CIF/NIF in Spain.
+     * 
+     * @var string $taxID The Tax / Fiscal ID of the organization or person, e.g. the TIN in the US or the CIF/NIF in Spain.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $taxID;
+    private $taxID;
     /**
      * Telephone
-     *
-     * @var string The telephone number.
+     * 
+     * @var string $telephone The telephone number.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $telephone;
+    private $telephone;
     /**
      * Vat ID
-     *
-     * @var string The Value-added Tax ID of the organisation or person.
+     * 
+     * @var string $vatID The Value-added Tax ID of the organisation or person.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $vatID;
+    private $vatID;
     /**
-     * Work Location (ContactPoint)
-     *
-     * @var ContactPoint A contact location for a person's place of work.
+     * Work Location
+     * 
+     * @var ContactPoint $workLocation A contact location for a person's place of work.
+     * 
+     * @ORM\ManyToOne(targetEntity="ContactPoint")
      */
-    protected $workLocationContactPoint;
-    /**
-     * Work Location (Place)
-     *
-     * @var Place A contact location for a person's place of work.
-     */
-    protected $workLocationPlace;
+    private $workLocation;
     /**
      * Works for
-     *
-     * @var Organization Organizations that the person works for.
+     * 
+     * @var Organization $worksFor Organizations that the person works for.
+     * 
      */
-    protected $worksFor;
+    private $worksFor;
 }

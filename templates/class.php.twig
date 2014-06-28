@@ -10,22 +10,24 @@
 
 namespace {{ namespace }};
 
+{% for use in uses %}
+{{ use }}
+{% endfor %}
+
 /**
- * {{ label }}
- *
-{% if author %} * @author {{ author }}
-{% endif %}
- * @link {{ link }}
+{% for annotation in annotations %}
+ * {{ annotation }}
+{% endfor %}
  */
-class {{ name }}{% if parent %} extends {{ parent }}
-{% endif %}
+class {{ name }}{% if parent %} extends {{ parent }}{% endif %}
+
 {
 {% for field in fields %}
     /**
-     * {{ field.label }}
-     *
-     * @var {{ field.type }} {{ field.comment }}
+{% for annotation in field.annotations %}
+     * {{ annotation }}
+{% endfor %}
      */
-    {{ field_visibility }} ${{ field.id }};
+    {{ fieldVisibility }} ${{ field.name }};
 {% endfor %}
 }

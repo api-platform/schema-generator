@@ -9,7 +9,4 @@ before_script:
   - mkdir ../model
 
 script:
-  - php bin/schema.php schema:dump-configuration
-  - php bin/schema.php schema:extract-cardinalities
-  - php bin/schema.php schema:generate-entities ../model
-  - php bin/schema.php schema:generate-entities ../model examples/config/lechoppe.yml
+  - ./tests.sh

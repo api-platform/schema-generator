@@ -1,36 +1,52 @@
 <?php
 
+
 namespace SchemaOrg;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Medical Guideline
- *
+ * 
  * @link http://schema.org/MedicalGuideline
+ * 
+ * @ORM\MappedSuperclass
  */
 class MedicalGuideline extends MedicalEntity
 {
     /**
      * Evidence Level
-     *
-     * @var MedicalEvidenceLevel Strength of evidence of the data used to formulate the guideline (enumerated).
+     * 
+     * @var MedicalEvidenceLevel $evidenceLevel Strength of evidence of the data used to formulate the guideline (enumerated).
+     * 
      */
-    protected $evidenceLevel;
+    private $evidenceLevel;
     /**
      * Evidence Origin
-     *
-     * @var string Source of the data used to formulate the guidance, e.g. RCT, consensus opinion, etc.
+     * 
+     * @var string $evidenceOrigin Source of the data used to formulate the guidance, e.g. RCT, consensus opinion, etc.
+     * 
+     * @Assert\Type(type="string")
+     * @ORM\Column
      */
-    protected $evidenceOrigin;
+    private $evidenceOrigin;
     /**
      * Guideline Date
-     *
-     * @var \DateTime Date on which this guideline's recommendation was made.
+     * 
+     * @var \DateTime $guidelineDate Date on which this guideline's recommendation was made.
+     * 
+     * @Assert\Date
+     * @ORM\Column(type="date")
      */
-    protected $guidelineDate;
+    private $guidelineDate;
     /**
      * Guideline Subject
-     *
-     * @var MedicalEntity The medical conditions, treatments, etc. that are the subject of the guideline.
+     * 
+     * @var MedicalEntity $guidelineSubject The medical conditions, treatments, etc. that are the subject of the guideline.
+     * 
+     * @ORM\ManyToOne(targetEntity="MedicalEntity")
+     * @ORM\JoinColumn(nullable=false)
      */
-    protected $guidelineSubject;
+    private $guidelineSubject;
 }
