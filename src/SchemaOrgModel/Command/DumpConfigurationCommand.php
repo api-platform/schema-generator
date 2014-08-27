@@ -9,7 +9,7 @@
 
 namespace SchemaOrgModel\Command;
 
-use SchemaOrgModel\Config\EntitiesGeneratorConfiguration;
+use SchemaOrgModel\Config\TypesGeneratorConfiguration;
 use Symfony\Component\Config\Definition\Dumper\YamlReferenceDumper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -38,7 +38,7 @@ class DumpConfigurationCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $configuration = new EntitiesGeneratorConfiguration();
+        $configuration = new TypesGeneratorConfiguration();
         $dumper = new YamlReferenceDumper();
         $output->writeln($dumper->dump($configuration));
     }

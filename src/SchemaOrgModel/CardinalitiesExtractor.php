@@ -20,22 +20,22 @@ class CardinalitiesExtractor
     const CARDINALITY_0_N = '(0..*)';
     const CARDINALITY_1_1 = '(1..1)';
     const CARDINALITY_1_N = '(1..*)';
+    const CARDINALITY_UNKNOWN = 'unknown';
 
     /**
-     * @var \stdClass
+     * @type \EasyRdf_Graph
      */
     protected $schemaOrg;
     /**
-     * @var GoodRelationsBridge
+     * @type GoodRelationsBridge
      */
     protected $goodRelationsBridge;
 
     /**
-     * @param \stdClass           $schemaOrg
+     * @param \EasyRdf_Graph      $schemaOrg
      * @param GoodRelationsBridge $goodRelationsBridge
-     * @internal param \SimpleXMLElement $goodRelations
      */
-    public function __construct(\stdClass $schemaOrg, GoodRelationsBridge $goodRelationsBridge)
+    public function __construct(\EasyRdf_Graph $schemaOrg, GoodRelationsBridge $goodRelationsBridge)
     {
         $this->schemaOrg = $schemaOrg;
         $this->goodRelationsBridge = $goodRelationsBridge;
@@ -50,8 +50,10 @@ class CardinalitiesExtractor
     {
         $properties = [];
 
-        foreach ($this->schemaOrg->properties as $property) {
-            $properties[$property->id] = $this->extractForProperty($property);
+        //var_dump($this->schemaOrg->get('http://schema.org/OutOfStock', 'rdfs:comment'));
+
+        foreach ($this->schemaOrg->allOfType('rdf:Property') as $property) {
+            $properties[$property->localName()] = $this->extractForProperty($property);
         }
 
         return $properties;
@@ -61,18 +63,18 @@ class CardinalitiesExtractor
      * Extracts the cardinality of a property
      * Based on Geraint Luff work: https://github.com/geraintluff/schema-org-gen
      *
-     * @param  \stdClass $property
-     * @return string    The cardinality
+     * @param  \EasyRdf_Resource $property
+     * @return string            The cardinality
      */
-    private function extractForProperty(\stdClass $property)
+    private function extractForProperty(\EasyRdf_Resource $property)
     {
-        $fromGoodRelations = $this->goodRelationsBridge->extractCardinality($property->id);
+        $localName = $property->localName();
+        $fromGoodRelations = $this->goodRelationsBridge->extractCardinality($localName);
         if ($fromGoodRelations) {
             return $fromGoodRelations;
         }
 
-        $id = $property->id;
-        $comment = $property->comment_plain;
+        $comment = $property->get('rdfs:comment')->getValue();
 
         if (
             // http://schema.org/acceptedOffer, http://schema.org/acceptedPaymentMethod, http://schema.org/exerciseType
@@ -89,14 +91,14 @@ class CardinalitiesExtractor
         }
 
         if (
-            preg_match('/^is/', $id)
+            preg_match('/^is/', $localName)
         ||
             preg_match('/^The /', $comment)
         ) {
             return self::CARDINALITY_1_N;
         }
 
-        return 'unknown';
+        return self::CARDINALITY_UNKNOWN;
     }
 
 }

@@ -38,7 +38,8 @@ class ExtractCardinalitiesCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $schemaOrg = json_decode(file_get_contents(SCHEMA_ORG_JSON_ALL_URL));
+        $schemaOrg = new \EasyRdf_Graph();
+        $schemaOrg->load(SCHEMA_ORG_RDFA_URL, 'rdfa');
         $goodRelations = new \SimpleXMLElement(GOOD_RELATIONS_OWL_URL, 0, true);
 
         $goodRelationsBridge = new GoodRelationsBridge($goodRelations);

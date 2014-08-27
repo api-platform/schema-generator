@@ -1,10 +1,3 @@
-#
-# (c) Kévin Dunglas <dunglas@gmail.com>
-#
-# This source file is subject to the MIT license that is bundled
-# with this source code in the file LICENSE.
-#
-
 header: |
   /*
    * This file is part of the L'Échoppe package.
@@ -14,10 +7,10 @@ header: |
    * For the full copyright and license information, please view the LICENSE
    * file that was distributed with this source code.
    */
-namespace: Echoppe\CoreBundle\Entity
-#namespaces:
-#  interface: Echoppe\CoreBundle\Model
-#  entity: Echoppe\CoreBundle\Entity
+namespaces:
+  entity:               Echoppe\CoreBundle\Entity
+  enum:                 Echoppe\CoreBundle\Enum
+  interface:            Echoppe\CoreBundle\Model
 author: Kévin Dunglas <dunglas@gmail.com>
 checkIsGoodRelations: true
 types:
@@ -25,7 +18,7 @@ types:
     properties:
       name: ~
       description: ~
-      image: ~
+#      image: ~
   Product:
     properties:
       brand: ~
@@ -48,63 +41,45 @@ types:
     properties:
       logo: { range: ImageObject }
   ImageObject:
+    parent: Thing
     properties:
       caption: ~
   QuantitativeValue:
     properties:
-      maxValue: ~
-      minValue: ~
       unitCode: ~
       value: ~
   ProductModel:
     properties:
       isVariantOf: ~
-  SomeProducts:
-    properties:
-      inventoryLevel: ~
   Offer:
     parent: Thing
     properties:
       acceptedPaymentMethod: ~
-      addOn: ~
+#      addOn: ~
       availability: ~
       availabilityStarts: ~
       availabilityEnds: ~
       availableDeliveryMethod: ~
       category: { range: Text }
       deliveryLeadTime: ~
-      eligibleCustomerType: ~
-      eligibleDuration: ~
-      eligibleQuantity: ~
-      eligibleRegion: ~
-      eligibleTransactionVolume: ~
-      includesObject: ~
       inventoryLevel: ~
       itemCondition: ~
       priceSpecification: ~
+  PriceSpecification:
+    parent: false
+    properties:
+      eligibleQuantity: ~
+      eligibleTransactionVolume: ~
+      price: ~
       validFrom: ~
       validThrough: ~
-#      warranty: ~
-  StructuredValue:
-      parent: Thing
-  PriceSpecification: ~
+      valueAddedTaxIncluded: ~
   DeliveryChargeSpecification: ~
   PaymentChargeSpecification: ~
-  UnitPriceSpecification:
-    properties: { }
-  TypeAndQuantityNode: ~
-  OfferItemCondition:
-    parent: false
-  PaymentMethod:
-    parent: false
-  ItemAvailability:
-    parent: false
-  DeliveryMethod:
-    parent: false
-  BusinessEntityType:
-    parent: false
+  OfferItemCondition: ~
+  PaymentMethod: ~
+  ItemAvailability: ~
+  DeliveryMethod: ~
 #  WarrantyPromise: ~
 #  WarrantyScope:
 #    parent: false
-  MediaObject: ~
-  CreativeWork: ~

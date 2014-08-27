@@ -2,7 +2,7 @@
 
 Various tools to generate a data model based on [Schema.org](http://schema.org) vocables.
 
-*This project is a work in progress. It is not finished yet.*
+*This project is a work in progress. It is not ready to production yet.*
 
 [![Build Status](https://travis-ci.org/dunglas/php-schema.org-model.png?branch=master)](https://travis-ci.org/dunglas/php-schema.org-model)
 
@@ -31,29 +31,61 @@ See [lechoppe.yml](examples/config/lechoppe.yml) file.
 # Debug mode
 debug:                false
 
+# Use Doctrine's Resolve Target Entity feature
+useRte:               false
+
 # Emit a warning if a property is not derived from GoodRelations
-check_is_goodrelations:  false
+checkIsGoodRelations:  false
 
 # A license or any text to use as header of generated files
 header:               false # Example: // (c) Kévin Dunglas <dunglas@gmail.com>
 
-# The namespace of the generated files
-namespace:            SchemaOrg # Example: SchemaOrgModel
+# PHP namespaces
+namespaces:
+
+    # The namespace of the generated entities
+    entity:               SchemaOrg\Entity # Example: Acme\Entity
+
+    # The namespace of the generated enumerations
+    enum:                 SchemaOrg\Enum # Example: Acme\Enum
+
+    # The namespace of the generated interfaces
+    interface:            SchemaOrg\Model # Example: Acme\Model
 
 # The value of the phpDoc's @author annotation
 author:               false # Example: Kévin Dunglas <dunglas@gmail.com>
 
 # Visibility of entities fields
-field_visibility:     ~ # One of "private"; "protected"; "public"
+fieldVisibility:      ~ # One of "private"; "protected"; "public"
 
 # Schema.org's types to use
 types:
 
     # Prototype
     id:
+        doctrine:
+
+            # The Doctrine inheritance mapping type
+            inheritanceMapping:   null
+
+        # The parent class
+        parent:               null
 
         # Properties of this type to use
-        properties:           []
+        properties:
+
+            # Prototype
+            id:
+
+                # The property range
+                range:                null # Example: Offer
+annotationGenerators:
+
+    # Defaults:
+    - SchemaOrgModel\AnnotationGenerator\PhpDocAnnotationGenerator
+    - SchemaOrgModel\AnnotationGenerator\ConstraintAnnotationGenerator
+    - SchemaOrgModel\AnnotationGenerator\DoctrineAnnotationGenerator
+
 ```
 
 ## Cardinalities extractor

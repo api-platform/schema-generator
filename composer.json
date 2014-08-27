@@ -25,7 +25,9 @@
         "symfony/config": "~2.4",
         "symfony/validator": "~2.4",
         "twig/twig": "~1.15",
-        "psr/log": "~1.0"
+        "psr/log": "~1.0",
+        "easyrdf/easyrdf": "~0.8.0",
+        "myclabs/php-enum": "~1.2.1"
     },
     "bin": ["bin/schema", "bin/schema.php"]
 }

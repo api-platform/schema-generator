@@ -6,12 +6,12 @@
  #}
 <?php
 
-{%  if header %}{{ header }}{% endif %}
+{% if header %}{{ header }}{% endif %}
 
 namespace {{ namespace }};
 
 {% for use in uses %}
-{{ use }}
+use {{ use }};
 {% endfor %}
 
 /**
@@ -19,9 +19,17 @@ namespace {{ namespace }};
  * {{ annotation }}
 {% endfor %}
  */
-class {{ name }}{% if parent %} extends {{ parent }}{% endif %}
+class {{ name }}{% if parent %} extends {{ parent }}{% endif %}{% if interface %} implements {{ interface }}{% endif %}
 
 {
+{% for constant in constants %}
+    /**
+{% for annotation in constant.annotations %}
+     * {{ annotation }}
+{% endfor %}
+    */
+    const {{ constant.name }} = '{{ constant.value }}';
+{% endfor %}
 {% for field in fields %}
     /**
 {% for annotation in field.annotations %}

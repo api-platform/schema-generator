@@ -8,6 +8,7 @@
  */
 
 namespace SchemaOrgModel\AnnotationGenerator;
+use SchemaOrgModel\TypesGenerator;
 
 /**
  * Constraint annotation generator
@@ -20,7 +21,7 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations($className)
+    public function generateClassAnnotations(\EasyRdf_Resource $class)
     {
         return [];
     }
@@ -28,7 +29,15 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations($className, $fieldName, $range)
+    public function generateConstantAnnotations(\EasyRdf_Resource $class, \EasyRdf_Resource $instance, $name)
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateFieldAnnotations(\EasyRdf_Resource $class, \EasyRdf_Resource $field, $range)
     {
         switch ($range) {
             case 'URL':
@@ -44,7 +53,7 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
                 return ['@Assert\Time'];
         }
 
-        if ('email' === $fieldName) {
+        if ('email' === $field->localName()) {
             return ['@Assert\Email'];
         }
 
@@ -59,8 +68,11 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateUses($className)
+    public function generateUses(\EasyRdf_Resource $class)
     {
-        return ['use Symfony\Component\Validator\Constraints as Assert;'];
+        $subClassOf = $class->get('rdfs:subClassOf');
+        $typeIsEnum = $subClassOf && $subClassOf->getUri() === TypesGenerator::SCHEMA_ORG_ENUMERATION;
+
+        return $typeIsEnum ? [] : ['Symfony\Component\Validator\Constraints as Assert'];
     }
 }

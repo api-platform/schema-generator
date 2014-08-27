@@ -10,6 +10,7 @@
 namespace SchemaOrgModel\AnnotationGenerator;
 
 use SchemaOrgModel\CardinalitiesExtractor;
+use SchemaOrgModel\TypesGenerator;
 
 /**
  * Doctrine annotation generator
@@ -21,15 +22,23 @@ class DoctrineAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations($className)
+    public function generateClassAnnotations(\EasyRdf_Resource $class)
     {
-        return empty($this->config['types']) || null === $this->config['types'][$className]['doctrine']['inheritanceMapping'] ? $this->guessInheritanceMapping($className) : $this->config['types'][$className]['doctrine']['inheritanceMapping'];
+        return empty($this->config['types']) || null === $this->config['types'][$class->localName()]['doctrine']['inheritanceMapping'] ? $this->guessInheritanceMapping($class) : $this->config['types'][$class->localName()]['doctrine']['inheritanceMapping'];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations($className, $fieldName, $range)
+    public function generateConstantAnnotations(\EasyRdf_Resource $class, \EasyRdf_Resource $instance, $name)
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateFieldAnnotations(\EasyRdf_Resource $class, \EasyRdf_Resource $field, $range)
     {
         $annotations = [];
 
@@ -70,7 +79,7 @@ class DoctrineAnnotationGenerator extends AbstractAnnotationGenerator
 
             $annotations[] = $annotation;
         } else {
-            switch ($this->cardinalities[$fieldName]) {
+            switch ($this->cardinalities[$field->localName()]) {
                 case CardinalitiesExtractor::CARDINALITY_0_1:
                     $annotations[] = sprintf('@ORM\OneToOne(targetEntity="%s")', $range);
                     break;
@@ -97,19 +106,23 @@ class DoctrineAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateUses($className)
+    public function generateUses(\EasyRdf_Resource $class)
     {
-        return ['use Doctrine\ORM\Mapping as ORM;'];
+        $subClassOf = $class->get('rdfs:subClassOf');
+        $typeIsEnum = $subClassOf && $subClassOf->getUri() === TypesGenerator::SCHEMA_ORG_ENUMERATION;
+
+        return $typeIsEnum ? [] : ['Doctrine\ORM\Mapping as ORM'];
     }
 
     /**
      * Guesses inheritance mapping
      *
-     * @param  string $className
+     * @param  \EasyRdf_Resource $class
      * @return array
      */
-    private function guessInheritanceMapping($className)
+    private function guessInheritanceMapping(\EasyRdf_Resource $class)
     {
-        return empty($this->schemaOrg->types->$className->subtypes) ? ['@ORM\Entity'] : ['@ORM\MappedSuperclass'];
+        // TODO : check if the given class has subtypes
+        return false ? ['@ORM\Entity'] : ['@ORM\MappedSuperclass'];
     }
 }

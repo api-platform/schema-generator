@@ -19,20 +19,17 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations($className)
+    public function generateClassAnnotations(\EasyRdf_Resource $class)
     {
-        $type = $this->schemaOrg->types->$className;
-
-        $annotations = [
-            $type->label,
-            ''
-        ];
+        $annotations = explode("\n", html_entity_decode($class->get('rdfs:comment'), ENT_HTML5));
+        // Add a blank line
+        $annotations[] = '';
 
         if ($this->config['author']) {
             $annotations[] = sprintf('@author %s', $this->config['author']);
         }
 
-        $annotations[] = sprintf('@link %s', $type->url);
+        $annotations[] = sprintf('@see %s %s', $class->getUri(), 'Documentation on Schema.org');
         $annotations[] = '';
 
         return $annotations;
@@ -41,22 +38,27 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations($className, $fieldName, $range)
+    public function generateConstantAnnotations(\EasyRdf_Resource $class, \EasyRdf_Resource $instance, $name)
     {
-        $property = $this->schemaOrg->properties->$fieldName;
-
         return [
-            $property->label,
-            '',
-            sprintf('@var %s $%s %s', self::toPhpType($range), $fieldName, $property->comment_plain),
-            ''
+            sprintf('@type %s %s %s', 'string', $name, html_entity_decode($instance->get('rdfs:comment'), ENT_HTML5)),
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generateUses($className)
+    public function generateFieldAnnotations(\EasyRdf_Resource $class, \EasyRdf_Resource $field, $range)
+    {
+        return [
+            sprintf('@type %s $%s %s', self::toPhpType($range), $field->localName(), html_entity_decode($field->get('rdfs:comment'), ENT_HTML5)),
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateUses(\EasyRdf_Resource $class)
     {
         return [];
     }
