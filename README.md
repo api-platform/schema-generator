@@ -5,7 +5,7 @@ Various tools to generate a data model based on [Schema.org](http://schema.org) 
 *This project is a work in progress. It is not ready to production yet.*
 
 [![Build Status](https://travis-ci.org/dunglas/php-schema.org-model.png?branch=master)](https://travis-ci.org/dunglas/php-schema.org-model)
-
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/87ec89e6-57cd-4ac0-9ab1-d4549c5425c5/mini.png)](https://insight.sensiolabs.com/projects/87ec89e6-57cd-4ac0-9ab1-d4549c5425c5)
 
 ## Installation
 
