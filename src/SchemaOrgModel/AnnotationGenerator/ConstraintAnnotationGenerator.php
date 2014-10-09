@@ -8,6 +8,7 @@
  */
 
 namespace SchemaOrgModel\AnnotationGenerator;
+
 use SchemaOrgModel\TypesGenerator;
 
 /**

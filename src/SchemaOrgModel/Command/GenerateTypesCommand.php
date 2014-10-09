@@ -56,12 +56,22 @@ class GenerateTypesCommand extends Command
             throw new \RuntimeException('The specified output is invalid');
         }
 
-        $schemaOrg = new \EasyRdf_Graph();
-        $schemaOrg->load(SCHEMA_ORG_RDFA_URL, 'rdfa');
-        $goodRelations = new \SimpleXMLElement(GOOD_RELATIONS_OWL_URL, 0, true);
+        $graphs = [];
+        foreach ($processedConfiguration['rdfa'] as $rdfa) {
+            $graph = new \EasyRdf_Graph();
+            $graph->load($rdfa, 'rdfa');
 
-        $goodRelationsBridge = new GoodRelationsBridge($goodRelations);
-        $cardinalitiesExtractor = new CardinalitiesExtractor($schemaOrg, $goodRelationsBridge);
+            $graphs[] = $graph;
+        }
+
+        $relations = [];
+        foreach ($processedConfiguration['relations'] as $relation) {
+            $relations[] = new \SimpleXMLElement($relation, 0, true);
+        }
+
+
+        $goodRelationsBridge = new GoodRelationsBridge($relations);
+        $cardinalitiesExtractor = new CardinalitiesExtractor($graphs, $goodRelationsBridge);
 
         $loader = new \Twig_Loader_Filesystem(__DIR__ . '/../../../templates/');
         $twig = new \Twig_Environment($loader, ['autoescape' => false, 'debug' => $processedConfiguration['debug']]);
@@ -71,7 +81,7 @@ class GenerateTypesCommand extends Command
 
         $logger = new ConsoleLogger($output);
 
-        $entitiesGenerator = new TypesGenerator($twig, $logger, $schemaOrg, $cardinalitiesExtractor, $goodRelationsBridge, $processedConfiguration);
+        $entitiesGenerator = new TypesGenerator($twig, $logger, $graphs, $cardinalitiesExtractor, $goodRelationsBridge, $processedConfiguration);
         $entitiesGenerator->generate();
     }
 }

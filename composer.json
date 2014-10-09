@@ -31,4 +31,3 @@
     },
     "bin": ["bin/schema", "bin/schema.php"]
 }
-

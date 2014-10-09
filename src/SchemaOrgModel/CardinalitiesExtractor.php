@@ -23,21 +23,21 @@ class CardinalitiesExtractor
     const CARDINALITY_UNKNOWN = 'unknown';
 
     /**
-     * @type \EasyRdf_Graph
+     * @type \EasyRdf_Graph[]
      */
-    protected $schemaOrg;
+    protected $graphs;
     /**
      * @type GoodRelationsBridge
      */
     protected $goodRelationsBridge;
 
     /**
-     * @param \EasyRdf_Graph      $schemaOrg
+     * @param \EasyRdf_Graph[]      $graphs
      * @param GoodRelationsBridge $goodRelationsBridge
      */
-    public function __construct(\EasyRdf_Graph $schemaOrg, GoodRelationsBridge $goodRelationsBridge)
+    public function __construct(array $graphs, GoodRelationsBridge $goodRelationsBridge)
     {
-        $this->schemaOrg = $schemaOrg;
+        $this->graphs = $graphs;
         $this->goodRelationsBridge = $goodRelationsBridge;
     }
 
@@ -50,10 +50,10 @@ class CardinalitiesExtractor
     {
         $properties = [];
 
-        //var_dump($this->schemaOrg->get('http://schema.org/OutOfStock', 'rdfs:comment'));
-
-        foreach ($this->schemaOrg->allOfType('rdf:Property') as $property) {
-            $properties[$property->localName()] = $this->extractForProperty($property);
+        foreach ($this->graphs as $graph) {
+            foreach ($graph->allOfType('rdf:Property') as $property) {
+                $properties[$property->localName()] = $this->extractForProperty($property);
+            }
         }
 
         return $properties;

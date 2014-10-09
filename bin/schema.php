@@ -14,9 +14,6 @@ use SchemaOrgModel\Command\ExtractCardinalitiesCommand;
 use SchemaOrgModel\Command\DumpConfigurationCommand;
 use SchemaOrgModel\Command\GenerateTypesCommand;
 
-define('SCHEMA_ORG_RDFA_URL', 'https://raw.githubusercontent.com/rvguha/schemaorg/master/data/schema.rdfa');
-define('GOOD_RELATIONS_OWL_URL', 'http://purl.org/goodrelations/v1.owl');
-
 $application = new Application();
 $application->add(new ExtractCardinalitiesCommand());
 $application->add(new DumpConfigurationCommand());

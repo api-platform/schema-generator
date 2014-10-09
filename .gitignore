@@ -1,2 +1,4 @@
 composer.phar
 vendor
+examples/full
+examples/echoppe

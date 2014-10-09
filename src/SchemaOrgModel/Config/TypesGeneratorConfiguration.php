@@ -19,6 +19,8 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class TypesGeneratorConfiguration implements ConfigurationInterface
 {
+    const SCHEMA_ORG_RDFA_URL = 'https://raw.githubusercontent.com/rvguha/schemaorg/master/data/schema.rdfa';
+    const GOOD_RELATIONS_OWL_URL = 'http://purl.org/goodrelations/v1.owl';
 
     /**
      * {@inheritdoc}
@@ -29,6 +31,20 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('config');
         $rootNode
             ->children()
+                ->arrayNode('rdfa')
+                    ->info('RDFa files to use')
+                    ->defaultValue([
+                        self::SCHEMA_ORG_RDFA_URL,
+                    ])
+                    ->prototype('scalar')->end()
+                ->end()
+                ->arrayNode('relations')
+                    ->info('OWL relation files to use')
+                    ->defaultValue([
+                        self::GOOD_RELATIONS_OWL_URL,
+                    ])
+                    ->prototype('scalar')->end()
+                ->end()
                 ->booleanNode('debug')->defaultFalse()->info('Debug mode')->end()
                 ->booleanNode('useRte')->defaultFalse()->info('Use Doctrine\'s Resolve Target Entity feature')->end()
                 ->booleanNode('checkIsGoodRelations')->defaultFalse()->info('Emit a warning if a property is not derived from GoodRelations')->end()
@@ -49,6 +65,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->useAttributeAsKey('id')
                     ->prototype('array')
                         ->children()
+                            ->scalarNode('namespace')->defaultNull()->info('The namespace for the generated class (override any other defined namespace)')->end()
                             ->arrayNode('doctrine')
                                 ->addDefaultsIfNotSet()
                                 ->children()
@@ -69,10 +86,11 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->end()
                 ->end()
                 ->arrayNode('annotationGenerators')
+                    ->info('Annotation generators to use')
                     ->defaultValue([
                         'SchemaOrgModel\AnnotationGenerator\PhpDocAnnotationGenerator',
                         'SchemaOrgModel\AnnotationGenerator\ConstraintAnnotationGenerator',
-                        'SchemaOrgModel\AnnotationGenerator\DoctrineAnnotationGenerator'
+                        'SchemaOrgModel\AnnotationGenerator\DoctrineAnnotationGenerator',
                     ])
                     ->prototype('scalar')->end()
                 ->end()

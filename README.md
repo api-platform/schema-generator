@@ -23,11 +23,23 @@ Usage:
 
 ### Configuration
 
-See [lechoppe.yml](examples/config/lechoppe.yml) file.
+See [echoppe.yml](examples/config/echoppe.yml) file.
 
 ### Configuration reference
 
 ```yaml
+# RDFa files to use
+rdfa:
+
+    # Default:
+    - https://raw.githubusercontent.com/rvguha/schemaorg/master/data/schema.rdfa
+
+# OWL relation files to use
+relations:
+
+    # Default:
+    - http://purl.org/goodrelations/v1.owl
+
 # Debug mode
 debug:                false
 
@@ -63,6 +75,9 @@ types:
 
     # Prototype
     id:
+
+        # The namespace for the generated class (override any other defined namespace)
+        namespace:            null
         doctrine:
 
             # The Doctrine inheritance mapping type
@@ -79,6 +94,8 @@ types:
 
                 # The property range
                 range:                null # Example: Offer
+
+# Annotation generators to use
 annotationGenerators:
 
     # Defaults:
@@ -97,4 +114,3 @@ When the cardinality cannot be automatically extracted, it's value is set to `un
 Usage:
 
     php vendor/bin/schema.php schema:extract-cardinalities
-

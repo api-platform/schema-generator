@@ -19,12 +19,12 @@ use Psr\Log\LoggerInterface;
 interface AnnotationGeneratorInterface
 {
     /**
-     * @param LoggerInterface $logger
-     * @param \EasyRdf_Graph  $schemaOrg
-     * @param array           $cardinalities
-     * @param array           $config
+     * @param LoggerInterface  $logger
+     * @param \EasyRdf_Graph[] $graphs
+     * @param array            $cardinalities
+     * @param array            $config
      */
-    public function __construct(LoggerInterface $logger, \EasyRdf_Graph $schemaOrg, array $cardinalities, array $config);
+    public function __construct(LoggerInterface $logger, array $graphs, array $cardinalities, array $config);
 
     /**
      * Generates class's annotation

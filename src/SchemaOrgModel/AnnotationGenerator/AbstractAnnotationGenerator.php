@@ -23,9 +23,9 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
      */
     protected $logger;
     /**
-     * @var \EasyRdf_Graph
+     * @var \EasyRdf_Graph[]
      */
-    protected $schemaOrg;
+    protected $graphs;
     /**
      * @var array
      */
@@ -38,10 +38,10 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function __construct(LoggerInterface $logger, \EasyRdf_Graph $schemaOrg, array $cardinalities, array $config)
+    public function __construct(LoggerInterface $logger, array $graphs, array $cardinalities, array $config)
     {
         $this->logger = $logger;
-        $this->schemaOrg = $schemaOrg;
+        $this->graphs = $graphs;
         $this->cardinalities = $cardinalities;
         $this->config = $config;
     }

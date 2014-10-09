@@ -10,6 +10,7 @@
 namespace SchemaOrgModel\Command;
 
 use SchemaOrgModel\CardinalitiesExtractor;
+use SchemaOrgModel\Config\TypesGeneratorConfiguration;
 use SchemaOrgModel\GoodRelationsBridge;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -38,12 +39,15 @@ class ExtractCardinalitiesCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $relations = [];
         $schemaOrg = new \EasyRdf_Graph();
-        $schemaOrg->load(SCHEMA_ORG_RDFA_URL, 'rdfa');
-        $goodRelations = new \SimpleXMLElement(GOOD_RELATIONS_OWL_URL, 0, true);
+        $schemaOrg->load(TypesGeneratorConfiguration::SCHEMA_ORG_RDFA_URL, 'rdfa');
+        $relations[] = $schemaOrg;
+
+        $goodRelations = [new \SimpleXMLElement(TypesGeneratorConfiguration::GOOD_RELATIONS_OWL_URL, 0, true)];
 
         $goodRelationsBridge = new GoodRelationsBridge($goodRelations);
-        $cardinalitiesExtractor = new CardinalitiesExtractor($schemaOrg, $goodRelationsBridge);
+        $cardinalitiesExtractor = new CardinalitiesExtractor($relations, $goodRelationsBridge);
         $result = $cardinalitiesExtractor->extract();
 
         $output->writeln(json_encode($result, JSON_PRETTY_PRINT));
