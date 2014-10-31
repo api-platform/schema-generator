@@ -6,20 +6,15 @@
  #}
 <?php
 
-{%  if header %}{{ header }}{% endif %}
+{% if header %}{{ header }}{% endif %}
 
-namespace {{ namespace }};
-
-{% for use in uses %}
-{{ use }}
-{% endfor %}
+namespace {{ class.interfaceNamespace }};
 
 /**
-{% for annotation in annotations %}
+{% for annotation in class.interfaceAnnotations %}
  * {{ annotation }}
 {% endfor %}
  */
-interface {{ name }}
-
+interface {{ class.interfaceName }}
 {
 }

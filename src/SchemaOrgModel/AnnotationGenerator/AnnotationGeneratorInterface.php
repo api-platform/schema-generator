@@ -12,7 +12,7 @@ namespace SchemaOrgModel\AnnotationGenerator;
 use Psr\Log\LoggerInterface;
 
 /**
- * Annotation generator interface
+ * Annotation Generator Interface
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
@@ -23,40 +23,55 @@ interface AnnotationGeneratorInterface
      * @param \EasyRdf_Graph[] $graphs
      * @param array            $cardinalities
      * @param array            $config
+     * @param array            $classes
      */
-    public function __construct(LoggerInterface $logger, array $graphs, array $cardinalities, array $config);
+    public function __construct(
+        LoggerInterface $logger,
+        array $graphs,
+        array $cardinalities,
+        array $config,
+        array $classes
+    );
 
     /**
-     * Generates class's annotation
+     * Generates class' annotations
      *
-     * @param  \EasyRdf_Resource $class
+     * @param  string $className
      * @return array
      */
-    public function generateClassAnnotations(\EasyRdf_Resource $class);
+    public function generateClassAnnotations($className);
 
     /**
-     * @param  \EasyRdf_Resource $class
-     * @param  \EasyRdf_Resource $instance
-     * @param  string            $name
+     * Generates interface's annotations
+     *
+     * @param  string $className
      * @return array
      */
-    public function generateConstantAnnotations(\EasyRdf_Resource $class, \EasyRdf_Resource $instance, $name);
+    public function generateInterfaceAnnotations($className);
+
+    /**
+     * Generates constant's annotations
+     *
+     * @param  string $className
+     * @param  string $constantName
+     * @return array
+     */
+    public function generateConstantAnnotations($className, $constantName);
 
     /**
      * Generates field's annotation
      *
-     * @param  \EasyRdf_Resource $class
-     * @param  \EasyRdf_Resource $field
-     * @param  string            $range
+     * @param  string $className
+     * @param  string $fieldName
      * @return array
      */
-    public function generateFieldAnnotations(\EasyRdf_Resource $class, \EasyRdf_Resource $field, $range);
+    public function generateFieldAnnotations($className, $fieldName);
 
     /**
      * Generates uses
      *
-     * @param  \EasyRdf_Resource $class
+     * @param  string $className
      * @return array
      */
-    public function generateUses(\EasyRdf_Resource $class);
+    public function generateUses($className);
 }

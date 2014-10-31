@@ -1,6 +1,6 @@
 header: |
   /*
-   * This file is part of the L'Échoppe package.
+   * This file is part of the Échoppe package.
    *
    * (c) Kévin Dunglas <dunglas@gmail.com>
    *
@@ -8,11 +8,14 @@ header: |
    * file that was distributed with this source code.
    */
 namespaces:
-  entity:               Echoppe\CoreBundle\Entity
-  enum:                 Echoppe\CoreBundle\Enum
-  interface:            Echoppe\CoreBundle\Model
-author: Kévin Dunglas <dunglas@gmail.com>
+  entity:               "Echoppe\CoreBundle\Entity"
+  enum:                 "Echoppe\CoreBundle\Enum"
+  interface:            "Echoppe\CoreBundle\Model"
+author: "Kévin Dunglas <dunglas@gmail.com>"
+debug: true
+useRte: true
 checkIsGoodRelations: true
+inheritanceMapping: "@ORM\MappedSuperclass"
 types:
   Thing:
     properties:
@@ -37,9 +40,9 @@ types:
       weight: ~
       width: ~
   Brand:
-    parent: Thing
+    parent: "Thing"
     properties:
-      logo: { range: ImageObject }
+      logo: { range: "ImageObject" }
   ImageObject:
     parent: Thing
     properties:
@@ -60,7 +63,7 @@ types:
       availabilityStarts: ~
       availabilityEnds: ~
       availableDeliveryMethod: ~
-      category: { range: Text }
+      category: { range: "Text" }
       deliveryLeadTime: ~
       inventoryLevel: ~
       itemCondition: ~

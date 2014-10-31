@@ -19,18 +19,33 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations(\EasyRdf_Resource $class)
+    public function generateClassAnnotations($className)
     {
-        $annotations = explode("\n", html_entity_decode($class->get('rdfs:comment'), ENT_HTML5));
-        // Add a blank line
-        $annotations[] = '';
+        return $this->generateDoc($className);
+    }
 
-        if ($this->config['author']) {
-            $annotations[] = sprintf('@author %s', $this->config['author']);
-        }
+    /**
+     * {@inheritdoc}
+     */
+    public function generateInterfaceAnnotations($className)
+    {
+        return $this->generateDoc($className, true);
+    }
 
-        $annotations[] = sprintf('@see %s %s', $class->getUri(), 'Documentation on Schema.org');
-        $annotations[] = '';
+    /**
+     * {@inheritdoc}
+     */
+    public function generateConstantAnnotations($className, $constantName)
+    {
+        $resource = $this->classes[$className]['constants'][$constantName]['resource'];
+
+        $annotations = $this->formatDoc($resource->get('rdfs:comment'), true);
+        $annotations[0] = sprintf(
+            '@type %s %s',
+            'string',
+            $constantName,
+            $annotations[0]
+        );
 
         return $annotations;
     }
@@ -38,65 +53,74 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateConstantAnnotations(\EasyRdf_Resource $class, \EasyRdf_Resource $instance, $name)
+    public function generateFieldAnnotations($className, $fieldName)
     {
-        return [
-            sprintf('@type %s %s %s', 'string', $name, html_entity_decode($instance->get('rdfs:comment'), ENT_HTML5)),
-        ];
+        $field = $this->classes[$className]['fields'][$fieldName];
+
+        $annotations = $this->formatDoc($field['resource']->get('rdfs:comment'), true);
+        $annotations[0] = sprintf(
+            '@type %s $%s %s',
+            $this->toPhpType($field['range']),
+            $fieldName,
+            $annotations[0]
+        );
+
+        return $annotations;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations(\EasyRdf_Resource $class, \EasyRdf_Resource $field, $range)
-    {
-        return [
-            sprintf('@type %s $%s %s', self::toPhpType($range), $field->localName(), html_entity_decode($field->get('rdfs:comment'), ENT_HTML5)),
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function generateUses(\EasyRdf_Resource $class)
+    public function generateUses($className)
     {
         return [];
     }
 
     /**
-     * Converts a Schema.org range to a PHP type
+     * Generates class or interface PHPDoc
      *
-     * @param $range
-     * @return string
+     * @param  string $className
+     * @param  bool $interface
+     * @return array
      */
-    public static function toPhpType($range)
+    private function generateDoc($className, $interface = false)
     {
-        switch ($range) {
-            case 'Boolean':
-                return 'boolean';
-                break;
-            case 'Date':
-                // No break
-            case 'DateTime':
-                // No break
-            case 'Time':
-                return '\DateTime';
-                break;
-            case 'Number':
-                // No break
-            case 'Float':
-                return 'float';
-                break;
-            case 'Integer':
-                return 'integer';
-                break;
-            case 'Text':
-                // No break
-            case 'URL':
-                return 'string';
-                break;
+        $resource = $this->classes[$className]['resource'];
+        $annotations = [];
+
+        if (!$interface && isset($this->classes[$className]['interfaceName'])) {
+            $annotations[] = '{@inheritdoc}';
+            $annotations[] = '';
+        } else {
+            $annotations = $this->formatDoc($resource->get('rdfs:comment'));
+            $annotations[] = '';
+            $annotations[] = sprintf('@see %s %s', $resource->getUri(), 'Documentation on Schema.org');
         }
 
-        return $range;
+        if ($this->config['author']) {
+            $annotations[] = sprintf('@author %s', $this->config['author']);
+        }
+
+        return $annotations;
+    }
+
+    /**
+     * Converts HTML to Markdown and explode
+     *
+     * @param  string $doc
+     * @param  bool   $indent
+     * @return array
+     */
+    private function formatDoc($doc, $indent = false)
+    {
+        $doc = explode("\n", (new \HTML_To_Markdown($doc))->output());
+
+        if ($indent) {
+            for ($i = 1; $i < count($doc); $i++) {
+                $doc[$i] = sprintf('   %s', $doc[$i]);
+            }
+        }
+
+        return $doc;
     }
 }

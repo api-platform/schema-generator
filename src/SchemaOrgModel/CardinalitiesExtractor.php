@@ -32,7 +32,7 @@ class CardinalitiesExtractor
     protected $goodRelationsBridge;
 
     /**
-     * @param \EasyRdf_Graph[]      $graphs
+     * @param \EasyRdf_Graph[]    $graphs
      * @param GoodRelationsBridge $goodRelationsBridge
      */
     public function __construct(array $graphs, GoodRelationsBridge $goodRelationsBridge)

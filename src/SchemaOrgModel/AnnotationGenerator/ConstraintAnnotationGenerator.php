@@ -18,11 +18,10 @@ use SchemaOrgModel\TypesGenerator;
  */
 class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
 {
-
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations(\EasyRdf_Resource $class)
+    public function generateClassAnnotations($className)
     {
         return [];
     }
@@ -30,7 +29,7 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateConstantAnnotations(\EasyRdf_Resource $class, \EasyRdf_Resource $instance, $name)
+    public function generateInterfaceAnnotations($className)
     {
         return [];
     }
@@ -38,9 +37,19 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations(\EasyRdf_Resource $class, \EasyRdf_Resource $field, $range)
+    public function generateConstantAnnotations($className, $constantName)
     {
-        switch ($range) {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateFieldAnnotations($className, $fieldName)
+    {
+        $field = $this->classes[$className]['fields'][$fieldName];
+
+        switch ($field['range']) {
             case 'URL':
                 return ['@Assert\Url'];
 
@@ -54,11 +63,11 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
                 return ['@Assert\Time'];
         }
 
-        if ('email' === $field->localName()) {
+        if ('email' === $field['resource']->localName()) {
             return ['@Assert\Email'];
         }
 
-        $phpType = PhpDocAnnotationGenerator::toPhpType($range);
+        $phpType = $this->toPhpType($field['range']);
         if (in_array($phpType, ['boolean', 'float', 'integer', 'string'])) {
             return [sprintf('@Assert\Type(type="%s")', $phpType)];
         }
@@ -69,9 +78,10 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateUses(\EasyRdf_Resource $class)
+    public function generateUses($className)
     {
-        $subClassOf = $class->get('rdfs:subClassOf');
+        $resource = $this->classes[$className]['resource'];
+        $subClassOf = $resource->get('rdfs:subClassOf');
         $typeIsEnum = $subClassOf && $subClassOf->getUri() === TypesGenerator::SCHEMA_ORG_ENUMERATION;
 
         return $typeIsEnum ? [] : ['Symfony\Component\Validator\Constraints as Assert'];

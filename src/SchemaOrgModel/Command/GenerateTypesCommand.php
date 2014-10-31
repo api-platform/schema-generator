@@ -69,19 +69,21 @@ class GenerateTypesCommand extends Command
             $relations[] = new \SimpleXMLElement($relation, 0, true);
         }
 
-
         $goodRelationsBridge = new GoodRelationsBridge($relations);
         $cardinalitiesExtractor = new CardinalitiesExtractor($graphs, $goodRelationsBridge);
 
+        $ucfirstFilter = new \Twig_SimpleFilter('ucfirst', 'ucfirst');
         $loader = new \Twig_Loader_Filesystem(__DIR__ . '/../../../templates/');
         $twig = new \Twig_Environment($loader, ['autoescape' => false, 'debug' => $processedConfiguration['debug']]);
+        $twig->addFilter($ucfirstFilter);
+
         if ($processedConfiguration['debug']) {
             $twig->addExtension(new \Twig_Extension_Debug());
         }
 
         $logger = new ConsoleLogger($output);
 
-        $entitiesGenerator = new TypesGenerator($twig, $logger, $graphs, $cardinalitiesExtractor, $goodRelationsBridge, $processedConfiguration);
-        $entitiesGenerator->generate();
+        $entitiesGenerator = new TypesGenerator($twig, $logger, $graphs, $cardinalitiesExtractor, $goodRelationsBridge);
+        $entitiesGenerator->generate($processedConfiguration);
     }
 }

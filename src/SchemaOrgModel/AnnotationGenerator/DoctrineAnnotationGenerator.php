@@ -22,15 +22,29 @@ class DoctrineAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations(\EasyRdf_Resource $class)
+    public function generateClassAnnotations($className)
     {
-        return empty($this->config['types']) || null === $this->config['types'][$class->localName()]['doctrine']['inheritanceMapping'] ? $this->guessInheritanceMapping($class) : $this->config['types'][$class->localName()]['doctrine']['inheritanceMapping'];
+        $class = $this->classes[$className];
+
+        if ($class['parent'] === TypesGenerator::ENUM_EXTENDS) {
+            return [];
+        }
+
+        $inheritanceMapping = $this->config['types'][$class['resource']->localName()]['doctrine']['inheritanceMapping'];
+        if (!$inheritanceMapping) {
+            $inheritanceMapping = $this->config['inheritanceMapping'];
+        }
+
+        return [
+            '',
+            $inheritanceMapping,
+        ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generateConstantAnnotations(\EasyRdf_Resource $class, \EasyRdf_Resource $instance, $name)
+    public function generateInterfaceAnnotations($className)
     {
         return [];
     }
@@ -38,11 +52,21 @@ class DoctrineAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations(\EasyRdf_Resource $class, \EasyRdf_Resource $field, $range)
+    public function generateConstantAnnotations($className, $constantName)
     {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateFieldAnnotations($className, $fieldName)
+    {
+        $field = $this->classes[$className]['fields'][$fieldName];
+
         $annotations = [];
 
-        switch ($range) {
+        switch ($field['range']) {
             case 'Boolean':
                 $type = 'boolean';
                 break;
@@ -79,22 +103,22 @@ class DoctrineAnnotationGenerator extends AbstractAnnotationGenerator
 
             $annotations[] = $annotation;
         } else {
-            switch ($this->cardinalities[$field->localName()]) {
+            switch ($this->cardinalities[$field['resource']->localName()]) {
                 case CardinalitiesExtractor::CARDINALITY_0_1:
-                    $annotations[] = sprintf('@ORM\OneToOne(targetEntity="%s")', $range);
+                    $annotations[] = sprintf('@ORM\OneToOne(targetEntity="%s")', $this->getRelationName($field['range']));
                     break;
 
                 case CardinalitiesExtractor::CARDINALITY_0_N:
-                    $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $range);
+                    $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $this->getRelationName($field['range']));
                     break;
 
                 case CardinalitiesExtractor::CARDINALITY_1_1:
-                    $annotations[] = sprintf('@ORM\OneToOne(targetEntity="%s")', $range);
+                    $annotations[] = sprintf('@ORM\OneToOne(targetEntity="%s")', $this->getRelationName($field['range']));
                     $annotations[] = '@ORM\JoinColumn(nullable=false)';
                     break;
 
                 case CardinalitiesExtractor::CARDINALITY_1_N:
-                    $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $range);
+                    $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $this->getRelationName($field['range']));
                     $annotations[] = '@ORM\JoinColumn(nullable=false)';
                     break;
             }
@@ -106,23 +130,30 @@ class DoctrineAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateUses(\EasyRdf_Resource $class)
+    public function generateUses($className)
     {
-        $subClassOf = $class->get('rdfs:subClassOf');
+        $resource = $this->classes[$className]['resource'];
+
+        $subClassOf = $resource->get('rdfs:subClassOf');
         $typeIsEnum = $subClassOf && $subClassOf->getUri() === TypesGenerator::SCHEMA_ORG_ENUMERATION;
 
         return $typeIsEnum ? [] : ['Doctrine\ORM\Mapping as ORM'];
     }
 
     /**
-     * Guesses inheritance mapping
+     * Gets class or interface name to use in relations
      *
-     * @param  \EasyRdf_Resource $class
-     * @return array
+     * @param  string $range
+     * @return string
      */
-    private function guessInheritanceMapping(\EasyRdf_Resource $class)
+    private function getRelationName($range)
     {
-        // TODO : check if the given class has subtypes
-        return false ? ['@ORM\Entity'] : ['@ORM\MappedSuperclass'];
+        $class = $this->classes[$range];
+
+        if (isset($class['interfaceName'])) {
+            return $class['interfaceName'];
+        }
+
+        return $class['name'];
     }
 }

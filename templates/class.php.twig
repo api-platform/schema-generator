@@ -8,21 +8,21 @@
 
 {% if header %}{{ header }}{% endif %}
 
-namespace {{ namespace }};
+namespace {{ class.namespace }};
 
-{% for use in uses %}
+{% for use in class.uses %}
 use {{ use }};
 {% endfor %}
 
 /**
-{% for annotation in annotations %}
+{% for annotation in class.annotations %}
  * {{ annotation }}
 {% endfor %}
  */
-class {{ name }}{% if parent %} extends {{ parent }}{% endif %}{% if interface %} implements {{ interface }}{% endif %}
+class {{ class.name }}{% if class.parent %} extends {{ class.parent }}{% endif %}{% if class.interfaceName %} implements {{ class.interfaceName }}{% endif %}
 
 {
-{% for constant in constants %}
+{% for constant in class.constants %}
     /**
 {% for annotation in constant.annotations %}
      * {{ annotation }}
@@ -30,12 +30,30 @@ class {{ name }}{% if parent %} extends {{ parent }}{% endif %}{% if interface %
     */
     const {{ constant.name }} = '{{ constant.value }}';
 {% endfor %}
-{% for field in fields %}
+{% for field in class.fields %}
     /**
 {% for annotation in field.annotations %}
      * {{ annotation }}
 {% endfor %}
      */
     {{ fieldVisibility }} ${{ field.name }};
+{% endfor %}
+{% for field in class.fields %}
+
+    /**
+     */
+    public function set{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.typeHint }} {% endif %}${{ field.name }})
+    {
+        $this->{{ field.name }} = ${{ field.name }};
+
+        return $this;
+    }
+
+    /**
+     */
+    public function get{{ field.name|ucfirst }}()
+    {
+        return $this->{{ field.name }};
+    }
 {% endfor %}
 }

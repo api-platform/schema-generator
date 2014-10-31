@@ -76,8 +76,14 @@ types:
     # Prototype
     id:
 
-        # The namespace for the generated class (override any other defined namespace)
-        namespace:            null
+        # Type namespaces
+        namespaces:
+
+            # The namespace for the generated class (override any other defined namespace)
+            class:                null
+
+            # The namespace for the generated interface (override any other defined namespace)
+            interface:            null
         doctrine:
 
             # The Doctrine inheritance mapping type
@@ -102,7 +108,6 @@ annotationGenerators:
     - SchemaOrgModel\AnnotationGenerator\PhpDocAnnotationGenerator
     - SchemaOrgModel\AnnotationGenerator\ConstraintAnnotationGenerator
     - SchemaOrgModel\AnnotationGenerator\DoctrineAnnotationGenerator
-
 ```
 
 ## Cardinalities extractor
