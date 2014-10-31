@@ -44,22 +44,6 @@ class DoctrineAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateInterfaceAnnotations($className)
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function generateConstantAnnotations($className, $constantName)
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function generateFieldAnnotations($className, $fieldName)
     {
         $field = $this->classes[$className]['fields'][$fieldName];

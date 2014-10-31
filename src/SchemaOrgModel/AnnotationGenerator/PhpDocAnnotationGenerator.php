@@ -71,16 +71,37 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateUses($className)
+    public function generateGetterAnnotations($className, $fieldName)
     {
-        return [];
+        return [
+            sprintf('Gets %s.', $fieldName),
+            '',
+            sprintf('@return %s', $this->toPhpType($this->classes[$className]['fields'][$fieldName]['range'])),
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateSetterAnnotations($className, $fieldName)
+    {
+        return [
+            sprintf('Sets %s.', $fieldName),
+            '',
+            sprintf(
+                '@param  %s $%s',
+                $this->toPhpType($this->classes[$className]['fields'][$fieldName]['range']),
+                $fieldName
+            ),
+            '@return $this',
+        ];
     }
 
     /**
      * Generates class or interface PHPDoc
      *
      * @param  string $className
-     * @param  bool $interface
+     * @param  bool   $interface
      * @return array
      */
     private function generateDoc($className, $interface = false)

@@ -269,6 +269,8 @@ class TypesGenerator
                 }
 
                 $class['fields'][$fieldName]['annotations'] = $this->generateFieldAnnotations($annotationGenerators, $className, $fieldName);
+                $class['fields'][$fieldName]['getterAnnotations'] = $this->generateGetterAnnotations($annotationGenerators, $className, $fieldName);
+                $class['fields'][$fieldName]['setterAnnotations'] = $this->generateSetterAnnotations($annotationGenerators, $className, $fieldName);
                 $class['fields'][$fieldName]['typeHint'] = $typeHint;
             }
 
@@ -422,6 +424,42 @@ class TypesGenerator
         $annotations = [];
         foreach ($annotationGenerators as $generator) {
             $annotations = array_merge($annotations, $generator->generateInterfaceAnnotations($className));
+        }
+
+        return $annotations;
+    }
+
+    /**
+     * Generates getter's annotations
+     *
+     * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
+     * @param  string                                                             $className
+     * @param  string                                                             $fieldName
+     * @return array
+     */
+    private function generateGetterAnnotations(array $annotationGenerators, $className, $fieldName)
+    {
+        $annotations = [];
+        foreach ($annotationGenerators as $generator) {
+            $annotations = array_merge($annotations, $generator->generateGetterAnnotations($className, $fieldName));
+        }
+
+        return $annotations;
+    }
+
+    /**
+     * Generates getter's annotations
+     *
+     * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
+     * @param  string                                                             $className
+     * @param  string                                                             $fieldName
+     * @return array
+     */
+    private function generateSetterAnnotations(array $annotationGenerators, $className, $fieldName)
+    {
+        $annotations = [];
+        foreach ($annotationGenerators as $generator) {
+            $annotations = array_merge($annotations, $generator->generateSetterAnnotations($className, $fieldName));
         }
 
         return $annotations;

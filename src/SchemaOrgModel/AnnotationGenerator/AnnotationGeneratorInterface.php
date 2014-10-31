@@ -68,6 +68,24 @@ interface AnnotationGeneratorInterface
     public function generateFieldAnnotations($className, $fieldName);
 
     /**
+     * Generates getter's annotation
+     *
+     * @param  string $className
+     * @param  string $fieldName
+     * @return array
+     */
+    public function generateGetterAnnotations($className, $fieldName);
+
+    /**
+     * Generates setter's annotation
+     *
+     * @param  string $className
+     * @param  string $fieldName
+     * @return array
+     */
+    public function generateSetterAnnotations($className, $fieldName);
+
+    /**
      * Generates uses
      *
      * @param  string $className

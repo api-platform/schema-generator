@@ -41,6 +41,9 @@ class {{ class.name }}{% if class.parent %} extends {{ class.parent }}{% endif %
 {% for field in class.fields %}
 
     /**
+{% for annotation in field.setterAnnotations %}
+     * {{ annotation }}
+{% endfor %}
      */
     public function set{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.typeHint }} {% endif %}${{ field.name }})
     {
@@ -50,7 +53,10 @@ class {{ class.name }}{% if class.parent %} extends {{ class.parent }}{% endif %
     }
 
     /**
-     */
+{% for annotation in field.getterAnnotations %}
+    * {{ annotation }}
+{% endfor %}
+    */
     public function get{{ field.name|ucfirst }}()
     {
         return $this->{{ field.name }};

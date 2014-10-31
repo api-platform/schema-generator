@@ -58,6 +58,62 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function generateClassAnnotations($className)
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateInterfaceAnnotations($className)
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateConstantAnnotations($className, $constantName)
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateFieldAnnotations($className, $fieldName)
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateGetterAnnotations($className, $fieldName)
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateSetterAnnotations($className, $fieldName)
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateUses($className)
+    {
+        return [];
+    }
+
+    /**
      * Converts a Schema.org range to a PHP type
      *
      * @param  string $range
