@@ -17,7 +17,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Extract cardinality command
+ * Extract cardinality command.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */

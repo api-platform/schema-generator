@@ -13,7 +13,7 @@ use SchemaOrgModel\CardinalitiesExtractor;
 use SchemaOrgModel\TypesGenerator;
 
 /**
- * Doctrine annotation generator
+ * Doctrine annotation generator.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */

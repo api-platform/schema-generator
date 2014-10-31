@@ -12,7 +12,7 @@ namespace SchemaOrgModel;
 use Psr\Log\LoggerInterface;
 
 /**
- * Entities generator
+ * Entities generator.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
@@ -95,7 +95,7 @@ class TypesGenerator
     }
 
     /**
-     * Generates files
+     * Generates files.
      */
     public function generate($config)
     {
@@ -308,7 +308,7 @@ class TypesGenerator
     }
 
     /**
-     * Tests if a type is an enum
+     * Tests if a type is an enum.
      *
      * @param  \EasyRdf_Resource $type
      * @return bool
@@ -321,7 +321,7 @@ class TypesGenerator
     }
 
     /**
-     * Create a maps between class an properties
+     * Create a maps between class an properties.
      *
      * @param  array $types
      * @return array
@@ -360,7 +360,7 @@ class TypesGenerator
     }
 
     /**
-     * Generates field's annotations
+     * Generates field's annotations.
      *
      * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
      * @param  string                                                             $className
@@ -378,7 +378,7 @@ class TypesGenerator
     }
 
     /**
-     * Generates constant's annotations
+     * Generates constant's annotations.
      *
      * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
      * @param  string                                                             $className
@@ -396,7 +396,7 @@ class TypesGenerator
     }
 
     /**
-     * Generates class' annotations
+     * Generates class' annotations.
      *
      * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
      * @param  string                                                             $className
@@ -413,7 +413,7 @@ class TypesGenerator
     }
 
     /**
-     * Generates interface's annotations
+     * Generates interface's annotations.
      *
      * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
      * @param  string                                                             $className
@@ -430,7 +430,7 @@ class TypesGenerator
     }
 
     /**
-     * Generates getter's annotations
+     * Generates getter's annotations.
      *
      * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
      * @param  string                                                             $className
@@ -448,7 +448,7 @@ class TypesGenerator
     }
 
     /**
-     * Generates getter's annotations
+     * Generates getter's annotations.
      *
      * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
      * @param  string                                                             $className
@@ -466,7 +466,7 @@ class TypesGenerator
     }
 
     /**
-     * Generates uses
+     * Generates uses.
      *
      * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
      * @param  array                                                              $classes
@@ -513,7 +513,7 @@ class TypesGenerator
     }
 
     /**
-     * Converts a namespace to a directory path according to PSR-4
+     * Converts a namespace to a directory path according to PSR-4.
      *
      * @param  array  $config
      * @param  string $namespace

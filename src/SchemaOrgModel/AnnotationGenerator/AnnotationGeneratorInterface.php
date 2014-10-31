@@ -12,7 +12,7 @@ namespace SchemaOrgModel\AnnotationGenerator;
 use Psr\Log\LoggerInterface;
 
 /**
- * Annotation Generator Interface
+ * Annotation Generator Interface.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
@@ -34,7 +34,7 @@ interface AnnotationGeneratorInterface
     );
 
     /**
-     * Generates class' annotations
+     * Generates class' annotations.
      *
      * @param  string $className
      * @return array
@@ -42,7 +42,7 @@ interface AnnotationGeneratorInterface
     public function generateClassAnnotations($className);
 
     /**
-     * Generates interface's annotations
+     * Generates interface's annotations.
      *
      * @param  string $className
      * @return array
@@ -50,7 +50,7 @@ interface AnnotationGeneratorInterface
     public function generateInterfaceAnnotations($className);
 
     /**
-     * Generates constant's annotations
+     * Generates constant's annotations.
      *
      * @param  string $className
      * @param  string $constantName
@@ -59,7 +59,7 @@ interface AnnotationGeneratorInterface
     public function generateConstantAnnotations($className, $constantName);
 
     /**
-     * Generates field's annotation
+     * Generates field's annotation.
      *
      * @param  string $className
      * @param  string $fieldName
@@ -68,7 +68,7 @@ interface AnnotationGeneratorInterface
     public function generateFieldAnnotations($className, $fieldName);
 
     /**
-     * Generates getter's annotation
+     * Generates getter's annotation.
      *
      * @param  string $className
      * @param  string $fieldName
@@ -77,7 +77,7 @@ interface AnnotationGeneratorInterface
     public function generateGetterAnnotations($className, $fieldName);
 
     /**
-     * Generates setter's annotation
+     * Generates setter's annotation.
      *
      * @param  string $className
      * @param  string $fieldName
@@ -86,7 +86,7 @@ interface AnnotationGeneratorInterface
     public function generateSetterAnnotations($className, $fieldName);
 
     /**
-     * Generates uses
+     * Generates uses.
      *
      * @param  string $className
      * @return array

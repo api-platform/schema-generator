@@ -12,7 +12,7 @@ namespace SchemaOrgModel\AnnotationGenerator;
 use SchemaOrgModel\TypesGenerator;
 
 /**
- * Constraint annotation generator
+ * Constraint annotation generator.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */

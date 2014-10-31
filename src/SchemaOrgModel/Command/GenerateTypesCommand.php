@@ -22,7 +22,7 @@ use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Config\Definition\Processor;
 
 /**
- * Generate entities command
+ * Generate entities command.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */

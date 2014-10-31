@@ -10,7 +10,7 @@
 namespace SchemaOrgModel\AnnotationGenerator;
 
 /**
- * PHPDoc annotation generator
+ * PHPDoc annotation generator.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */

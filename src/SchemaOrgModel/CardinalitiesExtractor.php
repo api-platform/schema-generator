@@ -10,7 +10,7 @@
 namespace SchemaOrgModel;
 
 /**
- * Cardinality extractor
+ * Cardinality extractor.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
@@ -42,7 +42,7 @@ class CardinalitiesExtractor
     }
 
     /**
-     * Extracts cardinality of properties
+     * Extracts cardinality of properties.
      *
      * @return array
      */
@@ -60,8 +60,9 @@ class CardinalitiesExtractor
     }
 
     /**
-     * Extracts the cardinality of a property
-     * Based on Geraint Luff work: https://github.com/geraintluff/schema-org-gen
+     * Extracts the cardinality of a property.
+     *
+     * Based on [Geraint Luff work](https://github.com/geraintluff/schema-org-gen).
      *
      * @param  \EasyRdf_Resource $property
      * @return string            The cardinality

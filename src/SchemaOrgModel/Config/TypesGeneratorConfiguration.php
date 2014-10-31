@@ -13,7 +13,7 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * Types Generator Configuration
+ * Types Generator Configuration.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */

@@ -12,7 +12,7 @@ namespace SchemaOrgModel\AnnotationGenerator;
 use Psr\Log\LoggerInterface;
 
 /**
- * Abstract annotation generator
+ * Abstract annotation generator.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */

@@ -10,7 +10,7 @@
 namespace SchemaOrgModel;
 
 /**
- * Schema.org to GoodRelations bridge
+ * Schema.org to GoodRelations bridge.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
@@ -20,12 +20,12 @@ class GoodRelationsBridge
     const RDF_SCHEMA_NAMESPACE = 'http://www.w3.org/2000/01/rdf-schema#';
 
     /**
-     * @var \SimpleXMLElement[]
+     * @type \SimpleXMLElement[]
      */
     protected $relations;
 
     /**
-     * @var array
+     * @type array
      */
     protected static $objectPropertiesTable = [
         'priceSpecification' => 'hasPriceSpecification',
@@ -45,7 +45,7 @@ class GoodRelationsBridge
         'acceptedPaymentMethod' => 'acceptedPaymentMethods'
     ];
     /**
-     * @var array
+     * @type array
      */
     protected static $datatypePropertiesTable = [
         'minPrice' => 'hasMinCurrencyValue',
@@ -81,7 +81,7 @@ class GoodRelationsBridge
     }
 
     /**
-     * Checks if a property exists in GoodRelations
+     * Checks if a property exists in GoodRelations.
      *
      * @param  string $id
      * @return bool
@@ -99,7 +99,7 @@ class GoodRelationsBridge
     }
 
     /**
-     * Extracts cardinality from the Good Relations OWL
+     * Extracts cardinality from the Good Relations OWL.
      *
      * @param  string      $id
      * @return string|bool
@@ -119,7 +119,7 @@ class GoodRelationsBridge
     }
 
     /**
-     * Converts Schema.org's id to Good Relations id
+     * Converts Schema.org's id to Good Relations id.
      *
      * @param  string $id
      * @return string
@@ -139,7 +139,7 @@ class GoodRelationsBridge
     }
 
     /**
-     * Gets a property URL
+     * Gets a property URL.
      *
      * @param  string $id
      * @return string

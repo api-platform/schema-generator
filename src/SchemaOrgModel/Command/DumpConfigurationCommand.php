@@ -16,7 +16,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Dump configuration command
+ * Dump configuration command.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
