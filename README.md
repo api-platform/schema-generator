@@ -1,6 +1,7 @@
 # PHP Schema.org Model Scaffolding
 
-Tool to generate a PHP data model from [Schema.org](http://schema.org) vocables.
+Tool to generate a PHP data model from [Schema.org](http://schema.org) and [GoodRelations](http://www.heppnetz.de/projects/goodrelations/)
+vocables.
 
 [![Build Status](https://travis-ci.org/dunglas/php-schema.org-model.png?branch=master)](https://travis-ci.org/dunglas/php-schema.org-model)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/87ec89e6-57cd-4ac0-9ab1-d4549c5425c5/mini.png)](https://insight.sensiolabs.com/projects/87ec89e6-57cd-4ac0-9ab1-d4549c5425c5)
