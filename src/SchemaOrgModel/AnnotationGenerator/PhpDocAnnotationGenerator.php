@@ -139,7 +139,8 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         $doc = explode("\n", (new \HTML_To_Markdown($doc))->output());
 
         if ($indent) {
-            for ($i = 1; $i < count($doc); $i++) {
+            $count = count($doc);
+            for ($i = 1; $i < $count; $i++) {
                 $doc[$i] = self::INDENT.$doc[$i];
             }
         }
