@@ -28,7 +28,8 @@
         "psr/log": "~1.0",
         "easyrdf/easyrdf": "~0.8.0",
         "myclabs/php-enum": "~1.2.1",
-        "nickcernis/html-to-markdown": "~2.1"
+        "nickcernis/html-to-markdown": "~2.1",
+        "fabpot/php-cs-fixer": "~0.5"
     },
     "bin": ["bin/schema", "bin/schema.php"]
 }

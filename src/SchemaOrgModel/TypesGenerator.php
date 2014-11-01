@@ -10,6 +10,8 @@
 namespace SchemaOrgModel;
 
 use Psr\Log\LoggerInterface;
+use Symfony\CS\Config\Config;
+use Symfony\CS\Fixer;
 
 /**
  * Entities generator.
@@ -248,6 +250,7 @@ class TypesGenerator
             $annotationGenerators[] = $generator;
         }
 
+        $generatedFiles = [];
         foreach ($classes as $className => $class) {
             $class['uses'] = $this->generateClassUses($annotationGenerators, $classes, $className);
             $class['annotations'] = $this->generateClassAnnotations($annotationGenerators, $className);
@@ -280,8 +283,10 @@ class TypesGenerator
                 mkdir($classDir, 0777, true);
             }
 
+            $path = sprintf('%s%s.php', $classDir, $className);
+            $generatedFiles[] = $path;
             file_put_contents(
-                sprintf('%s%s.php', $classDir, $className),
+                $path,
                 $this->twig->render('class.php.twig', [
                     'header' => $config['header'],
                     'fieldVisibility' => $config['fieldVisibility'],
@@ -296,8 +301,10 @@ class TypesGenerator
                     mkdir($interfaceDir, 0777, true);
                 }
 
+                $path = sprintf('%s%s.php', $interfaceDir, $class['interfaceName']);
+                $generatedFiles[] = $path;
                 file_put_contents(
-                    sprintf('%s%s.php', $interfaceDir, $class['interfaceName']),
+                    $path,
                     $this->twig->render('interface.php.twig', [
                         'header' => $config['header'],
                         'class' => $class,
@@ -305,6 +312,8 @@ class TypesGenerator
                 );
             }
         }
+
+        $this->fixCs($generatedFiles);
     }
 
     /**
@@ -522,5 +531,29 @@ class TypesGenerator
     private function namespaceToDir($config, $namespace)
     {
         return sprintf('%s/%s/', $config['output'], strtr($namespace, '\\', '/'));
+    }
+
+    /**
+     * Uses PHP CS Fixer to make generated files following PSR and Symfony Coding Standards.
+     *
+     * @param array $files
+     */
+    private function fixCs(array $files)
+    {
+        $fixer = new Fixer();
+        $fixer->registerBuiltInConfigs();
+        $fixer->registerBuiltInFixers();
+
+        $config = new Config();
+        $config->fixers($fixer->getFixers());
+
+        $finder = [];
+        foreach ($files as $file) {
+            $finder[] = new \SplFileInfo($file);
+        }
+
+        $config->finder(new \ArrayIterator($finder));
+
+        $fixer->fix($config);
     }
 }

@@ -27,7 +27,7 @@ class {{ class.name }}{% if class.parent %} extends {{ class.parent }}{% endif %
 {% for annotation in constant.annotations %}
      * {{ annotation }}
 {% endfor %}
-    */
+     */
     const {{ constant.name }} = '{{ constant.value }}';
 {% endfor %}
 {% for field in class.fields %}
