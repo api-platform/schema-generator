@@ -30,7 +30,12 @@ class DoctrineAnnotationGenerator extends AbstractAnnotationGenerator
             return [];
         }
 
-        $inheritanceMapping = $this->config['types'][$class['resource']->localName()]['doctrine']['inheritanceMapping'];
+        if (isset($this->config['types'][$class['resource']->localName()]['doctrine']['inheritanceMapping'])) {
+            $inheritanceMapping = $this->config['types'][$class['resource']->localName()]['doctrine']['inheritanceMapping'];
+        } else {
+            $inheritanceMapping = null;
+        }
+
         if (!$inheritanceMapping) {
             $inheritanceMapping = $this->config['inheritanceMapping'];
         }

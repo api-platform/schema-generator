@@ -34,7 +34,8 @@ Usage:
 
 ### Configuration
 
-See [echoppe.yml](examples/config/echoppe.yml) file.
+See [echoppe.yml](tests/config/echoppe.yml) file for a working example.
+Without configuration file, the tool will build the entire Schema.org vocable.
 
 ### Configuration reference
 

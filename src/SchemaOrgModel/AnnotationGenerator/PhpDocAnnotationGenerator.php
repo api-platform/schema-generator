@@ -16,6 +16,8 @@ namespace SchemaOrgModel\AnnotationGenerator;
  */
 class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
 {
+    const INDENT = '   ';
+
     /**
      * {@inheritdoc}
      */
@@ -138,7 +140,7 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
 
         if ($indent) {
             for ($i = 1; $i < count($doc); $i++) {
-                $doc[$i] = sprintf('   %s', $doc[$i]);
+                $doc[$i] = self::INDENT.$doc[$i];
             }
         }
 
