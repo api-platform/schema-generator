@@ -1,11 +1,22 @@
-# PHP Schema.org Model
+# PHP Schema.org Model Scaffolding
 
-Various tools to generate a data model based on [Schema.org](http://schema.org) vocables.
-
-*Work In Progress.*
+Tool to generate a PHP data model from [Schema.org](http://schema.org) vocables.
 
 [![Build Status](https://travis-ci.org/dunglas/php-schema.org-model.png?branch=master)](https://travis-ci.org/dunglas/php-schema.org-model)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/87ec89e6-57cd-4ac0-9ab1-d4549c5425c5/mini.png)](https://insight.sensiolabs.com/projects/87ec89e6-57cd-4ac0-9ab1-d4549c5425c5)
+
+## Features
+
+* [PSR](http://www.php-fig.org/) compliant entity generator including properties, getters and setters
+* Enum generator relying on [PHP Enum](https://github.com/myclabs/php-enum)
+* Interface and [Doctrine Resolve Target Entity Listener](http://doctrine-orm.readthedocs.org/en/latest/cookbook/resolve-target-entity-listener.html)
+support
+* Namespace support
+* Full [PSR-5](https://github.com/php-fig/fig-standards/pull/169) compliant PHPDoc for classes, properties, constants and
+methods extracted from Schema.org
+* Doctrine annotation mapping (database columns and relation)
+* Data validation through [Symfony Validator](http://symfony.com/doc/current/book/validation.html) annotations
+* Fully configurable and extensible
 
 ## Installation
 
@@ -13,7 +24,7 @@ Use [Composer](http://getcomposer.org).
 
     composer create-project dunglas/php-schema.org-model
 
-## Doctrine entities generator
+## Doctrine entity generator
 
 Generates Doctrine entities from Schema.org vocables.
 
