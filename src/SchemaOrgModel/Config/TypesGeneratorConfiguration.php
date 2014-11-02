@@ -98,7 +98,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->defaultValue([
                         'SchemaOrgModel\AnnotationGenerator\PhpDocAnnotationGenerator',
                         'SchemaOrgModel\AnnotationGenerator\ConstraintAnnotationGenerator',
-                        'SchemaOrgModel\AnnotationGenerator\DoctrineAnnotationGenerator',
+                        'SchemaOrgModel\AnnotationGenerator\DoctrineOrmAnnotationGenerator',
                     ])
                     ->prototype('scalar')->end()
                 ->end()
