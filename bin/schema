@@ -1,4 +1,4 @@
-#!/usr/bin/env php -d hhvm.libxml.ext_entity_whitelist=http
+#!/usr/bin/env php
 <?php
 
 include('schema.php');
