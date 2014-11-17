@@ -484,7 +484,7 @@ class TypesGenerator
      */
     private function generateClassUses($annotationGenerators, $classes, $className)
     {
-        $uses = [];
+        $uses = $classes[$className]['uses'];
 
         if (
             isset($classes[$className]['interfaceNamespace'])

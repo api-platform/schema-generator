@@ -79,7 +79,7 @@ class CardinalitiesExtractor
 
         if (
             // http://schema.org/acceptedOffer, http://schema.org/acceptedPaymentMethod, http://schema.org/exerciseType
-            preg_match('/^\(s\)/', $comment)
+            preg_match('/\(s\)/', $comment)
             ||
             // http://schema.org/follows
             preg_match('/^The most generic uni-directional social relation./', $comment)
