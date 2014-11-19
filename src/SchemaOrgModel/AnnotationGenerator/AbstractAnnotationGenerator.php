@@ -48,8 +48,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
         array $cardinalities,
         array $config,
         array $classes
-    )
-    {
+    ) {
         $this->logger = $logger;
         $this->graphs = $graphs;
         $this->cardinalities = $cardinalities;
@@ -108,6 +107,22 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
+    public function generateAdderAnnotations($className, $fieldName)
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateRemoverAnnotations($className, $fieldName)
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function generateUses($className)
     {
         return [];
@@ -116,11 +131,15 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * Converts a Schema.org range to a PHP type
      *
-     * @param  string $range
+     * @param  array  $field
+     * @param  bool   $adderOrRemover
      * @return string
      */
-    protected function toPhpType($range)
+    protected function toPhpType(array $field, $adderOrRemover = false)
     {
+        $range = $field['range'];
+
+        $data = $range;
         switch ($range) {
             case 'Boolean':
                 return 'boolean';
@@ -147,8 +166,16 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
                 break;
         }
 
-        if (isset($this->classes[$range]['interfaceName'])) {
-            return $this->classes[$range]['interfaceName'];
+        if (isset($this->classes[$field['range']]['interfaceName'])) {
+            $range = $this->classes[$field['range']]['interfaceName'];
+        }
+
+        if ($field['isArray'] && !$adderOrRemover) {
+            if ($this->config['useDoctrineCollection']) {
+                return sprintf('ArrayCollection<%s>', $range);
+            }
+
+            return sprintf('%s[]', $range);
         }
 
         return $range;

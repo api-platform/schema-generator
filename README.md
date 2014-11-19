@@ -56,11 +56,17 @@ relations:
 # Debug mode
 debug:                false
 
-# Use Doctrine's Resolve Target Entity feature
-useRte:               false
+# Generate interfaces and use Doctrine's Resolve Target Entity feature
+interface:            true
+
+# Use Doctrine's ArrayCollection instead of standard arrays
+doctrineCollection:   true
 
 # Emit a warning if a property is not derived from GoodRelations
 checkIsGoodRelations:  false
+
+# The Doctrine inheritance mapping type
+inheritanceMapping:   '@ORM\Entity'
 
 # A license or any text to use as header of generated files
 header:               false # Example: // (c) Kévin Dunglas <dunglas@gmail.com>
@@ -99,7 +105,7 @@ types:
             interface:            null
         doctrine:
 
-            # The Doctrine inheritance mapping type
+            # The Doctrine inheritance mapping type (override globally defined one)
             inheritanceMapping:   null
 
         # The parent class
@@ -120,7 +126,7 @@ annotationGenerators:
     # Defaults:
     - SchemaOrgModel\AnnotationGenerator\PhpDocAnnotationGenerator
     - SchemaOrgModel\AnnotationGenerator\ConstraintAnnotationGenerator
-    - SchemaOrgModel\AnnotationGenerator\DoctrineAnnotationGenerator
+    - SchemaOrgModel\AnnotationGenerator\DoctrineOrmAnnotationGenerator
 ```
 
 ## Cardinalities extractor

@@ -7,13 +7,16 @@ header: |
    * For the full copyright and license information, please view the LICENSE
    * file that was distributed with this source code.
    */
+rdfa:
+  - tests/data/schema.rdfa
+relations:
+  - tests/data/v1.owl
 namespaces:
   entity:               "Echoppe\CoreBundle\Entity"
   enum:                 "Echoppe\CoreBundle\Enum"
   interface:            "Echoppe\CoreBundle\Model"
 author: "Kévin Dunglas <dunglas@gmail.com>"
 debug: true
-useRte: true
 checkIsGoodRelations: true
 inheritanceMapping: "@ORM\MappedSuperclass"
 types:

@@ -101,5 +101,4 @@ class CardinalitiesExtractor
 
         return self::CARDINALITY_UNKNOWN;
     }
-
 }

@@ -59,7 +59,11 @@ class GenerateTypesCommand extends Command
         $graphs = [];
         foreach ($processedConfiguration['rdfa'] as $rdfa) {
             $graph = new \EasyRdf_Graph();
-            $graph->load($rdfa, 'rdfa');
+            if ('http://' === substr($rdfa, 0, 7) || 'https://' === substr($rdfa, 0, 8)) {
+                $graph->load($rdfa, 'rdfa');
+            } else {
+                $graph->parseFile($rdfa);
+            }
 
             $graphs[] = $graph;
         }
@@ -73,7 +77,7 @@ class GenerateTypesCommand extends Command
         $cardinalitiesExtractor = new CardinalitiesExtractor($graphs, $goodRelationsBridge);
 
         $ucfirstFilter = new \Twig_SimpleFilter('ucfirst', 'ucfirst');
-        $loader = new \Twig_Loader_Filesystem(__DIR__ . '/../../../templates/');
+        $loader = new \Twig_Loader_Filesystem(__DIR__.'/../../../templates/');
         $twig = new \Twig_Environment($loader, ['autoescape' => false, 'debug' => $processedConfiguration['debug']]);
         $twig->addFilter($ucfirstFilter);
 

@@ -62,7 +62,7 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         $annotations = $this->formatDoc($field['resource']->get('rdfs:comment'), true);
         $annotations[0] = sprintf(
             '@type %s $%s %s',
-            $this->toPhpType($field['range']),
+            $this->toPhpType($field),
             $fieldName,
             $annotations[0]
         );
@@ -78,7 +78,7 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         return [
             sprintf('Gets %s.', $fieldName),
             '',
-            sprintf('@return %s', $this->toPhpType($this->classes[$className]['fields'][$fieldName]['range'])),
+            sprintf('@return %s', $this->toPhpType($this->classes[$className]['fields'][$fieldName])),
         ];
     }
 
@@ -92,7 +92,41 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             '',
             sprintf(
                 '@param  %s $%s',
-                $this->toPhpType($this->classes[$className]['fields'][$fieldName]['range']),
+                $this->toPhpType($this->classes[$className]['fields'][$fieldName]),
+                $fieldName
+            ),
+            '@return $this',
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateAdderAnnotations($className, $fieldName)
+    {
+        return [
+            sprintf('Adds %s.', $fieldName),
+            '',
+            sprintf(
+                '@param  %s $%s',
+                $this->toPhpType($this->classes[$className]['fields'][$fieldName], true),
+                $fieldName
+            ),
+            '@return $this',
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateRemoverAnnotations($className, $fieldName)
+    {
+        return [
+            sprintf('Removes %s.', $fieldName),
+            '',
+            sprintf(
+                '@param  %s $%s',
+                $this->toPhpType($this->classes[$className]['fields'][$fieldName], true),
                 $fieldName
             ),
             '@return $this',

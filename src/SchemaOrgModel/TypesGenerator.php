@@ -27,6 +27,11 @@ class TypesGenerator
     const ENUM_USE = 'MyCLabs\Enum\Enum';
     /**
      * @type string
+     * @see https://github.com/doctrine/collections
+     */
+    const DOCTRINE_COLLECTION_USE = 'Doctrine\Common\Collections\ArrayCollection';
+    /**
+     * @type string
      * @see https://github.com/myclabs/php-enum Used enum implementation
      */
     const ENUM_EXTENDS = 'Enum';
@@ -85,8 +90,7 @@ class TypesGenerator
         array $graphs,
         CardinalitiesExtractor $cardinalitiesExtractor,
         GoodRelationsBridge $goodRelationsBridge
-    )
-    {
+    ) {
         $this->twig = $twig;
         $this->logger = $logger;
         $this->graphs = $graphs;
@@ -105,6 +109,7 @@ class TypesGenerator
             'constants' => [],
             'fields' => [],
             'uses' => [],
+            'hasConstructor' => false,
         ];
 
         $typesDefined = !empty($config['types']);
@@ -121,7 +126,7 @@ class TypesGenerator
                     $resources = $graph->resources();
 
                     if (isset($resources[self::SCHEMA_ORG_NAMESPACE.$key])) {
-                        $resource = $graph->resource(self::SCHEMA_ORG_NAMESPACE . $key, 'rdfs:Class');
+                        $resource = $graph->resource(self::SCHEMA_ORG_NAMESPACE.$key, 'rdfs:Class');
                         break;
                     }
                 }
@@ -142,7 +147,6 @@ class TypesGenerator
             if ($typeDefined) {
                 $typeConfig = $config['types'][$type->localName()];
             }
-            $typeIsEnum = $this->isEnum($type);
 
             $class = $baseClass;
 
@@ -150,8 +154,8 @@ class TypesGenerator
             $class['label'] = $type->get('rdfs:comment')->getValue();
             $class['resource'] = $type;
 
-            if ($typeIsEnum) {
-                // Enum
+            $class['isEnum'] = $this->isEnum($type);
+            if ($class['isEnum']) {
                 $class['namespace'] = $typeDefined && $typeConfig['namespace'] ? $typeConfig['namespace'] : $config['namespaces']['enum'];
                 $class['parent'] = self::ENUM_EXTENDS;
                 $class['uses'][] = self::ENUM_USE;
@@ -170,12 +174,7 @@ class TypesGenerator
                 // Entities
                 $class['namespace'] = $typeDefined && $typeConfig['namespaces']['class'] ? $typeConfig['namespaces']['class'] : $config['namespaces']['entity'];
 
-                if ($config['useRte']) {
-                    $class['interfaceNamespace'] = $typeDefined && $typeConfig['namespaces']['interface'] ? $typeConfig['namespaces']['interface'] : $config['namespaces']['interface'];
-                    $class['interfaceName'] = sprintf('%sInterface', $type->localName());
-                }
-
-                // Parent
+                                // Parent
                 $class['parent'] = $typeDefined ? $typeConfig['parent'] : null;
                 if (null === $class['parent']) {
                     $numberOfSupertypes = count($type->all('rdfs:subClassOf'));
@@ -192,6 +191,12 @@ class TypesGenerator
                 }
             }
 
+            // Interfaces
+            if ($config['useInterface']) {
+                $class['interfaceNamespace'] = $typeDefined && $typeConfig['namespaces']['interface'] ? $typeConfig['namespaces']['interface'] : $config['namespaces']['interface'];
+                $class['interfaceName'] = sprintf('%sInterface', $type->localName());
+            }
+
             // Fields
             foreach ($propertiesMap[$type->getUri()] as $property) {
                 // Ignore properties not set if using a config file
@@ -199,6 +204,7 @@ class TypesGenerator
                     continue;
                 }
 
+                // Warn when property are not part of GoodRelations
                 if ($config['checkIsGoodRelations']) {
                     if (!$this->goodRelationsBridge->exist($property->localName())) {
                         $this->logger->warning(sprintf('The property "%s" (type "%s") is not part of GoodRelations.', $property->localName(), $type->localName()));
@@ -222,8 +228,7 @@ class TypesGenerator
                 } else {
                     foreach ($property->all(self::SCHEMA_ORG_RANGE) as $range) {
                         if (!$typesDefined || $this->isDatatype($range->localName()) || !empty($config['types'][$range->localName()])) {
-                            // Force enums to Text
-                            $ranges[] = $this->isEnum($range) ? 'Text' : $range->localName();
+                            $ranges[] = $range->localName();
                         }
                     }
                 }
@@ -233,11 +238,25 @@ class TypesGenerator
                     $this->logger->error(sprintf('The property "%s" (type "%s") has several types. Using the first one.', $property->localName(), $type->localName()));
                 }
 
+                $cardinality = $this->cardinalities[$property->localName()];
+                $isArray = in_array($cardinality, [
+                    CardinalitiesExtractor::CARDINALITY_0_N,
+                    CardinalitiesExtractor::CARDINALITY_1_N,
+                ]);
                 $class['fields'][$property->localName()] = [
                     'name' => $property->localName(),
                     'resource' => $property,
                     'range' => $ranges[0],
+                    'cardinality' => $cardinality,
+                    'isArray' => $isArray,
                 ];
+                if ($isArray) {
+                    $class['hasConstructor'] = true;
+
+                    if ($config['useDoctrineCollection'] && !in_array(self::DOCTRINE_COLLECTION_USE, $class['uses'])) {
+                        $class['uses'][] = self::DOCTRINE_COLLECTION_USE;
+                    }
+                }
             }
 
             $classes[$type->localName()] = $class;
@@ -258,7 +277,6 @@ class TypesGenerator
 
             foreach ($class['constants'] as $constantName => $constant) {
                 $class['constants'][$constantName]['annotations'] = $this->generateConstantAnnotations($annotationGenerators, $className, $constantName);
-
             }
 
             foreach ($class['fields'] as $fieldName => $field) {
@@ -272,8 +290,14 @@ class TypesGenerator
                 }
 
                 $class['fields'][$fieldName]['annotations'] = $this->generateFieldAnnotations($annotationGenerators, $className, $fieldName);
-                $class['fields'][$fieldName]['getterAnnotations'] = $this->generateGetterAnnotations($annotationGenerators, $className, $fieldName);
-                $class['fields'][$fieldName]['setterAnnotations'] = $this->generateSetterAnnotations($annotationGenerators, $className, $fieldName);
+                $field['getterAnnotations'] = $this->generateGetterAnnotations($annotationGenerators, $className, $fieldName);
+                if ($field['isArray']) {
+                    $class['fields'][$fieldName]['adderAnnotations'] = $this->generateAdderAnnotations($annotationGenerators, $className, $fieldName);
+                    $class['fields'][$fieldName]['removerAnnotations'] = $this->generateRemoverAnnotations($annotationGenerators, $className, $fieldName);
+                } else {
+                    $class['fields'][$fieldName]['setterAnnotations'] = $this->generateSetterAnnotations($annotationGenerators, $className, $fieldName);
+                }
+
                 $class['fields'][$fieldName]['typeHint'] = $typeHint;
             }
 
@@ -288,8 +312,7 @@ class TypesGenerator
             file_put_contents(
                 $path,
                 $this->twig->render('class.php.twig', [
-                    'header' => $config['header'],
-                    'fieldVisibility' => $config['fieldVisibility'],
+                    'config' => $config,
                     'class' => $class,
                 ])
             );
@@ -306,7 +329,7 @@ class TypesGenerator
                 file_put_contents(
                     $path,
                     $this->twig->render('interface.php.twig', [
-                        'header' => $config['header'],
+                        'config' => $config,
                         'class' => $class,
                     ])
                 );
@@ -457,6 +480,42 @@ class TypesGenerator
     }
 
     /**
+     * Generates adder's annotations.
+     *
+     * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
+     * @param  string                                                             $className
+     * @param  string                                                             $fieldName
+     * @return array
+     */
+    private function generateAdderAnnotations(array $annotationGenerators, $className, $fieldName)
+    {
+        $annotations = [];
+        foreach ($annotationGenerators as $generator) {
+            $annotations = array_merge($annotations, $generator->generateAdderAnnotations($className, $fieldName));
+        }
+
+        return $annotations;
+    }
+
+    /**
+     * Generates remover's annotations.
+     *
+     * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
+     * @param  string                                                             $className
+     * @param  string                                                             $fieldName
+     * @return array
+     */
+    private function generateRemoverAnnotations(array $annotationGenerators, $className, $fieldName)
+    {
+        $annotations = [];
+        foreach ($annotationGenerators as $generator) {
+            $annotations = array_merge($annotations, $generator->generateRemoverAnnotations($className, $fieldName));
+        }
+
+        return $annotations;
+    }
+
+    /**
      * Generates getter's annotations.
      *
      * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
@@ -515,7 +574,7 @@ class TypesGenerator
             $uses = array_merge($uses, $generator->generateUses($className));
         }
 
-        // Order uses alphabetically
+        // Order alphabetically
         sort($uses);
 
         return $uses;

@@ -26,7 +26,7 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
     {
         $class = $this->classes[$className];
 
-        if ($class['parent'] === TypesGenerator::ENUM_EXTENDS) {
+        if ($class['isEnum']) {
             return [];
         }
 
@@ -51,36 +51,48 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
      */
     public function generateFieldAnnotations($className, $fieldName)
     {
-        $field = $this->classes[$className]['fields'][$fieldName];
+        $class = $this->classes[$className];
+        $field = $class['fields'][$fieldName];
 
         $annotations = [];
 
-        switch ($field['range']) {
-            case 'Boolean':
-                $type = 'boolean';
-                break;
-            case 'Date':
-                $type = 'date';
-                break;
-            case 'DateTime':
-                $type = 'datetime';
-                break;
-            case 'Time':
-                $type = 'time';
-                break;
-            case 'Number':
-                // No break
-            case 'Float':
-                $type = 'float';
-                break;
-            case 'Integer':
-                $type = 'integer';
-                break;
-            case 'Text':
-                // No break
-            case 'URL':
+        if ($class['isEnum']) {
+            if (in_array($field['cardinality'], [
+                CardinalitiesExtractor::CARDINALITY_0_N,
+                CardinalitiesExtractor::CARDINALITY_1_N,
+            ])) {
+                $type = 'simple_array';
+            } else {
                 $type = 'string';
-                break;
+            }
+        } else {
+            switch ($field['range']) {
+                case 'Boolean':
+                    $type = 'boolean';
+                    break;
+                case 'Date':
+                    $type = 'date';
+                    break;
+                case 'DateTime':
+                    $type = 'datetime';
+                    break;
+                case 'Time':
+                    $type = 'time';
+                    break;
+                case 'Number':
+                    // No break
+                case 'Float':
+                    $type = 'float';
+                    break;
+                case 'Integer':
+                    $type = 'integer';
+                    break;
+                case 'Text':
+                    // No break
+                case 'URL':
+                    $type = 'string';
+                    break;
+            }
         }
 
         if (isset($type)) {
@@ -92,18 +104,18 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
 
             $annotations[] = $annotation;
         } else {
-            switch ($this->cardinalities[$field['resource']->localName()]) {
+            switch ($field['cardinality']) {
                 case CardinalitiesExtractor::CARDINALITY_0_1:
                     $annotations[] = sprintf('@ORM\OneToOne(targetEntity="%s")', $this->getRelationName($field['range']));
-                    break;
-
-                case CardinalitiesExtractor::CARDINALITY_0_N:
-                    $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $this->getRelationName($field['range']));
                     break;
 
                 case CardinalitiesExtractor::CARDINALITY_1_1:
                     $annotations[] = sprintf('@ORM\OneToOne(targetEntity="%s")', $this->getRelationName($field['range']));
                     $annotations[] = '@ORM\JoinColumn(nullable=false)';
+                    break;
+
+                case CardinalitiesExtractor::CARDINALITY_0_N:
+                    $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $this->getRelationName($field['range']));
                     break;
 
                 case CardinalitiesExtractor::CARDINALITY_1_N:

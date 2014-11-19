@@ -6,7 +6,7 @@
  #}
 <?php
 
-{% if header %}{{ header }}{% endif %}
+{% if config.header %}{{ config.header }}{% endif %}
 
 namespace {{ class.namespace }};
 
@@ -20,7 +20,6 @@ use {{ use }};
 {% endfor %}
  */
 class {{ class.name }}{% if class.parent %} extends {{ class.parent }}{% endif %}{% if class.interfaceName %} implements {{ class.interfaceName }}{% endif %}
-
 {
 {% for constant in class.constants %}
     /**
@@ -30,16 +29,58 @@ class {{ class.name }}{% if class.parent %} extends {{ class.parent }}{% endif %
      */
     const {{ constant.name }} = '{{ constant.value }}';
 {% endfor %}
+
 {% for field in class.fields %}
     /**
 {% for annotation in field.annotations %}
      * {{ annotation }}
 {% endfor %}
      */
-    {{ fieldVisibility }} ${{ field.name }};
+    {{ config.fieldVisibility }} ${{ field.name }}{% if field.isArray and (field.isEnum or not config.useDoctrineCollection) %} = []{% endif %};
 {% endfor %}
-{% for field in class.fields %}
 
+{% if config.useDoctrineCollection and class.hasConstructor %}
+    public function __construct()
+    {
+        parent::__construct();
+
+{% for field in class.fields %}
+{% if field.isArray and not field.isEnum %}
+        $this->{{ field.name }} = new ArrayCollection();
+{% endif %}
+{% endfor %}
+    }
+{% endif %}
+
+{% for field in class.fields %}
+{% if field.isArray %}
+    /**
+{% for annotation in field.adderAnnotations %}
+     * {{ annotation }}
+{% endfor %}
+     */
+    public function add{{ field.name|ucfirst }}({% if field.typeHint and not field.isEnum %}{{ field.typeHint }} {% endif %}${{ field.name }})
+    {
+        $this->{{ field.name }}[] = {% if field.isEnum %}(string) {% endif %}${{ field.name }};
+
+        return $this;
+    }
+
+    /**
+{% for annotation in field.removerAnnotations %}
+     * {{ annotation }}
+{% endfor %}
+     */
+    public function remove{{ field.name|ucfirst }}({% if field.typeHint and not field.isEnum %}{{ field.typeHint }} {% endif %}${{ field.name }})
+    {
+        $key = array_search({% if field.isEnum %}(string) {% endif %}${{ field.name }}, $this->{{ field.name }}, true);
+        if (false !== $key) {
+            unset($this->{{ field.name }}[$key]);
+        }
+
+        return $this;
+    }
+{% else %}
     /**
 {% for annotation in field.setterAnnotations %}
      * {{ annotation }}
@@ -51,6 +92,7 @@ class {{ class.name }}{% if class.parent %} extends {{ class.parent }}{% endif %
 
         return $this;
     }
+{% endif %}
 
     /**
 {% for annotation in field.getterAnnotations %}

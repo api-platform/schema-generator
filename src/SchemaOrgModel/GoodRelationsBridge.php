@@ -42,7 +42,7 @@ class GoodRelationsBridge
         'openingHoursSpecification' => 'hasOpeningHoursSpecification',
         'eligibleQuantity' => 'hasEligibleQuantity',
         'warranty' => 'hasWarrantyPromise',
-        'acceptedPaymentMethod' => 'acceptedPaymentMethods'
+        'acceptedPaymentMethod' => 'acceptedPaymentMethods',
     ];
     /**
      * @type array
@@ -65,7 +65,7 @@ class GoodRelationsBridge
         'sku' => 'hasStockKeepingUnit',
         'duns' => 'hasDUNS',
         'minValue' => 'hasMinValue',
-        'eligibleRegion' => 'eligibleRegions'
+        'eligibleRegion' => 'eligibleRegions',
     ];
 
     /**
@@ -126,12 +126,11 @@ class GoodRelationsBridge
      */
     private static function convertPropertyId($id)
     {
-
-        if (isset (static::$datatypePropertiesTable[$id])) {
+        if (isset(static::$datatypePropertiesTable[$id])) {
             return static::$datatypePropertiesTable[$id];
         }
 
-        if (isset (static::$objectPropertiesTable[$id])) {
+        if (isset(static::$objectPropertiesTable[$id])) {
             return static::$objectPropertiesTable[$id];
         }
 
