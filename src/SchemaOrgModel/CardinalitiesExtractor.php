@@ -84,8 +84,6 @@ class CardinalitiesExtractor
             // http://schema.org/follows
             preg_match('/^The most generic uni-directional social relation./', $comment)
             ||
-            preg_match('/An? /', $comment)
-            ||
             preg_match('/one or more/i', $comment)
         ) {
             return self::CARDINALITY_0_N;
@@ -96,7 +94,7 @@ class CardinalitiesExtractor
         ||
             preg_match('/^The /', $comment)
         ) {
-            return self::CARDINALITY_1_N;
+            return self::CARDINALITY_1_1;
         }
 
         return self::CARDINALITY_UNKNOWN;

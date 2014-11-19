@@ -36,7 +36,7 @@ class {{ class.name }}{% if class.parent %} extends {{ class.parent }}{% endif %
      * {{ annotation }}
 {% endfor %}
      */
-    {{ config.fieldVisibility }} ${{ field.name }}{% if field.isArray and (field.isEnum or not config.useDoctrineCollection) %} = []{% endif %};
+    {{ config.fieldVisibility }} ${{ field.name }}{% if field.isArray and (field.isEnum or not field.typeHint or not config.useDoctrineCollection) %} = []{% endif %};
 {% endfor %}
 
 {% if config.useDoctrineCollection and class.hasConstructor %}
@@ -45,7 +45,7 @@ class {{ class.name }}{% if class.parent %} extends {{ class.parent }}{% endif %
         parent::__construct();
 
 {% for field in class.fields %}
-{% if field.isArray and not field.isEnum %}
+{% if field.isArray and field.typeHint and not field.isEnum %}
         $this->{{ field.name }} = new ArrayCollection();
 {% endif %}
 {% endfor %}
@@ -71,7 +71,7 @@ class {{ class.name }}{% if class.parent %} extends {{ class.parent }}{% endif %
      * {{ annotation }}
 {% endfor %}
      */
-    public function remove{{ field.name|ucfirst }}({% if field.typeHint and not field.isEnum %}{{ field.typeHint }} {% endif %}${{ field.name }})
+    public function remove{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.typeHint }} {% endif %}${{ field.name }})
     {
         $key = array_search({% if field.isEnum %}(string) {% endif %}${{ field.name }}, $this->{{ field.name }}, true);
         if (false !== $key) {
@@ -103,5 +103,6 @@ class {{ class.name }}{% if class.parent %} extends {{ class.parent }}{% endif %
     {
         return $this->{{ field.name }};
     }
+
 {% endfor %}
 }

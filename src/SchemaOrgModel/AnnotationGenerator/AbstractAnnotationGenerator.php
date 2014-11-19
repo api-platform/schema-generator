@@ -139,31 +139,47 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     {
         $range = $field['range'];
 
-        $data = $range;
+        if (isset($this->classes[$field['range']]['isEnum']) && $this->classes[$field['range']]['isEnum']) {
+            if ($field['isArray']) {
+                return 'string[]';
+            } else {
+                return 'string';
+            }
+        }
+
+        $data = false;
         switch ($range) {
             case 'Boolean':
-                return 'boolean';
+                $data = 'boolean';
                 break;
             case 'Date':
                 // No break
             case 'DateTime':
                 // No break
             case 'Time':
-                return '\DateTime';
+                $data = '\DateTime';
                 break;
             case 'Number':
                 // No break
             case 'Float':
-                return 'float';
+                $data = 'float';
                 break;
             case 'Integer':
-                return 'integer';
+                $data = 'integer';
                 break;
             case 'Text':
                 // No break
             case 'URL':
-                return 'string';
+                $data = 'string';
                 break;
+        }
+
+        if ($data) {
+            if ($field['isArray']) {
+                return sprintf('%s[]', $data);
+            }
+
+            return $data;
         }
 
         if (isset($this->classes[$field['range']]['interfaceName'])) {

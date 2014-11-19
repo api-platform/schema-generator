@@ -25,6 +25,10 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
     {
         $field = $this->classes[$className]['fields'][$fieldName];
 
+        if (isset($this->classes[$field['range']]['isEnum']) && $this->classes[$field['range']]['isEnum']) {
+            return [];
+        }
+
         switch ($field['range']) {
             case 'URL':
                 return ['@Assert\Url'];

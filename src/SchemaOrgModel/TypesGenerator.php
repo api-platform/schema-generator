@@ -189,12 +189,12 @@ class TypesGenerator
                 if ($typesDefined && $class['parent'] && !isset($config['types'][$class['parent']])) {
                     $this->logger->error(sprintf('The type "%s" (parent of "%s") doesn\'t exist', $class['parent'], $type->localName()));
                 }
-            }
 
-            // Interfaces
-            if ($config['useInterface']) {
-                $class['interfaceNamespace'] = $typeDefined && $typeConfig['namespaces']['interface'] ? $typeConfig['namespaces']['interface'] : $config['namespaces']['interface'];
-                $class['interfaceName'] = sprintf('%sInterface', $type->localName());
+                // Interfaces
+                if ($config['useInterface']) {
+                    $class['interfaceNamespace'] = $typeDefined && $typeConfig['namespaces']['interface'] ? $typeConfig['namespaces']['interface'] : $config['namespaces']['interface'];
+                    $class['interfaceName'] = sprintf('%sInterface', $type->localName());
+                }
             }
 
             // Fields
@@ -281,7 +281,9 @@ class TypesGenerator
 
             foreach ($class['fields'] as $fieldName => $field) {
                 $typeHint = false;
-                if (!$this->isDatatype($field['range'])) {
+                if ($this->isDateTime($field['range'])) {
+                    $typeHint = '\\DateTime';
+                } elseif (!($this->isDatatype($field['range']) || $classes[$field['range']]['isEnum'])) {
                     if (isset($classes[$field['range']]['interfaceName'])) {
                         $typeHint = $classes[$field['range']]['interfaceName'];
                     } else {
@@ -289,8 +291,11 @@ class TypesGenerator
                     }
                 }
 
+                $class['fields'][$fieldName]['isEnum'] = isset($classes[$field['range']]) && $classes[$field['range']]['isEnum'];
+                $class['fields'][$fieldName]['typeHint'] = $typeHint;
                 $class['fields'][$fieldName]['annotations'] = $this->generateFieldAnnotations($annotationGenerators, $className, $fieldName);
-                $field['getterAnnotations'] = $this->generateGetterAnnotations($annotationGenerators, $className, $fieldName);
+                $class['fields'][$fieldName]['getterAnnotations'] = $this->generateGetterAnnotations($annotationGenerators, $className, $fieldName);
+
                 if ($field['isArray']) {
                     $class['fields'][$fieldName]['adderAnnotations'] = $this->generateAdderAnnotations($annotationGenerators, $className, $fieldName);
                     $class['fields'][$fieldName]['removerAnnotations'] = $this->generateRemoverAnnotations($annotationGenerators, $className, $fieldName);
@@ -298,7 +303,6 @@ class TypesGenerator
                     $class['fields'][$fieldName]['setterAnnotations'] = $this->generateSetterAnnotations($annotationGenerators, $className, $fieldName);
                 }
 
-                $class['fields'][$fieldName]['typeHint'] = $typeHint;
             }
 
             $classDir = $this->namespaceToDir($config, $class['namespace']);
@@ -389,6 +393,17 @@ class TypesGenerator
     private function isDatatype($type)
     {
         return in_array($type, ['Boolean', 'DataType', 'Date', 'DateTime', 'Float', 'Integer', 'Number', 'Text', 'Time', 'URL']);
+    }
+
+    /**
+     * Is this type a \DateTime?
+     *
+     * @param $type
+     * @return bool
+     */
+    private function isDateTime($type)
+    {
+        return in_array($type, ['Date', 'DateTime', 'Time']);
     }
 
     /**

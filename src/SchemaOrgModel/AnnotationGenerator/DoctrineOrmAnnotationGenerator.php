@@ -51,12 +51,12 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
      */
     public function generateFieldAnnotations($className, $fieldName)
     {
-        $class = $this->classes[$className];
-        $field = $class['fields'][$fieldName];
+        $this->classes[$className];
+        $field = $this->classes[$className]['fields'][$fieldName];
 
         $annotations = [];
 
-        if ($class['isEnum']) {
+        if (isset($this->classes[$field['range']]['isEnum']) && $this->classes[$field['range']]['isEnum']) {
             if (in_array($field['cardinality'], [
                 CardinalitiesExtractor::CARDINALITY_0_N,
                 CardinalitiesExtractor::CARDINALITY_1_N,
