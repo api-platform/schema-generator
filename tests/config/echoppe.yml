@@ -18,7 +18,6 @@ namespaces:
 author: "Kévin Dunglas <dunglas@gmail.com>"
 debug: true
 checkIsGoodRelations: true
-inheritanceMapping: "@ORM\MappedSuperclass"
 types:
   Thing:
     properties:

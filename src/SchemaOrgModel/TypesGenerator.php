@@ -288,7 +288,6 @@ class TypesGenerator
             $class['annotations'] = $this->generateClassAnnotations($annotationGenerators, $className);
             $class['interfaceAnnotations'] = $this->generateInterfaceAnnotations($annotationGenerators, $className);
 
-
             foreach ($class['constants'] as $constantName => $constant) {
                 $class['constants'][$constantName]['annotations'] = $this->generateConstantAnnotations($annotationGenerators, $className, $constantName);
             }

@@ -9,8 +9,6 @@
 
 namespace SchemaOrgModel\AnnotationGenerator;
 
-use SchemaOrgModel\TypesGenerator;
-
 /**
  * Constraint annotation generator.
  *
