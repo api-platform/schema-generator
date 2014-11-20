@@ -9,15 +9,14 @@ vocables.
 ## Features
 
 * [PSR](http://www.php-fig.org/) compliant entity generator including properties, getters and setters
-* Full [PSR-5](https://github.com/php-fig/fig-standards/pull/169) compliant PHPDoc for classes, properties, constants and
-methods extracted from Schema.org
-* Doctrine annotation mapping (database columns and relation)
+* Full [PSR-5](https://github.com/php-fig/fig-standards/pull/169) compliant PHPDoc for classes, properties, constants (enum
+values) and methods extracted from Schema.org
+* Doctrine annotation mapping (database columns and relations)
 * Data validation through [Symfony Validator](http://symfony.com/doc/current/book/validation.html) annotations
 * `abstract` class and Doctrine inheritance support
 * Interface and [Doctrine Resolve Target Entity Listener](http://doctrine-orm.readthedocs.org/en/latest/cookbook/resolve-target-entity-listener.html)
 support
 * Namespace support
-
 * Enum generator relying on [PHP Enum](https://github.com/myclabs/php-enum)
 * Fully configurable and extensible
 
