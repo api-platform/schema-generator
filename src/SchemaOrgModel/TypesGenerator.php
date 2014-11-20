@@ -110,6 +110,7 @@ class TypesGenerator
             'fields' => [],
             'uses' => [],
             'hasConstructor' => false,
+            'hasChild' => false,
         ];
 
         $typesDefined = !empty($config['types']);
@@ -174,7 +175,7 @@ class TypesGenerator
                 // Entities
                 $class['namespace'] = $typeDefined && $typeConfig['namespaces']['class'] ? $typeConfig['namespaces']['class'] : $config['namespaces']['entity'];
 
-                                // Parent
+                // Parent
                 $class['parent'] = $typeDefined ? $typeConfig['parent'] : null;
                 if (null === $class['parent']) {
                     $numberOfSupertypes = count($type->all('rdfs:subClassOf'));
@@ -262,6 +263,18 @@ class TypesGenerator
             $classes[$type->localName()] = $class;
         }
 
+        // Second pass
+        foreach ($classes as $className => $class) {
+            if ($class['parent'] && isset($classes[$class['parent']])) {
+                $classes[$class['parent']]['hasChild'] = true;
+            }
+
+            foreach ($class['fields'] as $fieldName => $field) {
+                $classes[$className]['fields'][$fieldName]['isEnum'] = isset($classes[$field['range']]) && $classes[$field['range']]['isEnum'];
+            }
+        }
+
+        // Initialize annotation generators
         $annotationGenerators = [];
         foreach ($config['annotationGenerators'] as $class) {
             $generator = new $class($this->logger, $this->graphs, $this->cardinalities, $config, $classes);
@@ -275,6 +288,7 @@ class TypesGenerator
             $class['annotations'] = $this->generateClassAnnotations($annotationGenerators, $className);
             $class['interfaceAnnotations'] = $this->generateInterfaceAnnotations($annotationGenerators, $className);
 
+
             foreach ($class['constants'] as $constantName => $constant) {
                 $class['constants'][$constantName]['annotations'] = $this->generateConstantAnnotations($annotationGenerators, $className, $constantName);
             }
@@ -283,7 +297,7 @@ class TypesGenerator
                 $typeHint = false;
                 if ($this->isDateTime($field['range'])) {
                     $typeHint = '\\DateTime';
-                } elseif (!($this->isDatatype($field['range']) || $classes[$field['range']]['isEnum'])) {
+                } elseif (!($this->isDatatype($field['range']) || $field['isEnum'])) {
                     if (isset($classes[$field['range']]['interfaceName'])) {
                         $typeHint = $classes[$field['range']]['interfaceName'];
                     } else {
@@ -291,7 +305,6 @@ class TypesGenerator
                     }
                 }
 
-                $class['fields'][$fieldName]['isEnum'] = isset($classes[$field['range']]) && $classes[$field['range']]['isEnum'];
                 $class['fields'][$fieldName]['typeHint'] = $typeHint;
                 $class['fields'][$fieldName]['annotations'] = $this->generateFieldAnnotations($annotationGenerators, $className, $fieldName);
                 $class['fields'][$fieldName]['getterAnnotations'] = $this->generateGetterAnnotations($annotationGenerators, $className, $fieldName);
@@ -302,7 +315,6 @@ class TypesGenerator
                 } else {
                     $class['fields'][$fieldName]['setterAnnotations'] = $this->generateSetterAnnotations($annotationGenerators, $className, $fieldName);
                 }
-
             }
 
             $classDir = $this->namespaceToDir($config, $class['namespace']);

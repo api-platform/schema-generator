@@ -139,7 +139,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     {
         $range = $field['range'];
 
-        if (isset($this->classes[$field['range']]['isEnum']) && $this->classes[$field['range']]['isEnum']) {
+        if ($field['isEnum']) {
             if ($field['isArray']) {
                 return 'string[]';
             } else {

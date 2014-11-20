@@ -25,7 +25,7 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
     {
         $field = $this->classes[$className]['fields'][$fieldName];
 
-        if (isset($this->classes[$field['range']]['isEnum']) && $this->classes[$field['range']]['isEnum']) {
+        if ($field['isEnum']) {
             return [];
         }
 
@@ -60,10 +60,6 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
      */
     public function generateUses($className)
     {
-        $resource = $this->classes[$className]['resource'];
-        $subClassOf = $resource->get('rdfs:subClassOf');
-        $typeIsEnum = $subClassOf && $subClassOf->getUri() === TypesGenerator::SCHEMA_ORG_ENUMERATION;
-
-        return $typeIsEnum ? [] : ['Symfony\Component\Validator\Constraints as Assert'];
+        return $this->classes[$className]['isEnum'] ? [] : ['Symfony\Component\Validator\Constraints as Assert'];
     }
 }

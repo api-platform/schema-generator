@@ -33,11 +33,7 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         if (isset($this->config['types'][$class['resource']->localName()]['doctrine']['inheritanceMapping'])) {
             $inheritanceMapping = $this->config['types'][$class['resource']->localName()]['doctrine']['inheritanceMapping'];
         } else {
-            $inheritanceMapping = null;
-        }
-
-        if (!$inheritanceMapping) {
-            $inheritanceMapping = $this->config['inheritanceMapping'];
+            $inheritanceMapping = $class['hasChild'] ? '@ORM\MappedSuperclass' : '@ORM\Entity';
         }
 
         return [
@@ -56,7 +52,7 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
 
         $annotations = [];
 
-        if (isset($this->classes[$field['range']]['isEnum']) && $this->classes[$field['range']]['isEnum']) {
+        if ($field['isEnum']) {
             if (in_array($field['cardinality'], [
                 CardinalitiesExtractor::CARDINALITY_0_N,
                 CardinalitiesExtractor::CARDINALITY_1_N,

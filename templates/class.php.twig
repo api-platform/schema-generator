@@ -19,7 +19,7 @@ use {{ use }};
  * {{ annotation }}
 {% endfor %}
  */
-class {{ class.name }}{% if class.parent %} extends {{ class.parent }}{% endif %}{% if class.interfaceName %} implements {{ class.interfaceName }}{% endif %}
+{% if class.hasChild %}abstract {% endif %}class {{ class.name }}{% if class.parent %} extends {{ class.parent }}{% endif %}{% if class.interfaceName %} implements {{ class.interfaceName }}{% endif %}
 {
 {% for constant in class.constants %}
     /**
