@@ -38,7 +38,8 @@ types:
       offers: ~
       productId: ~
       releaseDate: ~
-      sku: ~
+      sku:
+        cardinality: "(1..1)"
       weight: ~
       width: ~
   Brand:

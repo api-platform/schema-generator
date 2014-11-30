@@ -25,11 +25,11 @@ class CardinalitiesExtractor
     /**
      * @type \EasyRdf_Graph[]
      */
-    protected $graphs;
+    private $graphs;
     /**
      * @type GoodRelationsBridge
      */
-    protected $goodRelationsBridge;
+    private $goodRelationsBridge;
 
     /**
      * @param \EasyRdf_Graph[]    $graphs

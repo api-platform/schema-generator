@@ -9,6 +9,7 @@
 
 namespace SchemaOrgModel\Config;
 
+use SchemaOrgModel\CardinalitiesExtractor;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -77,7 +78,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                             ->arrayNode('doctrine')
                                 ->addDefaultsIfNotSet()
                                 ->children()
-                                    ->scalarNode('inheritanceMapping')->defaultNull()->info('The Doctrine inheritance mapping type (override globally defined one)')->end()
+                                    ->scalarNode('inheritanceMapping')->defaultNull()->info('The Doctrine inheritance mapping type (override the guessed one)')->end()
                                 ->end()
                             ->end()
                             ->scalarNode('parent')->defaultNull()->info('The parent class')->end()
@@ -85,8 +86,10 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                                 ->info('Properties of this type to use')
                                 ->useAttributeAsKey('id')
                                 ->prototype('array')
+                                    ->addDefaultsIfNotSet()
                                     ->children()
                                         ->scalarNode('range')->defaultNull()->info('The property range')->example('Offer')->end()
+                                        ->enumNode('cardinality')->defaultValue(CardinalitiesExtractor::CARDINALITY_UNKNOWN)->values([CardinalitiesExtractor::CARDINALITY_0_1, CardinalitiesExtractor::CARDINALITY_0_N, CardinalitiesExtractor::CARDINALITY_1_1, CardinalitiesExtractor::CARDINALITY_1_N, CardinalitiesExtractor::CARDINALITY_UNKNOWN])->end()
                                     ->end()
                                 ->end()
                             ->end()

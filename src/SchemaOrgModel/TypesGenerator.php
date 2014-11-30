@@ -239,7 +239,11 @@ class TypesGenerator
                     $this->logger->error(sprintf('The property "%s" (type "%s") has several types. Using the first one.', $property->localName(), $type->localName()));
                 }
 
-                $cardinality = $this->cardinalities[$property->localName()];
+                $cardinality = isset($typeConfig['properties'][$property->localName()]['cardinality']) ? $typeConfig['properties'][$property->localName()]['cardinality'] : false;
+                if (!$cardinality || $cardinality === CardinalitiesExtractor::CARDINALITY_UNKNOWN) {
+                    $cardinality = $this->cardinalities[$property->localName()];
+                }
+
                 $isArray = in_array($cardinality, [
                     CardinalitiesExtractor::CARDINALITY_0_N,
                     CardinalitiesExtractor::CARDINALITY_1_N,
