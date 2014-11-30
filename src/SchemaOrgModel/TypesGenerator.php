@@ -248,12 +248,19 @@ class TypesGenerator
                     CardinalitiesExtractor::CARDINALITY_0_N,
                     CardinalitiesExtractor::CARDINALITY_1_N,
                 ]);
+                $isNullable = in_array($cardinality, [
+                    CardinalitiesExtractor::CARDINALITY_0_1,
+                    CardinalitiesExtractor::CARDINALITY_0_N,
+                    CardinalitiesExtractor::CARDINALITY_UNKNOWN,
+                ]);
+
                 $class['fields'][$property->localName()] = [
                     'name' => $property->localName(),
                     'resource' => $property,
                     'range' => $ranges[0],
                     'cardinality' => $cardinality,
                     'isArray' => $isArray,
+                    'isNullable' => $isNullable,
                 ];
                 if ($isArray) {
                     $class['hasConstructor'] = true;

@@ -96,9 +96,9 @@ use {{ use }};
 
     /**
 {% for annotation in field.getterAnnotations %}
-    * {{ annotation }}
+     * {{ annotation }}
 {% endfor %}
-    */
+     */
     public function get{{ field.name|ucfirst }}()
     {
         return $this->{{ field.name }};

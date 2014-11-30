@@ -1,6 +1,6 @@
 header: |
   /*
-   * This file is part of the Échoppe package.
+   * This file is part of the Ecommerce package.
    *
    * (c) Kévin Dunglas <dunglas@gmail.com>
    *
@@ -12,9 +12,9 @@ rdfa:
 relations:
   - tests/data/v1.owl
 namespaces:
-  entity:               "Echoppe\CoreBundle\Entity"
-  enum:                 "Echoppe\CoreBundle\Enum"
-  interface:            "Echoppe\CoreBundle\Model"
+  entity:               "Dunglas\EcommerceBundle\Entity"
+  enum:                 "Dunglas\EcommerceBundle\Enum"
+  interface:            "Dunglas\EcommerceBundle\Model"
 author: "Kévin Dunglas <dunglas@gmail.com>"
 debug: true
 checkIsGoodRelations: true
@@ -39,7 +39,7 @@ types:
       productId: ~
       releaseDate: ~
       sku:
-        cardinality: "(1..1)"
+        cardinality: "(0..1)"
       weight: ~
       width: ~
   Brand:

@@ -53,10 +53,7 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         $annotations = [];
 
         if ($field['isEnum']) {
-            if (in_array($field['cardinality'], [
-                CardinalitiesExtractor::CARDINALITY_0_N,
-                CardinalitiesExtractor::CARDINALITY_1_N,
-            ])) {
+            if ($field['isArray']) {
                 $type = 'simple_array';
             } else {
                 $type = 'string';
@@ -94,8 +91,28 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         if (isset($type)) {
             $annotation = '@ORM\Column';
 
+            if ($field['isArray']) {
+                $type = 'simple_array';
+            }
+
+            if ($type !== 'string' || $field['isNullable']) {
+                $annotation .= '(';
+            }
+
             if ($type !== 'string') {
-                $annotation .= sprintf('(type="%s")', $type);
+                $annotation .= sprintf('type="%s"', $type);
+            }
+
+            if ($type !== 'string' && $field['isNullable']) {
+                $annotation .= ', ';
+            }
+
+            if ($field['isNullable']) {
+                $annotation .= 'nullable=true';
+            }
+
+            if ($type !== 'string' || $field['isNullable']) {
+                $annotation .= ')';
             }
 
             $annotations[] = $annotation;
