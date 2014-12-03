@@ -1,5 +1,5 @@
 namespaces:
-  entity:               "AppBundle\Entity"
+  entity: "AppBundle\Entity"
 types:
   Thing:
     properties:

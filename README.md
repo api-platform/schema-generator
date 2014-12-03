@@ -138,3 +138,7 @@ When the cardinality cannot be automatically extracted, it's value is set to `un
 Usage:
 
     php vendor/bin/schema.php schema:extract-cardinalities
+
+## Credits
+
+This project has been created by [Kévin Dunglas](http://dunglas.fr).
