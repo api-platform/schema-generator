@@ -9,7 +9,7 @@
 
 namespace SchemaOrgModel\Command;
 
-use SchemaOrgModel\Config\TypesGeneratorConfiguration;
+use SchemaOrgModel\TypesGeneratorConfiguration;
 use Symfony\Component\Config\Definition\Dumper\YamlReferenceDumper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

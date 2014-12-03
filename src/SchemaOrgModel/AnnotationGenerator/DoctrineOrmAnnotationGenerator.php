@@ -127,6 +127,8 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                     $annotations[] = '@ORM\JoinColumn(nullable=false)';
                     break;
 
+                case CardinalitiesExtractor::CARDINALITY_UNKNOWN:
+                    // No break
                 case CardinalitiesExtractor::CARDINALITY_0_N:
                     $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $this->getRelationName($field['range']));
                     break;

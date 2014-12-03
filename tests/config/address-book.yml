@@ -1,0 +1,34 @@
+namespaces:
+  entity:               "AppBundle\Entity"
+types:
+  Thing:
+    properties:
+      name: ~
+      url: ~
+  Person:
+    properties:
+      additionalName: ~
+      address: ~
+      birthDate: ~
+      email: ~
+      familyName: ~
+      faxNumber: ~
+      gender: ~
+      givenName: ~
+      honorificPrefix: ~
+      honorificSuffix: ~
+      jobTitle: ~
+      telephone: ~
+      url: ~
+      worksFor: ~
+  PostalAddress:
+    parent: false
+    properties:
+      addressCountry: { range: Text }
+      addressLocality: ~
+      addressRegion: ~
+      postOfficeBoxNumber: ~
+      postalCode: ~
+      streetAddress: ~
+  Organization:
+    properties: {}

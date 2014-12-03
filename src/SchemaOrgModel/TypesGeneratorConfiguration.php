@@ -7,9 +7,8 @@
  * with this source code in the file LICENSE.
  */
 
-namespace SchemaOrgModel\Config;
+namespace SchemaOrgModel;
 
-use SchemaOrgModel\CardinalitiesExtractor;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -47,7 +46,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->prototype('scalar')->end()
                 ->end()
                 ->booleanNode('debug')->defaultFalse()->info('Debug mode')->end()
-                ->booleanNode('useInterface')->defaultTrue()->info('Generate interfaces and use Doctrine\'s Resolve Target Entity feature')->end()
+                ->booleanNode('useInterface')->defaultFalse()->info('Generate interfaces and use Doctrine\'s Resolve Target Entity feature')->end()
                 ->booleanNode('useDoctrineCollection')->defaultTrue()->info('Use Doctrine\'s ArrayCollection instead of standard arrays')->end()
                 ->booleanNode('checkIsGoodRelations')->defaultFalse()->info('Emit a warning if a property is not derived from GoodRelations')->end()
                 ->scalarNode('header')->defaultFalse()->info('A license or any text to use as header of generated files')->example('// (c) Kévin Dunglas <dunglas@gmail.com>')->end()
@@ -81,7 +80,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                                     ->scalarNode('inheritanceMapping')->defaultNull()->info('The Doctrine inheritance mapping type (override the guessed one)')->end()
                                 ->end()
                             ->end()
-                            ->scalarNode('parent')->defaultNull()->info('The parent class')->end()
+                            ->scalarNode('parent')->defaultNull()->info('The parent class, set to false for a top level class')->end()
                             ->arrayNode('properties')
                                 ->info('Properties of this type to use')
                                 ->useAttributeAsKey('id')

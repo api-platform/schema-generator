@@ -10,7 +10,7 @@
 namespace SchemaOrgModel\Command;
 
 use SchemaOrgModel\CardinalitiesExtractor;
-use SchemaOrgModel\Config\TypesGeneratorConfiguration;
+use SchemaOrgModel\TypesGeneratorConfiguration;
 use SchemaOrgModel\GoodRelationsBridge;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

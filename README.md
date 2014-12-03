@@ -36,7 +36,8 @@ Usage:
 
 ### Configuration
 
-See [echoppe.yml](tests/config/echoppe.yml) file for a working example.
+See [address-book.yml](tests/config/address-book.yml) for a simple config example and [ecommerce.yml](tests/config/ecommerce.yml)
+file for a complex one.
 Without configuration file, the tool will build the entire Schema.org vocable.
 
 ### Configuration reference
@@ -58,16 +59,13 @@ relations:
 debug:                false
 
 # Generate interfaces and use Doctrine's Resolve Target Entity feature
-interface:            true
+useInterface:         false
 
 # Use Doctrine's ArrayCollection instead of standard arrays
-doctrineCollection:   true
+useDoctrineCollection:  true
 
 # Emit a warning if a property is not derived from GoodRelations
 checkIsGoodRelations:  false
-
-# The Doctrine inheritance mapping type
-inheritanceMapping:   '@ORM\Entity'
 
 # A license or any text to use as header of generated files
 header:               false # Example: // (c) Kévin Dunglas <dunglas@gmail.com>
@@ -106,10 +104,10 @@ types:
             interface:            null
         doctrine:
 
-            # The Doctrine inheritance mapping type (override globally defined one)
+            # The Doctrine inheritance mapping type (override the guessed one)
             inheritanceMapping:   null
 
-        # The parent class
+        # The parent class, set to false for a top level class
         parent:               null
 
         # Properties of this type to use
@@ -120,6 +118,7 @@ types:
 
                 # The property range
                 range:                null # Example: Offer
+                cardinality:          ~ # One of "(0..1)"; "(0..*)"; "(1..1)"; "(1..*)"; "unknown"
 
 # Annotation generators to use
 annotationGenerators:

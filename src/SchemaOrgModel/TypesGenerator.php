@@ -144,11 +144,7 @@ class TypesGenerator
         $propertiesMap = $this->createPropertiesMap($typesToGenerate);
 
         foreach ($typesToGenerate as $type) {
-            $typeDefined = !empty($config['types'][$type->localName()]['properties']);
-            if ($typeDefined) {
-                $typeConfig = $config['types'][$type->localName()];
-            }
-
+            $typeConfig = isset($config['types'][$type->localName()]) ? $config['types'][$type->localName()] : null;
             $class = $baseClass;
 
             $class['name'] = $type->localName();
@@ -157,7 +153,7 @@ class TypesGenerator
 
             $class['isEnum'] = $this->isEnum($type);
             if ($class['isEnum']) {
-                $class['namespace'] = $typeDefined && $typeConfig['namespace'] ? $typeConfig['namespace'] : $config['namespaces']['enum'];
+                $class['namespace'] = isset($typeConfig['namespace']) ? $typeConfig['namespace'] : $config['namespaces']['enum'];
                 $class['parent'] = self::ENUM_EXTENDS;
                 $class['uses'][] = self::ENUM_USE;
 
@@ -173,10 +169,10 @@ class TypesGenerator
                 }
             } else {
                 // Entities
-                $class['namespace'] = $typeDefined && $typeConfig['namespaces']['class'] ? $typeConfig['namespaces']['class'] : $config['namespaces']['entity'];
+                $class['namespace'] = isset($typeConfig['namespaces']['class']) ? $typeConfig['namespaces']['class'] : $config['namespaces']['entity'];
 
                 // Parent
-                $class['parent'] = $typeDefined ? $typeConfig['parent'] : null;
+                $class['parent'] = isset($typeConfig['parent']) ? $typeConfig['parent'] : null;
                 if (null === $class['parent']) {
                     $numberOfSupertypes = count($type->all('rdfs:subClassOf'));
 
@@ -193,7 +189,7 @@ class TypesGenerator
 
                 // Interfaces
                 if ($config['useInterface']) {
-                    $class['interfaceNamespace'] = $typeDefined && $typeConfig['namespaces']['interface'] ? $typeConfig['namespaces']['interface'] : $config['namespaces']['interface'];
+                    $class['interfaceNamespace'] = isset($typeConfig['namespaces']['interface']) && $typeConfig['namespaces']['interface'] ? $typeConfig['namespaces']['interface'] : $config['namespaces']['interface'];
                     $class['interfaceName'] = sprintf('%sInterface', $type->localName());
                 }
             }
@@ -201,7 +197,7 @@ class TypesGenerator
             // Fields
             foreach ($propertiesMap[$type->getUri()] as $property) {
                 // Ignore properties not set if using a config file
-                if ($typeDefined && !isset($typeConfig['properties'][$property->localName()])) {
+                if (is_array($typeConfig['properties']) && !isset($typeConfig['properties'][$property->localName()])) {
                     continue;
                 }
 
@@ -214,12 +210,11 @@ class TypesGenerator
 
                 // Ignore or warn when properties are legacy
                 if (preg_match('/legacy spelling/', $property->get('rdfs:comment'))) {
-                    if (empty($typeConfig['properties'])) {
-                        $this->logger->info(sprintf('The property "%s" (type "%s") is legacy. Ignoring.', $property->localName(), $type->localName()));
-
-                        continue;
-                    } else {
+                    if (isset($typeConfig['properties'])) {
                         $this->logger->warning(sprintf('The property "%s" (type "%s") is legacy.', $property->localName(), $type->localName()));
+                    } else {
+                        $this->logger->info(sprintf('The property "%s" (type "%s") is legacy. Ignoring.', $property->localName(), $type->localName()));
+                        continue;
                     }
                 }
 
@@ -228,45 +223,49 @@ class TypesGenerator
                     $ranges[] = $typeConfig['properties'][$property->localName()]['range'];
                 } else {
                     foreach ($property->all(self::SCHEMA_ORG_RANGE) as $range) {
-                        if (!$typesDefined || $this->isDatatype($range->localName()) || !empty($config['types'][$range->localName()])) {
+                        if (!$typesDefined || $this->isDatatype($range->localName()) || isset($config['types'][$range->localName()])) {
                             $ranges[] = $range->localName();
                         }
                     }
                 }
 
                 $numberOfRanges = count($ranges);
-                if ($numberOfRanges > 1) {
-                    $this->logger->error(sprintf('The property "%s" (type "%s") has several types. Using the first one.', $property->localName(), $type->localName()));
-                }
+                if ($numberOfRanges === 0) {
+                    $this->logger->error(sprintf('The property "%s" (type "%s") has an unknown type. Add its type to the config file.', $property->localName(), $type->localName()));
+                } else {
+                    if ($numberOfRanges > 1) {
+                        $this->logger->error(sprintf('The property "%s" (type "%s") has several types. Using the first one.', $property->localName(), $type->localName()));
+                    }
 
-                $cardinality = isset($typeConfig['properties'][$property->localName()]['cardinality']) ? $typeConfig['properties'][$property->localName()]['cardinality'] : false;
-                if (!$cardinality || $cardinality === CardinalitiesExtractor::CARDINALITY_UNKNOWN) {
-                    $cardinality = $this->cardinalities[$property->localName()];
-                }
+                    $cardinality = isset($typeConfig['properties'][$property->localName()]['cardinality']) ? $typeConfig['properties'][$property->localName()]['cardinality'] : false;
+                    if (!$cardinality || $cardinality === CardinalitiesExtractor::CARDINALITY_UNKNOWN) {
+                        $cardinality = $this->cardinalities[$property->localName()];
+                    }
 
-                $isArray = in_array($cardinality, [
-                    CardinalitiesExtractor::CARDINALITY_0_N,
-                    CardinalitiesExtractor::CARDINALITY_1_N,
-                ]);
-                $isNullable = in_array($cardinality, [
-                    CardinalitiesExtractor::CARDINALITY_0_1,
-                    CardinalitiesExtractor::CARDINALITY_0_N,
-                    CardinalitiesExtractor::CARDINALITY_UNKNOWN,
-                ]);
+                    $isArray = in_array($cardinality, [
+                        CardinalitiesExtractor::CARDINALITY_0_N,
+                        CardinalitiesExtractor::CARDINALITY_1_N,
+                    ]);
+                    $isNullable = in_array($cardinality, [
+                        CardinalitiesExtractor::CARDINALITY_0_1,
+                        CardinalitiesExtractor::CARDINALITY_0_N,
+                        CardinalitiesExtractor::CARDINALITY_UNKNOWN,
+                    ]);
 
-                $class['fields'][$property->localName()] = [
-                    'name' => $property->localName(),
-                    'resource' => $property,
-                    'range' => $ranges[0],
-                    'cardinality' => $cardinality,
-                    'isArray' => $isArray,
-                    'isNullable' => $isNullable,
-                ];
-                if ($isArray) {
-                    $class['hasConstructor'] = true;
+                    $class['fields'][$property->localName()] = [
+                        'name' => $property->localName(),
+                        'resource' => $property,
+                        'range' => $ranges[0],
+                        'cardinality' => $cardinality,
+                        'isArray' => $isArray,
+                        'isNullable' => $isNullable,
+                    ];
+                    if ($isArray) {
+                        $class['hasConstructor'] = true;
 
-                    if ($config['useDoctrineCollection'] && !in_array(self::DOCTRINE_COLLECTION_USE, $class['uses'])) {
-                        $class['uses'][] = self::DOCTRINE_COLLECTION_USE;
+                        if ($config['useDoctrineCollection'] && !in_array(self::DOCTRINE_COLLECTION_USE, $class['uses'])) {
+                            $class['uses'][] = self::DOCTRINE_COLLECTION_USE;
+                        }
                     }
                 }
             }
