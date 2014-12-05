@@ -61,7 +61,8 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
 
         $annotations = $this->formatDoc($field['resource']->get('rdfs:comment'), true);
         $annotations[0] = sprintf(
-            '@type %s $%s %s',
+            '@%s %s $%s %s',
+            $this->config['useType'] ? 'type' : 'var',
             $this->toPhpType($field),
             $fieldName,
             $annotations[0]

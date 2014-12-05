@@ -61,6 +61,9 @@ debug:                false
 # Generate interfaces and use Doctrine's Resolve Target Entity feature
 useInterface:         false
 
+# Use PSR-5's @type annotation instead of @var in the PHPDoc.
+useType:              false
+
 # Use Doctrine's ArrayCollection instead of standard arrays
 useDoctrineCollection:  true
 

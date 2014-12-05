@@ -47,6 +47,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                 ->end()
                 ->booleanNode('debug')->defaultFalse()->info('Debug mode')->end()
                 ->booleanNode('useInterface')->defaultFalse()->info('Generate interfaces and use Doctrine\'s Resolve Target Entity feature')->end()
+                ->booleanNode('useType')->defaultFalse()->info('Use PSR-5\'s @type annotation instead of @var in the PHPDoc.')->end()
                 ->booleanNode('useDoctrineCollection')->defaultTrue()->info('Use Doctrine\'s ArrayCollection instead of standard arrays')->end()
                 ->booleanNode('checkIsGoodRelations')->defaultFalse()->info('Emit a warning if a property is not derived from GoodRelations')->end()
                 ->scalarNode('header')->defaultFalse()->info('A license or any text to use as header of generated files')->example('// (c) Kévin Dunglas <dunglas@gmail.com>')->end()

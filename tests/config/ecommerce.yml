@@ -17,6 +17,7 @@ namespaces:
   interface:            "Dunglas\EcommerceBundle\Model"
 author: "Kévin Dunglas <dunglas@gmail.com>"
 debug: true
+useType: true
 useInterface: true
 checkIsGoodRelations: true
 types:

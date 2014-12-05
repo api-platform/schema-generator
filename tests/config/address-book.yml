@@ -1,5 +1,5 @@
 namespaces:
-  entity: "AppBundle\Entity"
+  entity: "Dunglas\AddressBookBundle\Entity"
 types:
   Thing:
     properties:
