@@ -42,12 +42,14 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         $resource = $this->classes[$className]['constants'][$constantName]['resource'];
 
         $annotations = $this->formatDoc($resource->get('rdfs:comment'), true);
-        $annotations[0] = sprintf(
-            '@type %s %s',
-            'string',
-            $constantName,
-            $annotations[0]
-        );
+        if ($this->config['useType']) {
+            $annotations[0] = sprintf(
+                '@type %s %s',
+                'string',
+                $constantName,
+                $annotations[0]
+            );
+        }
 
         return $annotations;
     }
@@ -58,8 +60,9 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
     public function generateFieldAnnotations($className, $fieldName)
     {
         $field = $this->classes[$className]['fields'][$fieldName];
+        $comment = $field['resource'] ? $field['resource']->get('rdfs:comment') : '';
 
-        $annotations = $this->formatDoc($field['resource']->get('rdfs:comment'), true);
+        $annotations = $this->formatDoc($comment, true);
         $annotations[0] = sprintf(
             '@%s %s $%s %s',
             $this->config['useType'] ? 'type' : 'var',

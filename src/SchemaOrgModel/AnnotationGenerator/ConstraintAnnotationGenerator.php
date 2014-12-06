@@ -9,6 +9,8 @@
 
 namespace SchemaOrgModel\AnnotationGenerator;
 
+use SchemaOrgModel\CardinalitiesExtractor;
+
 /**
  * Constraint annotation generator.
  *
@@ -23,34 +25,47 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
     {
         $field = $this->classes[$className]['fields'][$fieldName];
 
-        if ($field['isEnum']) {
+        if ($field['isId']) {
             return [];
         }
 
-        switch ($field['range']) {
-            case 'URL':
-                return ['@Assert\Url'];
+        $asserts = [];
+        if (!$field['isArray']) {
+            switch ($field['range']) {
+                case 'URL':
+                    $asserts[] = '@Assert\Url';
+                    break;
 
-            case 'Date':
-                return ['@Assert\Date'];
+                case 'Date':
+                    $asserts[] = '@Assert\Date';
+                    break;
 
-            case 'DateTime':
-                return ['@Assert\DateTime'];
+                case 'DateTime':
+                    $asserts[] = '@Assert\DateTime';
+                    break;
 
-            case 'Time':
-                return ['@Assert\Time'];
+                case 'Time':
+                    $asserts[] = '@Assert\Time';
+                    break;
+            }
+
+            if (isset($field['resource']) && 'email' === $field['resource']->localName()) {
+                $asserts[] = '@Assert\Email';
+            }
+
+            if (!$asserts) {
+                $phpType = $this->toPhpType($field);
+                if (in_array($phpType, ['boolean', 'float', 'integer', 'string'])) {
+                    $asserts[] = sprintf('@Assert\Type(type="%s")', $phpType);
+                }
+            }
         }
 
-        if ('email' === $field['resource']->localName()) {
-            return ['@Assert\Email'];
+        if (CardinalitiesExtractor::CARDINALITY_1_1 === $field['cardinality'] || CardinalitiesExtractor::CARDINALITY_1_N === $field['cardinality']) {
+            $asserts[] = '@Assert\NotNull';
         }
 
-        $phpType = $this->toPhpType($field);
-        if (in_array($phpType, ['boolean', 'float', 'integer', 'string'])) {
-            return [sprintf('@Assert\Type(type="%s")', $phpType)];
-        }
-
-        return [];
+        return $asserts;
     }
 
     /**

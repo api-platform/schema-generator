@@ -259,6 +259,7 @@ class TypesGenerator
                         'cardinality' => $cardinality,
                         'isArray' => $isArray,
                         'isNullable' => $isNullable,
+                        'isId' => false,
                     ];
                     if ($isArray) {
                         $class['hasConstructor'] = true;
@@ -274,13 +275,33 @@ class TypesGenerator
         }
 
         // Second pass
-        foreach ($classes as $className => $class) {
+        foreach ($classes as &$class) {
             if ($class['parent'] && isset($classes[$class['parent']])) {
                 $classes[$class['parent']]['hasChild'] = true;
             }
 
-            foreach ($class['fields'] as $fieldName => $field) {
-                $classes[$className]['fields'][$fieldName]['isEnum'] = isset($classes[$field['range']]) && $classes[$field['range']]['isEnum'];
+            foreach ($class['fields'] as &$field) {
+                $field['isEnum'] = isset($classes[$field['range']]) && $classes[$field['range']]['isEnum'];
+            }
+        }
+
+        // Generate ID
+        if ($config['generateId']) {
+            foreach ($classes as &$class) {
+                if (!$class['hasChild'] && !$class['isEnum']) {
+                    $class['fields'] = [
+                        'id' => [
+                            'name' => 'id',
+                            'resource' => null,
+                            'range' => 'Integer',
+                            'cardinality' => CardinalitiesExtractor::CARDINALITY_1_1,
+                            'isArray' => false,
+                            'isNullable' => false,
+                            'isEnum' => false,
+                            'isId' => true,
+                        ],
+                    ] + $class['fields'];
+                }
             }
         }
 
@@ -302,7 +323,7 @@ class TypesGenerator
                 $class['constants'][$constantName]['annotations'] = $this->generateConstantAnnotations($annotationGenerators, $className, $constantName);
             }
 
-            foreach ($class['fields'] as $fieldName => $field) {
+            foreach ($class['fields'] as $fieldName => &$field) {
                 $typeHint = false;
                 if ($this->isDateTime($field['range'])) {
                     $typeHint = '\\DateTime';
@@ -314,15 +335,15 @@ class TypesGenerator
                     }
                 }
 
-                $class['fields'][$fieldName]['typeHint'] = $typeHint;
-                $class['fields'][$fieldName]['annotations'] = $this->generateFieldAnnotations($annotationGenerators, $className, $fieldName);
-                $class['fields'][$fieldName]['getterAnnotations'] = $this->generateGetterAnnotations($annotationGenerators, $className, $fieldName);
+                $field['typeHint'] = $typeHint;
+                $field['annotations'] = $this->generateFieldAnnotations($annotationGenerators, $className, $fieldName);
+                $field['getterAnnotations'] = $this->generateGetterAnnotations($annotationGenerators, $className, $fieldName);
 
                 if ($field['isArray']) {
-                    $class['fields'][$fieldName]['adderAnnotations'] = $this->generateAdderAnnotations($annotationGenerators, $className, $fieldName);
-                    $class['fields'][$fieldName]['removerAnnotations'] = $this->generateRemoverAnnotations($annotationGenerators, $className, $fieldName);
+                    $field['adderAnnotations'] = $this->generateAdderAnnotations($annotationGenerators, $className, $fieldName);
+                    $field['removerAnnotations'] = $this->generateRemoverAnnotations($annotationGenerators, $className, $fieldName);
                 } else {
-                    $class['fields'][$fieldName]['setterAnnotations'] = $this->generateSetterAnnotations($annotationGenerators, $className, $fieldName);
+                    $field['setterAnnotations'] = $this->generateSetterAnnotations($annotationGenerators, $className, $fieldName);
                 }
             }
 

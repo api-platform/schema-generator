@@ -140,6 +140,11 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
             }
         }
 
+        if ($field['isId']) {
+            $annotations[] = '@ORM\Id';
+            $annotations[] = '@ORM\GeneratedValue(strategy="AUTO")';
+        }
+
         return $annotations;
     }
 

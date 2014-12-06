@@ -9,7 +9,7 @@ vocables.
 ## Features
 
 * [PSR](http://www.php-fig.org/) compliant entity generator including properties, getters and setters
-* Full [PSR-5](https://github.com/php-fig/fig-standards/pull/169) compliant PHPDoc for classes, properties, constants (enum
+* Full PHPDoc ([PSR-5](https://github.com/php-fig/fig-standards/pull/169) compliant) for classes, properties, constants (enum
 values) and methods extracted from Schema.org
 * Doctrine annotation mapping (database columns and relations)
 * Data validation through [Symfony Validator](http://symfony.com/doc/current/book/validation.html) annotations
@@ -58,10 +58,13 @@ relations:
 # Debug mode
 debug:                false
 
+# Automatically add an id field to entities
+generateId:           true
+
 # Generate interfaces and use Doctrine's Resolve Target Entity feature
 useInterface:         false
 
-# Use PSR-5's @type annotation instead of @var in the PHPDoc.
+# Use PSR-5's @type annotation instead of @var in the PHPDoc
 useType:              false
 
 # Use Doctrine's ArrayCollection instead of standard arrays
