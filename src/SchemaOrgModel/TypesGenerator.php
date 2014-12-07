@@ -307,14 +307,14 @@ class TypesGenerator
 
         // Initialize annotation generators
         $annotationGenerators = [];
-        foreach ($config['annotationGenerators'] as $class) {
-            $generator = new $class($this->logger, $this->graphs, $this->cardinalities, $config, $classes);
+        foreach ($config['annotationGenerators'] as $annotationGenerator) {
+            $generator = new $annotationGenerator($this->logger, $this->graphs, $this->cardinalities, $config, $classes);
 
             $annotationGenerators[] = $generator;
         }
 
         $generatedFiles = [];
-        foreach ($classes as $className => $class) {
+        foreach ($classes as $className => &$class) {
             $class['uses'] = $this->generateClassUses($annotationGenerators, $classes, $className);
             $class['annotations'] = $this->generateClassAnnotations($annotationGenerators, $className);
             $class['interfaceAnnotations'] = $this->generateInterfaceAnnotations($annotationGenerators, $className);
