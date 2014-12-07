@@ -33,5 +33,5 @@
         "symfony/validator": "For constraint annotations",
         "myclabs/php-enum": "For PHP Enum support"
     },
-    "bin": ["bin/schema", "bin/schema.php"]
+    "bin": ["bin/schema"]
 }
