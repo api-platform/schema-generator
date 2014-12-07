@@ -22,11 +22,11 @@
         "symfony/console": "~2.5",
         "symfony/yaml": "~2.4",
         "symfony/config": "~2.4",
-        "twig/twig": "~1.15",
+        "twig/twig": "~1.0",
         "psr/log": "~1.0",
-        "easyrdf/easyrdf": "~0.8.0",
+        "easyrdf/easyrdf": "~0.9.0",
         "nickcernis/html-to-markdown": "~2.1",
-        "fabpot/php-cs-fixer": "~0.5"
+        "fabpot/php-cs-fixer": "~1.0"
     },
     "suggest": {
         "doctrine/orm": "For Doctrine annotations and collections",
