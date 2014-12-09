@@ -94,7 +94,7 @@ class CardinalitiesExtractor
         ||
             preg_match('/^The /', $comment)
         ) {
-            return self::CARDINALITY_1_1;
+            return self::CARDINALITY_0_1;
         }
 
         return self::CARDINALITY_UNKNOWN;

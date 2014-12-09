@@ -1,8 +1,8 @@
 {
-    "name": "dunglas/php-schema.org-model",
+    "name": "dunglas/php-schema",
     "type": "library",
     "description": "Various tools to generate a data model based on Schema.org vocables",
-    "keywords": ["schema.org", "model", "doctrine", "entity"],
+    "keywords": ["schema.org", "semantic", "model", "doctrine", "symfony", "entity", "enum"],
     "homepage": "http://dunglas.fr",
     "license": "MIT",
     "authors": [
@@ -29,9 +29,10 @@
         "fabpot/php-cs-fixer": "~1.0"
     },
     "suggest": {
-        "doctrine/orm": "For Doctrine annotations and collections",
-        "symfony/validator": "For constraint annotations",
-        "myclabs/php-enum": "For PHP Enum support"
+        "myclabs/php-enum": "For enumerations",
+        "doctrine/collections": "For Doctrine collections",
+        "doctrine/orm": "For Doctrine annotations",
+        "symfony/validator": "For constraint annotations"
     },
     "bin": ["bin/schema"]
 }

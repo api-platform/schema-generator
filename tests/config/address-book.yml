@@ -1,34 +1,32 @@
+# The PHP namespace of generated entities
 namespaces:
   entity: "AddressBook\Entity"
+# The list of types and properties we want to use
 types:
+  # Parent class of Person
   Thing:
     properties:
       name: ~
-      url: ~
   Person:
     properties:
+      familyName: ~
+      givenName: ~
       additionalName: ~
+      gender: ~
       address: ~
       birthDate: ~
-      email: ~
-      familyName: ~
-      faxNumber: ~
-      gender: ~
-      givenName: ~
-      honorificPrefix: ~
-      honorificSuffix: ~
-      jobTitle: ~
       telephone: ~
+      email: ~
       url: ~
-      worksFor: ~
+      jobTitle: ~
   PostalAddress:
+    # Disable the generation of the class hierarchy for this type
     parent: false
     properties:
-      addressCountry: { range: Text }
+      # Force the type of the addressCountry property to text
+      addressCountry: { range: "Text" }
       addressLocality: ~
       addressRegion: ~
       postOfficeBoxNumber: ~
       postalCode: ~
       streetAddress: ~
-  Organization:
-    properties: {}

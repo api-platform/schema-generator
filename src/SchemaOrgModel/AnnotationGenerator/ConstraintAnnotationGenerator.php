@@ -65,6 +65,18 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
             $asserts[] = '@Assert\NotNull';
         }
 
+        if ($field['isEnum']) {
+            $assert = sprintf('@Assert\Choice(callback={"%s", "toArray"}', $field['range']);
+
+            if ($field['isArray']) {
+                $assert .= ', multiple=true';
+            }
+
+            $assert .= ')';
+
+            $asserts[] = $assert;
+        }
+
         return $asserts;
     }
 
@@ -73,6 +85,25 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
      */
     public function generateUses($className)
     {
-        return $this->classes[$className]['isEnum'] ? [] : ['Symfony\Component\Validator\Constraints as Assert'];
+        if ($this->classes[$className]['isEnum']) {
+            return [];
+        }
+
+        $uses = [];
+        $uses[] = 'Symfony\Component\Validator\Constraints as Assert';
+
+        foreach ($this->classes[$className]['fields'] as $field) {
+            if ($field['isEnum']) {
+                $enumClass = $this->classes[$field['range']];
+                $enumNamespace = isset($enumClass['namespaces']['class']) && $enumClass['namespaces']['class'] ? $enumClass['namespaces']['class'] : $this->config['namespaces']['enum'];
+                $use = sprintf('%s\%s', $enumNamespace, $field['range']);
+
+                if (!in_array($use, $uses)) {
+                    $uses[] = $use;
+                }
+            }
+        }
+
+        return $uses;
     }
 }

@@ -29,7 +29,7 @@ class ExtractCardinalitiesCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('schema:extract-cardinalities')
+            ->setName('extract-cardinalities')
             ->setDescription('Extract properties\' cardinality')
         ;
     }

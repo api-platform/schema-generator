@@ -150,6 +150,7 @@ class TypesGenerator
             $class['name'] = $type->localName();
             $class['label'] = $type->get('rdfs:comment')->getValue();
             $class['resource'] = $type;
+            $class['config'] = $typeConfig;
 
             $class['isEnum'] = $this->isEnum($type);
             if ($class['isEnum']) {

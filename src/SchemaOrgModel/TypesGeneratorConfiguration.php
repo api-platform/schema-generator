@@ -19,7 +19,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class TypesGeneratorConfiguration implements ConfigurationInterface
 {
-    const SCHEMA_ORG_RDFA_URL = 'https://raw.githubusercontent.com/rvguha/schemaorg/master/data/schema.rdfa';
+    const SCHEMA_ORG_RDFA_URL = 'http://schema.org/docs/schema_org_rdfa.html';
     const GOOD_RELATIONS_OWL_URL = 'http://purl.org/goodrelations/v1.owl';
 
     /**

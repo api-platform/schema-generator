@@ -28,7 +28,7 @@ class DumpConfigurationCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('schema:dump-configuration')
+            ->setName('dump-configuration')
             ->setDescription('Dump configuration')
         ;
     }

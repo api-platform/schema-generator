@@ -1,15 +1,15 @@
 #!/bin/sh
 
 # Test commands
-bin/schema schema:dump-configuration
-bin/schema schema:extract-cardinalities
+bin/schema dump-configuration
+bin/schema extract-cardinalities
 
 # Build models
 rm -Rf build/
 mkdir -p build/full/ build/ecommerce/ build/address-book/
-bin/schema schema:generate-types build/address-book/ tests/config/address-book.yml
-bin/schema schema:generate-types build/ecommerce/ tests/config/ecommerce.yml
-bin/schema schema:generate-types build/full/
+bin/schema generate-types build/address-book/ tests/config/address-book.yml
+bin/schema generate-types build/ecommerce/ tests/config/ecommerce.yml
+bin/schema generate-types build/full/
 
 # Check code CS
 vendor/bin/php-cs-fixer --dry-run --diff -vvv fix src/

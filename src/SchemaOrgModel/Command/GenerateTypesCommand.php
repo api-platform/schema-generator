@@ -34,7 +34,7 @@ class GenerateTypesCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('schema:generate-types')
+            ->setName('generate-types')
             ->setDescription('Generate types')
             ->addArgument('output', InputArgument::REQUIRED, 'The output directory')
             ->addArgument('config', InputArgument::OPTIONAL, 'The config file to use')
