@@ -1095,7 +1095,7 @@ When the cardinality cannot be automatically extracted, it's value is set to `un
 
 Usage:
 
-    bin/schema schema:extract-cardinalities
+    bin/schema extract-cardinalities
 
 ## Credits
 
