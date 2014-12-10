@@ -21,8 +21,7 @@ and custom generator can be added (e.g.: a Doctrine ODM mapping generator).
 * The generated code can be used as is in a [Symfony](http://symfony.com) app (but it will work too in a raw PHP project
 or any other framework including [Laravel](http://laravel.com) and [Zend Framework](http://framework.zend.com/)).
 
-[![Build Status](https://travis-ci.org/dunglas/php-schema.org-model.png?branch=master)](https://travis-ci.org/dunglas/php-schema.org-model)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/87ec89e6-57cd-4ac0-9ab1-d4549c5425c5/mini.png)](https://insight.sensiolabs.com/projects/87ec89e6-57cd-4ac0-9ab1-d4549c5425c5)
+[![Build Status](https://travis-ci.org/dunglas/php-schema.svg?branch=master)](https://travis-ci.org/dunglas/php-schema) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/87ec89e6-57cd-4ac0-9ab1-d4549c5425c5/mini.png)](https://insight.sensiolabs.com/projects/87ec89e6-57cd-4ac0-9ab1-d4549c5425c5)
 
 ## What is Schema.org?
 

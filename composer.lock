@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "13af697cfe9302b3c3065a48006328c9",
+    "hash": "6b6fc1e7670a454eb2c7a2e870ce30d9",
     "packages": [
         {
             "name": "easyrdf/easyrdf",
