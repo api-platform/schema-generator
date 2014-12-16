@@ -1,0 +1,23 @@
+baseUrl: http://php-schema.dunglas.com
+
+github:
+    user: dunglas
+    repo: php-schema
+
+title: PHP Schema
+subTitle: Generate PHP data model from Schema.org vocable
+
+menu:
+    items:
+        home:
+            text: Home
+            relativeUrl: ~
+        getting-started:
+            text: Getting started
+            relativeUrl: doc/getting-started.html
+        configuration:
+            text: Configuration
+            relativeUrl: doc/configuration.html
+        github:
+            text: "<i class=\"fa fa-github\"></i> GitHub"
+            absoluteUrl: http://github.com/dunglas/php-schema
