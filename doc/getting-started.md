@@ -660,7 +660,7 @@ Note that the generator take care of creating directories corresponding to the n
 Without configuration file, the tool will build the entire Schema.org vocabulary. If no properties are specified for a given
 type, all its properties will be generated.
 
-The generator also support enumerations generation. For subclasses of `[Enumeration](https://schema.org/Enumeration)`, the
+The generator also support enumerations generation. For subclasses of [`Enumeration`](https://schema.org/Enumeration), the
 generator will automatically create a class extending the Enum type provided by [myclabs/php-enum](https://github.com/myclabs/php-enum).
 Don't forget to install this library in your project. Refer you to PHP Enum documentation to see how to use it. The Symfony
 validation annotation generator automatically takes care of enumerations to validate choices values.
