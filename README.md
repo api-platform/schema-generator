@@ -1,6 +1,6 @@
 # PHP Schema.org Model Scaffolding
 
-The [PHP Schema](http://php-schema.dunglas.com/) command line tool tool instantly generate a PHP data model from the [Schema.org](http://schema.org)
+The [PHP Schema](http://php-schema.dunglas.com/) command line tool tool instantly generates a PHP data model from the [Schema.org](http://schema.org)
 vocabulary. Browse Schema.org, choose the types and properties you need, run our code generator and you're done! You get
 a fully featured PHP data model including:
 * A set of PHP entities with properties, constants (enum values), getters, setters, adders and removers. The class
