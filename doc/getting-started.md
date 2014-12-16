@@ -657,7 +657,7 @@ class PostalAddress
 
 Note that the generator take care of creating directories corresponding to the namespace structure.
 
-Without configuration file, the tool will build the entire Schema.org vocable. If no properties are specified for a given
+Without configuration file, the tool will build the entire Schema.org vocabulary. If no properties are specified for a given
 type, all its properties will be generated.
 
 The generator also support enumerations generation. For subclasses of `[Enumeration](https://schema.org/Enumeration)`, the

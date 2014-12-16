@@ -5,7 +5,7 @@ github:
     repo: php-schema
 
 title: PHP Schema
-subTitle: Generate PHP data model from Schema.org vocable
+subTitle: Generate PHP data model from Schema.org vocabulary
 
 menu:
     items:

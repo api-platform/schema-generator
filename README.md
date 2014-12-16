@@ -1,6 +1,6 @@
 # PHP Schema.org Model Scaffolding
 
-This tool instantly generate a PHP data model from [Schema.org](http://schema.org) vocables. Browse Schema.org, choose
+This tool instantly generate a PHP data model from [Schema.org](http://schema.org) vocabulary. Browse Schema.org, choose
 the types and properties you need, run our code generator and you're done! You get a fully featured PHP data model including:
 * A set of PHP entities with properties, constants (enum values), getters, setters, adders and removers. The class
 hierarchy provided by Schema.org will be translated to a PHP class hierarchy with parents as `abstract` classes. The generated
