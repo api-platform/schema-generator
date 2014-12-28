@@ -17,7 +17,6 @@ namespaces:
   interface:            "Dunglas\EcommerceBundle\Model"
 author: "Kévin Dunglas <dunglas@gmail.com>"
 debug: true
-useType: true
 useInterface: true
 checkIsGoodRelations: true
 types:
@@ -25,25 +24,27 @@ types:
     properties:
       name: ~
       description: ~
-#      image: ~
+      image: ~
+      additionalType: ~
   Product:
     properties:
+      sku:
+        cardinality: "(0..1)"
+      url: ~
       brand: ~
-      color: ~
-      depth: ~
+      productId: ~
+      releaseDate: ~
+      offers: ~
+      itemCondition: ~
       gtin13: ~
       gtin14: ~
       gtin8: ~
-      height: ~
-      itemCondition: ~
       mpn: ~
-      offers: ~
-      productId: ~
-      releaseDate: ~
-      sku:
-        cardinality: "(0..1)"
-      weight: ~
-      width: ~
+      color: ~
+      depth: { range: "Text" }
+      height: { range: "Text" }
+      weight: { range: "Text" }
+      width: { range: "Text" }
   Brand:
     parent: "Thing"
     properties:
@@ -52,10 +53,6 @@ types:
     parent: Thing
     properties:
       caption: ~
-  QuantitativeValue:
-    properties:
-      unitCode: ~
-      value: ~
   ProductModel:
     properties:
       isVariantOf: ~
@@ -63,7 +60,6 @@ types:
     parent: Thing
     properties:
       acceptedPaymentMethod: ~
-#      addOn: ~
       availability: ~
       availabilityStarts: ~
       availabilityEnds: ~
@@ -72,22 +68,13 @@ types:
       deliveryLeadTime: ~
       inventoryLevel: ~
       itemCondition: ~
-      priceSpecification: ~
-  PriceSpecification:
-    parent: false
-    properties:
-      eligibleQuantity: ~
-      eligibleTransactionVolume: ~
       price: ~
+      priceCurrency: ~
       validFrom: ~
       validThrough: ~
-      valueAddedTaxIncluded: ~
   DeliveryChargeSpecification: ~
   PaymentChargeSpecification: ~
   OfferItemCondition: ~
   PaymentMethod: ~
   ItemAvailability: ~
   DeliveryMethod: ~
-#  WarrantyPromise: ~
-#  WarrantyScope:
-#    parent: false

@@ -189,13 +189,6 @@ rdfa:
 
 *Support for other namespaces than `http://schema.org` is planned for future versions but not currently available.*
 
-## Enabling PSR-5 PHPDoc support
-
-Set the `useType` option to `true` and the generator will use the `@type` annotation (defined in ([PSR-5](https://github.com/php-fig/fig-standards/pull/169))
-instead of the traditional `@var`.
-
-*The current status of PSR-5 is draft and is still subject to major modifications.*
-
 ## Checking GoodRelation compatibility
 
 If the `checkIsGoodRelations` option is set to `true`, the generator will emit a warning if an encountered property is not
@@ -245,9 +238,6 @@ generateId:           true
 
 # Generate interfaces and use Doctrine's Resolve Target Entity feature
 useInterface:         false
-
-# Use PSR-5's @type annotation instead of @var in the PHPDoc
-useType:              false
 
 # Use Doctrine's ArrayCollection instead of standard arrays
 useDoctrineCollection:  true

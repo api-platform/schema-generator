@@ -134,61 +134,61 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Person extends Thing
 {
     /**
-     * @var integer $id
+     * @var integer
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
     /**
-     * @var string $additionalName An additional name for a Person, can be used for a middle name.
+     * @var string An additional name for a Person, can be used for a middle name.
      * @Assert\Type(type="string")
      * @ORM\Column(nullable=true)
      */
     private $additionalName;
     /**
-     * @var PostalAddress $address Physical address of the item.
+     * @var PostalAddress Physical address of the item.
      * @ORM\ManyToOne(targetEntity="PostalAddress")
      */
     private $address;
     /**
-     * @var \DateTime $birthDate Date of birth.
+     * @var \DateTime Date of birth.
      * @Assert\Date
      * @ORM\Column(type="date", nullable=true)
      */
     private $birthDate;
     /**
-     * @var string $email Email address.
+     * @var string Email address.
      * @Assert\Email
      * @ORM\Column(nullable=true)
      */
     private $email;
     /**
-     * @var string $familyName Family name. In the U.S., the last name of an Person. This can be used along with givenName instead of the name property.
+     * @var string Family name. In the U.S., the last name of an Person. This can be used along with givenName instead of the name property.
      * @Assert\Type(type="string")
      * @ORM\Column(nullable=true)
      */
     private $familyName;
     /**
-     * @var string $gender Gender of the person.
+     * @var string Gender of the person.
      * @Assert\Type(type="string")
      * @ORM\Column(nullable=true)
      */
     private $gender;
     /**
-     * @var string $givenName Given name. In the U.S., the first name of a Person. This can be used along with familyName instead of the name property.
+     * @var string Given name. In the U.S., the first name of a Person. This can be used along with familyName instead of the name property.
      * @Assert\Type(type="string")
      * @ORM\Column(nullable=true)
      */
     private $givenName;
     /**
-     * @var string $jobTitle The job title of the person (for example, Financial Manager).
+     * @var string The job title of the person (for example, Financial Manager).
      * @Assert\Type(type="string")
      * @ORM\Column(nullable=true)
      */
     private $jobTitle;
     /**
-     * @var string $telephone The telephone number.
+     * @var string The telephone number.
      * @Assert\Type(type="string")
      * @ORM\Column(nullable=true)
      */
@@ -448,32 +448,32 @@ use Symfony\Component\Validator\Constraints as Assert;
 class PostalAddress
 {
     /**
-     * @var integer $id
+     * @var integer
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
     /**
-     * @var string $addressCountry The country. For example, USA. You can also provide the two-letter [ISO 3166-1 alpha-2 country code](http://en.wikipedia.org/wiki/ISO_3166-1).
+     * @var string The country. For example, USA. You can also provide the two-letter [ISO 3166-1 alpha-2 country code](http://en.wikipedia.org/wiki/ISO_3166-1).
      * @Assert\Type(type="string")
      * @ORM\Column(nullable=true)
      */
     private $addressCountry;
     /**
-     * @var string $addressLocality The locality. For example, Mountain View.
+     * @var string The locality. For example, Mountain View.
      * @Assert\Type(type="string")
      * @ORM\Column(nullable=true)
      */
     private $addressLocality;
     /**
-     * @var string $addressRegion The region. For example, CA.
+     * @var string The region. For example, CA.
      * @Assert\Type(type="string")
      * @ORM\Column(nullable=true)
      */
     private $addressRegion;
     /**
-     * @var string $postalCode The postal code. For example, 94043.
+     * @var string The postal code. For example, 94043.
      * @Assert\Type(type="string")
      * @ORM\Column(nullable=true)
      */
@@ -485,7 +485,7 @@ class PostalAddress
      */
     private $postOfficeBoxNumber;
     /**
-     * @var string $streetAddress The street address. For example, 1600 Amphitheatre Pkwy.
+     * @var string The street address. For example, 1600 Amphitheatre Pkwy.
      * @Assert\Type(type="string")
      * @ORM\Column(nullable=true)
      */
@@ -690,19 +690,19 @@ use MyCLabs\Enum\Enum;
 class OfferItemCondition extends Enum
 {
     /**
-     * @type string DamagedCondition
+     * @var string DamagedCondition
      */
     const DAMAGED_CONDITION = 'http://schema.org/DamagedCondition';
     /**
-     * @type string NewCondition
+     * @var string NewCondition
      */
     const NEW_CONDITION = 'http://schema.org/NewCondition';
     /**
-     * @type string RefurbishedCondition
+     * @var string RefurbishedCondition
      */
     const REFURBISHED_CONDITION = 'http://schema.org/RefurbishedCondition';
     /**
-     * @type string UsedCondition
+     * @var string UsedCondition
      */
     const USED_CONDITION = 'http://schema.org/UsedCondition';
 }
