@@ -265,7 +265,7 @@ class TypesGenerator
                     if ($isArray) {
                         $class['hasConstructor'] = true;
 
-                        if ($config['doctrine']['useDoctrineCollection'] && !in_array(self::DOCTRINE_COLLECTION_USE, $class['uses'])) {
+                        if ($config['doctrine']['useCollection'] && !in_array(self::DOCTRINE_COLLECTION_USE, $class['uses'])) {
                             $class['uses'][] = self::DOCTRINE_COLLECTION_USE;
                         }
                     }
@@ -392,15 +392,18 @@ class TypesGenerator
         }
 
         if (isset($interfaceMappings) && $config['doctrine']['resolveTargetEntityConfigPath']) {
-            $dir = dirname($config['doctrine']['resolveTargetEntityConfigPath']);
+            $file = $config['output'].'/'.$config['doctrine']['resolveTargetEntityConfigPath'];
+            $dir = dirname($file);
             if (!file_exists($dir)) {
                 mkdir($dir, 0777, true);
             }
 
             file_put_contents(
-                $config['doctrine']['resolveTargetEntityConfigPath'],
+                $file,
                 $this->twig->render('doctrine.xml.twig', ['mappings' => $interfaceMappings])
             );
+
+            $generatedFiles[] = $file;
         }
 
         $this->fixCs($generatedFiles);

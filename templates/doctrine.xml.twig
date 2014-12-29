@@ -1,0 +1,13 @@
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:doctrine="http://symfony.com/schema/dic/doctrine"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd
+                        http://symfony.com/schema/dic/doctrine http://symfony.com/schema/dic/doctrine/doctrine-1.0.xsd">
+    <doctrine:config>
+        <doctrine:orm>
+{% for interface, class in mappings %}
+            <doctrine:resolve-target-entity interface="{{ interface }}">{{ class }}</doctrine:resolve-target-entity>
+{% endfor %}
+        </doctrine:orm>
+    </doctrine:config>
+</container>

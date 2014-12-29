@@ -9,7 +9,7 @@ with Doctrine Resolve Target Entity Listener option).
 
 Example:
 
-```yml
+```yaml
 namespaces:
   entity:               "Dunglas\EcommerceBundle\Entity"
   enum:                 "Dunglas\EcommerceBundle\Enum"
@@ -20,7 +20,7 @@ Namespaces can also be specified for a specific type. It will take precedence ov
 
 Example:
 
-```yml
+```yaml
 types:
   Thing:
     namespaces:
@@ -37,7 +37,7 @@ Schema.org definition).
 
 Example:
 
-```yml
+```yaml
 types:
   Brand:
     properties:
@@ -61,7 +61,7 @@ Cardinalities are enforced by the class generator, the Doctrine ORM generator an
 
 Example:
 
-```yml
+```yaml
 types:
   Product:
     properties:
@@ -75,7 +75,7 @@ Override the guessed class hierarchy of a given type with this option.
 
 Example:
 
-```yml
+```yaml
   ImageObject:
     parent: Thing # Force the parent to be Thing instead of CreativeWork > MediaObject
     properties: ~
@@ -89,7 +89,7 @@ Add a `@author` PHPDoc annotation to class' DocBlock.
 
 Example:
 
-```yml
+```yaml
 author: "Kévin Dunglas <kevin@les-tilleuls.coop>"
 ```
 
@@ -99,7 +99,7 @@ By default, all generators are enabled. You can specify the list of generators t
 
 Example (enabling only the PHPDoc generator):
 
-```yml
+```yaml
 annotationGenerators:
     - SchemaOrgModel\AnnotationGenerator\PhpDocAnnotationGenerator
 ```
@@ -110,7 +110,7 @@ useful when creating your own generators.
 
 Enabling a custom generator and the PHPDoc generator:
 
-```yml
+```yaml
 annotationGenerators:
   - SchemaOrgModel\AnnotationGenerator\PhpDocAnnotationGenerator
   - Acme\Generators\MyGenerator
@@ -122,7 +122,7 @@ By default, the generator add a property called `id` not provided by Schema.org.
 with an ORM or an ODM.
 This behavior can be disabled with the following setting:
 
-```yml
+```yaml
 generateId: false
 ```
 
@@ -132,8 +132,9 @@ By default, the generator use classes provided by the [Doctrine Collections](htt
 to store collections of entities. This is useful (and required) when using Doctrine ORM or Doctrine ODM.
 This behavior can be disabled (to fallback to standard arrays) with the following setting:
 
-```yml
-useDoctrineCollection: false
+```yaml
+doctrine:
+  useCollection: false
 ```
 
 ## Custom field visibility
@@ -143,7 +144,7 @@ The default visibility can be changed with the `fieldVisibility` otion.
 
 Example:
 
-```yml
+```yaml
 fieldVisibility: "protected"
 ```
 
@@ -154,7 +155,7 @@ The standard behavior of the generator is to use the `@MappedSuperclass` Doctrin
 
 The inheritance annotation can be forced for a given type like the following:
 
-```yml
+```yaml
 types:
   Product:
     doctrine:
@@ -172,6 +173,12 @@ mappings.
 If you set the option `useInterface` to true, the generator will generate an interface corresponding to each generated
 entity and will use them in relation mappings.
 
+To let PHP Schema generating the XML mapping file usable with Symfony add the following to your config file:
+
+```yaml
+doctrine:
+  resolveTargetEntityConfigPath: path/to/doctrine.xml
+```
 
 ## Custom schemas
 
@@ -181,7 +188,7 @@ to generate the PHP data model of your application.
 
 Example:
 
-```yml
+```yaml
 rdfa:
   - https://raw.githubusercontent.com/rvguha/schemaorg/master/data/schema.rdfa # Experimental version of Schema.org
   - http://example.com/data/myschema.rfa # Additional types
@@ -202,7 +209,7 @@ Prepend all generated PHP files with a custom comment.
 
 Example:
 
-```yml
+```yaml
 header: |
   /*
    * This file is part of the Ecommerce package.
@@ -222,7 +229,7 @@ header: |
 rdfa:
 
     # Default:
-    - https://raw.githubusercontent.com/rvguha/schemaorg/master/data/schema.rdfa
+    - http://schema.org/docs/schema_org_rdfa.html
 
 # OWL relation files to use
 relations:
@@ -238,9 +245,6 @@ generateId:           true
 
 # Generate interfaces and use Doctrine's Resolve Target Entity feature
 useInterface:         false
-
-# Use Doctrine's ArrayCollection instead of standard arrays
-useDoctrineCollection:  true
 
 # Emit a warning if a property is not derived from GoodRelations
 checkIsGoodRelations:  false
@@ -259,6 +263,15 @@ namespaces:
 
     # The namespace of the generated interfaces
     interface:            SchemaOrg\Model # Example: Acme\Model
+
+# Doctrine
+doctrine:
+
+    # Use Doctrine's ArrayCollection instead of standard arrays
+    useCollection:        true
+
+    # The Resolve Target Entity Listener config file pass
+    resolveTargetEntityConfigPath:  null
 
 # The value of the phpDoc's @author annotation
 author:               false # Example: Kévin Dunglas <dunglas@gmail.com>
