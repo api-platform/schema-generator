@@ -83,6 +83,17 @@ Example:
     parent: false # No parent
 ```
 
+## Forcing a class to be abstract
+
+Force a class to be `abstract` (or to be not).
+
+Example:
+
+```yaml
+   Person:
+     abstract: true
+```
+
 ## Author PHPDoc
 
 Add a `@author` PHPDoc annotation to class' DocBlock.

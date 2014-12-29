@@ -74,6 +74,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->useAttributeAsKey('id')
                     ->prototype('array')
                         ->children()
+                            ->booleanNode('abstract')->defaultNull()->info('Is the class abstract? (null to guess)')->end()
                             ->arrayNode('namespaces')
                                 ->addDefaultsIfNotSet()
                                 ->info('Type namespaces')

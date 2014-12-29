@@ -33,7 +33,7 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         if (isset($this->config['types'][$class['resource']->localName()]['doctrine']['inheritanceMapping'])) {
             $inheritanceMapping = $this->config['types'][$class['resource']->localName()]['doctrine']['inheritanceMapping'];
         } else {
-            $inheritanceMapping = $class['hasChild'] ? '@ORM\MappedSuperclass' : '@ORM\Entity';
+            $inheritanceMapping = $class['abstract'] ? '@ORM\MappedSuperclass' : '@ORM\Entity';
         }
 
         return [

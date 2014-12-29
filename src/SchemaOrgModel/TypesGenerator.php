@@ -111,6 +111,7 @@ class TypesGenerator
             'uses' => [],
             'hasConstructor' => false,
             'hasChild' => false,
+            'abstract' => false,
         ];
 
         $typesDefined = !empty($config['types']);
@@ -283,6 +284,15 @@ class TypesGenerator
 
             foreach ($class['fields'] as &$field) {
                 $field['isEnum'] = isset($classes[$field['range']]) && $classes[$field['range']]['isEnum'];
+            }
+        }
+
+        // Third pass
+        foreach ($classes as &$class) {
+            if (isset($config['types'][$class['name']]['abstract']) && null !== $config['types'][$class['name']]['abstract']) {
+                $class['abstract'] = $config['types'][$class['name']]['abstract'];
+            } else {
+                $class['abstract'] = $class['hasChild'];
             }
         }
 
