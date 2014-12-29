@@ -265,7 +265,7 @@ class TypesGenerator
                     if ($isArray) {
                         $class['hasConstructor'] = true;
 
-                        if ($config['useDoctrineCollection'] && !in_array(self::DOCTRINE_COLLECTION_USE, $class['uses'])) {
+                        if ($config['doctrine']['useDoctrineCollection'] && !in_array(self::DOCTRINE_COLLECTION_USE, $class['uses'])) {
                             $class['uses'][] = self::DOCTRINE_COLLECTION_USE;
                         }
                     }
@@ -312,6 +312,10 @@ class TypesGenerator
             $generator = new $annotationGenerator($this->logger, $this->graphs, $this->cardinalities, $config, $classes);
 
             $annotationGenerators[] = $generator;
+        }
+
+        if (isset($class['interfaceNamespace']) && $config['doctrine']['resolveTargetEntityConfigPath']) {
+            $interfaceMappings = [];
         }
 
         $generatedFiles = [];
@@ -380,7 +384,23 @@ class TypesGenerator
                         'class' => $class,
                     ])
                 );
+
+                if ($config['doctrine']['resolveTargetEntityConfigPath']) {
+                    $interfaceMappings[$class['interfaceNamespace'].'\\'.$class['interfaceName']] = $class['namespace'].'\\'.$className;
+                }
             }
+        }
+
+        if (isset($interfaceMappings) && $config['doctrine']['resolveTargetEntityConfigPath']) {
+            $dir = dirname($config['doctrine']['resolveTargetEntityConfigPath']);
+            if (!file_exists($dir)) {
+                mkdir($dir, 0777, true);
+            }
+
+            file_put_contents(
+                $config['doctrine']['resolveTargetEntityConfigPath'],
+                $this->twig->render('doctrine.xml.twig', ['mappings' => $interfaceMappings])
+            );
         }
 
         $this->fixCs($generatedFiles);

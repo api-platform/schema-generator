@@ -39,7 +39,7 @@ use {{ use }};
     {{ config.fieldVisibility }} ${{ field.name }}{% if field.isArray and (field.isEnum or not field.typeHint or not config.useDoctrineCollection) %} = []{% endif %};
 {% endfor %}
 
-{% if config.useDoctrineCollection and class.hasConstructor %}
+{% if config.doctrine.useDoctrineCollection and class.hasConstructor %}
     public function __construct()
     {
         parent::__construct();
