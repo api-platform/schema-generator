@@ -46,7 +46,14 @@ class GenerateTypesCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = $input->getArgument('config') ? Yaml::parse($input->getArgument('config')) : [];
+        $configArgument = $input->getArgument('config');
+        if ($configArgument) {
+            $parser = new Parser();
+            $config = $parser->parse(file_get_contents($configArgument));
+            unset($parser);
+        } else {
+            $config = [];
+        }
 
         $processor = new Processor();
         $configuration = new TypesGeneratorConfiguration();
