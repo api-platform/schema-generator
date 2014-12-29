@@ -395,7 +395,7 @@ class TypesGenerator
                     ])
                 );
 
-                if ($config['doctrine']['resolveTargetEntityConfigPath']) {
+                if ($config['doctrine']['resolveTargetEntityConfigPath'] && !$class['abstract']) {
                     $interfaceMappings[$class['interfaceNamespace'].'\\'.$class['interfaceName']] = $class['namespace'].'\\'.$className;
                 }
             }
