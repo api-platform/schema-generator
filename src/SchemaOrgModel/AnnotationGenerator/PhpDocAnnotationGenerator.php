@@ -64,6 +64,7 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             $this->toPhpType($field),
             $annotations[0]
         );
+        $annotations[] = '';
 
         return $annotations;
     }
