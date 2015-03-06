@@ -20,6 +20,7 @@ use {{ use }};
 {% endfor %}
  */
 {% if class.abstract %}abstract {% endif %}class {{ class.name }}{% if class.parent %} extends {{ class.parent }}{% endif %}{% if class.interfaceName %} implements {{ class.interfaceName }}{% endif %}
+
 {
 {% for constant in class.constants %}
     /**
@@ -36,7 +37,7 @@ use {{ use }};
      * {{ annotation }}
 {% endfor %}
      */
-    {{ config.fieldVisibility }} ${{ field.name }}{% if field.isArray and (field.isEnum or not field.typeHint or not config.useDoctrineCollection) %} = []{% endif %};
+    {{ config.fieldVisibility }} ${{ field.name }}{% if field.isArray and (field.isEnum or not field.typeHint or not config.doctrine.useCollection) %} = []{% endif %};
 {% endfor %}
 
 {% if config.doctrine.useCollection and class.hasConstructor %}
@@ -45,7 +46,7 @@ use {{ use }};
         parent::__construct();
 
 {% for field in class.fields %}
-{% if field.isArray and field.typeHint and not field.isEnum %}
+{% if config.doctrine.useCollection and field.isArray and field.typeHint and not field.isEnum %}
         $this->{{ field.name }} = new ArrayCollection();
 {% endif %}
 {% endfor %}
