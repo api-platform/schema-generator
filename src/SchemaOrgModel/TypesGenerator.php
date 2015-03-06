@@ -110,6 +110,7 @@ class TypesGenerator
             'fields' => [],
             'uses' => [],
             'hasConstructor' => false,
+            'parentHasConstructor' => false,
             'hasChild' => false,
             'abstract' => false,
         ];
@@ -280,6 +281,7 @@ class TypesGenerator
         foreach ($classes as &$class) {
             if ($class['parent'] && isset($classes[$class['parent']])) {
                 $classes[$class['parent']]['hasChild'] = true;
+                $class['parentHasConstructor'] = $classes[$class['parent']]['hasConstructor'];
             }
 
             foreach ($class['fields'] as &$field) {

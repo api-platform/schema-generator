@@ -43,8 +43,10 @@ use {{ use }};
 {% if config.doctrine.useCollection and class.hasConstructor %}
     public function __construct()
     {
+{% if class.parentHasConstructor %}
         parent::__construct();
 
+{% endif %}
 {% for field in class.fields %}
 {% if config.doctrine.useCollection and field.isArray and field.typeHint and not field.isEnum %}
         $this->{{ field.name }} = new ArrayCollection();
