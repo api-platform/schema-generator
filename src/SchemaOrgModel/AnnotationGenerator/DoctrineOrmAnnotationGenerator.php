@@ -129,13 +129,27 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
 
                 case CardinalitiesExtractor::CARDINALITY_UNKNOWN:
                     // No break
-                case CardinalitiesExtractor::CARDINALITY_0_N:
+                case CardinalitiesExtractor::CARDINALITY_N_0:
                     $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $this->getRelationName($field['range']));
                     break;
 
-                case CardinalitiesExtractor::CARDINALITY_1_N:
+                case CardinalitiesExtractor::CARDINALITY_N_1:
                     $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $this->getRelationName($field['range']));
                     $annotations[] = '@ORM\JoinColumn(nullable=false)';
+                    break;
+
+                case CardinalitiesExtractor::CARDINALITY_0_N:
+                    $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s")', $this->getRelationName($field['range']));
+                    $annotations[] = '@ORM\JoinTable(inverseJoinColumns={@ORM\JoinColumn(unique=true)})';
+                    break;
+
+                case CardinalitiesExtractor::CARDINALITY_1_N:
+                    $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s")', $this->getRelationName($field['range']));
+                    $annotations[] = '@ORM\JoinTable(inverseJoinColumns={@ORM\JoinColumn(nullable=false, unique=true)})';
+                    break;
+
+                case CardinalitiesExtractor::CARDINALITY_N_N:
+                    $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s")', $this->getRelationName($field['range']));
                     break;
             }
         }

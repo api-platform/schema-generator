@@ -246,13 +246,12 @@ class TypesGenerator
                     }
 
                     $isArray = in_array($cardinality, [
-                        CardinalitiesExtractor::CARDINALITY_0_N,
                         CardinalitiesExtractor::CARDINALITY_1_N,
+                        CardinalitiesExtractor::CARDINALITY_N_N,
                     ]);
-                    $isNullable = in_array($cardinality, [
-                        CardinalitiesExtractor::CARDINALITY_0_1,
-                        CardinalitiesExtractor::CARDINALITY_0_N,
-                        CardinalitiesExtractor::CARDINALITY_UNKNOWN,
+                    $isNullable = !in_array($cardinality, [
+                        CardinalitiesExtractor::CARDINALITY_1_1,
+                        CardinalitiesExtractor::CARDINALITY_1_N,
                     ]);
 
                     $class['fields'][$property->localName()] = [

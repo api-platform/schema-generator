@@ -20,6 +20,9 @@ class CardinalitiesExtractor
     const CARDINALITY_0_N = '(0..*)';
     const CARDINALITY_1_1 = '(1..1)';
     const CARDINALITY_1_N = '(1..*)';
+    const CARDINALITY_N_0 = '(*..0)';
+    const CARDINALITY_N_1 = '(*..1)';
+    const CARDINALITY_N_N = '(*..*)';
     const CARDINALITY_UNKNOWN = 'unknown';
 
     /**

@@ -94,6 +94,7 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
                 $this->toPhpType($this->classes[$className]['fields'][$fieldName]),
                 $fieldName
             ),
+            '',
             '@return $this',
         ];
     }
@@ -111,6 +112,7 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
                 $this->toPhpType($this->classes[$className]['fields'][$fieldName], true),
                 $fieldName
             ),
+            '',
             '@return $this',
         ];
     }
@@ -128,6 +130,7 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
                 $this->toPhpType($this->classes[$className]['fields'][$fieldName], true),
                 $fieldName
             ),
+            '',
             '@return $this',
         ];
     }

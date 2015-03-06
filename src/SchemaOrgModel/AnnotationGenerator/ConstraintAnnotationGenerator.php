@@ -61,7 +61,7 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
             }
         }
 
-        if (CardinalitiesExtractor::CARDINALITY_1_1 === $field['cardinality'] || CardinalitiesExtractor::CARDINALITY_1_N === $field['cardinality']) {
+        if (!$field['isNullable']) {
             $asserts[] = '@Assert\NotNull';
         }
 

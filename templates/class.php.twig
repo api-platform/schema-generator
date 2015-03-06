@@ -89,7 +89,7 @@ use {{ use }};
      * {{ annotation }}
 {% endfor %}
      */
-    public function set{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.typeHint }} {% endif %}${{ field.name }})
+    public function set{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.typeHint }} {% endif %}${{ field.name }}{% if field.typeHint and field.isNullable %} = null{% endif %})
     {
         $this->{{ field.name }} = ${{ field.name }};
 

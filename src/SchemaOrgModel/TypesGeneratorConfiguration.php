@@ -97,7 +97,16 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                                     ->addDefaultsIfNotSet()
                                     ->children()
                                         ->scalarNode('range')->defaultNull()->info('The property range')->example('Offer')->end()
-                                        ->enumNode('cardinality')->defaultValue(CardinalitiesExtractor::CARDINALITY_UNKNOWN)->values([CardinalitiesExtractor::CARDINALITY_0_1, CardinalitiesExtractor::CARDINALITY_0_N, CardinalitiesExtractor::CARDINALITY_1_1, CardinalitiesExtractor::CARDINALITY_1_N, CardinalitiesExtractor::CARDINALITY_UNKNOWN])->end()
+                                        ->enumNode('cardinality')->defaultValue(CardinalitiesExtractor::CARDINALITY_UNKNOWN)->values([
+                                            CardinalitiesExtractor::CARDINALITY_0_1,
+                                            CardinalitiesExtractor::CARDINALITY_0_N,
+                                            CardinalitiesExtractor::CARDINALITY_1_1,
+                                            CardinalitiesExtractor::CARDINALITY_1_N,
+                                            CardinalitiesExtractor::CARDINALITY_N_0,
+                                            CardinalitiesExtractor::CARDINALITY_N_1,
+                                            CardinalitiesExtractor::CARDINALITY_N_N,
+                                            CardinalitiesExtractor::CARDINALITY_UNKNOWN
+                                        ])->end()
                                     ->end()
                                 ->end()
                             ->end()
