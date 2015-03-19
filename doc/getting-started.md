@@ -20,6 +20,10 @@ Then, write a simple YAML config file like the following (here we will generate 
 `address-book.yml`:
 
 ```yml
+rdfa:
+ - tests/data/schema.rdfa
+relations:
+ - tests/data/v1.owl
 # The PHP namespace of generated entities
 namespaces:
   entity: "AddressBook\Entity"
