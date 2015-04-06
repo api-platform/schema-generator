@@ -7,7 +7,6 @@ cache:
     - $HOME/.composer/cache
 
 php:
-    - 5.4
     - 5.5
     - 5.6
     - nightly
@@ -21,6 +20,7 @@ matrix:
     fast_finish: true
 
 before_script:
+  - composer self-update
   - composer install
 
 script:
