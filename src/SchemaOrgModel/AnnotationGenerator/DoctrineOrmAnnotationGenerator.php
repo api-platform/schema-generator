@@ -176,9 +176,10 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
     }
 
     /**
-     * Gets class or interface name to use in relations
+     * Gets class or interface name to use in relations.
      *
-     * @param  string $range
+     * @param string $range
+     *
      * @return string
      */
     private function getRelationName($range)

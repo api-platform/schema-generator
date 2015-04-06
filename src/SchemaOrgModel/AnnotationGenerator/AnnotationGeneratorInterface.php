@@ -36,7 +36,8 @@ interface AnnotationGeneratorInterface
     /**
      * Generates class' annotations.
      *
-     * @param  string $className
+     * @param string $className
+     *
      * @return array
      */
     public function generateClassAnnotations($className);
@@ -44,7 +45,8 @@ interface AnnotationGeneratorInterface
     /**
      * Generates interface's annotations.
      *
-     * @param  string $className
+     * @param string $className
+     *
      * @return array
      */
     public function generateInterfaceAnnotations($className);
@@ -52,8 +54,9 @@ interface AnnotationGeneratorInterface
     /**
      * Generates constant's annotations.
      *
-     * @param  string $className
-     * @param  string $constantName
+     * @param string $className
+     * @param string $constantName
+     *
      * @return array
      */
     public function generateConstantAnnotations($className, $constantName);
@@ -61,8 +64,9 @@ interface AnnotationGeneratorInterface
     /**
      * Generates field's annotation.
      *
-     * @param  string $className
-     * @param  string $fieldName
+     * @param string $className
+     * @param string $fieldName
+     *
      * @return array
      */
     public function generateFieldAnnotations($className, $fieldName);
@@ -70,8 +74,9 @@ interface AnnotationGeneratorInterface
     /**
      * Generates getter's annotation.
      *
-     * @param  string $className
-     * @param  string $fieldName
+     * @param string $className
+     * @param string $fieldName
+     *
      * @return array
      */
     public function generateGetterAnnotations($className, $fieldName);
@@ -79,8 +84,9 @@ interface AnnotationGeneratorInterface
     /**
      * Generates setter's annotation.
      *
-     * @param  string $className
-     * @param  string $fieldName
+     * @param string $className
+     * @param string $fieldName
+     *
      * @return array
      */
     public function generateSetterAnnotations($className, $fieldName);
@@ -88,8 +94,9 @@ interface AnnotationGeneratorInterface
     /**
      * Generates adder's annotation.
      *
-     * @param  string $className
-     * @param  string $fieldName
+     * @param string $className
+     * @param string $fieldName
+     *
      * @return array
      */
     public function generateAdderAnnotations($className, $fieldName);
@@ -97,8 +104,9 @@ interface AnnotationGeneratorInterface
     /**
      * Generates remover's annotation.
      *
-     * @param  string $className
-     * @param  string $fieldName
+     * @param string $className
+     * @param string $fieldName
+     *
      * @return array
      */
     public function generateRemoverAnnotations($className, $fieldName);
@@ -106,7 +114,8 @@ interface AnnotationGeneratorInterface
     /**
      * Generates uses.
      *
-     * @param  string $className
+     * @param string $className
+     *
      * @return array
      */
     public function generateUses($className);

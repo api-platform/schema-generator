@@ -21,59 +21,62 @@ use Symfony\CS\Fixer;
 class TypesGenerator
 {
     /**
-     * @type string
+     * @var string
+     *
      * @see https://github.com/myclabs/php-enum Used enum implementation
      */
     const ENUM_USE = 'MyCLabs\Enum\Enum';
     /**
-     * @type string
+     * @var string
+     *
      * @see https://github.com/doctrine/collections
      */
     const DOCTRINE_COLLECTION_USE = 'Doctrine\Common\Collections\ArrayCollection';
     /**
-     * @type string
+     * @var string
+     *
      * @see https://github.com/myclabs/php-enum Used enum implementation
      */
     const ENUM_EXTENDS = 'Enum';
     /**
-     * @type string
+     * @var string
      */
     const SCHEMA_ORG_NAMESPACE = 'http://schema.org/';
     /**
-     * @type string
+     * @var string
      */
     const SCHEMA_ORG_ENUMERATION = 'http://schema.org/Enumeration';
     /**
-     * @type string
+     * @var string
      */
     const SCHEMA_ORG_DOMAIN = 'schema:domainIncludes';
     /**
-     * @type string
+     * @var string
      */
     const SCHEMA_ORG_RANGE = 'schema:rangeIncludes';
 
     /**
-     * @type \Twig_Environment
+     * @var \Twig_Environment
      */
     private $twig;
     /**
-     * @type LoggerInterface
+     * @var LoggerInterface
      */
     private $logger;
     /**
-     * @type \EasyRdf_Graph[]
+     * @var \EasyRdf_Graph[]
      */
     private $graphs;
     /**
-     * @type CardinalitiesExtractor
+     * @var CardinalitiesExtractor
      */
     private $cardinalitiesExtractor;
     /**
-     * @type GoodRelationsBridge
+     * @var GoodRelationsBridge
      */
     private $goodRelationsBridge;
     /**
-     * @type array
+     * @var array
      */
     private $cardinalities;
 
@@ -423,7 +426,8 @@ class TypesGenerator
     /**
      * Tests if a type is an enum.
      *
-     * @param  \EasyRdf_Resource $type
+     * @param \EasyRdf_Resource $type
+     *
      * @return bool
      */
     private function isEnum(\EasyRdf_Resource $type)
@@ -436,7 +440,8 @@ class TypesGenerator
     /**
      * Create a maps between class an properties.
      *
-     * @param  array $types
+     * @param array $types
+     *
      * @return array
      */
     private function createPropertiesMap(array $types)
@@ -464,7 +469,8 @@ class TypesGenerator
     /**
      * Is this type a datatype?
      *
-     * @param  string $type
+     * @param string $type
+     *
      * @return bool
      */
     private function isDatatype($type)
@@ -476,6 +482,7 @@ class TypesGenerator
      * Is this type a \DateTime?
      *
      * @param $type
+     *
      * @return bool
      */
     private function isDateTime($type)
@@ -486,9 +493,10 @@ class TypesGenerator
     /**
      * Generates field's annotations.
      *
-     * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
-     * @param  string                                                             $className
-     * @param  string                                                             $fieldName
+     * @param \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
+     * @param string                                                             $className
+     * @param string                                                             $fieldName
+     *
      * @return array
      */
     private function generateFieldAnnotations($annotationGenerators, $className, $fieldName)
@@ -504,9 +512,10 @@ class TypesGenerator
     /**
      * Generates constant's annotations.
      *
-     * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
-     * @param  string                                                             $className
-     * @param  string                                                             $constantName
+     * @param \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
+     * @param string                                                             $className
+     * @param string                                                             $constantName
+     *
      * @return array
      */
     private function generateConstantAnnotations(array $annotationGenerators, $className, $constantName)
@@ -522,8 +531,9 @@ class TypesGenerator
     /**
      * Generates class' annotations.
      *
-     * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
-     * @param  string                                                             $className
+     * @param \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
+     * @param string                                                             $className
+     *
      * @return array
      */
     private function generateClassAnnotations(array $annotationGenerators, $className)
@@ -539,8 +549,9 @@ class TypesGenerator
     /**
      * Generates interface's annotations.
      *
-     * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
-     * @param  string                                                             $className
+     * @param \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
+     * @param string                                                             $className
+     *
      * @return array
      */
     private function generateInterfaceAnnotations(array $annotationGenerators, $className)
@@ -556,9 +567,10 @@ class TypesGenerator
     /**
      * Generates getter's annotations.
      *
-     * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
-     * @param  string                                                             $className
-     * @param  string                                                             $fieldName
+     * @param \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
+     * @param string                                                             $className
+     * @param string                                                             $fieldName
+     *
      * @return array
      */
     private function generateGetterAnnotations(array $annotationGenerators, $className, $fieldName)
@@ -574,9 +586,10 @@ class TypesGenerator
     /**
      * Generates adder's annotations.
      *
-     * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
-     * @param  string                                                             $className
-     * @param  string                                                             $fieldName
+     * @param \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
+     * @param string                                                             $className
+     * @param string                                                             $fieldName
+     *
      * @return array
      */
     private function generateAdderAnnotations(array $annotationGenerators, $className, $fieldName)
@@ -592,9 +605,10 @@ class TypesGenerator
     /**
      * Generates remover's annotations.
      *
-     * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
-     * @param  string                                                             $className
-     * @param  string                                                             $fieldName
+     * @param \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
+     * @param string                                                             $className
+     * @param string                                                             $fieldName
+     *
      * @return array
      */
     private function generateRemoverAnnotations(array $annotationGenerators, $className, $fieldName)
@@ -610,9 +624,10 @@ class TypesGenerator
     /**
      * Generates getter's annotations.
      *
-     * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
-     * @param  string                                                             $className
-     * @param  string                                                             $fieldName
+     * @param \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
+     * @param string                                                             $className
+     * @param string                                                             $fieldName
+     *
      * @return array
      */
     private function generateSetterAnnotations(array $annotationGenerators, $className, $fieldName)
@@ -628,9 +643,10 @@ class TypesGenerator
     /**
      * Generates uses.
      *
-     * @param  \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
-     * @param  array                                                              $classes
-     * @param  string                                                             $className
+     * @param \SchemaOrgModel\AnnotationGenerator\AnnotationGeneratorInterface[] $annotationGenerators
+     * @param array                                                              $classes
+     * @param string                                                             $className
+     *
      * @return array
      */
     private function generateClassUses($annotationGenerators, $classes, $className)
@@ -675,8 +691,9 @@ class TypesGenerator
     /**
      * Converts a namespace to a directory path according to PSR-4.
      *
-     * @param  array  $config
-     * @param  string $namespace
+     * @param array  $config
+     * @param string $namespace
+     *
      * @return string
      */
     private function namespaceToDir($config, $namespace)

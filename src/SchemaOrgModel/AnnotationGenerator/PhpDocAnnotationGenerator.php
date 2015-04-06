@@ -136,10 +136,11 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
     }
 
     /**
-     * Generates class or interface PHPDoc
+     * Generates class or interface PHPDoc.
      *
-     * @param  string $className
-     * @param  bool   $interface
+     * @param string $className
+     * @param bool   $interface
+     *
      * @return array
      */
     private function generateDoc($className, $interface = false)
@@ -164,10 +165,11 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
     }
 
     /**
-     * Converts HTML to Markdown and explode
+     * Converts HTML to Markdown and explode.
      *
-     * @param  string $doc
-     * @param  bool   $indent
+     * @param string $doc
+     * @param bool   $indent
+     *
      * @return array
      */
     private function formatDoc($doc, $indent = false)

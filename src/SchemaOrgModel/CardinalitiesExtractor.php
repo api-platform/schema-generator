@@ -26,11 +26,11 @@ class CardinalitiesExtractor
     const CARDINALITY_UNKNOWN = 'unknown';
 
     /**
-     * @type \EasyRdf_Graph[]
+     * @var \EasyRdf_Graph[]
      */
     private $graphs;
     /**
-     * @type GoodRelationsBridge
+     * @var GoodRelationsBridge
      */
     private $goodRelationsBridge;
 
@@ -67,8 +67,9 @@ class CardinalitiesExtractor
      *
      * Based on [Geraint Luff work](https://github.com/geraintluff/schema-org-gen).
      *
-     * @param  \EasyRdf_Resource $property
-     * @return string            The cardinality
+     * @param \EasyRdf_Resource $property
+     *
+     * @return string The cardinality
      */
     private function extractForProperty(\EasyRdf_Resource $property)
     {

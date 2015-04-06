@@ -20,12 +20,12 @@ class GoodRelationsBridge
     const RDF_SCHEMA_NAMESPACE = 'http://www.w3.org/2000/01/rdf-schema#';
 
     /**
-     * @type \SimpleXMLElement[]
+     * @var \SimpleXMLElement[]
      */
     protected $relations;
 
     /**
-     * @type array
+     * @var array
      */
     protected static $objectPropertiesTable = [
         'priceSpecification' => 'hasPriceSpecification',
@@ -45,7 +45,7 @@ class GoodRelationsBridge
         'acceptedPaymentMethod' => 'acceptedPaymentMethods',
     ];
     /**
-     * @type array
+     * @var array
      */
     protected static $datatypePropertiesTable = [
         'minPrice' => 'hasMinCurrencyValue',
@@ -83,7 +83,8 @@ class GoodRelationsBridge
     /**
      * Checks if a property exists in GoodRelations.
      *
-     * @param  string $id
+     * @param string $id
+     *
      * @return bool
      */
     public function exist($id)
@@ -101,7 +102,8 @@ class GoodRelationsBridge
     /**
      * Extracts cardinality from the Good Relations OWL.
      *
-     * @param  string      $id
+     * @param string $id
+     *
      * @return string|bool
      */
     public function extractCardinality($id)
@@ -121,7 +123,8 @@ class GoodRelationsBridge
     /**
      * Converts Schema.org's id to Good Relations id.
      *
-     * @param  string $id
+     * @param string $id
+     *
      * @return string
      */
     private static function convertPropertyId($id)
@@ -140,7 +143,8 @@ class GoodRelationsBridge
     /**
      * Gets a property URL.
      *
-     * @param  string $id
+     * @param string $id
+     *
      * @return string
      */
     private static function getPropertyUrl($id)

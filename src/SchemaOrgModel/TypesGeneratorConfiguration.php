@@ -105,7 +105,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                                             CardinalitiesExtractor::CARDINALITY_N_0,
                                             CardinalitiesExtractor::CARDINALITY_N_1,
                                             CardinalitiesExtractor::CARDINALITY_N_N,
-                                            CardinalitiesExtractor::CARDINALITY_UNKNOWN
+                                            CardinalitiesExtractor::CARDINALITY_UNKNOWN,
                                         ])->end()
                                     ->end()
                                 ->end()

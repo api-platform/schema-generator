@@ -129,10 +129,11 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     }
 
     /**
-     * Converts a Schema.org range to a PHP type
+     * Converts a Schema.org range to a PHP type.
      *
-     * @param  array  $field
-     * @param  bool   $adderOrRemover
+     * @param array $field
+     * @param bool  $adderOrRemover
+     *
      * @return string
      */
     protected function toPhpType(array $field, $adderOrRemover = false)
