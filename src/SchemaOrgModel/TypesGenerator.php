@@ -11,6 +11,7 @@ namespace SchemaOrgModel;
 
 use Psr\Log\LoggerInterface;
 use Symfony\CS\Config\Config;
+use Symfony\CS\ConfigurationResolver;
 use Symfony\CS\Fixer;
 
 /**
@@ -374,6 +375,7 @@ class TypesGenerator
 
             $path = sprintf('%s%s.php', $classDir, $className);
             $generatedFiles[] = $path;
+
             file_put_contents(
                 $path,
                 $this->twig->render('class.php.twig', [
@@ -708,12 +710,24 @@ class TypesGenerator
      */
     private function fixCs(array $files)
     {
+        $config = new Config();
         $fixer = new Fixer();
         $fixer->registerBuiltInConfigs();
         $fixer->registerBuiltInFixers();
 
-        $config = new Config();
-        $config->fixers($fixer->getFixers());
+        $resolver = new ConfigurationResolver();
+        $resolver
+            ->setAllFixers($fixer->getFixers())
+            ->setConfig($config)
+            ->setOptions(array(
+                'level'     => 'symfony',
+                'fixers'    => null,
+                'progress'  => false,
+            ))
+            ->resolve()
+        ;
+
+        $config->fixers($resolver->getFixers());
 
         $finder = [];
         foreach ($files as $file) {
@@ -721,7 +735,6 @@ class TypesGenerator
         }
 
         $config->finder(new \ArrayIterator($finder));
-
         $fixer->fix($config);
     }
 }

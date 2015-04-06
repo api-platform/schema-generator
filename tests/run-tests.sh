@@ -14,5 +14,5 @@ bin/schema generate-types build/full/
 # Check code CS
 vendor/bin/php-cs-fixer --dry-run --diff -vvv fix src/
 
-# Check generated models' CS
+# Check CS of generated models CS
 vendor/bin/php-cs-fixer --dry-run --diff -vvv fix build/
