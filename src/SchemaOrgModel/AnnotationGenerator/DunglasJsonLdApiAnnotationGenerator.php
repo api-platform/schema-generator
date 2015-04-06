@@ -1,0 +1,53 @@
+<?php
+
+/*
+ * (c) Kévin Dunglas <dunglas@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+namespace SchemaOrgModel\AnnotationGenerator;
+
+use SchemaOrgModel\TypesGenerator;
+
+/**
+ * Generates Iri annotations provided by DunglasJsonLdApiBundle.
+ *
+ * @author Kévin Dunglas <dunglas@gmail.com>
+ *
+ * @link https://github.com/dunglas/DunglasJsonLdApiBundle
+ */
+class DunglasJsonLdApiAnnotationGenerator extends AbstractAnnotationGenerator
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function generateClassAnnotations($className)
+    {
+        $resource = $this->classes[$className]['resource'];
+
+        return [sprintf('@Iri("%s")', $resource->getUri())];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateFieldAnnotations($className, $fieldName)
+    {
+        return 'id' === $fieldName ? [] : [sprintf('@Iri("https://schema.org/%s")', $fieldName)];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateUses($className)
+    {
+        $resource = $this->classes[$className]['resource'];
+
+        $subClassOf = $resource->get('rdfs:subClassOf');
+        $typeIsEnum = $subClassOf && $subClassOf->getUri() === TypesGenerator::SCHEMA_ORG_ENUMERATION;
+
+        return $typeIsEnum ? [] : ['Dunglas\JsonLdApiBundle\Annotation\Iri'];
+    }
+}

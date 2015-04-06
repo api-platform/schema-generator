@@ -717,6 +717,21 @@ class OfferItemCondition extends Enum
 
 ```
 
+### Enabling DunglasJsonLdApi support
+
+PHP Schema supports [IRI annotations provided by DunglasJsonLdApiBundle](https://github.com/dunglas/DunglasJsonLdApiBundle#using-external-json-ld-vocabularies).
+This is useful if you plan to use your generated data model to power a REST API.
+
+To enable this generator along with others, add the following lines to your PHP Schema configuration file:
+
+```yaml
+annotationGenerators:
+    - SchemaOrgModel\AnnotationGenerator\PhpDocAnnotationGenerator
+    - SchemaOrgModel\AnnotationGenerator\DoctrineOrmAnnotationGenerator
+    - SchemaOrgModel\AnnotationGenerator\ConstraintAnnotationGenerator
+    - SchemaOrgModel\AnnotationGenerator\DunglasJsonLdApiAnnotationGenerator
+```
+
 ### Going further
 
 * Browse [the configuration documentation](configuration.md)

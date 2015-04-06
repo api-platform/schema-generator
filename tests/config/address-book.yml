@@ -1,6 +1,12 @@
 # The PHP namespace of generated entities
 namespaces:
   entity: "AddressBook\Entity"
+# Enable DunglasJsonLdApiAnnotationGenerator
+annotationGenerators:
+    - SchemaOrgModel\AnnotationGenerator\PhpDocAnnotationGenerator
+    - SchemaOrgModel\AnnotationGenerator\DoctrineOrmAnnotationGenerator
+    - SchemaOrgModel\AnnotationGenerator\ConstraintAnnotationGenerator
+    - SchemaOrgModel\AnnotationGenerator\DunglasJsonLdApiAnnotationGenerator
 # The list of types and properties we want to use
 types:
   # Parent class of Person

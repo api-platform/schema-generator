@@ -28,6 +28,12 @@
         "nickcernis/html-to-markdown": "~2.1",
         "fabpot/php-cs-fixer": "~1.0"
     },
+    "require-dev": {
+        "doctrine/orm": "~2.2",
+        "symfony/validator": "~2.6",
+        "symfony/serializer": "~2.7@dev",
+        "dunglas/json-ld-api-bundle": "dev-master"
+    },
     "suggest": {
         "myclabs/php-enum": "For enumerations",
         "doctrine/collections": "For Doctrine collections",

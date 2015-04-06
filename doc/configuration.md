@@ -106,7 +106,8 @@ author: "Kévin Dunglas <kevin@les-tilleuls.coop>"
 
 ## Disabling generators and creating custom ones
 
-By default, all generators are enabled. You can specify the list of generators to use with the `generators` option.
+By default, all generators except the `DunglasJsonLdApi` one are enabled. You can specify the list of generators to use
+with the `generators` option.
 
 Example (enabling only the PHPDoc generator):
 
