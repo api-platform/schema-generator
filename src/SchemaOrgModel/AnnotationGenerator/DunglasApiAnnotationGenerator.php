@@ -12,13 +12,13 @@ namespace SchemaOrgModel\AnnotationGenerator;
 use SchemaOrgModel\TypesGenerator;
 
 /**
- * Generates Iri annotations provided by DunglasJsonLdApiBundle.
+ * Generates Iri annotations provided by DunglasApiBundle.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  *
- * @link https://github.com/dunglas/DunglasJsonLdApiBundle
+ * @link https://github.com/dunglas/DunglasApiBundle
  */
-class DunglasJsonLdApiAnnotationGenerator extends AbstractAnnotationGenerator
+class DunglasApiAnnotationGenerator extends AbstractAnnotationGenerator
 {
     /**
      * {@inheritdoc}
@@ -48,6 +48,6 @@ class DunglasJsonLdApiAnnotationGenerator extends AbstractAnnotationGenerator
         $subClassOf = $resource->get('rdfs:subClassOf');
         $typeIsEnum = $subClassOf && $subClassOf->getUri() === TypesGenerator::SCHEMA_ORG_ENUMERATION;
 
-        return $typeIsEnum ? [] : ['Dunglas\JsonLdApiBundle\Annotation\Iri'];
+        return $typeIsEnum ? [] : ['Dunglas\ApiBundle\Annotation\Iri'];
     }
 }
