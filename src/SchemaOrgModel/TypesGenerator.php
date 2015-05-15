@@ -720,9 +720,9 @@ class TypesGenerator
             ->setAllFixers($fixer->getFixers())
             ->setConfig($config)
             ->setOptions(array(
-                'level'     => 'symfony',
-                'fixers'    => null,
-                'progress'  => false,
+                'level' => 'symfony',
+                'fixers' => null,
+                'progress' => false,
             ))
             ->resolve()
         ;

@@ -6,7 +6,7 @@ annotationGenerators:
     - SchemaOrgModel\AnnotationGenerator\PhpDocAnnotationGenerator
     - SchemaOrgModel\AnnotationGenerator\DoctrineOrmAnnotationGenerator
     - SchemaOrgModel\AnnotationGenerator\ConstraintAnnotationGenerator
-    - SchemaOrgModel\AnnotationGenerator\DunglasJsonLdApiAnnotationGenerator
+    - SchemaOrgModel\AnnotationGenerator\DunglasApiAnnotationGenerator
 # The list of types and properties we want to use
 types:
   # Parent class of Person

@@ -31,8 +31,8 @@
     "require-dev": {
         "doctrine/orm": "~2.2",
         "symfony/validator": "~2.6",
-        "symfony/serializer": "~2.7@dev",
-        "dunglas/json-ld-api-bundle": "dev-master"
+        "symfony/serializer": "~2.7@beta",
+        "dunglas/api-bundle": "dev-master"
     },
     "suggest": {
         "myclabs/php-enum": "For enumerations",
