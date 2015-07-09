@@ -1,0 +1,9 @@
+rdfa:
+  - tests/data/schema.rdfa
+  - tests/data/custom.rdfa
+namespaces:
+  entity: "Custom\Entity"
+types:
+  http://example.com/Language:
+    properties:
+      http://example.com/Locale: ~
