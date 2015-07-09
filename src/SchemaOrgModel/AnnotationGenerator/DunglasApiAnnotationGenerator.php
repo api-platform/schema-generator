@@ -35,7 +35,10 @@ class DunglasApiAnnotationGenerator extends AbstractAnnotationGenerator
      */
     public function generateFieldAnnotations($className, $fieldName)
     {
-        return 'id' === $fieldName ? [] : [sprintf('@Iri("https://schema.org/%s")', $fieldName)];
+        $resource = $this->classes[$className]['resource'];
+        $resourceUrl = parse_url($resource->getUri());
+
+        return 'id' === $fieldName ? [] : [sprintf('@Iri("%s://%s/%s")', $resourceUrl['scheme'], $resourceUrl['host'], $fieldName)];
     }
 
     /**

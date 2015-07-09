@@ -203,10 +203,49 @@ Example:
 ```yaml
 rdfa:
   - https://raw.githubusercontent.com/rvguha/schemaorg/master/data/schema.rdfa # Experimental version of Schema.org
-  - http://example.com/data/myschema.rfa # Additional types
+  - http://example.com/data/myschema.rdfa # Additional types
+types:
+  http://example.com/Language:
+    properties:
+      http://example.com/Locale: ~
 ```
 
-*Support for other namespaces than `http://schema.org` is planned for future versions but not currently available.*
+myschema.rdfa
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Custom RDFa</title>
+    <meta charset="UTF-8" />
+    <style type="text/css">
+      span.h {
+        padding-left: 0px;
+        font-weight: bold;
+      }
+      span {
+        display: block;
+        padding-left: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div typeof="rdfs:Class" resource="http://example.com/Language">
+      <span class="h" property="rdfs:label">Language</span>
+      <span property="rdfs:comment">Natural languages such as Spanish, Tamil, Hindi, English, etc. and programming languages such as Scheme and Lisp.</span>
+    </div>
+
+    <div typeof="rdf:Property" resource="http://example.com/Locale">
+      <span class="h" property="rdfs:label">Locale</span>
+      <span property="rdfs:comment">User's language, country and any special variant preferences that the user wants to see in their user interface (in 2-letter &lt;a href=&#39;https://en.wikipedia.org/wiki/ISO_639-1&#39;&gt;ISO 639-1&lt;/a&gt; format).</span>
+      <span>Domain: <a property="http://schema.org/domainIncludes" href="http://example.com/Language">Language</a></span>
+      <span>Range: <a property="http://schema.org/rangeIncludes" href="http://schema.org/Text">Text</a></span>
+    </div>
+
+  </body>
+</html>
+```
 
 ## Checking GoodRelation compatibility
 
