@@ -6,7 +6,7 @@ bin/schema extract-cardinalities
 
 # Build models
 rm -Rf build/
-mkdir -p build/full/ build/ecommerce/ build/address-book/
+mkdir -p build/ecommerce/ build/address-book/
 bin/schema generate-types build/address-book/ tests/config/address-book.yml
 bin/schema generate-types build/ecommerce/ tests/config/ecommerce.yml
 
