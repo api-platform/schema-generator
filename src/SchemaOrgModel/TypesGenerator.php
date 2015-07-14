@@ -135,9 +135,6 @@ class TypesGenerator
                     if (isset($resources[self::SCHEMA_ORG_NAMESPACE.$key])) {
                         $resource = $graph->resource(self::SCHEMA_ORG_NAMESPACE.$key, 'rdfs:Class');
                         break;
-                    } else if (isset($resources[$key])) {
-                        $resource = $graph->resource($key, 'rdfs:Class');
-                        break;
                     }
                 }
 
@@ -233,7 +230,7 @@ class TypesGenerator
                     $ranges[] = $typeConfig['properties'][$property->localName()]['range'];
                 } else {
                     foreach ($property->all(self::SCHEMA_ORG_RANGE) as $range) {
-                        if (!$typesDefined || $this->isDatatype($range->localName()) || (isset($config['types'][$range->localName()]) || isset($config['types'][$range->getUri()]))) {
+                        if (!$typesDefined || $this->isDatatype($range->localName()) || isset($config['types'][$range->localName()])) {
                             $ranges[] = $range->localName();
                         }
                     }
