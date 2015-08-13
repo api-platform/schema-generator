@@ -235,7 +235,6 @@ class TypesGenerator
                         }
                     }
                 }
-
                 $numberOfRanges = count($ranges);
                 if ($numberOfRanges === 0) {
                     $this->logger->error(sprintf('The property "%s" (type "%s") has an unknown type. Add its type to the config file.', $property->localName(), $type->localName()));
@@ -440,6 +439,29 @@ class TypesGenerator
     }
 
     /**
+     * Get the parent classes of the current one and add them to $parentsClasses array 
+     *
+     * @param $class
+     * @param $parentsClasses
+     * @return array
+     */
+    private function recursiveFetchParentClasses($class, $parentsClasses) {
+        if ($parentClassElts = $class->all('rdfs:subClassOf')) {
+            $parentClass = $parentClassElts[0];
+            $parentsClasses[] = $parentClass->getUri();
+            foreach ($this->graphs as $graph) {
+                foreach ($graph->allOfType('rdfs:Class') as $type) {
+                    if ($type->getUri() == $parentClass->getUri()) {
+                        $parentsClasses = $this->recursiveFetchParentClasses($type, $parentsClasses);
+                        break 2;
+                    }
+                }
+            }
+        }
+        return $parentsClasses;
+    }
+
+    /**
      * Create a maps between class an properties.
      *
      * @param array $types
@@ -451,15 +473,20 @@ class TypesGenerator
         $typesAsString = [];
         $map = [];
         foreach ($types as $type) {
-            $typesAsString[] = $type->getUri();
+            // get all parent classes until the root
+            $parentClasses = [$type->getUri()];
+            $parentClasses = $this->recursiveFetchParentClasses($type, $parentClasses);
+            $typesAsString[] = $parentClasses;
             $map[$type->getUri()] = [];
         }
 
         foreach ($this->graphs as $graph) {
             foreach ($graph->allOfType('rdf:Property') as $property) {
                 foreach ($property->all(self::SCHEMA_ORG_DOMAIN) as $domain) {
-                    if (in_array($domain->getUri(), $typesAsString)) {
-                        $map[$domain->getUri()][] = $property;
+                    foreach ($typesAsString as $typesAsStringItem) {
+                        if (in_array($domain->getUri(), $typesAsStringItem)) {
+                            $map[$typesAsStringItem[0]][] = $property;
+                        }
                     }
                 }
             }
