@@ -178,7 +178,7 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
 
         if ($indent) {
             $count = count($doc);
-            for ($i = 1; $i < $count; $i++) {
+            for ($i = 1; $i < $count; ++$i) {
                 $doc[$i] = self::INDENT.$doc[$i];
             }
         }
