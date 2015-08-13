@@ -235,7 +235,6 @@ class TypesGenerator
                         }
                     }
                 }
-
                 $numberOfRanges = count($ranges);
                 if ($numberOfRanges === 0) {
                     $this->logger->error(sprintf('The property "%s" (type "%s") has an unknown type. Add its type to the config file.', $property->localName(), $type->localName()));
@@ -441,6 +440,42 @@ class TypesGenerator
     }
 
     /**
+     * Gets the parent classes of the current one and add them to $parentClasses array.
+     *
+     * @param \EasyRdf_Resource $resource
+     * @param string[]          $parentClasses
+     *
+     * @return array
+     */
+    private function getParentClasses(\EasyRdf_Resource $resource, array $parentClasses = [])
+    {
+        if ([] === $parentClasses) {
+            return $this->getParentClasses($resource, [$resource->getUri()]);
+        }
+
+        $subclasses = $resource->all('rdfs:subClassOf');
+
+        if (!$subclasses) {
+            return $parentClasses;
+        }
+
+        $parentClass = $subclasses[0];
+        $parentClasses[] = $parentClass->getUri();
+
+        foreach ($this->graphs as $graph) {
+            foreach ($graph->allOfType('rdfs:Class') as $type) {
+                if ($type->getUri() === $parentClass->getUri()) {
+                    $parentClasses = $this->getParentClasses($type, $parentClasses);
+
+                    break 2;
+                }
+            }
+        }
+
+        return $parentClasses;
+    }
+
+    /**
      * Create a maps between class an properties.
      *
      * @param array $types
@@ -452,15 +487,19 @@ class TypesGenerator
         $typesAsString = [];
         $map = [];
         foreach ($types as $type) {
-            $typesAsString[] = $type->getUri();
+            // get all parent classes until the root
+            $parentClasses = $this->getParentClasses($type);
+            $typesAsString[] = $parentClasses;
             $map[$type->getUri()] = [];
         }
 
         foreach ($this->graphs as $graph) {
             foreach ($graph->allOfType('rdf:Property') as $property) {
                 foreach ($property->all(self::SCHEMA_ORG_DOMAIN) as $domain) {
-                    if (in_array($domain->getUri(), $typesAsString)) {
-                        $map[$domain->getUri()][] = $property;
+                    foreach ($typesAsString as $typesAsStringItem) {
+                        if (in_array($domain->getUri(), $typesAsStringItem)) {
+                            $map[$typesAsStringItem[0]][] = $property;
+                        }
                     }
                 }
             }
