@@ -250,6 +250,7 @@ class TypesGenerator
                     }
 
                     $isArray = in_array($cardinality, [
+                        CardinalitiesExtractor::CARDINALITY_0_N,
                         CardinalitiesExtractor::CARDINALITY_1_N,
                         CardinalitiesExtractor::CARDINALITY_N_N,
                     ]);
