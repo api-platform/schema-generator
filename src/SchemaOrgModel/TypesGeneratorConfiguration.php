@@ -97,6 +97,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                                     ->addDefaultsIfNotSet()
                                     ->children()
                                         ->scalarNode('range')->defaultNull()->info('The property range')->example('Offer')->end()
+                                        ->scalarNode('relationTableName')->defaultNull()->info('The relation table name')->example('organization_member')->end()
                                         ->enumNode('cardinality')->defaultValue(CardinalitiesExtractor::CARDINALITY_UNKNOWN)->values([
                                             CardinalitiesExtractor::CARDINALITY_0_1,
                                             CardinalitiesExtractor::CARDINALITY_0_N,

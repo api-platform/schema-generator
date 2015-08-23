@@ -69,6 +69,22 @@ types:
         cardinality: "(0..1)"
 ```
 
+## Forcing a relation table name
+
+The relation table name between two entities is automatically guessed by Doctrine. The `relationTableName` option allows
+to override the default value.
+
+This is useful when you need two entities to have more than one relation.
+
+Example:
+
+```yaml
+  Organization:
+    properties:
+      contactPoint: { range: Person, relationTableName: organization_contactPoint }
+      member: { range: Person, cardinality: (1..*) } ## Will be default value : organization_person
+```
+
 ## Forcing (or disabling) a class parent
 
 Override the guessed class hierarchy of a given type with this option.
