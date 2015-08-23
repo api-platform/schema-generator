@@ -50,6 +50,10 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         $this->classes[$className];
         $field = $this->classes[$className]['fields'][$fieldName];
 
+        $field['relationTableName'] = null;
+        if (!$field['isId'] && isset($this->config['types'][$className]['properties'][$fieldName])) {
+            $field['relationTableName'] = $this->config['types'][$className]['properties'][$fieldName]['relationTableName'];
+        }
         $annotations = [];
 
         if ($field['isEnum']) {
@@ -140,16 +144,21 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
 
                 case CardinalitiesExtractor::CARDINALITY_0_N:
                     $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s")', $this->getRelationName($field['range']));
-                    $annotations[] = '@ORM\JoinTable(inverseJoinColumns={@ORM\JoinColumn(unique=true)})';
+                    $name = $field['relationTableName'] ? sprintf('name="%s", ', $field['relationTableName']) : '';
+                    $annotations[] = '@ORM\JoinTable('.$name.'inverseJoinColumns={@ORM\JoinColumn(unique=true)})';
                     break;
 
                 case CardinalitiesExtractor::CARDINALITY_1_N:
                     $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s")', $this->getRelationName($field['range']));
-                    $annotations[] = '@ORM\JoinTable(inverseJoinColumns={@ORM\JoinColumn(nullable=false, unique=true)})';
+                    $name = $field['relationTableName'] ? sprintf('name="%s", ', $field['relationTableName']) : '';
+                    $annotations[] = '@ORM\JoinTable('.$name.'inverseJoinColumns={@ORM\JoinColumn(nullable=false, unique=true)})';
                     break;
 
                 case CardinalitiesExtractor::CARDINALITY_N_N:
                     $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s")', $this->getRelationName($field['range']));
+                    if ($field['relationTableName']) {
+                        $annotations[] = sprintf('@ORM\JoinTable(name="%s")', $field['relationTableName']);
+                    }
                     break;
             }
         }
