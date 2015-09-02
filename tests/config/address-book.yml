@@ -25,6 +25,11 @@ types:
       email: ~
       url: ~
       jobTitle: ~
+      # Default relation table name would be "person_organization" for all following fields, but we customize them
+      affiliation: ~
+      brand: { relationTableName: "person_brand"}
+      memberOf: { range: "Organization", cardinality: (1..*), relationTableName: "person_memberof"}
+      worksFor: { range: "Organization", cardinality: (0..*), relationTableName: "person_worksfor"}
   PostalAddress:
     # Disable the generation of the class hierarchy for this type
     parent: false
@@ -36,3 +41,4 @@ types:
       postOfficeBoxNumber: ~
       postalCode: ~
       streetAddress: ~
+  Organization: {}
