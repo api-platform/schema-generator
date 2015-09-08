@@ -119,7 +119,6 @@ class TypesGenerator
             'abstract' => false,
         ];
 
-        $typesDefined = !empty($config['types']);
         $typesToGenerate = [];
 
         if (empty($config['types'])) {
@@ -190,7 +189,7 @@ class TypesGenerator
                     $class['parent'] = $numberOfSupertypes ? $type->all('rdfs:subClassOf')[0]->localName() : false;
                 }
 
-                if ($typesDefined && $class['parent'] && !isset($config['types'][$class['parent']])) {
+                if (!empty($config['types']) && $class['parent'] && !isset($config['types'][$class['parent']])) {
                     $this->logger->error(sprintf('The type "%s" (parent of "%s") doesn\'t exist', $class['parent'], $type->localName()));
                 }
 
@@ -208,73 +207,15 @@ class TypesGenerator
                     continue;
                 }
 
-                // Warn when property are not part of GoodRelations
-                if ($config['checkIsGoodRelations']) {
-                    if (!$this->goodRelationsBridge->exist($property->localName())) {
-                        $this->logger->warning(sprintf('The property "%s" (type "%s") is not part of GoodRelations.', $property->localName(), $type->localName()));
-                    }
-                }
+                $class = $this->generateField($config, $class, $type, $property->localName(), $property);
+            }
 
-                // Ignore or warn when properties are legacy
-                if (preg_match('/legacy spelling/', $property->get('rdfs:comment'))) {
-                    if (isset($typeConfig['properties'])) {
-                        $this->logger->warning(sprintf('The property "%s" (type "%s") is legacy.', $property->localName(), $type->localName()));
-                    } else {
-                        $this->logger->info(sprintf('The property "%s" (type "%s") is legacy. Ignoring.', $property->localName(), $type->localName()));
-                        continue;
-                    }
-                }
+            // Add custom fields (non schema.org)
+            if (is_array($typeConfig['properties'])) {
+                foreach (array_diff_key($typeConfig['properties'], $class['fields']) as $propertyName => $property) {
+                    $this->logger->info(sprintf('The property "%s" (type "%s") is a custom property.', $propertyName, $type->localName()));
 
-                $ranges = [];
-                if (isset($typeConfig['properties'][$property->localName()]['range']) && $typeConfig['properties'][$property->localName()]['range']) {
-                    $ranges[] = $typeConfig['properties'][$property->localName()]['range'];
-                } else {
-                    foreach ($property->all(self::SCHEMA_ORG_RANGE) as $range) {
-                        if (!$typesDefined || $this->isDatatype($range->localName()) || isset($config['types'][$range->localName()])) {
-                            $ranges[] = $range->localName();
-                        }
-                    }
-                }
-
-                $numberOfRanges = count($ranges);
-                if ($numberOfRanges === 0) {
-                    $this->logger->error(sprintf('The property "%s" (type "%s") has an unknown type. Add its type to the config file.', $property->localName(), $type->localName()));
-                } else {
-                    if ($numberOfRanges > 1) {
-                        $this->logger->error(sprintf('The property "%s" (type "%s") has several types. Using the first one.', $property->localName(), $type->localName()));
-                    }
-
-                    $cardinality = isset($typeConfig['properties'][$property->localName()]['cardinality']) ? $typeConfig['properties'][$property->localName()]['cardinality'] : false;
-                    if (!$cardinality || $cardinality === CardinalitiesExtractor::CARDINALITY_UNKNOWN) {
-                        $cardinality = $this->cardinalities[$property->localName()];
-                    }
-
-                    $isArray = in_array($cardinality, [
-                        CardinalitiesExtractor::CARDINALITY_0_N,
-                        CardinalitiesExtractor::CARDINALITY_1_N,
-                        CardinalitiesExtractor::CARDINALITY_N_N,
-                    ]);
-                    $isNullable = !in_array($cardinality, [
-                        CardinalitiesExtractor::CARDINALITY_1_1,
-                        CardinalitiesExtractor::CARDINALITY_1_N,
-                    ]);
-
-                    $class['fields'][$property->localName()] = [
-                        'name' => $property->localName(),
-                        'resource' => $property,
-                        'range' => $ranges[0],
-                        'cardinality' => $cardinality,
-                        'isArray' => $isArray,
-                        'isNullable' => $isNullable,
-                        'isId' => false,
-                    ];
-                    if ($isArray) {
-                        $class['hasConstructor'] = true;
-
-                        if ($config['doctrine']['useCollection'] && !in_array(self::DOCTRINE_COLLECTION_USE, $class['uses'])) {
-                            $class['uses'][] = self::DOCTRINE_COLLECTION_USE;
-                        }
-                    }
+                    $class = $this->generateField($config, $class, $type, $propertyName);
                 }
             }
 
@@ -314,6 +255,7 @@ class TypesGenerator
                             'cardinality' => CardinalitiesExtractor::CARDINALITY_1_1,
                             'isArray' => false,
                             'isNullable' => false,
+                            'isCustom' => true,
                             'isEnum' => false,
                             'isId' => true,
                         ],
@@ -491,6 +433,96 @@ class TypesGenerator
     private function isDateTime($type)
     {
         return in_array($type, ['Date', 'DateTime', 'Time']);
+    }
+
+    /**
+     * Updates generated $class with given field config.
+     *
+     * @param array            $config
+     * @param array            $class
+     * @param EasyRdf_Resource $type
+     * @param string           $propertyName
+     * @param EasyRdf_Resource $property
+     *
+     * @return array $class
+     */
+    private function generateField($config, $class, $type, $propertyName, $property = null)
+    {
+        $typeConfig = isset($config['types'][$type->localName()]) ? $config['types'][$type->localName()] : null;
+        $typesDefined = !empty($config['types']);
+
+        // Warn when property are not part of GoodRelations
+        if ($config['checkIsGoodRelations']) {
+            if (!$this->goodRelationsBridge->exist($propertyName)) {
+                $this->logger->warning(sprintf('The property "%s" (type "%s") is not part of GoodRelations.', $propertyName, $type->localName()));
+            }
+        }
+
+        // Ignore or warn when properties are legacy
+        if (!empty($property) && preg_match('/legacy spelling/', $property->get('rdfs:comment'))) {
+            if (isset($typeConfig['properties'])) {
+                $this->logger->warning(sprintf('The property "%s" (type "%s") is legacy.', $propertyName, $type->localName()));
+            } else {
+                $this->logger->info(sprintf('The property "%s" (type "%s") is legacy. Ignoring.', $propertyName, $type->localName()));
+
+                return $class;
+            }
+        }
+
+        $ranges = [];
+        if (isset($typeConfig['properties'][$propertyName]['range']) && $typeConfig['properties'][$propertyName]['range']) {
+            $ranges[] = $typeConfig['properties'][$propertyName]['range'];
+        } elseif (!empty($property)) {
+            foreach ($property->all(self::SCHEMA_ORG_RANGE) as $range) {
+                if (!$typesDefined || $this->isDatatype($range->localName()) || isset($config['types'][$range->localName()])) {
+                    $ranges[] = $range->localName();
+                }
+            }
+        }
+
+        $numberOfRanges = count($ranges);
+        if (0 === $numberOfRanges) {
+            $this->logger->error(sprintf('The property "%s" (type "%s") has an unknown type. Add its type to the config file.', $propertyName, $type->localName()));
+        } else {
+            if ($numberOfRanges > 1) {
+                $this->logger->error(sprintf('The property "%s" (type "%s") has several types. Using the first one.', $propertyName, $type->localName()));
+            }
+
+            $cardinality = isset($typeConfig['properties'][$propertyName]['cardinality']) ? $typeConfig['properties'][$propertyName]['cardinality'] : false;
+            if (!$cardinality || $cardinality === CardinalitiesExtractor::CARDINALITY_UNKNOWN) {
+                $cardinality = $property ? $this->cardinalities[$propertyName] : CardinalitiesExtractor::CARDINALITY_1_1;
+            }
+
+            $isArray = in_array($cardinality, [
+                CardinalitiesExtractor::CARDINALITY_0_N,
+                CardinalitiesExtractor::CARDINALITY_1_N,
+                CardinalitiesExtractor::CARDINALITY_N_N,
+            ]);
+            $isNullable = !in_array($cardinality, [
+                CardinalitiesExtractor::CARDINALITY_1_1,
+                CardinalitiesExtractor::CARDINALITY_1_N,
+            ]);
+
+            $class['fields'][$propertyName] = [
+                'name' => $propertyName,
+                'resource' => $property,
+                'range' => $ranges[0],
+                'cardinality' => $cardinality,
+                'isArray' => $isArray,
+                'isNullable' => $isNullable,
+                'isCustom' => empty($property),
+                'isId' => false,
+            ];
+            if ($isArray) {
+                $class['hasConstructor'] = true;
+
+                if ($config['doctrine']['useCollection'] && !in_array(self::DOCTRINE_COLLECTION_USE, $class['uses'])) {
+                    $class['uses'][] = self::DOCTRINE_COLLECTION_USE;
+                }
+            }
+        }
+
+        return $class;
     }
 
     /**
