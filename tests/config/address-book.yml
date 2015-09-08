@@ -24,6 +24,11 @@ types:
       telephone: ~
       email: ~
       jobTitle: ~
+      # Default relation table name would be "person_organization" for all following fields, but we customize them
+      affiliation: ~
+      brand: { relationTableName: "person_brand"}
+      memberOf: { range: "Organization", cardinality: (1..*), relationTableName: "person_memberof"}
+      worksFor: { range: "Organization", cardinality: (0..*), relationTableName: "person_worksfor"}
       # url field is a custom one without definition, it should render error
       url: ~
       friends: { range: "Person", cardinality: (0..*) }
@@ -38,3 +43,4 @@ types:
       postOfficeBoxNumber: ~
       postalCode: ~
       streetAddress: ~
+  Organization: {}
