@@ -1,6 +1,6 @@
-# PHP Schema.org Model Scaffolding
+# API Platform Model Generator
 
-The [PHP Schema](http://php-schema.dunglas.com/) command line tool part of [the API Platform framework](http://api-platform.com) that instantly generates a PHP data model from the [Schema.org](http://schema.org)
+This Schema.org based model generator is part of [the API Platform framework](http://api-platform.com) that instantly generates a PHP data model from the [Schema.org](http://schema.org)
 vocabulary. Browse Schema.org, choose the types and properties you need, run our code generator and you're done! You get
 a fully featured PHP data model including:
 * A set of PHP entities with properties, constants (enum values), getters, setters, adders and removers. The class
@@ -9,7 +9,7 @@ code complies with [PSR](http://www.php-fig.org/) coding standards.
 * Full high-quality PHPDoc for classes, properties, constants and methods extracted from Schema.org.
 * Doctrine ORM annotation mapping including database columns with type guessing, relations with cardinality guessing, class
 inheritance (through the `@AbstractSuperclass` annotation).
-* Data validation through [Symfony Validator](http://symfony.com/doc/current/book/validation.html) annotations including
+* Data validation through [Symfony Validator](https://symfony.com/doc/current/book/validation.html) annotations including
 data type validation, enum support (choices) and check for required properties.
 * Interfaces and [Doctrine `ResolveTargetEntityListener`](http://doctrine-orm.readthedocs.org/en/latest/cookbook/resolve-target-entity-listener.html)
 support.
@@ -27,7 +27,7 @@ or any other framework including [Laravel](http://laravel.com) and [Zend Framewo
 ## What is Schema.org?
 
 Schema.org is a vocabulary representing common data structures and their relations. Schema.org can be exposed as [JSON-LD](http://en.wikipedia.org/wiki/JSON-LD),
-[microdata](http://en.wikipedia.org/wiki/Microdata_(HTML)) and [RDFa](http://en.wikipedia.org/wiki/RDFa).
+[microdata](http://en.wikipedia.org/wiki/Microdata_(HTML)) and [RDFa](https://en.wikipedia.org/wiki/RDFa).
 Extracting semantical data exposed in the Schema.org vocabulary is supported by a growing number of companies including
 Google (Search, Gmail), Yahoo!, Bing and Yandex.
 
@@ -59,9 +59,9 @@ It opens the way to generic web API clients able to extract and process data fro
 
 ## Documentation
 
-* [Getting Started](doc/getting-started.md)
-* [Configuration](doc/configuration.md)
+* [Getting Started](https://api-platform.com/doc/1.0/schema-generator/getting-started)
+* [Configuration](https://api-platform.com/doc/1.0/schema-generator/configuration)
 
 ## Credits
 
-This project has been created by [Kévin Dunglas](http://dunglas.fr) and is sponsored by [Les-Tilleuls.coop](http://les-tilleuls.coop).
+This project has been created by [Kévin Dunglas](https://dunglas.fr) and is sponsored by [Les-Tilleuls.coop](https://les-tilleuls.coop).
