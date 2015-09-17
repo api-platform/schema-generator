@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b2730cf76318a1d8c4c04837c4e3a54b",
+    "hash": "096a8471cec7fd85d1645e1f389a52e5",
     "packages": [
         {
             "name": "easyrdf/easyrdf",
@@ -123,31 +123,38 @@
             "time": "2015-07-27 20:56:10"
         },
         {
-            "name": "nickcernis/html-to-markdown",
-            "version": "2.2.2",
+            "name": "league/html-to-markdown",
+            "version": "4.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/nickcernis/html-to-markdown.git",
-                "reference": "08491df8e9475b219659400edf68416d8044a9db"
+                "url": "https://github.com/thephpleague/html-to-markdown.git",
+                "reference": "c496c27e01b9dce310e03afbcdf783347738f67b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nickcernis/html-to-markdown/zipball/08491df8e9475b219659400edf68416d8044a9db",
-                "reference": "08491df8e9475b219659400edf68416d8044a9db",
+                "url": "https://api.github.com/repos/thephpleague/html-to-markdown/zipball/c496c27e01b9dce310e03afbcdf783347738f67b",
+                "reference": "c496c27e01b9dce310e03afbcdf783347738f67b",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3"
+                "ext-dom": "*",
+                "ext-xml": "*",
+                "php": ">=5.3.3"
             },
             "require-dev": {
-                "php": ">=5.3.3",
-                "phpunit/phpunit": "4.*"
+                "phpunit/phpunit": "4.*",
+                "scrutinizer/ocular": "~1.1"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.1-dev"
+                }
+            },
             "autoload": {
-                "classmap": [
-                    "HTML_To_Markdown.php"
-                ]
+                "psr-4": {
+                    "League\\HTMLToMarkdown\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -155,18 +162,25 @@
             ],
             "authors": [
                 {
+                    "name": "Colin O'Dell",
+                    "email": "colinodell@gmail.com",
+                    "homepage": "http://www.colinodell.com",
+                    "role": "Lead Developer"
+                },
+                {
                     "name": "Nick Cernis",
                     "email": "nick@cern.is",
-                    "homepage": "http://modernnerd.net"
+                    "homepage": "http://modernnerd.net",
+                    "role": "Original Author"
                 }
             ],
             "description": "An HTML-to-markdown conversion helper for PHP",
-            "homepage": "https://github.com/nickcernis/html-to-markdown",
+            "homepage": "https://github.com/thephpleague/html-to-markdown",
             "keywords": [
                 "html",
                 "markdown"
             ],
-            "time": "2015-05-29 13:27:02"
+            "time": "2015-09-01 22:39:54"
         },
         {
             "name": "psr/log",
