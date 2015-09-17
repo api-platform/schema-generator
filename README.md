@@ -17,6 +17,7 @@ support.
 * List of values provided by Schema.org with [PHP Enum](https://github.com/myclabs/php-enum) classes.
 
 Bonus:
+
 * The code generator is fully configurable and extensible: all features can be deactivated (e.g.: the Doctrine mapping generator)
 and custom generator can be added (e.g.: a Doctrine ODM mapping generator).
 * The generated code can be used as is in a [Symfony](http://symfony.com) app (but it will work too in a raw PHP project
