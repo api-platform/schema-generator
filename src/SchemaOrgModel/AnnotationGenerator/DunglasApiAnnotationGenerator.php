@@ -35,7 +35,7 @@ class DunglasApiAnnotationGenerator extends AbstractAnnotationGenerator
      */
     public function generateFieldAnnotations($className, $fieldName)
     {
-        return 'id' === $fieldName ? [] : [sprintf('@Iri("https://schema.org/%s")', $fieldName)];
+        return $this->classes[$className]['fields'][$fieldName]['isCustom'] ? [] : [sprintf('@Iri("https://schema.org/%s")', $fieldName)];
     }
 
     /**
