@@ -1,9 +1,9 @@
 {
-    "name": "dunglas/php-schema",
+    "name": "api-platform/schema-generator",
     "type": "library",
     "description": "Various tools to generate a data model based on Schema.org vocables",
     "keywords": ["schema.org", "semantic", "model", "doctrine", "symfony", "entity", "enum"],
-    "homepage": "http://dunglas.fr",
+    "homepage": "https://api-platform.com",
     "license": "MIT",
     "authors": [
         {
@@ -12,9 +12,7 @@
         }
     ],
     "autoload": {
-        "psr-0": {
-            "SchemaOrgModel": "src/"
-        }
+        "psr-4": { "ApiPlatform\\SchemaGenerator\\": "src/" }
     },
     "require": {
         "php": ">=5.4",
@@ -30,9 +28,7 @@
     },
     "require-dev": {
         "doctrine/orm": "~2.2",
-        "symfony/validator": "~2.6",
-        "symfony/serializer": "~2.7@beta",
-        "dunglas/api-bundle": "dev-master"
+        "symfony/validator": "~2.6"
     },
     "suggest": {
         "myclabs/php-enum": "For enumerations",
