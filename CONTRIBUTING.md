@@ -10,8 +10,8 @@ Run the following command: `tests/run-tests.sh`
 
 ## Make a Pull Request
 
-All Pull Requests must be open on [the GitHub project page](https://github.com/dunglas/php-schema.org-model).
+All Pull Requests must be open on [the GitHub project page](https://github.com/api-platform/schema-generator).
 
 ## Going further
 
-Read [the Symfony documentation about contributing code](http://symfony.com/doc/current/contributing/code/patches.html).
+Read [the Symfony documentation about contributing code](https://symfony.com/doc/current/contributing/code/patches.html).

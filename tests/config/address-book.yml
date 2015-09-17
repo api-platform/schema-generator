@@ -3,10 +3,10 @@ namespaces:
   entity: "AddressBook\Entity"
 # Enable DunglasApiAnnotationGenerator
 annotationGenerators:
-    - SchemaOrgModel\AnnotationGenerator\PhpDocAnnotationGenerator
-    - SchemaOrgModel\AnnotationGenerator\DoctrineOrmAnnotationGenerator
-    - SchemaOrgModel\AnnotationGenerator\ConstraintAnnotationGenerator
-    - SchemaOrgModel\AnnotationGenerator\DunglasApiAnnotationGenerator
+    - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
+    - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator
+    - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
+    - ApiPlatform\SchemaGenerator\AnnotationGenerator\DunglasApiAnnotationGenerator
 # The list of types and properties we want to use
 types:
   Person:

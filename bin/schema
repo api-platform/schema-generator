@@ -16,9 +16,9 @@ if (file_exists(__DIR__ . '/../../../autoload.php')) {
 }
 
 use Symfony\Component\Console\Application;
-use SchemaOrgModel\Command\ExtractCardinalitiesCommand;
-use SchemaOrgModel\Command\DumpConfigurationCommand;
-use SchemaOrgModel\Command\GenerateTypesCommand;
+use ApiPlatform\SchemaGenerator\Command\ExtractCardinalitiesCommand;
+use ApiPlatform\SchemaGenerator\Command\DumpConfigurationCommand;
+use ApiPlatform\SchemaGenerator\Command\GenerateTypesCommand;
 
 $application = new Application();
 $application->add(new ExtractCardinalitiesCommand());
