@@ -67,7 +67,7 @@ class GenerateTypesCommand extends Command
         foreach ($processedConfiguration['rdfa'] as $rdfa) {
             $graph = new \EasyRdf_Graph();
             if ('http://' === substr($rdfa, 0, 7) || 'https://' === substr($rdfa, 0, 8)) {
-                $graph->load($rdfa, 'rdfa');
+                $graph->load($rdfa);
             } else {
                 $graph->parseFile($rdfa);
             }

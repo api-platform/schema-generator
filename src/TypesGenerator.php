@@ -132,8 +132,8 @@ class TypesGenerator
                 foreach ($this->graphs as $graph) {
                     $resources = $graph->resources();
 
-                    if (isset($resources[self::SCHEMA_ORG_NAMESPACE.$key])) {
-                        $resource = $graph->resource(self::SCHEMA_ORG_NAMESPACE.$key, 'rdfs:Class');
+                    if (isset($resources[$value['vocabularyNamespace'].$key])) {
+                        $resource = $graph->resource($value['vocabularyNamespace'].$key, 'rdfs:Class');
                         break;
                     }
                 }
