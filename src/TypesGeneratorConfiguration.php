@@ -74,6 +74,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->useAttributeAsKey('id')
                     ->prototype('array')
                         ->children()
+                            ->scalarNode('vocabularyNamespace')->defaultValue(TypesGenerator::SCHEMA_ORG_NAMESPACE)->info('Namespace of the vocabulary the type belongs to.')->end()
                             ->booleanNode('abstract')->defaultNull()->info('Is the class abstract? (null to guess)')->end()
                             ->arrayNode('namespaces')
                                 ->addDefaultsIfNotSet()
