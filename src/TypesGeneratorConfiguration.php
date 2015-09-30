@@ -76,6 +76,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                         ->children()
                             ->scalarNode('vocabularyNamespace')->defaultValue(TypesGenerator::SCHEMA_ORG_NAMESPACE)->info('Namespace of the vocabulary the type belongs to.')->end()
                             ->booleanNode('abstract')->defaultNull()->info('Is the class abstract? (null to guess)')->end()
+                            ->booleanNode('extendFOSUser')->defaultNull()->info('Is the class should extends FOSUser Bundle?')->end()
                             ->arrayNode('namespaces')
                                 ->addDefaultsIfNotSet()
                                 ->info('Type namespaces')
