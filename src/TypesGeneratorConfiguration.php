@@ -114,6 +114,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                                             ->prototype('scalar')->end()
                                         ->end()
                                         ->scalarNode('nullable')->defaultTrue()->info('The property nullable')->end()
+                                        ->scalarNode('unique')->defaultFalse()->info('The property unique')->end()
                                     ->end()
                                 ->end()
                             ->end()
