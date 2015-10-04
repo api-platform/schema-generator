@@ -27,7 +27,7 @@ class SerializerGroupsAnnotationGenerator extends AbstractAnnotationGenerator
 
         $properties = $this->config['types'][$className]['properties'];
 
-        if ($this->classes[$className]['fields'][$fieldName]['isId'] == false && $groups = $properties[$fieldName]['groups']) {
+        if (false === $this->classes[$className]['fields'][$fieldName]['isId'] && $groups = $properties[$fieldName]['groups']) {
             $annotations[] = sprintf('@Groups({"%s"})', implode('","', $groups));
         }
 
