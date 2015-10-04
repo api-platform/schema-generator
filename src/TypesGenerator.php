@@ -538,10 +538,15 @@ class TypesGenerator
                 CardinalitiesExtractor::CARDINALITY_1_N,
                 CardinalitiesExtractor::CARDINALITY_N_N,
             ]);
-            $isNullable = !in_array($cardinality, [
-                CardinalitiesExtractor::CARDINALITY_1_1,
-                CardinalitiesExtractor::CARDINALITY_1_N,
-            ]);
+
+            if (false === $typeConfig['properties'][$propertyName]['nullable']) {
+                $isNullable = false;
+            } else {
+                $isNullable = !in_array($cardinality, [
+                    CardinalitiesExtractor::CARDINALITY_1_1,
+                    CardinalitiesExtractor::CARDINALITY_1_N,
+                ]);
+            }
 
             $class['fields'][$propertyName] = [
                 'name' => $propertyName,
