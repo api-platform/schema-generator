@@ -109,6 +109,10 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                                             CardinalitiesExtractor::CARDINALITY_N_N,
                                             CardinalitiesExtractor::CARDINALITY_UNKNOWN,
                                         ])->end()
+                                        ->arrayNode('groups')
+                                            ->info('Symfony Serialization Groups')
+                                            ->prototype('scalar')->end()
+                                        ->end()
                                     ->end()
                                 ->end()
                             ->end()
