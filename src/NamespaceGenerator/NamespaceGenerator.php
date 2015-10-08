@@ -35,13 +35,15 @@ class NamespaceGenerator extends AbstractNamespaceGenerator
      */
     public function generateUses($className)
     {
-        echo 'classname => ' . $className . "\n";
-
         $uses = [];
 
-        foreach($this->getClassProperties($className) as $property => $values) {
+        foreach($this->getTypeProperties($className) as $property => $values) {
             if ($values['range']) {
-                $uses[] = $this->getClassNameSpace($values['range']);
+                if ($this->isTypeNamespaceClassDefined($values['range'])) {
+                    $uses[] = $this->getTypeNamespaceClass($values['range']).'\\'.$values['range'];
+                } else {
+                    $uses[] = $this->getGlobalNamespaceClass().'\\'.$values['range'];
+                }
             }
         }
 
@@ -49,22 +51,64 @@ class NamespaceGenerator extends AbstractNamespaceGenerator
     }
 
     /**
-     * @param $className
+     * Returns global PHP namespace of generated entities
      *
-     * @return mixed
+     * @return null
      */
-    private function getClassNameSpace($className)
+    private function getGlobalNamespaceClass()
     {
-        return $this->config['types'][$className]['namespaces']['class'].'\\'.$className;;
+        if (isset($this->config['namespaces']['entity'])) {
+            return $this->config['namespaces']['entity'];
+        }
+
+        return null;
     }
 
     /**
-     * @param $className
+     * Whether or not a namespace's class is defined for the current type
+     *
+     * @param string $type
+     *
+     * @return bool
+     */
+    private function isTypeNamespaceClassDefined($type)
+    {
+        if (isset($this->config['types'][$type]['namespaces']['class'])) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns the defined namespace of the current type
+     *
+     * @param string $type
      *
      * @return mixed
      */
-    private function getClassProperties($className)
+    private function getTypeNamespaceClass($type)
     {
-        return $this->config['types'][$className]['properties'];
+        if ($this->isTypeNamespaceClassDefined($type)) {
+            return $this->config['types'][$type]['namespaces']['class'];
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the properties of the current type
+     *
+     * @param string $type
+     *
+     * @return array
+     */
+    private function getTypeProperties($type)
+    {
+        if (isset($this->config['types'][$type]['properties'])) {
+            return $this->config['types'][$type]['properties'];
+        }
+
+        return [];
     }
 }
