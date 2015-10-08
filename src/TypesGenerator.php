@@ -256,6 +256,7 @@ class TypesGenerator
                             'cardinality' => CardinalitiesExtractor::CARDINALITY_1_1,
                             'isArray' => false,
                             'isNullable' => false,
+                            'isUnique' => false,
                             'isCustom' => true,
                             'isEnum' => false,
                             'isId' => true,
@@ -555,6 +556,7 @@ class TypesGenerator
                 'cardinality' => $cardinality,
                 'isArray' => $isArray,
                 'isNullable' => $isNullable,
+                'isUnique' => $typeConfig['properties'][$propertyName]['unique'],
                 'isCustom' => empty($property),
                 'isId' => false,
             ];

@@ -89,6 +89,7 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
 
         $uses = [];
         $uses[] = 'Symfony\Component\Validator\Constraints as Assert';
+        $uses[] = 'Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity';
 
         foreach ($this->classes[$className]['fields'] as $field) {
             if ($field['isEnum']) {
@@ -103,5 +104,38 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
         }
 
         return $uses;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateClassAnnotations($className)
+    {
+        if ($this->classes[$className]['isEnum']) {
+            return [];
+        }
+
+        $annotation = [];
+        $uniqueFields = [];
+
+        foreach ($this->classes[$className]['fields'] as $field) {
+            if (false === $field['isUnique']) {
+                continue;
+            }
+
+            $uniqueFields[] = $field['name'];
+        }
+
+        if (0 === count($uniqueFields)) {
+            return [];
+        }
+
+        if (1 === count($uniqueFields)) {
+            $annotation[] = sprintf('@UniqueEntity("%s")', $uniqueFields[0]);
+        } else {
+            $annotation[] = sprintf('@UniqueEntity(fields={"%s"})', implode('","', $uniqueFields));
+        }
+
+        return $annotation;
     }
 }
