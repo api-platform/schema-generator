@@ -212,8 +212,12 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
             return $class['interfaceName'];
         }
 
+        if (isset($this->config['types'][$class['name']]['namespaces']['class']) && null !== $this->config['types'][$class['name']]['namespaces']['class']) {
+            return $this->config['types'][$class['name']]['namespaces']['class'].'\\'.$class['name'];
+        }
+
         if (isset($this->config['namespaces']['entity']) && null !== $this->config['namespaces']['entity']) {
-            return $this->config['namespaces']['entity'] . '\\' . $class['name'];
+            return $this->config['namespaces']['entity'].'\\'.$class['name'];
         }
 
         return $class['name'];
