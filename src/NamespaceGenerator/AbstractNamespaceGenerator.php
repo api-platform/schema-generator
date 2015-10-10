@@ -19,7 +19,9 @@ abstract class AbstractNamespaceGenerator implements NamespaceGeneratorInterface
      * @var \EasyRdf_Graph[]
      */
     protected $graphs;
-
+    /**
+     * @var array
+     */
     protected $cardinalities;
     /**
      * @var array

@@ -85,7 +85,7 @@ class NamespaceGenerator extends AbstractNamespaceGenerator
      *
      * @param string $type
      *
-     * @return mixed
+     * @return string|null
      */
     private function getTypeNamespaceClass($type)
     {
