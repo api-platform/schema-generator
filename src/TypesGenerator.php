@@ -35,15 +35,7 @@ class TypesGenerator
      * @see https://github.com/doctrine/collections
      */
     const DOCTRINE_COLLECTION_USE = 'Doctrine\Common\Collections\ArrayCollection';
-    /**
-     * @var string
-     */
-    const FOS_USER_BUNDLE_USE = 'FOS\UserBundle\Model\User as BaseUser';
-    /**
-     * @var string
-     */
-    const FOS_USER_BUNDLE_CLASS_ALIAS = 'BaseUser';
-    /**
+   /**
      * @var string
      *
      * @see https://github.com/myclabs/php-enum Used enum implementation
@@ -250,16 +242,6 @@ class TypesGenerator
                 $class['abstract'] = $config['types'][$class['name']]['abstract'];
             } else {
                 $class['abstract'] = $class['hasChild'];
-            }
-
-            // class will extends FosUserBundle
-            if (isset($config['types'][$class['name']]['extendFOSUser']) &&
-                null !== $config['types'][$class['name']]['extendFOSUser'] &&
-                false === $class['parent']
-            ) {
-                $class['extendFOSUser'] = $config['types'][$class['name']]['extendFOSUser'];
-                $class['parent'] = self::FOS_USER_BUNDLE_CLASS_ALIAS;
-                $class['uses'][] = self::FOS_USER_BUNDLE_USE;
             }
         }
 
