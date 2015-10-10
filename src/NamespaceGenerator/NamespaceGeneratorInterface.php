@@ -21,8 +21,8 @@ interface NamespaceGeneratorInterface
     /**
      * @param LoggerInterface $logger
      * @param array           $graphs
-     * @param array            $config
-     * @param array            $classes
+     * @param array           $config
+     * @param array           $classes
      */
     public function __construct(
         LoggerInterface $logger,
