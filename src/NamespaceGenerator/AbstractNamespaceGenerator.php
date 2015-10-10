@@ -7,7 +7,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Namespace Generator
  *
- * @author Sidney Curron <ceednee@gmail.com>
+ * @author Sidney Curron <ceednee@restotelry.com>
  */
 abstract class AbstractNamespaceGenerator implements NamespaceGeneratorInterface
 {

@@ -14,7 +14,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Namespace Generator Interface
  *
- * @author Sidney Curron <ceednee@gmail.com>
+ * @author Sidney Curron <ceednee@restotelry.com>
  */
 interface NamespaceGeneratorInterface
 {
