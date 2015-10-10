@@ -132,8 +132,8 @@ class TypesGenerator
                 foreach ($this->graphs as $graph) {
                     $resources = $graph->resources();
 
-                    if (isset($resources[$value['vocabularyNamespace'].$key])) {
-                        $resource = $graph->resource($value['vocabularyNamespace'].$key, 'rdfs:Class');
+                    if (isset($resources[self::SCHEMA_ORG_NAMESPACE.$key])) {
+                        $resource = $graph->resource(self::SCHEMA_ORG_NAMESPACE.$key, 'rdfs:Class');
                         break;
                     }
                 }
@@ -256,7 +256,6 @@ class TypesGenerator
                             'cardinality' => CardinalitiesExtractor::CARDINALITY_1_1,
                             'isArray' => false,
                             'isNullable' => false,
-                            'isUnique' => false,
                             'isCustom' => true,
                             'isEnum' => false,
                             'isId' => true,
@@ -274,6 +273,13 @@ class TypesGenerator
             $annotationGenerators[] = $generator;
         }
 
+        // Initialize namespace generators
+        $namespaceGenerators = [];
+        foreach ($config['namespaceGenerators'] as $namespaceGenerator) {
+            $generator = new $namespaceGenerator($this->logger, $this->graphs, $this->cardinalities, $config, $classes);
+            $namespaceGenerators[] = $generator;
+        }
+
         if (isset($class['interfaceNamespace']) && $config['doctrine']['resolveTargetEntityConfigPath']) {
             $interfaceMappings = [];
         }
@@ -281,6 +287,7 @@ class TypesGenerator
         $generatedFiles = [];
         foreach ($classes as $className => &$class) {
             $class['uses'] = $this->generateClassUses($annotationGenerators, $classes, $className);
+            $class['uses'] = array_merge($this->generateNamespacesUses($namespaceGenerators, $classes, $className, $class['uses']));
             $class['annotations'] = $this->generateClassAnnotations($annotationGenerators, $className);
             $class['interfaceAnnotations'] = $this->generateInterfaceAnnotations($annotationGenerators, $className);
 
@@ -539,15 +546,10 @@ class TypesGenerator
                 CardinalitiesExtractor::CARDINALITY_1_N,
                 CardinalitiesExtractor::CARDINALITY_N_N,
             ]);
-
-            if (false === $typeConfig['properties'][$propertyName]['nullable']) {
-                $isNullable = false;
-            } else {
-                $isNullable = !in_array($cardinality, [
-                    CardinalitiesExtractor::CARDINALITY_1_1,
-                    CardinalitiesExtractor::CARDINALITY_1_N,
-                ]);
-            }
+            $isNullable = !in_array($cardinality, [
+                CardinalitiesExtractor::CARDINALITY_1_1,
+                CardinalitiesExtractor::CARDINALITY_1_N,
+            ]);
 
             $class['fields'][$propertyName] = [
                 'name' => $propertyName,
@@ -556,7 +558,6 @@ class TypesGenerator
                 'cardinality' => $cardinality,
                 'isArray' => $isArray,
                 'isNullable' => $isNullable,
-                'isUnique' => $typeConfig['properties'][$propertyName]['unique'],
                 'isCustom' => empty($property),
                 'isId' => false,
             ];
@@ -767,6 +768,26 @@ class TypesGenerator
         // Order alphabetically
         sort($uses);
 
+        return $uses;
+    }
+
+    /**
+     * Generate namespace uses.
+     *
+     * @param NamespaceGeneratorInterface[] $namespaceGenerators
+     * @param array                         $classes
+     * @param string                        $className
+     *
+     * @return array
+     */
+    private function generateNamespacesUses($namespaceGenerators, $classes, $className)
+    {
+        $uses = $classes[$className]['uses'];
+        foreach ($namespaceGenerators as $generator) {
+            $uses = array_merge($uses, $generator->generateUses($className));
+        }
+        // Order alphabetically
+        sort($uses);
         return $uses;
     }
 
