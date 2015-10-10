@@ -94,12 +94,17 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
 
         if (isset($type)) {
             $annotation = '@ORM\Column';
+            $isColumnHasProperties = false;
+
+            if ($type !== 'string' || $field['isNullable'] || $field['isUnique']) {
+                $isColumnHasProperties = true;
+            }
 
             if ($field['isArray']) {
                 $type = 'simple_array';
             }
 
-            if ($type !== 'string' || $field['isNullable']) {
+            if ($isColumnHasProperties) {
                 $annotation .= '(';
             }
 
@@ -115,7 +120,15 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                 $annotation .= 'nullable=true';
             }
 
-            if ($type !== 'string' || $field['isNullable']) {
+            if ($field['isUnique'] && $field['isNullable']) {
+                $annotation .= ', ';
+            }
+
+            if ($field['isUnique']) {
+                $annotation .= 'unique=true';
+            }
+
+            if ($isColumnHasProperties) {
                 $annotation .= ')';
             }
 

@@ -275,6 +275,7 @@ class TypesGenerator
                             'cardinality' => CardinalitiesExtractor::CARDINALITY_1_1,
                             'isArray' => false,
                             'isNullable' => false,
+                            'isUnique' => false,
                             'isCustom' => true,
                             'isEnum' => false,
                             'isId' => true,
@@ -568,10 +569,15 @@ class TypesGenerator
                 CardinalitiesExtractor::CARDINALITY_1_N,
                 CardinalitiesExtractor::CARDINALITY_N_N,
             ]);
-            $isNullable = !in_array($cardinality, [
-                CardinalitiesExtractor::CARDINALITY_1_1,
-                CardinalitiesExtractor::CARDINALITY_1_N,
-            ]);
+
+            if (false === $typeConfig['properties'][$propertyName]['nullable']) {
+                $isNullable = false;
+            } else {
+                $isNullable = !in_array($cardinality, [
+                    CardinalitiesExtractor::CARDINALITY_1_1,
+                    CardinalitiesExtractor::CARDINALITY_1_N,
+                ]);
+            }
 
             $class['fields'][$propertyName] = [
                 'name' => $propertyName,
@@ -580,6 +586,7 @@ class TypesGenerator
                 'cardinality' => $cardinality,
                 'isArray' => $isArray,
                 'isNullable' => $isNullable,
+                'isUnique' => $typeConfig['properties'][$propertyName]['unique'],
                 'isCustom' => empty($property),
                 'isId' => false,
             ];
