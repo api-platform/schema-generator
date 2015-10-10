@@ -130,6 +130,13 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                     ])
                     ->prototype('scalar')->end()
                 ->end()
+                ->arrayNode('namespaceGenerators')
+                    ->info('Namespace generators to use')
+                    ->defaultValue([
+                        'ApiPlatform\SchemaGenerator\NamespaceGenerator\NamespaceGenerator',
+                    ])
+                    ->prototype('scalar')->end()
+                ->end()
             ->end()
             ;
 

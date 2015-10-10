@@ -10,6 +10,7 @@
 namespace ApiPlatform\SchemaGenerator;
 
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\AnnotationGeneratorInterface;
+use ApiPlatform\SchemaGenerator\NamespaceGenerator\NamespaceGeneratorInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\CS\Config\Config;
 use Symfony\CS\ConfigurationResolver;
@@ -34,7 +35,7 @@ class TypesGenerator
      * @see https://github.com/doctrine/collections
      */
     const DOCTRINE_COLLECTION_USE = 'Doctrine\Common\Collections\ArrayCollection';
-    /**
+   /**
      * @var string
      *
      * @see https://github.com/myclabs/php-enum Used enum implementation
@@ -274,6 +275,14 @@ class TypesGenerator
             $annotationGenerators[] = $generator;
         }
 
+        // Initialize namespace generators
+        $namespaceGenerators = [];
+        foreach ($config['namespaceGenerators'] as $namespaceGenerator) {
+            $generator = new $namespaceGenerator($this->logger, $this->graphs, $this->cardinalities, $config, $classes);
+
+            $namespaceGenerators[] = $generator;
+        }
+
         if (isset($class['interfaceNamespace']) && $config['doctrine']['resolveTargetEntityConfigPath']) {
             $interfaceMappings = [];
         }
@@ -281,6 +290,9 @@ class TypesGenerator
         $generatedFiles = [];
         foreach ($classes as $className => &$class) {
             $class['uses'] = $this->generateClassUses($annotationGenerators, $classes, $className);
+            $class['uses'] = $this->generateClassUses($annotationGenerators, $classes, $className);
+            $class['uses'] = array_merge($this->generateNamespacesUses($namespaceGenerators, $classes, $className), $class['uses']);
+
             $class['annotations'] = $this->generateClassAnnotations($annotationGenerators, $className);
             $class['interfaceAnnotations'] = $this->generateInterfaceAnnotations($annotationGenerators, $className);
 
@@ -761,6 +773,29 @@ class TypesGenerator
         }
 
         foreach ($annotationGenerators as $generator) {
+            $uses = array_merge($uses, $generator->generateUses($className));
+        }
+
+        // Order alphabetically
+        sort($uses);
+
+        return $uses;
+    }
+
+    /**
+     * Generate namespace uses.
+     *
+     * @param NamespaceGeneratorInterface[] $namespaceGenerators
+     * @param array                         $classes
+     * @param string                        $className
+     *
+     * @return array
+     */
+    private function generateNamespacesUses($namespaceGenerators, $classes, $className)
+    {
+        $uses = $classes[$className]['uses'];
+
+        foreach ($namespaceGenerators as $generator) {
             $uses = array_merge($uses, $generator->generateUses($className));
         }
 
