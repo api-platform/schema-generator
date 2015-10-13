@@ -74,7 +74,6 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->useAttributeAsKey('id')
                     ->prototype('array')
                         ->children()
-                            ->scalarNode('vocabularyNamespace')->defaultValue(TypesGenerator::SCHEMA_ORG_NAMESPACE)->info('Namespace of the vocabulary the type belongs to.')->end()
                             ->booleanNode('abstract')->defaultNull()->info('Is the class abstract? (null to guess)')->end()
                             ->arrayNode('namespaces')
                                 ->addDefaultsIfNotSet()
@@ -109,12 +108,6 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                                             CardinalitiesExtractor::CARDINALITY_N_N,
                                             CardinalitiesExtractor::CARDINALITY_UNKNOWN,
                                         ])->end()
-                                        ->arrayNode('groups')
-                                            ->info('Symfony Serialization Groups')
-                                            ->prototype('scalar')->end()
-                                        ->end()
-                                        ->scalarNode('nullable')->defaultTrue()->info('The property nullable')->end()
-                                        ->scalarNode('unique')->defaultFalse()->info('The property unique')->end()
                                     ->end()
                                 ->end()
                             ->end()
@@ -127,6 +120,13 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                         'ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator',
                         'ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator',
                         'ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator',
+                    ])
+                    ->prototype('scalar')->end()
+                ->end()
+                ->arrayNode('namespaceGenerators')
+                    ->info('Namespace generators to use')
+                    ->defaultValue([
+                        'ApiPlatform\SchemaGenerator\NamespaceGenerator\NamespaceGenerator',
                     ])
                     ->prototype('scalar')->end()
                 ->end()
