@@ -76,10 +76,14 @@ use {{ use }};
      */
     public function remove{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.typeHint }} {% endif %}${{ field.name }})
     {
+{% if config.doctrine.useCollection and field.isArray and field.typeHint and not field.isEnum %}
+        $this->{{ field.name }}->removeElement({% if field.isEnum %}(string) {% endif %}${{ field.name }});
+{% else %}
         $key = array_search({% if field.isEnum %}(string) {% endif %}${{ field.name }}, $this->{{ field.name }}, true);
         if (false !== $key) {
             unset($this->{{ field.name }}[$key]);
         }
+{% endif %}
 
         return $this;
     }
