@@ -76,9 +76,8 @@ use {{ use }};
      */
     public function remove{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.typeHint }} {% endif %}${{ field.name }})
     {
-        $key = array_search({% if field.isEnum %}(string) {% endif %}${{ field.name }}, $this->{{ field.name }}, true);
-        if (false !== $key) {
-            unset($this->{{ field.name }}[$key]);
+        if (true === $this->{{ field.name }}->contains({% if field.isEnum %}(string) {% endif %}${{ field.name }})) {
+            $this->{{ field.name }}->removeElement({% if field.isEnum %}(string) {% endif %}${{ field.name }});
         }
 
         return $this;
