@@ -190,6 +190,9 @@ class TypesGenerator
                     $class['parent'] = $numberOfSupertypes ? $type->all('rdfs:subClassOf')[0]->localName() : false;
                 }
 
+                // Embeddable
+                $class['embeddable'] = isset($typeConfig['embeddable']) ? $typeConfig['embeddable'] : false;
+
                 if (!empty($config['types']) && $class['parent'] && !isset($config['types'][$class['parent']])) {
                     $this->logger->error(sprintf('The type "%s" (parent of "%s") doesn\'t exist', $class['parent'], $type->localName()));
                 }
@@ -247,7 +250,7 @@ class TypesGenerator
         // Generate ID
         if ($config['generateId']) {
             foreach ($classes as &$class) {
-                if (!$class['hasChild'] && !$class['isEnum']) {
+                if (!$class['hasChild'] && !$class['isEnum'] && !$class['embeddable']) {
                     $class['fields'] = [
                         'id' => [
                             'name' => 'id',
@@ -511,9 +514,11 @@ class TypesGenerator
             }
         }
 
+        $propertyConfig = $typeConfig['properties'][$propertyName];
+
         $ranges = [];
-        if (isset($typeConfig['properties'][$propertyName]['range']) && $typeConfig['properties'][$propertyName]['range']) {
-            $ranges[] = $typeConfig['properties'][$propertyName]['range'];
+        if (isset($propertyConfig['range']) && $propertyConfig['range']) {
+            $ranges[] = $propertyConfig['range'];
         } elseif (!empty($property)) {
             foreach ($property->all(self::SCHEMA_ORG_RANGE) as $range) {
                 if (!$typesDefined || $this->isDatatype($range->localName()) || isset($config['types'][$range->localName()])) {
@@ -530,7 +535,7 @@ class TypesGenerator
                 $this->logger->error(sprintf('The property "%s" (type "%s") has several types. Using the first one.', $propertyName, $type->localName()));
             }
 
-            $cardinality = isset($typeConfig['properties'][$propertyName]['cardinality']) ? $typeConfig['properties'][$propertyName]['cardinality'] : false;
+            $cardinality = isset($propertyConfig['cardinality']) ? $propertyConfig['cardinality'] : false;
             if (!$cardinality || $cardinality === CardinalitiesExtractor::CARDINALITY_UNKNOWN) {
                 $cardinality = $property ? $this->cardinalities[$propertyName] : CardinalitiesExtractor::CARDINALITY_1_1;
             }
@@ -540,13 +545,20 @@ class TypesGenerator
                 CardinalitiesExtractor::CARDINALITY_N_N,
             ]);
 
-            if (false === $typeConfig['properties'][$propertyName]['nullable']) {
+            if (false === $propertyConfig['nullable']) {
                 $isNullable = false;
             } else {
                 $isNullable = !in_array($cardinality, [
                     CardinalitiesExtractor::CARDINALITY_1_1,
                     CardinalitiesExtractor::CARDINALITY_1_N,
                 ]);
+            }
+
+            $columnPrefix = false;
+            $isEmbedded = isset($propertyConfig['embedded']) ? $propertyConfig['embedded'] : false;
+
+            if (true === $isEmbedded) {
+                $columnPrefix = isset($propertyConfig['columnPrefix']) ? $propertyConfig['columnPrefix'] : false;
             }
 
             $class['fields'][$propertyName] = [
@@ -556,8 +568,10 @@ class TypesGenerator
                 'cardinality' => $cardinality,
                 'isArray' => $isArray,
                 'isNullable' => $isNullable,
-                'isUnique' => $typeConfig['properties'][$propertyName]['unique'],
+                'isUnique' => $propertyConfig['unique'],
                 'isCustom' => empty($property),
+                'isEmbedded' => $isEmbedded,
+                'columnPrefix' => $columnPrefix,
                 'isId' => false,
             ];
             if ($isArray) {
