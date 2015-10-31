@@ -9,6 +9,7 @@
 
 namespace ApiPlatform\SchemaGenerator;
 
+use SchemaOrgModel\TypesGenerator;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 

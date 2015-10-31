@@ -15,6 +15,41 @@ namespace {{ class.interfaceNamespace }};
  * {{ annotation }}
 {% endfor %}
  */
-interface {{ class.interfaceName }}
+interface {{ class.interfaceName }}{% if class.parentsInterfaceNames is not empty %} extends {% for interfaceName in class.parentsInterfaceNames %}{{ interfaceName }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}
+
 {
+{% for field in class.fields %}
+{% if field.classOnly == false and (field.name != 'id' or class.parentsInterfaceNames is empty) %}
+{% if field.isArray %}
+    /**
+{% for annotation in field.adderAnnotations %}
+     * {{ annotation }}
+{% endfor %}
+     */
+    public function add{{ field.name|ucfirst }}({% if field.typeHint and not field.isEnum %}{{ field.typeHint }} {% endif %}${{ field.name }});
+
+    /**
+    {% for annotation in field.removerAnnotations %}
+        * {{ annotation }}
+    {% endfor %}
+    */
+    public function remove{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.typeHint }} {% endif %}${{ field.name }});
+{% else %}
+
+    /**
+    {% for annotation in field.setterAnnotations %}
+        * {{ annotation }}
+    {% endfor %}
+    */
+    public function set{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.typeHint }} {% endif %}${{ field.name }}{% if field.typeHint and field.isNullable %} = null{% endif %});
+{% endif %}
+
+    /**
+    {% for annotation in field.getterAnnotations %}
+        * {{ annotation }}
+    {% endfor %}
+    */
+    public function get{{ field.name|ucfirst }}();
+{% endif %}
+{% endfor %}
 }

@@ -5,9 +5,9 @@
                         http://symfony.com/schema/dic/doctrine http://symfony.com/schema/dic/doctrine/doctrine-1.0.xsd">
     <doctrine:config>
         <doctrine:orm>
-{% for interface, class in mappings %}
-            <doctrine:resolve-target-entity interface="{{ interface }}">{{ class }}</doctrine:resolve-target-entity>
-{% endfor %}
+            {% for interface, class in mappings %}
+                <doctrine:resolve-target-entity interface="{{ interface }}">{{ class }}</doctrine:resolve-target-entity>
+            {% endfor %}
         </doctrine:orm>
     </doctrine:config>
 </container>
