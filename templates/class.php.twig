@@ -50,61 +50,61 @@ use {{ use }};
 {% for field in class.fields %}
 {% if config.doctrine.useCollection and field.isArray and field.typeHint and not field.isEnum %}
         $this->{{ field.name }} = new ArrayCollection();
-{% endif %}
+    {% endif %}
 {% endfor %}
     }
 {% endif %}
 
 {% for field in class.fields %}
-{% if field.isArray %}
-    /**
-{% for annotation in field.adderAnnotations %}
-     * {{ annotation }}
-{% endfor %}
-     */
-    public function add{{ field.name|ucfirst }}({% if field.typeHint and not field.isEnum %}{{ field.typeHint }} {% endif %}${{ field.name }})
-    {
+    {% if field.isArray %}
+        /**
+        {% for annotation in field.adderAnnotations %}
+            * {{ annotation }}
+        {% endfor %}
+        */
+        public function add{{ field.name|ucfirst }}({% if field.typeHint and not field.isEnum %}{{ field.typeHint }} {% endif %}${{ field.name }})
+        {
         $this->{{ field.name }}[] = {% if field.isEnum %}(string) {% endif %}${{ field.name }};
 
         return $this;
-    }
+        }
 
-    /**
-{% for annotation in field.removerAnnotations %}
-     * {{ annotation }}
-{% endfor %}
-     */
-    public function remove{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.typeHint }} {% endif %}${{ field.name }})
-    {
+        /**
+        {% for annotation in field.removerAnnotations %}
+            * {{ annotation }}
+        {% endfor %}
+        */
+        public function remove{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.typeHint }} {% endif %}${{ field.name }})
+        {
         $key = array_search({% if field.isEnum %}(string) {% endif %}${{ field.name }}, $this->{{ field.name }}, true);
         if (false !== $key) {
-            unset($this->{{ field.name }}[$key]);
+        unset($this->{{ field.name }}[$key]);
         }
 
         return $this;
-    }
-{% else %}
-    /**
-{% for annotation in field.setterAnnotations %}
-     * {{ annotation }}
-{% endfor %}
-     */
-    public function set{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.typeHint }} {% endif %}${{ field.name }}{% if field.typeHint and field.isNullable %} = null{% endif %})
-    {
+        }
+    {% else %}
+        /**
+        {% for annotation in field.setterAnnotations %}
+            * {{ annotation }}
+        {% endfor %}
+        */
+        public function set{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.typeHint }} {% endif %}${{ field.name }}{% if field.typeHint and field.isNullable %} = null{% endif %})
+        {
         $this->{{ field.name }} = ${{ field.name }};
 
         return $this;
-    }
-{% endif %}
+        }
+    {% endif %}
 
     /**
-{% for annotation in field.getterAnnotations %}
-     * {{ annotation }}
-{% endfor %}
-     */
+    {% for annotation in field.getterAnnotations %}
+        * {{ annotation }}
+    {% endfor %}
+    */
     public function get{{ field.name|ucfirst }}()
     {
-        return $this->{{ field.name }};
+    return $this->{{ field.name }};
     }
 
 {% endfor %}
