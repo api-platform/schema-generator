@@ -33,7 +33,15 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         if (isset($this->config['types'][$class['resource']->localName()]['doctrine']['inheritanceMapping'])) {
             $inheritanceMapping = $this->config['types'][$class['resource']->localName()]['doctrine']['inheritanceMapping'];
         } else {
-            $inheritanceMapping = $class['abstract'] ? '@ORM\MappedSuperclass' : '@ORM\Entity';
+            $inheritanceMapping = '@ORM\Entity';
+
+            if ($class['abstract']) {
+                $inheritanceMapping = '@ORM\MappedSuperclass';
+            }
+
+            if ($class['embeddable']) {
+                $inheritanceMapping = '@ORM\Embeddable';
+            }
         }
 
         return [
@@ -133,6 +141,9 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
             }
 
             $annotations[] = $annotation;
+        } elseif ($field['isEmbedded']) {
+            $columnPrefix = $field['columnPrefix'] ? ', columnPrefix=true' : ', columnPrefix=false';
+            $annotations[] = sprintf('@ORM\Embedded(class="%s"%s)', $this->getRelationName($field['range']), $columnPrefix);
         } else {
             switch ($field['cardinality']) {
                 case CardinalitiesExtractor::CARDINALITY_0_1:
