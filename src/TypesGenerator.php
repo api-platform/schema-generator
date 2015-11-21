@@ -190,6 +190,10 @@ class TypesGenerator
                     $class['parent'] = $numberOfSupertypes ? $type->all('rdfs:subClassOf')[0]->localName() : false;
                 }
 
+                if (null !== $class['parent']) {
+                    $class['uses'][] =  sprintf('%s\\%s', $config['types']['Thing']['namespaces']['class'], $class['parent']);
+                }
+
                 // Embeddable
                 $class['embeddable'] = isset($typeConfig['embeddable']) ? $typeConfig['embeddable'] : false;
 
