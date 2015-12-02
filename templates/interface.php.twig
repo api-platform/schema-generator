@@ -10,11 +10,13 @@
 
 namespace {{ class.interfaceNamespace }};
 
+{% if class.interfaceAnnotations|length > 0 %}
 /**
 {% for annotation in class.interfaceAnnotations %}
  * {{ annotation }}
 {% endfor %}
  */
+{% endif %}
 interface {{ class.interfaceName }}
 {
 }

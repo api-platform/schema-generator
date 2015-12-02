@@ -92,6 +92,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                                 ->end()
                             ->end()
                             ->scalarNode('parent')->defaultNull()->info('The parent class, set to false for a top level class')->end()
+                            ->scalarNode('guessFrom')->defaultValue('Thing')->info('If declaring a custom class, this will be the class from which properties type will be guessed')->end()
                             ->arrayNode('properties')
                                 ->info('Properties of this type to use')
                                 ->useAttributeAsKey('id')
