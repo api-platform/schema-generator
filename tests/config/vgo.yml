@@ -5,7 +5,7 @@ annotationGenerators:
     - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
     - ApiPlatform\SchemaGenerator\AnnotationGenerator\DunglasApiAnnotationGenerator
 namespaces:
-  entity: AppBundle\Entity
+  entity: 'AppBundle\Entity'
 types:
   Session:
     vocabularyNamespace: http://purl.org/net/VideoGameOntology#

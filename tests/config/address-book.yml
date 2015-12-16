@@ -1,6 +1,6 @@
 # The PHP namespace of generated entities
 namespaces:
-  entity: "AddressBook\Entity"
+  entity: 'AddressBook\Entity'
 # Enable DunglasApiAnnotationGenerator
 annotationGenerators:
     - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
