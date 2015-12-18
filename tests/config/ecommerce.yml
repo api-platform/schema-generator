@@ -12,9 +12,9 @@ rdfa:
 relations:
   - tests/data/v1.owl
 namespaces:
-  entity:               "Dunglas\EcommerceBundle\Entity"
-  enum:                 "Dunglas\EcommerceBundle\Enum"
-  interface:            "Dunglas\EcommerceBundle\Model"
+  entity:               'Dunglas\EcommerceBundle\Entity'
+  enum:                 'Dunglas\EcommerceBundle\Enum'
+  interface:            'Dunglas\EcommerceBundle\Model'
 author: "Kévin Dunglas <dunglas@gmail.com>"
 debug: true
 useInterface: true
