@@ -24,7 +24,7 @@ types:
     properties:
       name: ~
       description: ~
-      image: ~
+      image: { range: ImageObject }
       additionalType: ~
   Product:
     properties:
@@ -32,7 +32,7 @@ types:
         cardinality: "(0..1)"
       url: ~
       brand: ~
-      productId: ~
+      productID: ~
       releaseDate: ~
       offers: ~
       itemCondition: ~
@@ -68,13 +68,14 @@ types:
       deliveryLeadTime: ~
       inventoryLevel: ~
       itemCondition: ~
-      price: ~
+      price: { range: Number }
       priceCurrency: ~
       validFrom: ~
       validThrough: ~
-  DeliveryChargeSpecification: ~
-  PaymentChargeSpecification: ~
+  DeliveryChargeSpecification: { parent: false }
+  PaymentChargeSpecification: { parent: false }
   OfferItemCondition: ~
   PaymentMethod: ~
   ItemAvailability: ~
   DeliveryMethod: ~
+  QuantitativeValue: { parent: false }
