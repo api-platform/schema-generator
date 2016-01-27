@@ -17,7 +17,7 @@ types:
       givenName: ~
       additionalName: ~
       gender: ~
-      address: ~
+      address: { range: PostalAddress }
       birthDate: ~
       telephone: ~
       email: ~
