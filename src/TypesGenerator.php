@@ -141,7 +141,9 @@ class TypesGenerator
                 if ($resource) {
                     $typesToGenerate[] = $resource;
                 } else {
-                    $this->logger->critical('Type "{key}" cannot be found.', ['key' => $key]);
+                    $this->logger->warning('Type "{key}" cannot be found. Using "{guessFrom}" type to generate entity.', ['key' => $key, 'guessFrom' => $value['guessFrom']]);
+                    $type = $graph->resource($value['vocabularyNamespace'].$value['guessFrom'], 'rdfs:Class');
+                    $typesToGenerate[$key] = $type;
                 }
             }
         }
@@ -149,11 +151,12 @@ class TypesGenerator
         $classes = [];
         $propertiesMap = $this->createPropertiesMap($typesToGenerate);
 
-        foreach ($typesToGenerate as $type) {
-            $typeConfig = isset($config['types'][$type->localName()]) ? $config['types'][$type->localName()] : null;
+        foreach ($typesToGenerate as $key => $type) {
+            $typeName = is_string($key) ? $key : $type->localName();
+            $typeConfig = isset($config['types'][$typeName]) ? $config['types'][$typeName] : null;
             $class = $baseClass;
 
-            $class['name'] = $type->localName();
+            $class['name'] = $typeName;
             $class['label'] = $type->get('rdfs:comment')->getValue();
             $class['resource'] = $type;
             $class['config'] = $typeConfig;
@@ -200,7 +203,7 @@ class TypesGenerator
                 // Interfaces
                 if ($config['useInterface']) {
                     $class['interfaceNamespace'] = isset($typeConfig['namespaces']['interface']) && $typeConfig['namespaces']['interface'] ? $typeConfig['namespaces']['interface'] : $config['namespaces']['interface'];
-                    $class['interfaceName'] = sprintf('%sInterface', $type->localName());
+                    $class['interfaceName'] = sprintf('%sInterface', $typeName);
                 }
             }
 
@@ -211,7 +214,7 @@ class TypesGenerator
                     continue;
                 }
 
-                $class = $this->generateField($config, $class, $type, $property->localName(), $property);
+                $class = $this->generateField($config, $class, $type, $typeName, $property->localName(), $property);
             }
 
             // Add custom fields (non schema.org)
@@ -219,11 +222,11 @@ class TypesGenerator
                 foreach (array_diff_key($typeConfig['properties'], $class['fields']) as $propertyName => $property) {
                     $this->logger->info(sprintf('The property "%s" (type "%s") is a custom property.', $propertyName, $type->localName()));
 
-                    $class = $this->generateField($config, $class, $type, $propertyName);
+                    $class = $this->generateField($config, $class, $type, $typeName, $propertyName);
                 }
             }
 
-            $classes[$type->localName()] = $class;
+            $classes[$typeName] = $class;
         }
 
         // Second pass
@@ -285,7 +288,9 @@ class TypesGenerator
         foreach ($classes as $className => &$class) {
             $class['uses'] = $this->generateClassUses($annotationGenerators, $classes, $className);
             $class['annotations'] = $this->generateClassAnnotations($annotationGenerators, $className);
-            $class['interfaceAnnotations'] = $this->generateInterfaceAnnotations($annotationGenerators, $className);
+            if (false === isset($typesToGenerate[$className])) {
+                $class['interfaceAnnotations'] = $this->generateInterfaceAnnotations($annotationGenerators, $className);
+            }
 
             foreach ($class['constants'] as $constantName => $constant) {
                 $class['constants'][$constantName]['annotations'] = $this->generateConstantAnnotations($annotationGenerators, $className, $constantName);
@@ -486,14 +491,15 @@ class TypesGenerator
      * @param array                  $config
      * @param array                  $class
      * @param \EasyRdf_Resource      $type
+     * @param string                 $typeName
      * @param string                 $propertyName
      * @param \EasyRdf_Resource|null $property
      *
      * @return array $class
      */
-    private function generateField(array $config, array $class, \EasyRdf_Resource $type, $propertyName, \EasyRdf_Resource $property = null)
+    private function generateField(array $config, array $class, \EasyRdf_Resource $type, $typeName, $propertyName, \EasyRdf_Resource $property = null)
     {
-        $typeConfig = isset($config['types'][$type->localName()]) ? $config['types'][$type->localName()] : null;
+        $typeConfig = isset($config['types'][$typeName]) ? $config['types'][$typeName] : null;
         $typesDefined = !empty($config['types']);
 
         // Warn when property are not part of GoodRelations

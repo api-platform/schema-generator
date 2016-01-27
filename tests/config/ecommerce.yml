@@ -45,10 +45,17 @@ types:
       height: { range: "Text" }
       weight: { range: "Text" }
       width: { range: "Text" }
+      seller: { range: "Seller" }
   Brand:
     parent: "Thing"
     properties:
       logo: { range: "ImageObject" }
+  Seller:
+    parent: false
+    guessFrom: Person
+    properties:
+      name: ~
+      birthDate: ~
   ImageObject:
     parent: Thing
     properties:
