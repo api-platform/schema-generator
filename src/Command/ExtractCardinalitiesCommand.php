@@ -12,6 +12,7 @@ namespace ApiPlatform\SchemaGenerator\Command;
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
+use EasyRdf\Graph;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,7 +41,7 @@ class ExtractCardinalitiesCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $relations = [];
-        $schemaOrg = new \EasyRdf_Graph();
+        $schemaOrg = new Graph();
         $schemaOrg->load(TypesGeneratorConfiguration::SCHEMA_ORG_RDFA_URL, 'rdfa');
         $relations[] = $schemaOrg;
 

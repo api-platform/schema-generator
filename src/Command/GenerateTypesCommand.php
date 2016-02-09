@@ -13,6 +13,7 @@ use ApiPlatform\SchemaGenerator\TypesGenerator;
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
+use EasyRdf\Graph;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -65,8 +66,9 @@ class GenerateTypesCommand extends Command
 
         $graphs = [];
         foreach ($processedConfiguration['rdfa'] as $rdfa) {
-            $graph = new \EasyRdf_Graph();
+            $graph = new Graph();
             if ('http://' === substr($rdfa, 0, 7) || 'https://' === substr($rdfa, 0, 8)) {
+//                var_dump($rdfa);
                 $graph->load($rdfa);
             } else {
                 $graph->parseFile($rdfa);

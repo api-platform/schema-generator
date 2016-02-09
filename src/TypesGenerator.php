@@ -10,6 +10,8 @@
 namespace ApiPlatform\SchemaGenerator;
 
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\AnnotationGeneratorInterface;
+use EasyRdf\Graph;
+use EasyRdf\Resource;
 use Psr\Log\LoggerInterface;
 use Symfony\CS\Config\Config;
 use Symfony\CS\ConfigurationResolver;
@@ -66,7 +68,7 @@ class TypesGenerator
      */
     private $logger;
     /**
-     * @var \EasyRdf_Graph[]
+     * @var Graph[]
      */
     private $graphs;
     /**
@@ -85,7 +87,7 @@ class TypesGenerator
     /**
      * @param \Twig_Environment      $twig
      * @param LoggerInterface        $logger
-     * @param \EasyRdf_Graph[]       $graphs
+     * @param Graph[]       $graphs
      * @param CardinalitiesExtractor $cardinalitiesExtractor
      * @param GoodRelationsBridge    $goodRelationsBridge
      */
@@ -376,11 +378,11 @@ class TypesGenerator
     /**
      * Tests if a type is an enum.
      *
-     * @param \EasyRdf_Resource $type
+     * @param Resource $type
      *
      * @return bool
      */
-    private function isEnum(\EasyRdf_Resource $type)
+    private function isEnum(Resource $type)
     {
         $subClassOf = $type->get('rdfs:subClassOf');
 
@@ -390,12 +392,12 @@ class TypesGenerator
     /**
      * Gets the parent classes of the current one and add them to $parentClasses array.
      *
-     * @param \EasyRdf_Resource $resource
+     * @param Resource $resource
      * @param string[]          $parentClasses
      *
      * @return array
      */
-    private function getParentClasses(\EasyRdf_Resource $resource, array $parentClasses = [])
+    private function getParentClasses(Resource $resource, array $parentClasses = [])
     {
         if ([] === $parentClasses) {
             return $this->getParentClasses($resource, [$resource->getUri()]);
@@ -485,13 +487,13 @@ class TypesGenerator
      *
      * @param array                  $config
      * @param array                  $class
-     * @param \EasyRdf_Resource      $type
+     * @param Resource      $type
      * @param string                 $propertyName
-     * @param \EasyRdf_Resource|null $property
+     * @param Resource|null $property
      *
      * @return array $class
      */
-    private function generateField(array $config, array $class, \EasyRdf_Resource $type, $propertyName, \EasyRdf_Resource $property = null)
+    private function generateField(array $config, array $class, Resource $type, $propertyName, Resource $property = null)
     {
         $typeConfig = isset($config['types'][$type->localName()]) ? $config['types'][$type->localName()] : null;
         $typesDefined = !empty($config['types']);

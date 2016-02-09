@@ -8,6 +8,8 @@
  */
 
 namespace ApiPlatform\SchemaGenerator;
+use EasyRdf\Graph;
+use EasyRdf\Resource;
 
 /**
  * Cardinality extractor.
@@ -26,7 +28,7 @@ class CardinalitiesExtractor
     const CARDINALITY_UNKNOWN = 'unknown';
 
     /**
-     * @var \EasyRdf_Graph[]
+     * @var Graph[]
      */
     private $graphs;
     /**
@@ -35,7 +37,7 @@ class CardinalitiesExtractor
     private $goodRelationsBridge;
 
     /**
-     * @param \EasyRdf_Graph[]    $graphs
+     * @param Graph[]    $graphs
      * @param GoodRelationsBridge $goodRelationsBridge
      */
     public function __construct(array $graphs, GoodRelationsBridge $goodRelationsBridge)
@@ -67,11 +69,11 @@ class CardinalitiesExtractor
      *
      * Based on [Geraint Luff work](https://github.com/geraintluff/schema-org-gen).
      *
-     * @param \EasyRdf_Resource $property
+     * @param Resource $property
      *
      * @return string The cardinality
      */
-    private function extractForProperty(\EasyRdf_Resource $property)
+    private function extractForProperty(Resource $property)
     {
         $localName = $property->localName();
         $fromGoodRelations = $this->goodRelationsBridge->extractCardinality($localName);
