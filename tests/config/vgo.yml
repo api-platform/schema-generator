@@ -12,5 +12,8 @@ types:
   Thing: ~
 debug: true
 rdfa:
-  - tests/data/vgo.rdf
-  - tests/data/schema.rdfa
+  -
+    uri:    tests/data/vgo.rdf
+    format: ~
+  -
+    uri:    tests/data/schema.rdfa
