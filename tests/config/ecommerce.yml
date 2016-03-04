@@ -8,7 +8,9 @@ header: |
    * file that was distributed with this source code.
    */
 rdfa:
-  - tests/data/schema.rdfa
+  -
+    uri:    tests/data/schema.rdfa
+    format: rdfa
 relations:
   - tests/data/v1.owl
 namespaces:

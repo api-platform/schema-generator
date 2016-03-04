@@ -32,11 +32,16 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->arrayNode('rdfa')
-                    ->info('RDFa files to use')
+                    ->info('RDFa files')
                     ->defaultValue([
-                        self::SCHEMA_ORG_RDFA_URL,
+                        ['uri' => self::SCHEMA_ORG_RDFA_URL, 'format' => null],
                     ])
-                    ->prototype('scalar')->end()
+                    ->prototype('array')
+                        ->children()
+                            ->scalarNode('uri')->defaultValue(self::SCHEMA_ORG_RDFA_URL)->info('RDFa URI to use')->example(self::SCHEMA_ORG_RDFA_URL)->end()
+                            ->scalarNode('format')->defaultNull()->info('RDFa URI data format')->example('rdfxml')->end()
+                        ->end()
+                    ->end()
                 ->end()
                 ->arrayNode('relations')
                     ->info('OWL relation files to use')

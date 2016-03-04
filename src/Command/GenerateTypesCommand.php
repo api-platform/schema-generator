@@ -66,10 +66,10 @@ class GenerateTypesCommand extends Command
         $graphs = [];
         foreach ($processedConfiguration['rdfa'] as $rdfa) {
             $graph = new \EasyRdf_Graph();
-            if ('http://' === substr($rdfa, 0, 7) || 'https://' === substr($rdfa, 0, 8)) {
-                $graph->load($rdfa);
+            if ('http://' === substr($rdfa['uri'], 0, 7) || 'https://' === substr($rdfa['uri'], 0, 8)) {
+                $graph->load($rdfa['uri'], $rdfa['format']);
             } else {
-                $graph->parseFile($rdfa);
+                $graph->parseFile($rdfa['uri'], $rdfa['format']);
             }
 
             $graphs[] = $graph;
