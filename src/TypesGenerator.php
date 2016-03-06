@@ -61,22 +61,27 @@ class TypesGenerator
      * @var \Twig_Environment
      */
     private $twig;
+
     /**
      * @var LoggerInterface
      */
     private $logger;
+
     /**
      * @var \EasyRdf_Graph[]
      */
     private $graphs;
+
     /**
      * @var CardinalitiesExtractor
      */
     private $cardinalitiesExtractor;
+
     /**
      * @var GoodRelationsBridge
      */
     private $goodRelationsBridge;
+
     /**
      * @var array
      */
@@ -89,13 +94,12 @@ class TypesGenerator
      * @param CardinalitiesExtractor $cardinalitiesExtractor
      * @param GoodRelationsBridge    $goodRelationsBridge
      */
-    public function __construct(
-        \Twig_Environment $twig,
-        LoggerInterface $logger,
-        array $graphs,
-        CardinalitiesExtractor $cardinalitiesExtractor,
-        GoodRelationsBridge $goodRelationsBridge
-    ) {
+    public function __construct(\Twig_Environment $twig, LoggerInterface $logger, array $graphs, CardinalitiesExtractor $cardinalitiesExtractor, GoodRelationsBridge $goodRelationsBridge)
+    {
+        if (empty($graphs)) {
+            throw new \InvalidArgumentException('At least one graph must be injected.');
+        }
+
         $this->twig = $twig;
         $this->logger = $logger;
         $this->graphs = $graphs;
@@ -156,8 +160,10 @@ class TypesGenerator
             $typeConfig = isset($config['types'][$typeName]) ? $config['types'][$typeName] : null;
             $class = $baseClass;
 
+            $comment = $type->get('rdfs:comment');
+
             $class['name'] = $typeName;
-            $class['label'] = $type->get('rdfs:comment')->getValue();
+            $class['label'] = $comment ? $comment->getValue() : '';
             $class['resource'] = $type;
             $class['config'] = $typeConfig;
 
@@ -280,11 +286,9 @@ class TypesGenerator
             $annotationGenerators[] = $generator;
         }
 
-        if (isset($class['interfaceNamespace']) && $config['doctrine']['resolveTargetEntityConfigPath']) {
-            $interfaceMappings = [];
-        }
-
+        $interfaceMappings = [];
         $generatedFiles = [];
+
         foreach ($classes as $className => &$class) {
             $class['uses'] = $this->generateClassUses($annotationGenerators, $classes, $className);
             $class['annotations'] = $this->generateClassAnnotations($annotationGenerators, $className);
@@ -360,7 +364,7 @@ class TypesGenerator
             }
         }
 
-        if (isset($interfaceMappings) && $config['doctrine']['resolveTargetEntityConfigPath']) {
+        if (!empty($interfaceMappings) && $config['doctrine']['resolveTargetEntityConfigPath']) {
             $file = $config['output'].'/'.$config['doctrine']['resolveTargetEntityConfigPath'];
             $dir = dirname($file);
             if (!file_exists($dir)) {
@@ -408,7 +412,7 @@ class TypesGenerator
 
         $subclasses = $resource->all('rdfs:subClassOf');
 
-        if (!$subclasses) {
+        if (empty($subclasses)) {
             return $parentClasses;
         }
 

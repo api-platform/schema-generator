@@ -175,7 +175,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
                 break;
         }
 
-        if ($data) {
+        if (false !== $data) {
             if ($field['isArray']) {
                 return sprintf('%s[]', $data);
             }

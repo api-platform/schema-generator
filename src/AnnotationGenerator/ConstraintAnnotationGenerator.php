@@ -51,7 +51,7 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
                 $asserts[] = '@Assert\Email';
             }
 
-            if (!$asserts) {
+            if (empty($asserts)) {
                 $phpType = $this->toPhpType($field);
                 if (in_array($phpType, ['boolean', 'float', 'integer', 'string'])) {
                     $asserts[] = sprintf('@Assert\Type(type="%s")', $phpType);
