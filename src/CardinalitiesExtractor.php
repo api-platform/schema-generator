@@ -75,7 +75,7 @@ class CardinalitiesExtractor
     {
         $localName = $property->localName();
         $fromGoodRelations = $this->goodRelationsBridge->extractCardinality($localName);
-        if ($fromGoodRelations) {
+        if (false !== $fromGoodRelations) {
             return $fromGoodRelations;
         }
 

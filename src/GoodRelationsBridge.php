@@ -90,7 +90,7 @@ class GoodRelationsBridge
     public function exist($id)
     {
         foreach ($this->relations as $relation) {
-            $result = $relation->xpath(sprintf('//*[@rdf:about="%s"]', static::getPropertyUrl($id)));
+            $result = $relation->xpath(sprintf('//*[@rdf:about="%s"]', $this->getPropertyUrl($id)));
             if (!empty($result)) {
                 return true;
             }
@@ -109,7 +109,7 @@ class GoodRelationsBridge
     public function extractCardinality($id)
     {
         foreach ($this->relations as $relation) {
-            $result = $relation->xpath(sprintf('//*[@rdf:about="%s"]/rdfs:label', static::getPropertyUrl($id)));
+            $result = $relation->xpath(sprintf('//*[@rdf:about="%s"]/rdfs:label', $this->getPropertyUrl($id)));
             if (count($result)) {
                 preg_match('/\(.\.\..\)/', $result[0]->asXML(), $matches);
 
@@ -127,7 +127,7 @@ class GoodRelationsBridge
      *
      * @return string
      */
-    private static function convertPropertyId($id)
+    private function convertPropertyId($id)
     {
         if (isset(static::$datatypePropertiesTable[$id])) {
             return static::$datatypePropertiesTable[$id];
@@ -147,8 +147,8 @@ class GoodRelationsBridge
      *
      * @return string
      */
-    private static function getPropertyUrl($id)
+    private function getPropertyUrl($id)
     {
-        return sprintf('%s%s', static::GOOD_RELATIONS_NAMESPACE, static::convertPropertyId($id));
+        return self::GOOD_RELATIONS_NAMESPACE.$this->convertPropertyId($id);
     }
 }

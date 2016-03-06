@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -e
 
 # Test commands
 bin/schema dump-configuration

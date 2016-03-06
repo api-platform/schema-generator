@@ -11,17 +11,12 @@ php:
     - 5.5
     - 5.6
     - 7.0
-    - nightly
     - hhvm
-
-matrix:
-    allow_failures:
-        - php: nightly
-    fast_finish: true
 
 before_script:
   - composer self-update
-  - composer install
+  - composer update
 
 script:
+  - phpunit
   - tests/run-tests.sh

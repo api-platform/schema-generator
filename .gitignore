@@ -1,4 +1,4 @@
-composer.phar
-vendor
-build/
-.couscous
+/composer.phar
+/composer.lock
+/vendor
+/build
