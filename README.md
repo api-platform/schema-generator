@@ -1,6 +1,6 @@
 # API Platform Model Generator
 
-This Schema.org based model generator is part of [the API Platform framework](http://api-platform.com) that instantly generates a PHP data model from the [Schema.org](http://schema.org)
+This Schema.org based model generator is part of [the API Platform framework](https://api-platform.com) that instantly generates a PHP data model from the [Schema.org](https://schema.org)
 vocabulary. Browse Schema.org, choose the types and properties you need, run our code generator and you're done! You get
 a fully featured PHP data model including:
 * A set of PHP entities with properties, constants (enum values), getters, setters, adders and removers. The class
@@ -11,7 +11,7 @@ code complies with [PSR](http://www.php-fig.org/) coding standards.
 inheritance (through the `@AbstractSuperclass` annotation).
 * Data validation through [Symfony Validator](https://symfony.com/doc/current/book/validation.html) annotations including
 data type validation, enum support (choices) and check for required properties.
-* Interfaces and [Doctrine `ResolveTargetEntityListener`](http://doctrine-orm.readthedocs.org/en/latest/cookbook/resolve-target-entity-listener.html)
+* Interfaces and [Doctrine `ResolveTargetEntityListener`](https://doctrine-orm.readthedocs.org/en/latest/cookbook/resolve-target-entity-listener.html)
 support.
 * Custom PHP namespace support.
 * List of values provided by Schema.org with [PHP Enum](https://github.com/myclabs/php-enum) classes.
@@ -21,14 +21,14 @@ Bonus:
 * The code generator is fully configurable and extensible: all features can be deactivated (e.g.: the Doctrine mapping generator)
 and custom generator can be added (e.g.: a Doctrine ODM mapping generator).
 * The generated code can be used as is in a [Symfony](http://symfony.com) app (but it will work too in a raw PHP project
-or any other framework including [Laravel](http://laravel.com) and [Zend Framework](http://framework.zend.com/)).
+or any other framework including [Laravel](https://laravel.com) and [Zend Framework](http://framework.zend.com/)).
 
-[![Build Status](https://travis-ci.org/dunglas/php-schema.svg?branch=master)](https://travis-ci.org/dunglas/php-schema) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/87ec89e6-57cd-4ac0-9ab1-d4549c5425c5/mini.png)](https://insight.sensiolabs.com/projects/87ec89e6-57cd-4ac0-9ab1-d4549c5425c5)
+[![Build Status](https://travis-ci.org/api-platform/schema-generator.svg?branch=master)](https://travis-ci.org/api-platform/schema-generator) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/87ec89e6-57cd-4ac0-9ab1-d4549c5425c5/mini.png)](https://insight.sensiolabs.com/projects/87ec89e6-57cd-4ac0-9ab1-d4549c5425c5)
 
 ## What is Schema.org?
 
-Schema.org is a vocabulary representing common data structures and their relations. Schema.org can be exposed as [JSON-LD](http://en.wikipedia.org/wiki/JSON-LD),
-[microdata](http://en.wikipedia.org/wiki/Microdata_(HTML)) and [RDFa](https://en.wikipedia.org/wiki/RDFa).
+Schema.org is a vocabulary representing common data structures and their relations. Schema.org can be exposed as [JSON-LD](https://en.wikipedia.org/wiki/JSON-LD),
+[microdata](https://en.wikipedia.org/wiki/Microdata_(HTML)) and [RDFa](https://en.wikipedia.org/wiki/RDFa).
 Extracting semantical data exposed in the Schema.org vocabulary is supported by a growing number of companies including
 Google (Search, Gmail), Yahoo!, Bing and Yandex.
 
