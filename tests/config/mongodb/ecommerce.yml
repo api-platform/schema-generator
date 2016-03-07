@@ -1,0 +1,94 @@
+header: |
+  /*
+   * This file is part of the Ecommerce package.
+   *
+   * (c) Kévin Dunglas <dunglas@gmail.com>
+   *
+   * For the full copyright and license information, please view the LICENSE
+   * file that was distributed with this source code.
+   */
+rdfa:
+  -
+    uri:    tests/data/schema.rdfa
+    format: rdfa
+relations:
+  - tests/data/v1.owl
+namespaces:
+  entity:               'Dunglas\EcommerceBundle\Document'
+  enum:                 'Dunglas\EcommerceBundle\Enum'
+  interface:            'Dunglas\EcommerceBundle\Model'
+annotationGenerators:
+  - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
+  - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
+  - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineMongoDBAnnotationGenerator
+author: "Kévin Dunglas <dunglas@gmail.com>"
+debug: true
+useInterface: true
+checkIsGoodRelations: true
+types:
+  Thing:
+    properties:
+      name: ~
+      description: ~
+      image: { range: ImageObject }
+      additionalType: ~
+  Product:
+    properties:
+      sku:
+        cardinality: "(0..1)"
+      url: ~
+      brand: ~
+      productID: ~
+      releaseDate: ~
+      offers: ~
+      itemCondition: ~
+      gtin13: ~
+      gtin14: ~
+      gtin8: ~
+      mpn: ~
+      color: ~
+      depth: { range: "Text" }
+      height: { range: "Text" }
+      weight: { range: "Text" }
+      width: { range: "Text" }
+      seller: { range: "Seller" }
+  Brand:
+    parent: "Thing"
+    properties:
+      logo: { range: "ImageObject" }
+  Seller:
+    parent: false
+    guessFrom: Person
+    properties:
+      name: ~
+      birthDate: ~
+  ImageObject:
+    parent: Thing
+    properties:
+      caption: ~
+  ProductModel:
+    properties:
+      isVariantOf: ~
+  Offer:
+    parent: Thing
+    properties:
+      acceptedPaymentMethod: ~
+      availability: ~
+      availabilityStarts: ~
+      availabilityEnds: ~
+      availableDeliveryMethod: ~
+      category: { range: "Text" }
+      deliveryLeadTime: ~
+      inventoryLevel: ~
+      itemCondition: ~
+      price: { range: Number }
+      priceCurrency: ~
+      validFrom: ~
+      validThrough: ~
+  DeliveryChargeSpecification: { parent: false }
+  PaymentChargeSpecification: { parent: false }
+  OfferItemCondition: ~
+  PaymentMethod: ~
+  ItemAvailability: ~
+  DeliveryMethod: ~
+  QuantitativeValue: { parent: false }
