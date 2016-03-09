@@ -36,6 +36,17 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->defaultValue([
                         ['uri' => self::SCHEMA_ORG_RDFA_URL, 'format' => null],
                     ])
+                    ->beforeNormalization()
+                        ->ifArray()
+                        ->then(function (array $v) {
+                            return array_map(
+                                function ($rdfa) {
+                                    return is_scalar($rdfa) ? ['uri' => $rdfa, 'format' => null] : $rdfa;
+                                },
+                                $v
+                            );
+                        })
+                    ->end()
                     ->prototype('array')
                         ->children()
                             ->scalarNode('uri')->defaultValue(self::SCHEMA_ORG_RDFA_URL)->info('RDFa URI to use')->example(self::SCHEMA_ORG_RDFA_URL)->end()
