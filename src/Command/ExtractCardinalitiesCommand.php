@@ -1,17 +1,19 @@
 <?php
 
 /*
+ * This file is part of the API Platform project.
+ *
  * (c) Kévin Dunglas <dunglas@gmail.com>
  *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace ApiPlatform\SchemaGenerator\Command;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
-use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
+use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,8 +32,7 @@ class ExtractCardinalitiesCommand extends Command
     {
         $this
             ->setName('extract-cardinalities')
-            ->setDescription('Extract properties\' cardinality')
-        ;
+            ->setDescription('Extract properties\' cardinality');
     }
 
     /**
