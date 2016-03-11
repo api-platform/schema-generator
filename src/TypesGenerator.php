@@ -1,10 +1,12 @@
 <?php
 
 /*
+ * This file is part of the API Platform project.
+ *
  * (c) Kévin Dunglas <dunglas@gmail.com>
  *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace ApiPlatform\SchemaGenerator;
@@ -823,13 +825,12 @@ class TypesGenerator
         $resolver
             ->setAllFixers($fixer->getFixers())
             ->setConfig($config)
-            ->setOptions(array(
+            ->setOptions([
                 'level' => 'symfony',
                 'fixers' => null,
                 'progress' => false,
-            ))
-            ->resolve()
-        ;
+            ])
+            ->resolve();
 
         $config->fixers($resolver->getFixers());
 
