@@ -218,7 +218,7 @@ class TypesGenerator
             // Fields
             foreach ($propertiesMap[$type->getUri()] as $property) {
                 // Ignore properties not set if using a config file
-                if (is_array($typeConfig['properties']) && !isset($typeConfig['properties'][$property->localName()])) {
+                if (is_array($typeConfig['properties'])  && count($typeConfig['properties'])>0 && !isset($typeConfig['properties'][$property->localName()])) {
                     continue;
                 }
 
@@ -527,7 +527,7 @@ class TypesGenerator
         }
 
         $propertyConfig = $typeConfig['properties'][$propertyName];
-
+    
         $ranges = [];
         if (isset($propertyConfig['range']) && $propertyConfig['range']) {
             $ranges[] = $propertyConfig['range'];
@@ -540,7 +540,7 @@ class TypesGenerator
         }
 
         $numberOfRanges = count($ranges);
-        if (0 === $numberOfRanges) {
+        if (0 === $numberOfRanges && $propertyConfig!=null) {
             $this->logger->error(sprintf('The property "%s" (type "%s") has an unknown type. Add its type to the config file.', $propertyName, $type->localName()));
         } else {
             if ($numberOfRanges > 1) {
