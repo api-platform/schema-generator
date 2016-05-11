@@ -106,40 +106,44 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
             $annotation = '@ORM\Column';
             $isColumnHasProperties = false;
 
-            if ($type !== 'string' || $field['isNullable'] || $field['isUnique']) {
-                $isColumnHasProperties = true;
-            }
+            if ($field['ormColumn']) {
+                $annotation .= '('.$field['ormColumn'].')';
+            } else {
+                if ($type !== 'string' || $field['isNullable'] || $field['isUnique']) {
+                    $isColumnHasProperties = true;
+                }
 
-            if ($field['isArray']) {
-                $type = 'simple_array';
-            }
+                if ($field['isArray']) {
+                    $type = 'simple_array';
+                }
 
-            if ($isColumnHasProperties) {
-                $annotation .= '(';
-            }
+                if ($isColumnHasProperties) {
+                    $annotation .= '(';
+                }
 
-            if ($type !== 'string') {
-                $annotation .= sprintf('type="%s"', $type);
-            }
+                if ($type !== 'string') {
+                    $annotation .= sprintf('type="%s"', $type);
+                }
 
-            if ($type !== 'string' && $field['isNullable']) {
-                $annotation .= ', ';
-            }
+                if ($type !== 'string' && $field['isNullable']) {
+                    $annotation .= ', ';
+                }
 
-            if ($field['isNullable']) {
-                $annotation .= 'nullable=true';
-            }
+                if ($field['isNullable']) {
+                    $annotation .= 'nullable=true';
+                }
 
-            if ($field['isUnique'] && $field['isNullable']) {
-                $annotation .= ', ';
-            }
+                if ($field['isUnique'] && $field['isNullable']) {
+                    $annotation .= ', ';
+                }
 
-            if ($field['isUnique']) {
-                $annotation .= 'unique=true';
-            }
+                if ($field['isUnique']) {
+                    $annotation .= 'unique=true';
+                }
 
-            if ($isColumnHasProperties) {
-                $annotation .= ')';
+                if ($isColumnHasProperties) {
+                    $annotation .= ')';
+                }
             }
 
             $annotations[] = $annotation;

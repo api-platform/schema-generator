@@ -129,6 +129,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                                             CardinalitiesExtractor::CARDINALITY_N_N,
                                             CardinalitiesExtractor::CARDINALITY_UNKNOWN,
                                         ])->end()
+                                        ->scalarNode('ormColumn')->defaultNull()->info('The doctrine column annotation content')->example('type="decimal", precision=5, scale=1, options={"comment" = "my comment"}')->end()
                                         ->arrayNode('groups')
                                             ->info('Symfony Serialization Groups')
                                             ->prototype('scalar')->end()

@@ -303,6 +303,7 @@ class TypesGenerator
                             'resource' => null,
                             'range' => 'Integer',
                             'cardinality' => CardinalitiesExtractor::CARDINALITY_1_1,
+                            'ormColumn' => null,
                             'isArray' => false,
                             'isNullable' => false,
                             'isUnique' => false,
@@ -587,6 +588,8 @@ class TypesGenerator
                 $cardinality = $property ? $this->cardinalities[$propertyName] : CardinalitiesExtractor::CARDINALITY_1_1;
             }
 
+            $ormColumn = isset($propertyConfig['ormColumn']) ? $propertyConfig['ormColumn'] : null;
+
             $isArray = in_array($cardinality, [
                 CardinalitiesExtractor::CARDINALITY_1_N,
                 CardinalitiesExtractor::CARDINALITY_N_N,
@@ -613,6 +616,7 @@ class TypesGenerator
                 'resource' => $property,
                 'range' => $ranges[0],
                 'cardinality' => $cardinality,
+                'ormColumn' => $ormColumn,
                 'isArray' => $isArray,
                 'isNullable' => $isNullable,
                 'isUnique' => isset($propertyConfig['unique']) && $propertyConfig['unique'],
@@ -796,8 +800,7 @@ class TypesGenerator
     {
         $uses = $classes[$className]['uses'];
 
-        if (
-            isset($classes[$className]['interfaceNamespace'])
+        if (isset($classes[$className]['interfaceNamespace'])
             && $classes[$className]['interfaceNamespace'] !== $classes[$className]['namespace']
         ) {
             $uses[] = sprintf(

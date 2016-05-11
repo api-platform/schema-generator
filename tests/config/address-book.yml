@@ -18,7 +18,8 @@ types:
       additionalName: ~
       gender: ~
       address: { range: PostalAddress }
-      birthDate: ~
+      # Custom range and custom ORM\Column content
+      birthDate: { range: DateTime, ormColumn: 'type="datetimetz", nullable=true, options={"comment" = "Birthdate with timezone."}' }
       telephone: ~
       email: ~
       jobTitle: ~
@@ -45,3 +46,5 @@ types:
     parent: false
     properties:
       name: ~
+      # Custom property with custom ORM\Column content
+      adminCode: {range: Text, ormColumn: 'type="string", length=3, unique=true, nullable=false, options={"comment" = "A code for central administration."}' }
