@@ -45,8 +45,7 @@ class TypesGeneratorTest extends \PHPUnit_Framework_TestCase
 
         $typesGenerator = new TypesGenerator($twig, $logger, $graphs, $cardinalitiesExtractor, $goodRelationsBridge);
 
-        $config = $this->getConfig();
-        $typesGenerator->generate($config);
+        $typesGenerator->generate($this->getConfig());
     }
 
     private function getGraphs()
