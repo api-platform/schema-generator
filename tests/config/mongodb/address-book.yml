@@ -1,0 +1,47 @@
+# The PHP namespace of generated entities
+namespaces:
+  entity: 'AddressBook\Document'
+# Enable DunglasApiAnnotationGenerator
+annotationGenerators:
+    - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
+    - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineMongoDBAnnotationGenerator
+    - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
+    - ApiPlatform\SchemaGenerator\AnnotationGenerator\DunglasApiAnnotationGenerator
+# The list of types and properties we want to use
+types:
+  Person:
+    parent: false
+    properties:
+      name: ~
+      familyName: ~
+      givenName: ~
+      additionalName: ~
+      gender: ~
+      address: { range: PostalAddress }
+      birthDate: ~
+      telephone: ~
+      email: ~
+      jobTitle: ~
+      # Default relation table name would be "person_organization" for all following fields, but we customize them
+      affiliation: ~
+      brand: { relationTableName: "person_brand"}
+      memberOf: { range: "Organization", cardinality: (1..*), relationTableName: "person_memberof"}
+      worksFor: { range: "Organization", cardinality: (0..*), relationTableName: "person_worksfor"}
+      # url field is a custom one without definition, it should render error
+      url: ~
+      friends: { range: "Person", cardinality: (0..*) }
+  PostalAddress:
+    # Disable the generation of the class hierarchy for this type
+    parent: false
+    properties:
+      # Force the type of the addressCountry property to text
+      addressCountry: { range: "Text" }
+      addressLocality: ~
+      addressRegion: ~
+      postOfficeBoxNumber: ~
+      postalCode: ~
+      streetAddress: ~
+  Organization:
+    parent: false
+    properties:
+      name: ~
