@@ -133,13 +133,13 @@ class TypesGenerator
                 $typesToGenerate = $graph->allOfType('rdfs:Class');
             }
         } else {
-            foreach ($config['types'] as $key => $value) {
+            foreach ($config['types'] as $typeName => $typeConfig) {
                 $resource = null;
                 foreach ($this->graphs as $graph) {
                     $resources = $graph->resources();
 
-                    if (isset($resources[$value['vocabularyNamespace'].$key])) {
-                        $resource = $graph->resource($value['vocabularyNamespace'].$key, 'rdfs:Class');
+                    if (isset($resources[$typeConfig['vocabularyNamespace'].$typeName])) {
+                        $resource = $graph->resource($typeConfig['vocabularyNamespace'].$typeName, 'rdfs:Class');
                         break;
                     }
                 }
@@ -147,9 +147,9 @@ class TypesGenerator
                 if ($resource) {
                     $typesToGenerate[] = $resource;
                 } else {
-                    $this->logger->warning('Type "{key}" cannot be found. Using "{guessFrom}" type to generate entity.', ['key' => $key, 'guessFrom' => $value['guessFrom']]);
-                    $type = $graph->resource($value['vocabularyNamespace'].$value['guessFrom'], 'rdfs:Class');
-                    $typesToGenerate[$key] = $type;
+                    $this->logger->warning('Type "{typeName}" cannot be found. Using "{guessFrom}" type to generate entity.', ['typeName' => $typeName, 'guessFrom' => $typeConfig['guessFrom']]);
+                    $type = $graph->resource($typeConfig['vocabularyNamespace'].$typeConfig['guessFrom'], 'rdfs:Class');
+                    $typesToGenerate[$typeName] = $type;
                 }
             }
         }
@@ -157,8 +157,8 @@ class TypesGenerator
         $classes = [];
         $propertiesMap = $this->createPropertiesMap($typesToGenerate);
 
-        foreach ($typesToGenerate as $key => $type) {
-            $typeName = is_string($key) ? $key : $type->localName();
+        foreach ($typesToGenerate as $typeName => $type) {
+            $typeName = is_string($typeName) ? $typeName : $type->localName();
             $typeConfig = isset($config['types'][$typeName]) ? $config['types'][$typeName] : null;
             $class = $baseClass;
 
@@ -195,7 +195,7 @@ class TypesGenerator
                     $numberOfSupertypes = count($type->all('rdfs:subClassOf'));
 
                     if ($numberOfSupertypes > 1) {
-                        $this->logger->error(sprintf('The type "%s" has several supertypes. Using the first one.', $type->localName()));
+                        $this->logger->warning(sprintf('The type "%s" has several supertypes. Using the first one.', $type->localName()));
                     }
 
                     $class['parent'] = $numberOfSupertypes ? $type->all('rdfs:subClassOf')[0]->localName() : false;
@@ -218,7 +218,7 @@ class TypesGenerator
             // Fields
             foreach ($propertiesMap[$type->getUri()] as $property) {
                 // Ignore properties not set if using a config file
-                if (is_array($typeConfig['properties']) && !isset($typeConfig['properties'][$property->localName()])) {
+                if (isset($typeConfig['properties']) && is_array($typeConfig['properties']) && !array_key_exists($property->localName(), $typeConfig['properties'])) {
                     continue;
                 }
 
@@ -226,7 +226,7 @@ class TypesGenerator
             }
 
             // Add custom fields (non schema.org)
-            if (is_array($typeConfig['properties'])) {
+            if (isset($typeConfig['properties']) && is_array($typeConfig['properties'])) {
                 foreach (array_diff_key($typeConfig['properties'], $class['fields']) as $propertyName => $property) {
                     $this->logger->info(sprintf('The property "%s" (type "%s") is a custom property.', $propertyName, $type->localName()));
 
@@ -255,6 +255,41 @@ class TypesGenerator
                 $class['abstract'] = $config['types'][$class['name']]['abstract'];
             } else {
                 $class['abstract'] = $class['hasChild'];
+            }
+
+            // When including all properties, ignore properties already set on parent
+            $typeConfig = isset($config['types'][$class['name']]) ? $config['types'][$class['name']] : null;
+            if ((!isset($typeConfig['properties']) || !is_array($typeConfig['properties'])) && $class['parent']) {
+                $type = $class['resource'];
+
+                foreach ($propertiesMap[$type->getUri()] as $property) {
+                    if (!isset($class['fields'][$property->localName()])) {
+                        continue;
+                    }
+
+                    $parentConfig = isset($config['types'][$class['parent']]) ? $config['types'][$class['parent']] : null;
+                    $parentClass = $classes[$class['parent']];
+
+                    while ($parentClass) {
+                        if (!isset($parentConfig['properties']) || !is_array($parentConfig['properties'])) {
+                            // Unset implicit property
+                            $parentType = $parentClass['resource'];
+                            if (in_array($property, $propertiesMap[$parentType->getUri()])) {
+                                unset($class['fields'][$property->localName()]);
+                                continue 2;
+                            }
+                        } else {
+                            // Unset explicit property
+                            if (array_key_exists($property->localName(), $parentConfig['properties'])) {
+                                unset($class['fields'][$property->localName()]);
+                                continue 2;
+                            }
+                        }
+
+                        $parentConfig = $parentClass['parent'] ? (isset($config['types'][$parentClass['parent']]) ? $config['types'][$parentClass['parent']] : null) : null;
+                        $parentClass = $parentClass['parent'] ? $classes[$parentClass['parent']] : null;
+                    }
+                }
             }
         }
 
@@ -435,7 +470,7 @@ class TypesGenerator
     }
 
     /**
-     * Create a maps between class an properties.
+     * Creates a map between classes and properties.
      *
      * @param array $types
      *
@@ -526,7 +561,7 @@ class TypesGenerator
             }
         }
 
-        $propertyConfig = $typeConfig['properties'][$propertyName];
+        $propertyConfig = isset($typeConfig['properties'][$propertyName]) ? $typeConfig['properties'][$propertyName] : null;
 
         $ranges = [];
         if (isset($propertyConfig['range']) && $propertyConfig['range']) {
@@ -544,7 +579,7 @@ class TypesGenerator
             $this->logger->error(sprintf('The property "%s" (type "%s") has an unknown type. Add its type to the config file.', $propertyName, $type->localName()));
         } else {
             if ($numberOfRanges > 1) {
-                $this->logger->error(sprintf('The property "%s" (type "%s") has several types. Using the first one.', $propertyName, $type->localName()));
+                $this->logger->warning(sprintf('The property "%s" (type "%s") has several types. Using the first one.', $propertyName, $type->localName()));
             }
 
             $cardinality = isset($propertyConfig['cardinality']) ? $propertyConfig['cardinality'] : false;
@@ -557,7 +592,7 @@ class TypesGenerator
                 CardinalitiesExtractor::CARDINALITY_N_N,
             ]);
 
-            if (false === $propertyConfig['nullable']) {
+            if (isset($propertyConfig['nullable']) && false === $propertyConfig['nullable']) {
                 $isNullable = false;
             } else {
                 $isNullable = !in_array($cardinality, [
@@ -580,7 +615,7 @@ class TypesGenerator
                 'cardinality' => $cardinality,
                 'isArray' => $isArray,
                 'isNullable' => $isNullable,
-                'isUnique' => $propertyConfig['unique'],
+                'isUnique' => isset($propertyConfig['unique']) && $propertyConfig['unique'],
                 'isCustom' => empty($property),
                 'isEmbedded' => $isEmbedded,
                 'columnPrefix' => $columnPrefix,

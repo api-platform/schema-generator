@@ -1,0 +1,27 @@
+annotationGenerators: # Generators we want to use, keep it as is for any API Platform project
+    - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
+    - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator
+    - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
+    - ApiPlatform\SchemaGenerator\AnnotationGenerator\DunglasApiAnnotationGenerator
+namespaces:
+  entity: AppBundle\Entity # The default namespace for entities, following API Platform and Symfony best practices
+types: # The list of type to generated (a PHP entity class by type will be generated)
+  SocialMediaPosting: ~
+  BlogPosting: ~ # A type to generate a PHP entity class from, including all its properties (here this type has no specific property, they are all inherited)
+  Article: # Schema.org has an inheritance system, we will configure all types of the hierarchy
+    properties: # The list of properties we want to use
+      articleBody: ~
+      articleSection: ~
+  CreativeWork:
+    properties:
+      author:
+        range: Person # PHP Schema handle relations. Here we force the type of the property to Person
+        cardinality: (*..0) # Force the cardinality of the relation
+      headline: ~
+      isFamilyFriendly: ~
+      datePublished: ~
+  Thing:
+    properties:
+      name: ~
+  Person: # Person is a relation of the "CreativeWork" type (property "author"), PHP Schema will generate relations for us
+    properties: {} # We don't want any specific property for a person except "name" inherited from Thing
