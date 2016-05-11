@@ -202,7 +202,7 @@ class TypesGenerator
                 }
 
                 if (null !== $class['parent']) {
-                    $class['uses'][] =  sprintf('%s\\%s', $config['types']['Thing']['namespaces']['class'], $class['parent']);
+                    $class['uses'][] = sprintf('%s\\%s', $config['types']['Thing']['namespaces']['class'], $class['parent']);
                 }
 
                 // Embeddable

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace ApiPlatform\SchemaGenerator\Tests;
+namespace ApiPlatform\SchemaGenerator\tests;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\TypesGenerator;

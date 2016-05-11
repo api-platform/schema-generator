@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace ApiPlatform\SchemaGenerator\Tests\AnnotationGenerator;
+namespace ApiPlatform\SchemaGenerator\tests\AnnotationGenerator;
 
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\ApiPlatformCoreAnnotationGenerator;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
