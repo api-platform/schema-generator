@@ -201,8 +201,12 @@ class TypesGenerator
                     $class['parent'] = $numberOfSupertypes ? $type->all('rdfs:subClassOf')[0]->localName() : false;
                 }
 
-                if (null !== $class['parent']) {
-                    $class['uses'][] = sprintf('%s\\%s', $config['types']['Thing']['namespaces']['class'], $class['parent']);
+                if (isset($class['parent']) && isset($config['types'][$class['parent']]['namespaces']['class'])) {
+                    $parentNamespace = $config['types'][$class['parent']]['namespaces']['class'];
+
+                    if ($parentNamespace !== $class['namespace']) {
+                        $class['uses'][] = $parentNamespace.'\\'.$class['parent'];
+                    }
                 }
 
                 // Embeddable
