@@ -51,18 +51,18 @@ class ApiPlatformCoreAnnotationGeneratorTest extends \PHPUnit_Framework_TestCase
 
     public function testGenerateClassAnnotations()
     {
-        $this->assertSame(['@Resource(iri="http://schema.org/Res")'], $this->generator->generateClassAnnotations('Res'));
+        $this->assertSame(['@ApiResource(iri="http://schema.org/Res")'], $this->generator->generateClassAnnotations('Res'));
     }
 
     public function testGenerateFieldAnnotations()
     {
-        $this->assertSame(['@Property(iri="http://schema.org/prop")'], $this->generator->generateFieldAnnotations('Res', 'prop'));
+        $this->assertSame(['@ApiProperty(iri="http://schema.org/prop")'], $this->generator->generateFieldAnnotations('Res', 'prop'));
         $this->assertSame([], $this->generator->generateFieldAnnotations('Res', 'customProp'));
     }
 
     public function testGenerateUses()
     {
-        $this->assertSame(['ApiPlatform\Core\Annotation\Resource', 'ApiPlatform\Core\Annotation\Property'], $this->generator->generateUses('Res'));
+        $this->assertSame(['ApiPlatform\Core\Annotation\ApiResource', 'ApiPlatform\Core\Annotation\ApiProperty'], $this->generator->generateUses('Res'));
         $this->assertSame([], $this->generator->generateUses('MyEnum'));
     }
 }
