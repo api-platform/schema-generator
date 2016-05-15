@@ -1,0 +1,26 @@
+{
+  "directories": ["src/"],
+  "finder": [
+    {
+      "name": "*.php",
+      "exclude": [
+        ".gitignore",
+        ".md",
+        "phpunit",
+        "Tester",
+        "Tests",
+        "tests"
+      ],
+      "in": "vendor"
+    }
+  ],
+  "compactors": [
+    "Herrera\\Box\\Compactor\\Json",
+    "Herrera\\Box\\Compactor\\Php"
+  ],
+  "git-version": "package_version",
+  "main": "bin/schema",
+  "output": "schema.phar",
+  "stub": true,
+  "chmod": "0755"
+}

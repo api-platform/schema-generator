@@ -13,15 +13,27 @@ matrix:
         - php: '5.5'
         - php: '5.6'
         - php: '7.0'
-        - php: hhvm
+        - php: 'hhvm'
 
 before_install:
     - if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then phpenv config-rm xdebug.ini; fi;
-    - composer self-update
+    - if [ "$TRAVIS_PHP_VERSION" = "5.6" ]; then curl -LSs https://box-project.github.io/box2/installer.php | php; fi;
 
 install:
     - composer update --no-interaction --prefer-dist
+    - if [ "$TRAVIS_PHP_VERSION" = "5.6" ]; then php box.phar build; fi;
 
 script:
     - phpunit
     - tests/run-tests.sh
+
+deploy:
+    provider: releases
+    api_key:
+        secure: Oq9TAPQZqnjxhbprWZQE64GhK4vxBHjvcMkS9dkbkCJQVz8cSqGxZOFqMOHulraFs2IX9PLeplrZReFMT630KkMNf74mkTtL9WMuaMJV0bbUPY+X7YpDGlLNNU7OA9Rxjr3y68x1jVxD6mLSlCFZP00qvmYRlOE1i2ltjO7L5Sw=
+    file: schema.phar
+    skip_cleanup: true
+    on:
+      tags: true
+      repo: api-platform/schema-generator
+      php:  '5.6'
