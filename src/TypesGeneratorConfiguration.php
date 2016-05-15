@@ -58,9 +58,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                 ->end()
                 ->arrayNode('relations')
                     ->info('OWL relation files to use')
-                    ->defaultValue([
-                        self::GOOD_RELATIONS_OWL_URL,
-                    ])
+                    ->defaultValue([self::GOOD_RELATIONS_OWL_URL])
                     ->prototype('scalar')->end()
                 ->end()
                 ->booleanNode('debug')->defaultFalse()->info('Debug mode')->end()
@@ -88,6 +86,18 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                 ->scalarNode('author')->defaultFalse()->info('The value of the phpDoc\'s @author annotation')->example('Kévin Dunglas <dunglas@gmail.com>')->end()
                 ->enumNode('fieldVisibility')->values(['private', 'protected', 'public'])->defaultValue('private')->cannotBeEmpty()->info('Visibility of entities fields')->end()
                 ->arrayNode('types')
+                    ->beforeNormalization()
+                        ->always()
+                        ->then(function ($v) {
+                            foreach ($v as $key => $type) {
+                                if (!isset($type['properties'])) {
+                                    $v[$key]['allProperties'] = true;
+                                }
+                            }
+
+                            return $v;
+                        })
+                    ->end()
                     ->info('Schema.org\'s types to use')
                     ->useAttributeAsKey('id')
                     ->prototype('array')
@@ -111,6 +121,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                             ->end()
                             ->scalarNode('parent')->defaultNull()->info('The parent class, set to false for a top level class')->end()
                             ->scalarNode('guessFrom')->defaultValue('Thing')->info('If declaring a custom class, this will be the class from which properties type will be guessed')->end()
+                            ->booleanNode('allProperties')->defaultFalse()->info('Import all existing properties')->end()
                             ->arrayNode('properties')
                                 ->info('Properties of this type to use')
                                 ->useAttributeAsKey('id')

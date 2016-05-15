@@ -31,10 +31,6 @@ class TypesGeneratorTest extends \PHPUnit_Framework_TestCase
         $twigProphecy->render('class.php.twig', Argument::type('array'))->willReturn();
         $twig = $twigProphecy->reveal();
 
-        $logger = new NullLogger();
-
-        $graphs = $this->getGraphs();
-
         $cardinalitiesExtractorProphecy = $this->prophesize('ApiPlatform\SchemaGenerator\CardinalitiesExtractor');
         $cardinalities = $this->getCardinalities();
         $cardinalitiesExtractorProphecy->extract()->willReturn($cardinalities)->shouldBeCalled();
@@ -43,7 +39,7 @@ class TypesGeneratorTest extends \PHPUnit_Framework_TestCase
         $goodRelationsBridgeProphecy = $this->prophesize('ApiPlatform\SchemaGenerator\GoodRelationsBridge');
         $goodRelationsBridge = $goodRelationsBridgeProphecy->reveal();
 
-        $typesGenerator = new TypesGenerator($twig, $logger, $graphs, $cardinalitiesExtractor, $goodRelationsBridge);
+        $typesGenerator = new TypesGenerator($twig, new NullLogger(), $this->getGraphs(), $cardinalitiesExtractor, $goodRelationsBridge);
 
         $typesGenerator->generate($this->getConfig());
     }
@@ -132,6 +128,7 @@ class TypesGeneratorTest extends \PHPUnit_Framework_TestCase
             'output' => 'build/type-generator-test',
             'types' => [
                 'Article' => [
+                    'allProperties' => false,
                     'properties' => [
                         'articleBody' => null,
                         'articleSection' => null,
@@ -139,6 +136,7 @@ class TypesGeneratorTest extends \PHPUnit_Framework_TestCase
                     'vocabularyNamespace' => TypesGenerator::SCHEMA_ORG_NAMESPACE,
                 ],
                 'CreativeWork' => [
+                    'allProperties' => false,
                     'properties' => [
                         'author' => [
                             'cardinality' => CardinalitiesExtractor::CARDINALITY_N_0,
@@ -151,22 +149,21 @@ class TypesGeneratorTest extends \PHPUnit_Framework_TestCase
                     'vocabularyNamespace' => TypesGenerator::SCHEMA_ORG_NAMESPACE,
                 ],
                 'BlogPosting' => [
+                    'allProperties' => true,
                     'properties' => null,
                     'vocabularyNamespace' => TypesGenerator::SCHEMA_ORG_NAMESPACE,
                 ],
                 'Person' => [
-                    'properties' => [
-                    ],
+                    'allProperties' => false,
+                    'properties' => [],
                     'vocabularyNamespace' => TypesGenerator::SCHEMA_ORG_NAMESPACE,
                 ],
                 'SocialMediaPosting' => [
-                    'properties' => null,
+                    'allProperties' => true,
                     'vocabularyNamespace' => TypesGenerator::SCHEMA_ORG_NAMESPACE,
                 ],
                 'Thing' => [
-                    'properties' => [
-                        'name' => null,
-                    ],
+                    'allProperties' => true,
                     'vocabularyNamespace' => TypesGenerator::SCHEMA_ORG_NAMESPACE,
                 ],
             ],

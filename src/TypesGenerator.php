@@ -113,8 +113,10 @@ class TypesGenerator
 
     /**
      * Generates files.
+     *
+     * @param array $config
      */
-    public function generate($config)
+    public function generate(array $config)
     {
         $baseClass = [
             'constants' => [],
@@ -226,11 +228,9 @@ class TypesGenerator
             // Fields
             foreach ($propertiesMap[$type->getUri()] as $property) {
                 // Ignore properties not set if using a config file
-                if (isset($typeConfig['properties']) && is_array($typeConfig['properties']) && !array_key_exists($property->localName(), $typeConfig['properties'])) {
-                    continue;
+                if ($typeConfig['allProperties'] || (is_array($typeConfig['properties']) && array_key_exists($property->localName(), $typeConfig['properties']))) {
+                    $class = $this->generateField($config, $class, $type, $typeName, $property->localName(), $property);
                 }
-
-                $class = $this->generateField($config, $class, $type, $typeName, $property->localName(), $property);
             }
 
             // Add custom fields (non schema.org)
@@ -266,8 +266,7 @@ class TypesGenerator
             }
 
             // When including all properties, ignore properties already set on parent
-            $typeConfig = isset($config['types'][$class['name']]) ? $config['types'][$class['name']] : null;
-            if ((!isset($typeConfig['properties']) || !is_array($typeConfig['properties'])) && $class['parent']) {
+            if (isset($config['types'][$class['name']]['allProperties']) && $config['types'][$class['name']]['allProperties'] && $class['parent']) {
                 $type = $class['resource'];
 
                 foreach ($propertiesMap[$type->getUri()] as $property) {
