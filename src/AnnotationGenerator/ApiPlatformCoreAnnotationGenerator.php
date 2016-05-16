@@ -29,7 +29,7 @@ class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerator
     {
         $resource = $this->classes[$className]['resource'];
 
-        return [sprintf('@Resource(iri="%s")', $resource->getUri())];
+        return [sprintf('@ApiResource(iri="%s")', $resource->getUri())];
     }
 
     /**
@@ -37,7 +37,7 @@ class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerator
      */
     public function generateFieldAnnotations($className, $fieldName)
     {
-        return $this->classes[$className]['fields'][$fieldName]['isCustom'] ? [] : [sprintf('@Property(iri="http://schema.org/%s")', $fieldName)];
+        return $this->classes[$className]['fields'][$fieldName]['isCustom'] ? [] : [sprintf('@ApiProperty(iri="http://schema.org/%s")', $fieldName)];
     }
 
     /**
@@ -50,6 +50,6 @@ class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerator
         $subClassOf = $resource->get('rdfs:subClassOf');
         $typeIsEnum = $subClassOf && $subClassOf->getUri() === TypesGenerator::SCHEMA_ORG_ENUMERATION;
 
-        return $typeIsEnum ? [] : ['ApiPlatform\Core\Annotation\Resource', 'ApiPlatform\Core\Annotation\Property'];
+        return $typeIsEnum ? [] : ['ApiPlatform\Core\Annotation\ApiResource', 'ApiPlatform\Core\Annotation\ApiProperty'];
     }
 }
