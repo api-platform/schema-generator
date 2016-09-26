@@ -13,7 +13,7 @@ namespace ApiPlatform\SchemaGenerator;
 
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\AnnotationGeneratorInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\CS\Config\Config;
+use Symfony\CS\Config;
 use Symfony\CS\ConfigurationResolver;
 use Symfony\CS\Fixer;
 
