@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace ApiPlatform\SchemaGenerator\tests;
+namespace ApiPlatform\SchemaGenerator\Tests;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
@@ -102,6 +102,9 @@ class TypesGeneratorTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
+    /**
+     * @return array
+     */
     private function getCardinalities()
     {
         return [
@@ -116,6 +119,9 @@ class TypesGeneratorTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
+    /**
+     * @return array
+     */
     private function getConfig()
     {
         return [
@@ -172,6 +178,9 @@ class TypesGeneratorTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
+    /**
+     * @return array
+     */
     private function getClasses()
     {
         return [
@@ -355,6 +364,8 @@ class TypesGeneratorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param array $class
+     *
      * @return \Closure
      */
     private function getContextMatcher(array $class)
