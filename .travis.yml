@@ -25,7 +25,6 @@ install:
 
 script:
     - phpunit
-    - tests/run-tests.sh
 
 deploy:
     provider: releases

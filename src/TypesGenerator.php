@@ -266,7 +266,7 @@ class TypesGenerator
             }
 
             // When including all properties, ignore properties already set on parent
-            if (isset($config['types'][$class['name']]['allProperties']) && $config['types'][$class['name']]['allProperties'] && $class['parent']) {
+            if (isset($config['types'][$class['name']]['allProperties']) && $config['types'][$class['name']]['allProperties'] && isset($classes[$class['parent']])) {
                 $type = $class['resource'];
 
                 foreach ($propertiesMap[$type->getUri()] as $property) {
