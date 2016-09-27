@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.2
+
+* Fix a bug when generating enumerations
+
+## 1.1.1
+
+* Use the new PHP CS Fixer package
+
 ## 1.1.0
 
 * MongoDB support
