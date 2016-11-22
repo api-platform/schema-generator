@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0
+
+* The default config now match the Symfony's and API Platform's Best Practices (namespaces)
+* The API Platform's annotation generator is enabled by default
+* Use HTTPS to retrieve vocabularies by default
+* Properties are generated in the order of the config file
+* Properties and constants are separated by an empty line
+
 ## 1.1.2
 
 * Fix a bug when generating enumerations

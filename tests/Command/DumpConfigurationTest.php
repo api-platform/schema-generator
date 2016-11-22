@@ -30,7 +30,7 @@ config:
     rdfa:
 
         # RDFa URI to use
-        uri:                  'http://schema.org/docs/schema_org_rdfa.html' # Example: http://schema.org/docs/schema_org_rdfa.html
+        uri:                  'https://schema.org/docs/schema_org_rdfa.html' # Example: https://schema.org/docs/schema_org_rdfa.html
 
         # RDFa URI data format
         format:               null # Example: rdfxml
@@ -39,7 +39,7 @@ config:
     relations:
 
         # Default:
-        - http://purl.org/goodrelations/v1.owl
+        - https://purl.org/goodrelations/v1.owl
 
     # Debug mode
     debug:                false
@@ -60,13 +60,13 @@ config:
     namespaces:
 
         # The namespace of the generated entities
-        entity:               SchemaOrg\Entity # Example: Acme\Entity
+        entity:               AppBundle\Entity # Example: Acme\Entity
 
         # The namespace of the generated enumerations
-        enum:                 SchemaOrg\Enum # Example: Acme\Enum
+        enum:                 AppBundle\Enum # Example: Acme\Enum
 
         # The namespace of the generated interfaces
-        interface:            SchemaOrg\Model # Example: Acme\Model
+        interface:            AppBundle\Model # Example: Acme\Model
 
     # Doctrine
     doctrine:
@@ -158,6 +158,7 @@ config:
         - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
         - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
         - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator
+        - ApiPlatform\SchemaGenerator\AnnotationGenerator\ApiPlatformCoreAnnotationGenerator
 
 
 YAML

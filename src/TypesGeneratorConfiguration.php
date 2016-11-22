@@ -21,8 +21,8 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class TypesGeneratorConfiguration implements ConfigurationInterface
 {
-    const SCHEMA_ORG_RDFA_URL = 'http://schema.org/docs/schema_org_rdfa.html';
-    const GOOD_RELATIONS_OWL_URL = 'http://purl.org/goodrelations/v1.owl';
+    const SCHEMA_ORG_RDFA_URL = 'https://schema.org/docs/schema_org_rdfa.html';
+    const GOOD_RELATIONS_OWL_URL = 'https://purl.org/goodrelations/v1.owl';
 
     /**
      * {@inheritdoc}
@@ -70,9 +70,9 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->addDefaultsIfNotSet()
                     ->info('PHP namespaces')
                     ->children()
-                        ->scalarNode('entity')->defaultValue('SchemaOrg\Entity')->info('The namespace of the generated entities')->example('Acme\Entity')->end()
-                        ->scalarNode('enum')->defaultValue('SchemaOrg\Enum')->info('The namespace of the generated enumerations')->example('Acme\Enum')->end()
-                        ->scalarNode('interface')->defaultValue('SchemaOrg\Model')->info('The namespace of the generated interfaces')->example('Acme\Model')->end()
+                        ->scalarNode('entity')->defaultValue('AppBundle\Entity')->info('The namespace of the generated entities')->example('Acme\Entity')->end()
+                        ->scalarNode('enum')->defaultValue('AppBundle\Enum')->info('The namespace of the generated enumerations')->example('Acme\Enum')->end()
+                        ->scalarNode('interface')->defaultValue('AppBundle\Model')->info('The namespace of the generated interfaces')->example('Acme\Model')->end()
                     ->end()
                 ->end()
                 ->arrayNode('doctrine')
@@ -161,6 +161,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                         'ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator',
                         'ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator',
                         'ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator',
+                        'ApiPlatform\SchemaGenerator\AnnotationGenerator\ApiPlatformCoreAnnotationGenerator',
                     ])
                     ->prototype('scalar')->end()
                 ->end()

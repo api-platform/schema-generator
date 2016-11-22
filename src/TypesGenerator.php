@@ -30,30 +30,36 @@ class TypesGenerator
      * @see https://github.com/myclabs/php-enum Used enum implementation
      */
     const ENUM_USE = 'MyCLabs\Enum\Enum';
+
     /**
      * @var string
      *
      * @see https://github.com/doctrine/collections
      */
     const DOCTRINE_COLLECTION_USE = 'Doctrine\Common\Collections\ArrayCollection';
+
     /**
      * @var string
      *
      * @see https://github.com/myclabs/php-enum Used enum implementation
      */
     const ENUM_EXTENDS = 'Enum';
+
     /**
      * @var string
      */
     const SCHEMA_ORG_NAMESPACE = 'http://schema.org/';
+
     /**
      * @var string
      */
     const SCHEMA_ORG_ENUMERATION = 'http://schema.org/Enumeration';
+
     /**
      * @var string
      */
     const SCHEMA_ORG_DOMAIN = 'schema:domainIncludes';
+
     /**
      * @var string
      */
@@ -147,7 +153,7 @@ class TypesGenerator
                 }
 
                 if ($resource) {
-                    $typesToGenerate[] = $resource;
+                    $typesToGenerate[$typeName] = $resource;
                 } else {
                     $this->logger->warning('Type "{typeName}" cannot be found. Using "{guessFrom}" type to generate entity.', ['typeName' => $typeName, 'guessFrom' => $typeConfig['guessFrom']]);
                     $type = $graph->resource($typeConfig['vocabularyNamespace'].$typeConfig['guessFrom'], 'rdfs:Class');
@@ -226,19 +232,25 @@ class TypesGenerator
             }
 
             // Fields
-            foreach ($propertiesMap[$type->getUri()] as $property) {
-                // Ignore properties not set if using a config file
-                if ($typeConfig['allProperties'] || (is_array($typeConfig['properties']) && array_key_exists($property->localName(), $typeConfig['properties']))) {
-                    $class = $this->generateField($config, $class, $type, $typeName, $property->localName(), $property);
+            if (!$typeConfig['allProperties'] && isset($typeConfig['properties']) && is_array($typeConfig['properties'])) {
+                foreach ($typeConfig['properties'] as $key => $value) {
+                    foreach ($propertiesMap[$type->getUri()] as $property) {
+                        if ($key !== $property->localName()) {
+                            continue;
+                        }
+
+                        $class = $this->generateField($config, $class, $type, $typeName, $property->localName(), $property);
+                        continue 2;
+                    }
+
+                    // Add custom fields (non schema.org)
+                    $this->logger->info(sprintf('The property "%s" (type "%s") is a custom property.', $key, $type->localName()));
+                    $class = $this->generateField($config, $class, $type, $typeName, $key);
                 }
-            }
-
-            // Add custom fields (non schema.org)
-            if (isset($typeConfig['properties']) && is_array($typeConfig['properties'])) {
-                foreach (array_diff_key($typeConfig['properties'], $class['fields']) as $propertyName => $property) {
-                    $this->logger->info(sprintf('The property "%s" (type "%s") is a custom property.', $propertyName, $type->localName()));
-
-                    $class = $this->generateField($config, $class, $type, $typeName, $propertyName);
+            } else {
+                // All properties
+                foreach ($propertiesMap[$type->getUri()] as $property) {
+                    $class = $this->generateField($config, $class, $type, $typeName, $property->localName(), $property);
                 }
             }
 
