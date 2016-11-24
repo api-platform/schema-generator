@@ -29,6 +29,7 @@ use {{ use }};
 {% endfor %}
      */
     const {{ constant.name }} = '{{ constant.value }}';
+
 {% endfor %}
 
 {% for field in class.fields %}
@@ -38,6 +39,7 @@ use {{ use }};
 {% endfor %}
      */
     {{ config.fieldVisibility }} ${{ field.name }}{% if field.isArray and (field.isEnum or not field.typeHint or not config.doctrine.useCollection) %} = []{% endif %};
+
 {% endfor %}
 
 {% if config.doctrine.useCollection and class.hasConstructor %}
