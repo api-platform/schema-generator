@@ -61,8 +61,9 @@ It opens the way to generic web API clients able to extract and process data fro
 
 ## Documentation
 
-* [Getting Started](https://api-platform.com/doc/1.0/schema-generator/getting-started)
-* [Configuration](https://api-platform.com/doc/1.0/schema-generator/configuration)
+* [Introduction](https://api-platform.com/docs/schema-generator/)
+* [Getting Started](https://api-platform.com/docs/schema-generator/getting-started)
+* [Configuration](https://api-platform.com/docs/schema-generator/configuration)
 
 ## Credits
 
