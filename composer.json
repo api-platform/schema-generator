@@ -23,7 +23,7 @@
         "symfony/console": "^2.7 || ^3.0",
         "symfony/yaml": "^2.7 || ^3.0",
         "symfony/config": "^2.7 || ^3.0",
-        "twig/twig": "^1.0",
+        "twig/twig": "^1.0 || ^2.0",
         "psr/log": "^1.0",
         "easyrdf/easyrdf": "^0.9",
         "league/html-to-markdown": "^4.0",
