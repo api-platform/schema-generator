@@ -26,13 +26,13 @@
         "twig/twig": "^1.0 || ^2.0",
         "psr/log": "^1.0",
         "easyrdf/easyrdf": "^0.9",
-        "league/html-to-markdown": "^4.0"
+        "league/html-to-markdown": "^4.0",
+        "friendsofphp/php-cs-fixer": "^1.12 || ^2.0"
     },
     "require-dev": {
         "doctrine/orm": "^2.2",
         "symfony/validator": "^2.7",
-        "symfony/filesystem": "^2.7",
-        "friendsofphp/php-cs-fixer": "^1.12"
+        "symfony/filesystem": "^2.7"
     },
     "suggest": {
         "myclabs/php-enum": "For enumerations",
