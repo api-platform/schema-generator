@@ -12,23 +12,26 @@
 namespace ApiPlatform\SchemaGenerator\Tests;
 
 use ApiPlatform\SchemaGenerator\Command\ExtractCardinalitiesCommand;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class ExtractCardinalitiesCommandTest extends \PHPUnit_Framework_TestCase
+class ExtractCardinalitiesCommandTest extends TestCase
 {
     public function testExtractCardinalities()
     {
         $commandTester = new CommandTester(new ExtractCardinalitiesCommand());
         $this->assertEquals(0, $commandTester->execute([]));
+
         $this->assertEquals(<<<'JSON'
 {
     "geoRadius": "unknown",
     "geoMidpoint": "unknown",
     "hasOfferCatalog": "unknown",
     "mapType": "unknown",
+    "touristType": "(0..*)",
     "orderQuantity": "(0..1)",
     "orderItemStatus": "(0..1)",
     "orderItemNumber": "(0..1)",
@@ -101,6 +104,7 @@ class ExtractCardinalitiesCommandTest extends \PHPUnit_Framework_TestCase
     "award": "unknown",
     "awards": "unknown",
     "baseSalary": "(0..1)",
+    "bccRecipient": "unknown",
     "benefits": "unknown",
     "jobBenefits": "unknown",
     "bestRating": "(0..1)",
@@ -132,6 +136,7 @@ class ExtractCardinalitiesCommandTest extends \PHPUnit_Framework_TestCase
     "includedDataCatalog": "unknown",
     "includedInDataCatalog": "unknown",
     "category": "(0..*)",
+    "ccRecipient": "unknown",
     "childMaxAge": "unknown",
     "childMinAge": "unknown",
     "children": "unknown",
@@ -175,7 +180,7 @@ class ExtractCardinalitiesCommandTest extends \PHPUnit_Framework_TestCase
     "customer": "unknown",
     "dataset": "unknown",
     "dateCreated": "(0..1)",
-    "dateline": "(0..1)",
+    "dateline": "unknown",
     "dateDeleted": "(0..1)",
     "dateModified": "(0..1)",
     "datePosted": "unknown",
@@ -258,6 +263,7 @@ class ExtractCardinalitiesCommandTest extends \PHPUnit_Framework_TestCase
     "foundingDate": "(0..1)",
     "free": "unknown",
     "isAccessibleForFree": "(0..1)",
+    "publicAccess": "unknown",
     "fromLocation": "unknown",
     "gender": "unknown",
     "genre": "unknown",
@@ -342,6 +348,8 @@ class ExtractCardinalitiesCommandTest extends \PHPUnit_Framework_TestCase
     "hasMap": "unknown",
     "map": "unknown",
     "maps": "unknown",
+    "maximumAttendeeCapacity": "(0..1)",
+    "remainingAttendeeCapacity": "(0..1)",
     "maxPrice": "(1..1)",
     "maxValue": "(0..1)",
     "member": "unknown",
@@ -349,6 +357,7 @@ class ExtractCardinalitiesCommandTest extends \PHPUnit_Framework_TestCase
     "members": "unknown",
     "memoryRequirements": "unknown",
     "mentions": "unknown",
+    "hasMenu": "unknown",
     "menu": "unknown",
     "merchant": "unknown",
     "minPrice": "(1..1)",
@@ -442,7 +451,7 @@ class ExtractCardinalitiesCommandTest extends \PHPUnit_Framework_TestCase
     "publication": "unknown",
     "publishedOn": "unknown",
     "publisher": "(0..1)",
-    "publishingPrinciples": "unknown",
+    "publishingPrinciples": "(0..1)",
     "qualifications": "unknown",
     "query": "unknown",
     "question": "unknown",
@@ -554,6 +563,7 @@ class ExtractCardinalitiesCommandTest extends \PHPUnit_Framework_TestCase
     "timeRequired": "unknown",
     "title": "(0..1)",
     "toLocation": "unknown",
+    "toRecipient": "unknown",
     "trackingNumber": "unknown",
     "trackingUrl": "unknown",
     "tracks": "unknown",
@@ -827,14 +837,12 @@ class ExtractCardinalitiesCommandTest extends \PHPUnit_Framework_TestCase
     "servingSize": "(0..1)",
     "sodiumContent": "(0..1)",
     "sugarContent": "(0..1)",
-    "totalTime": "(0..1)",
     "cookTime": "(0..1)",
     "cookingMethod": "(0..1)",
     "fatContent": "(0..1)",
     "foodEstablishment": "unknown",
     "foodEvent": "unknown",
     "nutrition": "unknown",
-    "prepTime": "(0..1)",
     "recipeCategory": "(0..1)",
     "recipeCuisine": "(0..1)",
     "ingredients": "unknown",
@@ -870,7 +878,31 @@ class ExtractCardinalitiesCommandTest extends \PHPUnit_Framework_TestCase
     "petsAllowed": "unknown",
     "smokingAllowed": "unknown",
     "numberOfBeds": "(0..1)",
-    "starRating": "unknown"
+    "starRating": "unknown",
+    "estimatedCost": "(0..1)",
+    "performTime": "(0..1)",
+    "prepTime": "(0..1)",
+    "supply": "unknown",
+    "steps": "(0..1)",
+    "tool": "unknown",
+    "totalTime": "(0..1)",
+    "yield": "(0..1)",
+    "afterMedia": "unknown",
+    "beforeMedia": "unknown",
+    "duringMedia": "unknown",
+    "requiredQuantity": "(0..*)",
+    "courseCode": "(0..1)",
+    "coursePrerequisites": "unknown",
+    "hasCourseInstance": "unknown",
+    "courseMode": "(0..1)",
+    "instructor": "unknown",
+    "identifier": "(0..1)",
+    "claimReviewed": "unknown",
+    "hasMenuItem": "unknown",
+    "hasMenuSection": "unknown",
+    "accessMode": "(0..1)",
+    "accessModeSufficient": "unknown",
+    "accessibilitySummary": "unknown"
 }
 
 JSON

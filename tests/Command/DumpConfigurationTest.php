@@ -12,12 +12,13 @@
 namespace ApiPlatform\SchemaGenerator\Tests;
 
 use ApiPlatform\SchemaGenerator\Command\DumpConfigurationCommand;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class DumpConfigurationTest extends \PHPUnit_Framework_TestCase
+class DumpConfigurationTest extends TestCase
 {
     public function testDumpConfiguration()
     {
@@ -29,11 +30,14 @@ config:
     # RDFa files
     rdfa:
 
-        # RDFa URI to use
-        uri:                  'https://schema.org/docs/schema_org_rdfa.html' # Example: https://schema.org/docs/schema_org_rdfa.html
+        # Prototype
+        -
 
-        # RDFa URI data format
-        format:               null # Example: rdfxml
+            # RDFa URI to use
+            uri:                  'https://schema.org/docs/schema_org_rdfa.html' # Example: https://schema.org/docs/schema_org_rdfa.html
+
+            # RDFa URI data format
+            format:               null # Example: rdfxml
 
     # OWL relation files to use
     relations:
@@ -51,7 +55,7 @@ config:
     useInterface:         false
 
     # Emit a warning if a property is not derived from GoodRelations
-    checkIsGoodRelations:  false
+    checkIsGoodRelations: false
 
     # A license or any text to use as header of generated files
     header:               false # Example: // (c) Kévin Dunglas <dunglas@gmail.com>
@@ -75,7 +79,7 @@ config:
         useCollection:        true
 
         # The Resolve Target Entity Listener config file pass
-        resolveTargetEntityConfigPath:  null
+        resolveTargetEntityConfigPath: null
 
     # The value of the phpDoc's @author annotation
     author:               false # Example: Kévin Dunglas <dunglas@gmail.com>

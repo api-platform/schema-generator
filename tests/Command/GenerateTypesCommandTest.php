@@ -12,13 +12,14 @@
 namespace ApiPlatform\SchemaGenerator\Tests;
 
 use ApiPlatform\SchemaGenerator\Command\GenerateTypesCommand;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class GenerateTypesCommandTest extends \PHPUnit_Framework_TestCase
+class GenerateTypesCommandTest extends TestCase
 {
     /**
      * @var Filesystem
