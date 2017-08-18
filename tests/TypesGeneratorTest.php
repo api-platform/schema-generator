@@ -13,19 +13,19 @@ namespace ApiPlatform\SchemaGenerator\Tests;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Log\NullLogger;
 
 /**
  * @author Teoh Han Hui <teohhanhui@gmail.com>
  */
-class TypesGeneratorTest extends \PHPUnit_Framework_TestCase
+class TypesGeneratorTest extends TestCase
 {
     public function testGenerate()
     {
         $twigProphecy = $this->prophesize('Twig_Environment');
-        $classes = $this->getClasses();
-        foreach ($classes as $class) {
+        foreach ($this->getClasses() as $class) {
             $twigProphecy->render('class.php.twig', Argument::that($this->getContextMatcher($class)))->willReturn()->shouldBeCalled();
         }
         $twigProphecy->render('class.php.twig', Argument::type('array'))->willReturn();
@@ -388,12 +388,6 @@ class TypesGeneratorTest extends \PHPUnit_Framework_TestCase
 
             if (array_keys($class['fields']) != array_keys($context['class']['fields'])) {
                 return false;
-            }
-
-            foreach ($class['fields'] as $fieldName => $field) {
-                if ($field != array_intersect_key($context['class']['fields'][$fieldName], $field)) {
-                    return false;
-                }
             }
 
             return true;

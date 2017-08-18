@@ -104,7 +104,7 @@ class TypesGenerator
      */
     public function __construct(\Twig_Environment $twig, LoggerInterface $logger, array $graphs, CardinalitiesExtractor $cardinalitiesExtractor, GoodRelationsBridge $goodRelationsBridge)
     {
-        if (empty($graphs)) {
+        if (!$graphs) {
             throw new \InvalidArgumentException('At least one graph must be injected.');
         }
 
@@ -648,7 +648,7 @@ class TypesGenerator
             if ($isArray) {
                 $class['hasConstructor'] = true;
 
-                if ($config['doctrine']['useCollection'] && !in_array(self::DOCTRINE_COLLECTION_USE, $class['uses'])) {
+                if (isset($config['doctrine']['useCollection']) && $config['doctrine']['useCollection'] && !in_array(self::DOCTRINE_COLLECTION_USE, $class['uses'])) {
                     $class['uses'][] = self::DOCTRINE_COLLECTION_USE;
                 }
             }
