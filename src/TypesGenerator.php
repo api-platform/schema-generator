@@ -12,10 +12,14 @@
 namespace ApiPlatform\SchemaGenerator;
 
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\AnnotationGeneratorInterface;
+use PhpCsFixer\Cache\NullCacheManager;
+use PhpCsFixer\Differ\NullDiffer;
+use PhpCsFixer\Error\ErrorsManager;
+use PhpCsFixer\FixerFactory;
+use PhpCsFixer\Linter\Linter;
+use PhpCsFixer\RuleSet;
+use PhpCsFixer\Runner\Runner;
 use Psr\Log\LoggerInterface;
-use Symfony\CS\Config;
-use Symfony\CS\ConfigurationResolver;
-use Symfony\CS\Fixer;
 
 /**
  * Entities generator.
@@ -874,30 +878,31 @@ class TypesGenerator
      */
     private function fixCs(array $files)
     {
-        $config = new Config();
-        $fixer = new Fixer();
-        $fixer->registerBuiltInConfigs();
-        $fixer->registerBuiltInFixers();
-
-        $resolver = new ConfigurationResolver();
-        $resolver
-            ->setAllFixers($fixer->getFixers())
-            ->setConfig($config)
-            ->setOptions([
-                'level' => 'symfony',
-                'fixers' => null,
-                'progress' => false,
-            ])
-            ->resolve();
-
-        $config->fixers($resolver->getFixers());
-
-        $finder = [];
+        $fileInfos = [];
         foreach ($files as $file) {
-            $finder[] = new \SplFileInfo($file);
+            $fileInfos[] = new \SplFileInfo($file);
         }
 
-        $config->finder(new \ArrayIterator($finder));
-        $fixer->fix($config);
+        $fixers = (new FixerFactory())
+            ->registerBuiltInFixers()
+            ->useRuleSet(new RuleSet([
+                '@Symfony' => true,
+                'array_syntax' => ['syntax' => 'short'],
+                'phpdoc_order' => true,
+                'declare_strict_types' => true,
+            ]))
+            ->getFixers();
+
+        $runner = new Runner(
+            new \ArrayIterator($fileInfos),
+            $fixers,
+            new NullDiffer(),
+            null,
+            new ErrorsManager(),
+            new Linter(),
+            false,
+            new NullCacheManager()
+        );
+        $runner->fix();
     }
 }
