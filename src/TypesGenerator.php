@@ -874,30 +874,34 @@ class TypesGenerator
      */
     private function fixCs(array $files)
     {
-        $config = new Config();
-        $fixer = new Fixer();
-        $fixer->registerBuiltInConfigs();
-        $fixer->registerBuiltInFixers();
+        if (class_exists('\\Symfony\\CS\\Fixer')) {
+            $config = new Config();
+            $fixer = new Fixer();
+            $fixer->registerBuiltInConfigs();
+            $fixer->registerBuiltInFixers();
 
-        $resolver = new ConfigurationResolver();
-        $resolver
-            ->setAllFixers($fixer->getFixers())
-            ->setConfig($config)
-            ->setOptions([
-                'level' => 'symfony',
-                'fixers' => null,
-                'progress' => false,
-            ])
-            ->resolve();
+            $resolver = new ConfigurationResolver();
+            $resolver
+                ->setAllFixers($fixer->getFixers())
+                ->setConfig($config)
+                ->setOptions([
+                    'level' => 'symfony',
+                    'fixers' => null,
+                    'progress' => false,
+                ])
+                ->resolve();
 
-        $config->fixers($resolver->getFixers());
+            $config->fixers($resolver->getFixers());
 
-        $finder = [];
-        foreach ($files as $file) {
-            $finder[] = new \SplFileInfo($file);
+            $finder = [];
+            foreach ($files as $file) {
+                $finder[] = new \SplFileInfo($file);
+            }
+
+            $config->finder(new \ArrayIterator($finder));
+            $fixer->fix($config);
+        } else {
         }
-
-        $config->finder(new \ArrayIterator($finder));
-        $fixer->fix($config);
+        
     }
 }
