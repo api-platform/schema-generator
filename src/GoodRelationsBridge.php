@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ApiPlatform\SchemaGenerator;
 
 /**
@@ -26,9 +28,6 @@ class GoodRelationsBridge
      */
     protected $relations;
 
-    /**
-     * @var array
-     */
     protected static $objectPropertiesTable = [
         'priceSpecification' => 'hasPriceSpecification',
         'businessFunction' => 'hasBusinessFunction',
@@ -46,9 +45,7 @@ class GoodRelationsBridge
         'warranty' => 'hasWarrantyPromise',
         'acceptedPaymentMethod' => 'acceptedPaymentMethods',
     ];
-    /**
-     * @var array
-     */
+
     protected static $datatypePropertiesTable = [
         'minPrice' => 'hasMinCurrencyValue',
         'unitCode' => 'hasUnitOfMeasurement',
@@ -84,12 +81,8 @@ class GoodRelationsBridge
 
     /**
      * Checks if a property exists in GoodRelations.
-     *
-     * @param string $id
-     *
-     * @return bool
      */
-    public function exist($id)
+    public function exist(string $id): bool
     {
         foreach ($this->relations as $relation) {
             $result = $relation->xpath(sprintf('//*[@rdf:about="%s"]', $this->getPropertyUrl($id)));
@@ -104,11 +97,9 @@ class GoodRelationsBridge
     /**
      * Extracts cardinality from the Good Relations OWL.
      *
-     * @param string $id
-     *
      * @return string|bool
      */
-    public function extractCardinality($id)
+    public function extractCardinality(string $id)
     {
         foreach ($this->relations as $relation) {
             $result = $relation->xpath(sprintf('//*[@rdf:about="%s"]/rdfs:label', $this->getPropertyUrl($id)));
@@ -124,12 +115,8 @@ class GoodRelationsBridge
 
     /**
      * Converts Schema.org's id to Good Relations id.
-     *
-     * @param string $id
-     *
-     * @return string
      */
-    private function convertPropertyId($id)
+    private function convertPropertyId(string $id): string
     {
         if (isset(static::$datatypePropertiesTable[$id])) {
             return static::$datatypePropertiesTable[$id];
@@ -144,12 +131,8 @@ class GoodRelationsBridge
 
     /**
      * Gets a property URL.
-     *
-     * @param string $id
-     *
-     * @return string
      */
-    private function getPropertyUrl($id)
+    private function getPropertyUrl(string $id): string
     {
         return self::GOOD_RELATIONS_NAMESPACE.$this->convertPropertyId($id);
     }

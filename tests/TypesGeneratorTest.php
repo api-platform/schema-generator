@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ApiPlatform\SchemaGenerator\Tests;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
@@ -22,7 +24,7 @@ use Psr\Log\NullLogger;
  */
 class TypesGeneratorTest extends TestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $twigProphecy = $this->prophesize('Twig_Environment');
         foreach ($this->getClasses() as $class) {
@@ -44,7 +46,7 @@ class TypesGeneratorTest extends TestCase
         $typesGenerator->generate($this->getConfig());
     }
 
-    private function getGraphs()
+    private function getGraphs(): array
     {
         $graph = new \EasyRdf_Graph();
 
@@ -97,15 +99,10 @@ class TypesGeneratorTest extends TestCase
         $graph->addResource('http://schema.org/sharedContent', 'schema:domainIncludes', 'http://schema.org/SocialMediaPosting');
         $graph->addResource('http://schema.org/sharedContent', 'schema:rangeIncludes', 'http://schema.org/CreativeWork');
 
-        return [
-            $graph,
-        ];
+        return [$graph];
     }
 
-    /**
-     * @return array
-     */
-    private function getCardinalities()
+    private function getCardinalities(): array
     {
         return [
             'articleBody' => CardinalitiesExtractor::CARDINALITY_0_1,
@@ -119,10 +116,7 @@ class TypesGeneratorTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    private function getConfig()
+    private function getConfig(): array
     {
         return [
             'annotationGenerators' => [
@@ -178,10 +172,7 @@ class TypesGeneratorTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    private function getClasses()
+    private function getClasses(): array
     {
         return [
             'Article' => [
@@ -378,19 +369,23 @@ class TypesGeneratorTest extends TestCase
                 return false;
             }
 
-            $baseClass = array_diff_key($class, [
-                'fields' => null,
-            ]);
+            $baseClass = $class;
+            unset($baseClass['fields']);
 
-            if (!isset($context['class']) || !is_array($context['class']) || $baseClass != array_intersect_key($context['class'], $baseClass)) {
+            if (!isset($context['class']) || !is_array($context['class']) || $this->arrayEqual($baseClass, array_intersect_key($context['class'], $baseClass))) {
                 return false;
             }
 
-            if (array_keys($class['fields']) != array_keys($context['class']['fields'])) {
+            if (array_keys($class['fields']) === array_keys($context['class']['fields'])) {
                 return false;
             }
 
             return true;
         };
+    }
+
+    private function arrayEqual(array $a, array $b): bool
+    {
+        return count($a) === count($b) && !array_diff($a, $b);
     }
 }

@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ApiPlatform\SchemaGenerator\Command;
 
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
@@ -27,7 +29,7 @@ class DumpConfigurationCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('dump-configuration')
@@ -37,7 +39,7 @@ class DumpConfigurationCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $configuration = new TypesGeneratorConfiguration();
         $dumper = new YamlReferenceDumper();

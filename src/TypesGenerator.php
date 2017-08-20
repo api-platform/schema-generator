@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ApiPlatform\SchemaGenerator;
 
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\AnnotationGeneratorInterface;
@@ -22,7 +24,7 @@ use PhpCsFixer\Runner\Runner;
 use Psr\Log\LoggerInterface;
 
 /**
- * Entities generator.
+ * Generates entity files.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
@@ -100,11 +102,7 @@ class TypesGenerator
     private $cardinalities;
 
     /**
-     * @param \Twig_Environment      $twig
-     * @param LoggerInterface        $logger
-     * @param \EasyRdf_Graph[]       $graphs
-     * @param CardinalitiesExtractor $cardinalitiesExtractor
-     * @param GoodRelationsBridge    $goodRelationsBridge
+     * @param \EasyRdf_Graph[] $graphs
      */
     public function __construct(\Twig_Environment $twig, LoggerInterface $logger, array $graphs, CardinalitiesExtractor $cardinalitiesExtractor, GoodRelationsBridge $goodRelationsBridge)
     {
@@ -123,10 +121,8 @@ class TypesGenerator
 
     /**
      * Generates files.
-     *
-     * @param array $config
      */
-    public function generate(array $config)
+    public function generate(array $config): void
     {
         $baseClass = [
             'constants' => [],
@@ -140,7 +136,7 @@ class TypesGenerator
 
         $typesToGenerate = [];
 
-        if (empty($config['types'])) {
+        if (!$config['types']) {
             foreach ($this->graphs as $graph) {
                 $typesToGenerate = $graph->allOfType('rdfs:Class');
             }
@@ -171,7 +167,7 @@ class TypesGenerator
 
         foreach ($typesToGenerate as $typeName => $type) {
             $typeName = is_string($typeName) ? $typeName : $type->localName();
-            $typeConfig = isset($config['types'][$typeName]) ? $config['types'][$typeName] : null;
+            $typeConfig = $config['types'][$typeName] ?? null;
             $class = $baseClass;
 
             $comment = $type->get('rdfs:comment');
@@ -183,7 +179,7 @@ class TypesGenerator
 
             $class['isEnum'] = $this->isEnum($type);
             if ($class['isEnum']) {
-                $class['namespace'] = isset($typeConfig['namespace']) ? $typeConfig['namespace'] : $config['namespaces']['enum'];
+                $class['namespace'] = $typeConfig['namespace'] ?? $config['namespaces']['enum'];
                 $class['parent'] = self::ENUM_EXTENDS;
                 $class['uses'][] = self::ENUM_USE;
 
@@ -199,10 +195,10 @@ class TypesGenerator
                 }
             } else {
                 // Entities
-                $class['namespace'] = isset($typeConfig['namespaces']['class']) ? $typeConfig['namespaces']['class'] : $config['namespaces']['entity'];
+                $class['namespace'] = $typeConfig['namespaces']['class'] ?? $config['namespaces']['entity'];
 
                 // Parent
-                $class['parent'] = isset($typeConfig['parent']) ? $typeConfig['parent'] : null;
+                $class['parent'] = $typeConfig['parent'] ?? null;
                 if (null === $class['parent']) {
                     $numberOfSupertypes = count($type->all('rdfs:subClassOf'));
 
@@ -222,9 +218,9 @@ class TypesGenerator
                 }
 
                 // Embeddable
-                $class['embeddable'] = isset($typeConfig['embeddable']) ? $typeConfig['embeddable'] : false;
+                $class['embeddable'] = $typeConfig['embeddable'] ?? false;
 
-                if (!empty($config['types']) && $class['parent'] && !isset($config['types'][$class['parent']])) {
+                if (!$config['types'] && $class['parent'] && !isset($config['types'][$class['parent']])) {
                     $this->logger->error(sprintf('The type "%s" (parent of "%s") doesn\'t exist', $class['parent'], $type->localName()));
                 }
 
@@ -290,14 +286,14 @@ class TypesGenerator
                         continue;
                     }
 
-                    $parentConfig = isset($config['types'][$class['parent']]) ? $config['types'][$class['parent']] : null;
+                    $parentConfig = $config['types'][$class['parent']] ?? null;
                     $parentClass = $classes[$class['parent']];
 
                     while ($parentClass) {
                         if (!isset($parentConfig['properties']) || !is_array($parentConfig['properties'])) {
                             // Unset implicit property
                             $parentType = $parentClass['resource'];
-                            if (in_array($property, $propertiesMap[$parentType->getUri()])) {
+                            if (in_array($property, $propertiesMap[$parentType->getUri()], true)) {
                                 unset($class['fields'][$property->localName()]);
                                 continue 2;
                             }
@@ -309,7 +305,7 @@ class TypesGenerator
                             }
                         }
 
-                        $parentConfig = $parentClass['parent'] ? (isset($config['types'][$parentClass['parent']]) ? $config['types'][$parentClass['parent']] : null) : null;
+                        $parentConfig = $parentClass['parent'] ? ($config['types'][$parentClass['parent']] ?? null) : null;
                         $parentClass = $parentClass['parent'] ? $classes[$parentClass['parent']] : null;
                     }
                 }
@@ -445,12 +441,8 @@ class TypesGenerator
 
     /**
      * Tests if a type is an enum.
-     *
-     * @param \EasyRdf_Resource $type
-     *
-     * @return bool
      */
-    private function isEnum(\EasyRdf_Resource $type)
+    private function isEnum(\EasyRdf_Resource $type): bool
     {
         $subClassOf = $type->get('rdfs:subClassOf');
 
@@ -515,7 +507,7 @@ class TypesGenerator
             foreach ($graph->allOfType('rdf:Property') as $property) {
                 foreach ($property->all(self::SCHEMA_ORG_DOMAIN) as $domain) {
                     foreach ($typesAsString as $typesAsStringItem) {
-                        if (in_array($domain->getUri(), $typesAsStringItem)) {
+                        if (in_array($domain->getUri(), $typesAsStringItem, true)) {
                             $map[$typesAsStringItem[0]][] = $property;
                         }
                     }
@@ -535,7 +527,7 @@ class TypesGenerator
      */
     private function isDatatype($type)
     {
-        return in_array($type, ['Boolean', 'DataType', 'Date', 'DateTime', 'Float', 'Integer', 'Number', 'Text', 'Time', 'URL']);
+        return in_array($type, ['Boolean', 'DataType', 'Date', 'DateTime', 'Float', 'Integer', 'Number', 'Text', 'Time', 'URL'], true);
     }
 
     /**
@@ -547,7 +539,7 @@ class TypesGenerator
      */
     private function isDateTime($type)
     {
-        return in_array($type, ['Date', 'DateTime', 'Time']);
+        return in_array($type, ['Date', 'DateTime', 'Time'], true);
     }
 
     /**
@@ -564,7 +556,7 @@ class TypesGenerator
      */
     private function generateField(array $config, array $class, \EasyRdf_Resource $type, $typeName, $propertyName, \EasyRdf_Resource $property = null)
     {
-        $typeConfig = isset($config['types'][$typeName]) ? $config['types'][$typeName] : null;
+        $typeConfig = $config['types'][$typeName] ?? null;
         $typesDefined = !empty($config['types']);
 
         // Warn when property are not part of GoodRelations
@@ -575,7 +567,7 @@ class TypesGenerator
         }
 
         // Ignore or warn when properties are legacy
-        if (!empty($property) && preg_match('/legacy spelling/', $property->get('rdfs:comment'))) {
+        if (!empty($property) && preg_match('/legacy spelling/', (string) $property->get('rdfs:comment'))) {
             if (isset($typeConfig['properties'])) {
                 $this->logger->warning(sprintf('The property "%s" (type "%s") is legacy.', $propertyName, $type->localName()));
             } else {
@@ -585,7 +577,7 @@ class TypesGenerator
             }
         }
 
-        $propertyConfig = isset($typeConfig['properties'][$propertyName]) ? $typeConfig['properties'][$propertyName] : null;
+        $propertyConfig = $typeConfig['properties'][$propertyName] ?? null;
 
         $ranges = [];
         if (isset($propertyConfig['range']) && $propertyConfig['range']) {
@@ -606,18 +598,18 @@ class TypesGenerator
                 $this->logger->warning(sprintf('The property "%s" (type "%s") has several types. Using the first one.', $propertyName, $type->localName()));
             }
 
-            $cardinality = isset($propertyConfig['cardinality']) ? $propertyConfig['cardinality'] : false;
+            $cardinality = $propertyConfig['cardinality'] ?? false;
             if (!$cardinality || $cardinality === CardinalitiesExtractor::CARDINALITY_UNKNOWN) {
                 $cardinality = $property ? $this->cardinalities[$propertyName] : CardinalitiesExtractor::CARDINALITY_1_1;
             }
 
-            $ormColumn = isset($propertyConfig['ormColumn']) ? $propertyConfig['ormColumn'] : null;
+            $ormColumn = $propertyConfig['ormColumn'] ?? null;
 
             $isArray = in_array($cardinality, [
                 CardinalitiesExtractor::CARDINALITY_0_N,
                 CardinalitiesExtractor::CARDINALITY_1_N,
                 CardinalitiesExtractor::CARDINALITY_N_N,
-            ]);
+            ], true);
 
             if (isset($propertyConfig['nullable']) && false === $propertyConfig['nullable']) {
                 $isNullable = false;
@@ -625,14 +617,14 @@ class TypesGenerator
                 $isNullable = !in_array($cardinality, [
                     CardinalitiesExtractor::CARDINALITY_1_1,
                     CardinalitiesExtractor::CARDINALITY_1_N,
-                ]);
+                ], true);
             }
 
             $columnPrefix = false;
-            $isEmbedded = isset($propertyConfig['embedded']) ? $propertyConfig['embedded'] : false;
+            $isEmbedded = $propertyConfig['embedded'] ?? false;
 
             if (true === $isEmbedded) {
-                $columnPrefix = isset($propertyConfig['columnPrefix']) ? $propertyConfig['columnPrefix'] : false;
+                $columnPrefix = $propertyConfig['columnPrefix'] ?? false;
             }
 
             $class['fields'][$propertyName] = [
@@ -652,7 +644,7 @@ class TypesGenerator
             if ($isArray) {
                 $class['hasConstructor'] = true;
 
-                if (isset($config['doctrine']['useCollection']) && $config['doctrine']['useCollection'] && !in_array(self::DOCTRINE_COLLECTION_USE, $class['uses'])) {
+                if (isset($config['doctrine']['useCollection']) && $config['doctrine']['useCollection'] && !in_array(self::DOCTRINE_COLLECTION_USE, $class['uses'], true)) {
                     $class['uses'][] = self::DOCTRINE_COLLECTION_USE;
                 }
             }
@@ -662,15 +654,9 @@ class TypesGenerator
     }
 
     /**
-     * Generates field's annotations.
-     *
      * @param AnnotationGeneratorInterface[] $annotationGenerators
-     * @param string                         $className
-     * @param string                         $fieldName
-     *
-     * @return array
      */
-    private function generateFieldAnnotations($annotationGenerators, $className, $fieldName)
+    private function generateFieldAnnotations(array $annotationGenerators, string $className, string $fieldName): array
     {
         $annotations = [];
         foreach ($annotationGenerators as $generator) {
@@ -681,15 +667,9 @@ class TypesGenerator
     }
 
     /**
-     * Generates constant's annotations.
-     *
      * @param AnnotationGeneratorInterface[] $annotationGenerators
-     * @param string                         $className
-     * @param string                         $constantName
-     *
-     * @return array
      */
-    private function generateConstantAnnotations(array $annotationGenerators, $className, $constantName)
+    private function generateConstantAnnotations(array $annotationGenerators, string $className, string $constantName): array
     {
         $annotations = [];
         foreach ($annotationGenerators as $generator) {
@@ -700,14 +680,9 @@ class TypesGenerator
     }
 
     /**
-     * Generates class' annotations.
-     *
      * @param AnnotationGeneratorInterface[] $annotationGenerators
-     * @param string                         $className
-     *
-     * @return array
      */
-    private function generateClassAnnotations(array $annotationGenerators, $className)
+    private function generateClassAnnotations(array $annotationGenerators, string $className): array
     {
         $annotations = [];
         foreach ($annotationGenerators as $generator) {
@@ -718,14 +693,9 @@ class TypesGenerator
     }
 
     /**
-     * Generates interface's annotations.
-     *
      * @param AnnotationGeneratorInterface[] $annotationGenerators
-     * @param string                         $className
-     *
-     * @return array
      */
-    private function generateInterfaceAnnotations(array $annotationGenerators, $className)
+    private function generateInterfaceAnnotations(array $annotationGenerators, string $className): array
     {
         $annotations = [];
         foreach ($annotationGenerators as $generator) {
@@ -736,15 +706,9 @@ class TypesGenerator
     }
 
     /**
-     * Generates getter's annotations.
-     *
      * @param AnnotationGeneratorInterface[] $annotationGenerators
-     * @param string                         $className
-     * @param string                         $fieldName
-     *
-     * @return array
      */
-    private function generateGetterAnnotations(array $annotationGenerators, $className, $fieldName)
+    private function generateGetterAnnotations(array $annotationGenerators, string $className, string $fieldName): array
     {
         $annotations = [];
         foreach ($annotationGenerators as $generator) {
@@ -755,15 +719,9 @@ class TypesGenerator
     }
 
     /**
-     * Generates adder's annotations.
-     *
      * @param AnnotationGeneratorInterface[] $annotationGenerators
-     * @param string                         $className
-     * @param string                         $fieldName
-     *
-     * @return array
      */
-    private function generateAdderAnnotations(array $annotationGenerators, $className, $fieldName)
+    private function generateAdderAnnotations(array $annotationGenerators, string $className, string $fieldName): array
     {
         $annotations = [];
         foreach ($annotationGenerators as $generator) {
@@ -774,15 +732,9 @@ class TypesGenerator
     }
 
     /**
-     * Generates remover's annotations.
-     *
      * @param AnnotationGeneratorInterface[] $annotationGenerators
-     * @param string                         $className
-     * @param string                         $fieldName
-     *
-     * @return array
      */
-    private function generateRemoverAnnotations(array $annotationGenerators, $className, $fieldName)
+    private function generateRemoverAnnotations(array $annotationGenerators, string $className, string $fieldName): array
     {
         $annotations = [];
         foreach ($annotationGenerators as $generator) {
@@ -793,15 +745,9 @@ class TypesGenerator
     }
 
     /**
-     * Generates getter's annotations.
-     *
      * @param AnnotationGeneratorInterface[] $annotationGenerators
-     * @param string                         $className
-     * @param string                         $fieldName
-     *
-     * @return array
      */
-    private function generateSetterAnnotations(array $annotationGenerators, $className, $fieldName)
+    private function generateSetterAnnotations(array $annotationGenerators, string $className, string $fieldName): array
     {
         $annotations = [];
         foreach ($annotationGenerators as $generator) {
@@ -812,15 +758,9 @@ class TypesGenerator
     }
 
     /**
-     * Generates uses.
-     *
      * @param AnnotationGeneratorInterface[] $annotationGenerators
-     * @param array                          $classes
-     * @param string                         $className
-     *
-     * @return array
      */
-    private function generateClassUses($annotationGenerators, $classes, $className)
+    private function generateClassUses($annotationGenerators, array $classes, string $className): array
     {
         $uses = $classes[$className]['uses'];
 
@@ -842,7 +782,7 @@ class TypesGenerator
                     $classes[$field['range']]['interfaceName']
                 );
 
-                if (!in_array($use, $uses)) {
+                if (!in_array($use, $uses, true)) {
                     $uses[] = $use;
                 }
             }
@@ -860,23 +800,16 @@ class TypesGenerator
 
     /**
      * Converts a namespace to a directory path according to PSR-4.
-     *
-     * @param array  $config
-     * @param string $namespace
-     *
-     * @return string
      */
-    private function namespaceToDir($config, $namespace)
+    private function namespaceToDir(array $config, string $namespace): string
     {
         return sprintf('%s/%s/', $config['output'], strtr($namespace, '\\', '/'));
     }
 
     /**
      * Uses PHP CS Fixer to make generated files following PSR and Symfony Coding Standards.
-     *
-     * @param array $files
      */
-    private function fixCs(array $files)
+    private function fixCs(array $files): void
     {
         $fileInfos = [];
         foreach ($files as $file) {

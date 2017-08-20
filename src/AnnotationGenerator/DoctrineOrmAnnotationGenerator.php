@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
@@ -24,7 +26,7 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations($className)
+    public function generateClassAnnotations(string $className): array
     {
         $class = $this->classes[$className];
 
@@ -46,16 +48,13 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
             }
         }
 
-        return [
-            '',
-            $inheritanceMapping,
-        ];
+        return ['', $inheritanceMapping];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations($className, $fieldName)
+    public function generateFieldAnnotations(string $className, string $fieldName): array
     {
         $this->classes[$className];
         $field = $this->classes[$className]['fields'][$fieldName];
@@ -67,11 +66,7 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         $annotations = [];
 
         if ($field['isEnum']) {
-            if ($field['isArray']) {
-                $type = 'simple_array';
-            } else {
-                $type = 'string';
-            }
+            $type = $field['isArray'] ? 'simple_array' : 'string';
         } else {
             switch ($field['range']) {
                 case 'Boolean':
@@ -155,35 +150,29 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                 case CardinalitiesExtractor::CARDINALITY_0_1:
                     $annotations[] = sprintf('@ORM\OneToOne(targetEntity="%s")', $this->getRelationName($field['range']));
                     break;
-
                 case CardinalitiesExtractor::CARDINALITY_1_1:
                     $annotations[] = sprintf('@ORM\OneToOne(targetEntity="%s")', $this->getRelationName($field['range']));
                     $annotations[] = '@ORM\JoinColumn(nullable=false)';
                     break;
-
                 case CardinalitiesExtractor::CARDINALITY_UNKNOWN:
                     // No break
                 case CardinalitiesExtractor::CARDINALITY_N_0:
                     $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $this->getRelationName($field['range']));
                     break;
-
                 case CardinalitiesExtractor::CARDINALITY_N_1:
                     $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $this->getRelationName($field['range']));
                     $annotations[] = '@ORM\JoinColumn(nullable=false)';
                     break;
-
                 case CardinalitiesExtractor::CARDINALITY_0_N:
                     $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s")', $this->getRelationName($field['range']));
                     $name = $field['relationTableName'] ? sprintf('name="%s", ', $field['relationTableName']) : '';
                     $annotations[] = '@ORM\JoinTable('.$name.'inverseJoinColumns={@ORM\JoinColumn(unique=true)})';
                     break;
-
                 case CardinalitiesExtractor::CARDINALITY_1_N:
                     $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s")', $this->getRelationName($field['range']));
                     $name = $field['relationTableName'] ? sprintf('name="%s", ', $field['relationTableName']) : '';
                     $annotations[] = '@ORM\JoinTable('.$name.'inverseJoinColumns={@ORM\JoinColumn(nullable=false, unique=true)})';
                     break;
-
                 case CardinalitiesExtractor::CARDINALITY_N_N:
                     $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s")', $this->getRelationName($field['range']));
                     if ($field['relationTableName']) {
@@ -204,7 +193,7 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateUses($className)
+    public function generateUses(string $className): array
     {
         $resource = $this->classes[$className]['resource'];
 
@@ -216,12 +205,8 @@ class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
 
     /**
      * Gets class or interface name to use in relations.
-     *
-     * @param string $range
-     *
-     * @return string
      */
-    private function getRelationName($range)
+    private function getRelationName(string $range): string
     {
         $class = $this->classes[$range];
 

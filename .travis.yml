@@ -3,34 +3,46 @@ language: php
 sudo: false
 
 cache:
-    directories:
-        - $HOME/.composer/cache
+  directories:
+    - $HOME/.composer/cache
 
 matrix:
-    fast_finish: true
-    include:
-        - php: '7.0'
-        - php: '7.1'
+  include:
+    - php: '7.1'
+      env: coverage=1 lint=1
+    - php: '7.1'
+      env: deps='low'
 
 before_install:
-    - phpenv config-rm xdebug.ini
-    - wget https://phar.phpunit.de/phpunit-6.3.phar
-    - if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then curl -LSs https://box-project.github.io/box2/installer.php | php; fi;
+  - phpenv config-rm xdebug.ini || echo "xdebug not available"
+  - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - wget https://phar.phpunit.de/phpunit-6.3.phar
+  - if [[ $coverage = 1 ]]; then mkdir -p build/logs; fi
+  - if [[ $coverage = 1 ]]; then wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar; fi
+  - if [[ $lint = 1 ]]; then wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.4.0/php-cs-fixer.phar; fi
+  - if [[ $TRAVIS_PHP_VERSION = "7.1" ]]; then curl -LSs https://box-project.github.io/box2/installer.php | php; fi;
 
 install:
-    - composer update --no-interaction --prefer-dist
-    - if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then php box.phar build; fi;
+  - if [[ $coverage = 1 ]]; then composer require --dev --no-update 'phpunit/php-code-coverage:^4.0.1'; fi
+  - if [[ ! $deps ]]; then composer update --prefer-dist --no-progress --no-suggest --ansi; fi
+  - if [[ $deps = 'low' ]]; then composer update --prefer-dist --no-progress --no-suggest --prefer-stable --prefer-lowest --ansi; fi
 
 script:
-    - php phpunit-6.3.phar
+  - if [[ $coverage = 1 ]]; then phpdbg -qrr php phpunit-6.3.phar --coverage-closer build/logs/clover.xml; else php phpunit-6.3.phar; fi
+  - if [[ $lint = 1 ]]; then php php-cs-fixer.phar fix --dry-run --diff --no-ansi; fi
+  - if [[ ! $deps && $TRAVIS_PHP_VERSION = "7.1" ]]; then php box.phar build; fi;
+
+after_success:
+  - if [[ $coverage = 1 ]]; then travis_retry php coveralls.phar; fi
 
 deploy:
-    provider: releases
-    api_key:
-        secure: Oq9TAPQZqnjxhbprWZQE64GhK4vxBHjvcMkS9dkbkCJQVz8cSqGxZOFqMOHulraFs2IX9PLeplrZReFMT630KkMNf74mkTtL9WMuaMJV0bbUPY+X7YpDGlLNNU7OA9Rxjr3y68x1jVxD6mLSlCFZP00qvmYRlOE1i2ltjO7L5Sw=
-    file: schema.phar
-    skip_cleanup: true
-    on:
-      tags: true
-      repo: api-platform/schema-generator
-      php:  '7.1'
+  provider: releases
+  api_key:
+    secure: Oq9TAPQZqnjxhbprWZQE64GhK4vxBHjvcMkS9dkbkCJQVz8cSqGxZOFqMOHulraFs2IX9PLeplrZReFMT630KkMNf74mkTtL9WMuaMJV0bbUPY+X7YpDGlLNNU7OA9Rxjr3y68x1jVxD6mLSlCFZP00qvmYRlOE1i2ltjO7L5Sw=
+  file: schema.phar
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: api-platform/schema-generator
+    php:  '7.1'
+    condition: "! $deps"

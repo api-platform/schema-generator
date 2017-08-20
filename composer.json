@@ -18,12 +18,12 @@
         "psr-4": { "ApiPlatform\\SchemaGenerator\\Tests\\": "tests/" }
     },
     "require": {
-        "php": ">=7.0",
+        "php": ">=7.1",
         "ext-json": "*",
         "symfony/console": "^2.7 || ^3.0 || ^4.0",
         "symfony/yaml": "^2.7 || ^3.0 || ^4.0",
-        "symfony/config": "^2.7 || ^3.0 || ^4.0",
-        "twig/twig": "^1.0 || ^2.0",
+        "symfony/config": "^3.3 || ^4.0",
+        "twig/twig": "^1.12 || ^2.0",
         "psr/log": "^1.0",
         "easyrdf/easyrdf": "^0.9",
         "league/html-to-markdown": "^4.0",

@@ -8,6 +8,8 @@
 
 {% if config.header %}{{ config.header }}{% endif %}
 
+declare(strict_types=1);
+
 namespace {{ class.interfaceNamespace }};
 
 {% if class.interfaceAnnotations|length > 0 %}
