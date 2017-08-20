@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
 use ApiPlatform\SchemaGenerator\TypesGenerator;
@@ -18,14 +20,14 @@ use ApiPlatform\SchemaGenerator\TypesGenerator;
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  *
- * @link https://github.com/dunglas/DunglasApiBundle
+ * @see https://github.com/dunglas/DunglasApiBundle
  */
 class DunglasApiAnnotationGenerator extends AbstractAnnotationGenerator
 {
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations($className)
+    public function generateClassAnnotations(string $className): array
     {
         $resource = $this->classes[$className]['resource'];
 
@@ -35,7 +37,7 @@ class DunglasApiAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations($className, $fieldName)
+    public function generateFieldAnnotations(string $className, string $fieldName): array
     {
         return $this->classes[$className]['fields'][$fieldName]['isCustom'] ? [] : [sprintf('@Iri("https://schema.org/%s")', $fieldName)];
     }
@@ -43,7 +45,7 @@ class DunglasApiAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateUses($className)
+    public function generateUses(string $className): array
     {
         $resource = $this->classes[$className]['resource'];
 

@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
 use Psr\Log\LoggerInterface;
@@ -24,18 +26,22 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
      * @var LoggerInterface
      */
     protected $logger;
+
     /**
      * @var \EasyRdf_Graph[]
      */
     protected $graphs;
+
     /**
      * @var array
      */
     protected $cardinalities;
+
     /**
      * @var array
      */
     protected $config;
+
     /**
      * @var array
      */
@@ -44,13 +50,8 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function __construct(
-        LoggerInterface $logger,
-        array $graphs,
-        array $cardinalities,
-        array $config,
-        array $classes
-    ) {
+    public function __construct(LoggerInterface $logger, array $graphs, array $cardinalities, array $config, array $classes)
+    {
         $this->logger = $logger;
         $this->graphs = $graphs;
         $this->cardinalities = $cardinalities;
@@ -61,7 +62,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations($className)
+    public function generateClassAnnotations(string $className): array
     {
         return [];
     }
@@ -69,7 +70,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateInterfaceAnnotations($className)
+    public function generateInterfaceAnnotations(string $className): array
     {
         return [];
     }
@@ -77,7 +78,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateConstantAnnotations($className, $constantName)
+    public function generateConstantAnnotations(string $className, string $constantName): array
     {
         return [];
     }
@@ -85,7 +86,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations($className, $fieldName)
+    public function generateFieldAnnotations(string $className, string $fieldName): array
     {
         return [];
     }
@@ -93,7 +94,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateGetterAnnotations($className, $fieldName)
+    public function generateGetterAnnotations(string $className, string $fieldName): array
     {
         return [];
     }
@@ -101,7 +102,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateSetterAnnotations($className, $fieldName)
+    public function generateSetterAnnotations(string $className, string $fieldName): array
     {
         return [];
     }
@@ -109,7 +110,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateAdderAnnotations($className, $fieldName)
+    public function generateAdderAnnotations(string $className, string $fieldName): array
     {
         return [];
     }
@@ -117,7 +118,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateRemoverAnnotations($className, $fieldName)
+    public function generateRemoverAnnotations(string $className, string $fieldName): array
     {
         return [];
     }
@@ -125,29 +126,24 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateUses($className)
+    public function generateUses(string $className): array
     {
         return [];
     }
 
     /**
      * Converts a Schema.org range to a PHP type.
-     *
-     * @param array $field
-     * @param bool  $adderOrRemover
-     *
-     * @return string
      */
-    protected function toPhpType(array $field, $adderOrRemover = false)
+    protected function toPhpType(array $field, bool $adderOrRemover = false): string
     {
         $range = $field['range'];
 
         if ($field['isEnum']) {
             if ($field['isArray']) {
                 return 'string[]';
-            } else {
-                return 'string';
             }
+
+            return 'string';
         }
 
         $data = false;

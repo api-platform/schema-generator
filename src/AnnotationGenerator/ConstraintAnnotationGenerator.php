@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
 /**
@@ -21,7 +23,7 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations($className, $fieldName)
+    public function generateFieldAnnotations(string $className, string $fieldName): array
     {
         $field = $this->classes[$className]['fields'][$fieldName];
 
@@ -35,15 +37,12 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
                 case 'URL':
                     $asserts[] = '@Assert\Url';
                     break;
-
                 case 'Date':
                     $asserts[] = '@Assert\Date';
                     break;
-
                 case 'DateTime':
                     $asserts[] = '@Assert\DateTime';
                     break;
-
                 case 'Time':
                     $asserts[] = '@Assert\Time';
                     break;
@@ -55,7 +54,7 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
 
             if (empty($asserts)) {
                 $phpType = $this->toPhpType($field);
-                if (in_array($phpType, ['boolean', 'float', 'integer', 'string'])) {
+                if (in_array($phpType, ['boolean', 'float', 'integer', 'string'], true)) {
                     $asserts[] = sprintf('@Assert\Type(type="%s")', $phpType);
                 }
             }
@@ -83,7 +82,7 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateUses($className)
+    public function generateUses(string $className): array
     {
         if ($this->classes[$className]['isEnum']) {
             return [];
@@ -99,7 +98,7 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
                 $enumNamespace = isset($enumClass['namespaces']['class']) && $enumClass['namespaces']['class'] ? $enumClass['namespaces']['class'] : $this->config['namespaces']['enum'];
                 $use = sprintf('%s\%s', $enumNamespace, $field['range']);
 
-                if (!in_array($use, $uses)) {
+                if (!in_array($use, $uses, true)) {
                     $uses[] = $use;
                 }
             }
@@ -111,7 +110,7 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations($className)
+    public function generateClassAnnotations(string $className): array
     {
         if ($this->classes[$className]['isEnum']) {
             return [];
@@ -128,7 +127,7 @@ class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
             $uniqueFields[] = $field['name'];
         }
 
-        if (0 === count($uniqueFields)) {
+        if (!$uniqueFields) {
             return [];
         }
 

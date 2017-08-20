@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ApiPlatform\SchemaGenerator;
 
 /**
@@ -31,14 +33,14 @@ class CardinalitiesExtractor
      * @var \EasyRdf_Graph[]
      */
     private $graphs;
+
     /**
      * @var GoodRelationsBridge
      */
     private $goodRelationsBridge;
 
     /**
-     * @param \EasyRdf_Graph[]    $graphs
-     * @param GoodRelationsBridge $goodRelationsBridge
+     * @param \EasyRdf_Graph[] $graphs
      */
     public function __construct(array $graphs, GoodRelationsBridge $goodRelationsBridge)
     {
@@ -48,10 +50,8 @@ class CardinalitiesExtractor
 
     /**
      * Extracts cardinality of properties.
-     *
-     * @return array
      */
-    public function extract()
+    public function extract(): array
     {
         $properties = [];
 
@@ -73,7 +73,7 @@ class CardinalitiesExtractor
      *
      * @return string The cardinality
      */
-    private function extractForProperty(\EasyRdf_Resource $property)
+    private function extractForProperty(\EasyRdf_Resource $property): string
     {
         $localName = $property->localName();
         $fromGoodRelations = $this->goodRelationsBridge->extractCardinality($localName);

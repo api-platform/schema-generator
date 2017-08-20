@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
 /**
@@ -16,14 +18,14 @@ namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
  *
  * @author Youssef El Montaser <youssef@elmontaser.com>
  *
- * @link https://symfony.com/doc/master/components/serializer.html
+ * @see https://symfony.com/doc/master/components/serializer.html
  */
 class SerializerGroupsAnnotationGenerator extends AbstractAnnotationGenerator
 {
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations($className, $fieldName)
+    public function generateFieldAnnotations(string $className, string $fieldName): array
     {
         $annotations = [];
 
@@ -39,7 +41,7 @@ class SerializerGroupsAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateUses($className)
+    public function generateUses(string $className): array
     {
         return ['Symfony\Component\Serializer\Annotation\Groups'];
     }

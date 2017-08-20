@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ApiPlatform\SchemaGenerator;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -27,7 +29,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('config');

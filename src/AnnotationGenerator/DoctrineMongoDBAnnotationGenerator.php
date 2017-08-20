@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
@@ -24,7 +26,7 @@ class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations($className)
+    public function generateClassAnnotations(string $className): array
     {
         $class = $this->classes[$className];
 
@@ -38,16 +40,13 @@ class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerator
             $inheritanceMapping = $class['abstract'] ? '@MongoDB\MappedSuperclass' : '@MongoDB\Document';
         }
 
-        return [
-            '',
-            $inheritanceMapping,
-        ];
+        return ['', $inheritanceMapping];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations($className, $fieldName)
+    public function generateFieldAnnotations(string $className, string $fieldName): array
     {
         $this->classes[$className];
         $field = $this->classes[$className]['fields'][$fieldName];
@@ -55,11 +54,7 @@ class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerator
         $annotations = [];
 
         if ($field['isEnum']) {
-            if ($field['isArray']) {
-                $type = 'simple_array';
-            } else {
-                $type = 'string';
-            }
+            $type = $field['isArray'] ? 'simple_array' : 'string';
         } else {
             switch ($field['range']) {
                 case 'Boolean':
@@ -124,7 +119,7 @@ class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateUses($className)
+    public function generateUses(string $className): array
     {
         $resource = $this->classes[$className]['resource'];
 
@@ -136,19 +131,11 @@ class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerator
 
     /**
      * Gets class or interface name to use in relations.
-     *
-     * @param string $range
-     *
-     * @return string
      */
-    private function getRelationName($range)
+    private function getRelationName(string $range): string
     {
         $class = $this->classes[$range];
 
-        if (isset($class['interfaceName'])) {
-            return $class['interfaceName'];
-        }
-
-        return $class['name'];
+        return $class[$range]['interfaceName'] ?? $class['name'];
     }
 }
