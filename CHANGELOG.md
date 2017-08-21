@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.0
+
+* Now use PHP CS Fixer 2
+* The code has been modernized to use PHP 7 and 7.1's new features (typehints, strict types), PHP 7.1 is now a requirement
+
 ## 1.2.0
 
 * The default config now match the Symfony's and API Platform's Best Practices (namespaces)
