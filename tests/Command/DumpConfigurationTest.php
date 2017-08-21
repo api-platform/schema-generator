@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace ApiPlatform\SchemaGenerator\Tests;
+namespace ApiPlatform\SchemaGenerator\Tests\Command;
 
 use ApiPlatform\SchemaGenerator\Command\DumpConfigurationCommand;
 use PHPUnit\Framework\TestCase;
@@ -118,7 +118,7 @@ config:
                 inheritanceMapping:   null
 
             # The parent class, set to false for a top level class
-            parent:               null
+            parent:               false
 
             # If declaring a custom class, this will be the class from which properties type will be guessed
             guessFrom:            Thing
@@ -162,9 +162,10 @@ config:
 
         # Defaults:
         - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
-        - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
         - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator
         - ApiPlatform\SchemaGenerator\AnnotationGenerator\ApiPlatformCoreAnnotationGenerator
+        - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
+        - ApiPlatform\SchemaGenerator\AnnotationGenerator\SerializerGroupsAnnotationGenerator
 
 
 YAML

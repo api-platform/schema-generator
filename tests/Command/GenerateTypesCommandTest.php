@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace ApiPlatform\SchemaGenerator\Tests;
+namespace ApiPlatform\SchemaGenerator\Tests\Command;
 
 use ApiPlatform\SchemaGenerator\Command\GenerateTypesCommand;
 use PHPUnit\Framework\TestCase;

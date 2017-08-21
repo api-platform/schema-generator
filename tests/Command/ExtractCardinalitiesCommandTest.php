@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace ApiPlatform\SchemaGenerator\Tests;
+namespace ApiPlatform\SchemaGenerator\Tests\Command;
 
 use ApiPlatform\SchemaGenerator\Command\ExtractCardinalitiesCommand;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +25,9 @@ class ExtractCardinalitiesCommandTest extends TestCase
     public function testExtractCardinalities()
     {
         $commandTester = new CommandTester(new ExtractCardinalitiesCommand());
-        $this->assertEquals(0, $commandTester->execute([], ['schemaorg-file' => __DIR__.'/../data/schema.rdfa', 'goodrelations-file' => __DIR__.'/../data/v1.owl']));
+        $this->assertEquals(0, $commandTester->execute(
+            ['--schemaorg-file' => __DIR__.'/../data/schema.rdfa', '--goodrelations-file' => __DIR__.'/../data/v1.owl']
+        ));
 
         $this->assertEquals(<<<'JSON'
 {
