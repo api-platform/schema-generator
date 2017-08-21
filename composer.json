@@ -19,15 +19,15 @@
     },
     "require": {
         "php": ">=7.1",
+        "easyrdf/easyrdf": "^0.9",
         "ext-json": "*",
+        "friendsofphp/php-cs-fixer": "^2.4",
+        "league/html-to-markdown": "^4.0",
+        "psr/log": "^1.0",
         "symfony/console": "^2.7 || ^3.0 || ^4.0",
         "symfony/yaml": "^2.7 || ^3.0 || ^4.0",
         "symfony/config": "^3.3 || ^4.0",
-        "twig/twig": "^1.12 || ^2.0",
-        "psr/log": "^1.0",
-        "easyrdf/easyrdf": "^0.9",
-        "league/html-to-markdown": "^4.0",
-        "friendsofphp/php-cs-fixer": "^2.4"
+        "twig/twig": "^1.12 || ^2.0"
     },
     "require-dev": {
         "doctrine/orm": "^2.2",
@@ -35,9 +35,9 @@
         "symfony/filesystem": "^2.7 || ^3.0 || ^4.0"
     },
     "suggest": {
-        "myclabs/php-enum": "For enumerations",
         "doctrine/collections": "For Doctrine collections",
         "doctrine/orm": "For Doctrine annotations",
+        "myclabs/php-enum": "For enumerations",
         "symfony/validator": "For constraint annotations"
     },
     "bin": ["bin/schema"]
