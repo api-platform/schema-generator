@@ -1,7 +1,8 @@
 # Changelog
 
-## 1.3.0
+## 2.0
 
+* The annotation generator for API Platform v1 has been dropped. Only API Platform v2 is now supported.
 * Now use PHP CS Fixer 2
 * The code has been modernized to use PHP 7 and 7.1's new features (typehints, strict types), PHP 7.1 is now a requirement
 

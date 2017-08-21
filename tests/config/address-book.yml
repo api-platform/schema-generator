@@ -1,12 +1,6 @@
 # The PHP namespace of generated entities
 namespaces:
   entity: 'AddressBook\Entity'
-# Enable DunglasApiAnnotationGenerator
-annotationGenerators:
-    - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
-    - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator
-    - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
-    - ApiPlatform\SchemaGenerator\AnnotationGenerator\ApiPlatformCoreAnnotationGenerator
 # The list of types and properties we want to use
 types:
   Person:

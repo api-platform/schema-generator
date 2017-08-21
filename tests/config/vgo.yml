@@ -2,7 +2,6 @@ annotationGenerators:
     - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
     - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator
     - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
-    - ApiPlatform\SchemaGenerator\AnnotationGenerator\DunglasApiAnnotationGenerator
 
 namespaces:
   entity: 'AppBundle\Entity'
