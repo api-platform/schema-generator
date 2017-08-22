@@ -25,7 +25,7 @@ class ExtractCardinalitiesCommandTest extends TestCase
     public function testExtractCardinalities()
     {
         $commandTester = new CommandTester(new ExtractCardinalitiesCommand());
-        $this->assertEquals(0, $commandTester->execute([]));
+        $this->assertEquals(0, $commandTester->execute([], ['schemaorg-file' => __DIR__.'/../data/schema.rdfa', 'goodrelations-file' => __DIR__.'/../data/v1.owl']));
 
         $this->assertEquals(<<<'JSON'
 {

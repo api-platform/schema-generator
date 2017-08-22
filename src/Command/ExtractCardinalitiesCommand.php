@@ -18,6 +18,7 @@ use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -34,7 +35,10 @@ class ExtractCardinalitiesCommand extends Command
     {
         $this
             ->setName('extract-cardinalities')
-            ->setDescription('Extract properties\' cardinality');
+            ->setDescription('Extract properties\' cardinality')
+            ->addOption('schemaorg-file', 's', InputOption::VALUE_REQUIRED, 'The path or URL of the Schema.org RDFa file to use.', TypesGeneratorConfiguration::SCHEMA_ORG_RDFA_URL)
+            ->addOption('goodrelations-file', 'g', InputOption::VALUE_REQUIRED, 'The path or URL of the GoodRelations OWL file to use.', TypesGeneratorConfiguration::GOOD_RELATIONS_OWL_URL)
+        ;
     }
 
     /**
@@ -44,10 +48,10 @@ class ExtractCardinalitiesCommand extends Command
     {
         $relations = [];
         $schemaOrg = new \EasyRdf_Graph();
-        $schemaOrg->load(TypesGeneratorConfiguration::SCHEMA_ORG_RDFA_URL, 'rdfa');
+        $schemaOrg->load($input->getOption('schemaorg-file'), 'rdfa');
         $relations[] = $schemaOrg;
 
-        $goodRelations = [new \SimpleXMLElement(TypesGeneratorConfiguration::GOOD_RELATIONS_OWL_URL, 0, true)];
+        $goodRelations = [new \SimpleXMLElement($input->getOption('goodrelations-file'), 0, true)];
 
         $goodRelationsBridge = new GoodRelationsBridge($goodRelations);
         $cardinalitiesExtractor = new CardinalitiesExtractor($relations, $goodRelationsBridge);
