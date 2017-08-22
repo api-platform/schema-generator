@@ -13,6 +13,11 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator;
 
+use ApiPlatform\SchemaGenerator\AnnotationGenerator\ApiPlatformCoreAnnotationGenerator;
+use ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator;
+use ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator;
+use ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator;
+use ApiPlatform\SchemaGenerator\AnnotationGenerator\SerializerGroupsAnnotationGenerator;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -121,7 +126,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                                     ->scalarNode('inheritanceMapping')->defaultNull()->info('The Doctrine inheritance mapping type (override the guessed one)')->end()
                                 ->end()
                             ->end()
-                            ->scalarNode('parent')->defaultNull()->info('The parent class, set to false for a top level class')->end()
+                            ->scalarNode('parent')->defaultFalse()->info('The parent class, set to false for a top level class')->end()
                             ->scalarNode('guessFrom')->defaultValue('Thing')->info('If declaring a custom class, this will be the class from which properties type will be guessed')->end()
                             ->booleanNode('allProperties')->defaultFalse()->info('Import all existing properties')->end()
                             ->arrayNode('properties')
@@ -160,10 +165,11 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                 ->arrayNode('annotationGenerators')
                     ->info('Annotation generators to use')
                     ->defaultValue([
-                        'ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator',
-                        'ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator',
-                        'ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator',
-                        'ApiPlatform\SchemaGenerator\AnnotationGenerator\ApiPlatformCoreAnnotationGenerator',
+                        PhpDocAnnotationGenerator::class,
+                        DoctrineOrmAnnotationGenerator::class,
+                        ApiPlatformCoreAnnotationGenerator::class,
+                        ConstraintAnnotationGenerator::class,
+                        SerializerGroupsAnnotationGenerator::class,
                     ])
                     ->prototype('scalar')->end()
                 ->end()

@@ -46,9 +46,16 @@ class ExtractCardinalitiesCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): void
     {
+        $schemaOrgFile = $input->getOption('schemaorg-file');
+
         $relations = [];
         $schemaOrg = new \EasyRdf_Graph();
-        $schemaOrg->load($input->getOption('schemaorg-file'), 'rdfa');
+        if ('http://' === substr($schemaOrgFile, 0, 7) || 'https://' === substr($schemaOrgFile, 0, 8)) {
+            $schemaOrg->load($input->getOption('schemaorg-file'), 'rdfa');
+        } else {
+            $schemaOrg->parseFile($input->getOption('schemaorg-file'), 'rdfa');
+        }
+
         $relations[] = $schemaOrg;
 
         $goodRelations = [new \SimpleXMLElement($input->getOption('goodrelations-file'), 0, true)];
