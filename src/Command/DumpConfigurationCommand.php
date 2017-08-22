@@ -24,7 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class DumpConfigurationCommand extends Command
+final class DumpConfigurationCommand extends Command
 {
     /**
      * {@inheritdoc}

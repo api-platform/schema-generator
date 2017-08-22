@@ -26,10 +26,11 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class TypesGeneratorConfiguration implements ConfigurationInterface
+final class TypesGeneratorConfiguration implements ConfigurationInterface
 {
-    const SCHEMA_ORG_RDFA_URL = 'https://schema.org/docs/schema_org_rdfa.html';
-    const GOOD_RELATIONS_OWL_URL = 'https://purl.org/goodrelations/v1.owl';
+    public const SCHEMA_ORG_RDFA_URL = 'https://schema.org/docs/schema_org_rdfa.html';
+    public const GOOD_RELATIONS_OWL_URL = 'https://purl.org/goodrelations/v1.owl';
+    public const SCHEMA_ORG_NAMESPACE = 'http://schema.org/';
 
     /**
      * {@inheritdoc}
@@ -109,7 +110,7 @@ class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->useAttributeAsKey('id')
                     ->prototype('array')
                         ->children()
-                            ->scalarNode('vocabularyNamespace')->defaultValue(TypesGenerator::SCHEMA_ORG_NAMESPACE)->info('Namespace of the vocabulary the type belongs to.')->end()
+                            ->scalarNode('vocabularyNamespace')->defaultValue(self::SCHEMA_ORG_NAMESPACE)->info('Namespace of the vocabulary the type belongs to.')->end()
                             ->booleanNode('abstract')->defaultNull()->info('Is the class abstract? (null to guess)')->end()
                             ->booleanNode('embeddable')->defaultFalse()->info('Is the class embeddable?')->end()
                             ->arrayNode('namespaces')

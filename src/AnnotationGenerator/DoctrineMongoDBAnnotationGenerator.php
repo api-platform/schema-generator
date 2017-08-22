@@ -21,7 +21,7 @@ use ApiPlatform\SchemaGenerator\TypesGenerator;
  *
  * @author Andrew Meshchanchuk <andrew.meshchanchuk@gmail.com>>
  */
-class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerator
+final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerator
 {
     /**
      * {@inheritdoc}

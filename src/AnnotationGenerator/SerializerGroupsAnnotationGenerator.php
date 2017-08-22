@@ -20,7 +20,7 @@ namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
  *
  * @see https://symfony.com/doc/master/components/serializer.html
  */
-class SerializerGroupsAnnotationGenerator extends AbstractAnnotationGenerator
+final class SerializerGroupsAnnotationGenerator extends AbstractAnnotationGenerator
 {
     /**
      * {@inheritdoc}

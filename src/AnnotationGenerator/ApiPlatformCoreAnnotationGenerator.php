@@ -22,7 +22,7 @@ use ApiPlatform\SchemaGenerator\TypesGenerator;
  *
  * @see https://github.com/api-platform/core
  */
-class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerator
+final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerator
 {
     /**
      * {@inheritdoc}

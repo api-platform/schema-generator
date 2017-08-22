@@ -1,3 +1,6 @@
+rdfa: [{ uri: tests/data/schema.rdfa, format: rdfa }]
+relations: [tests/data/v1.owl]
+
 # The PHP namespace of generated entities
 namespaces:
   entity: 'AddressBook\Entity'

@@ -15,6 +15,7 @@ namespace ApiPlatform\SchemaGenerator\Tests;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
+use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Log\NullLogger;
@@ -133,7 +134,7 @@ class TypesGeneratorTest extends TestCase
                         'articleBody' => null,
                         'articleSection' => null,
                     ],
-                    'vocabularyNamespace' => TypesGenerator::SCHEMA_ORG_NAMESPACE,
+                    'vocabularyNamespace' => TypesGeneratorConfiguration::SCHEMA_ORG_NAMESPACE,
                 ],
                 'CreativeWork' => [
                     'allProperties' => false,
@@ -146,25 +147,25 @@ class TypesGeneratorTest extends TestCase
                         'headline' => null,
                         'isFamilyFriendly' => null,
                     ],
-                    'vocabularyNamespace' => TypesGenerator::SCHEMA_ORG_NAMESPACE,
+                    'vocabularyNamespace' => TypesGeneratorConfiguration::SCHEMA_ORG_NAMESPACE,
                 ],
                 'BlogPosting' => [
                     'allProperties' => true,
                     'properties' => null,
-                    'vocabularyNamespace' => TypesGenerator::SCHEMA_ORG_NAMESPACE,
+                    'vocabularyNamespace' => TypesGeneratorConfiguration::SCHEMA_ORG_NAMESPACE,
                 ],
                 'Person' => [
                     'allProperties' => false,
                     'properties' => [],
-                    'vocabularyNamespace' => TypesGenerator::SCHEMA_ORG_NAMESPACE,
+                    'vocabularyNamespace' => TypesGeneratorConfiguration::SCHEMA_ORG_NAMESPACE,
                 ],
                 'SocialMediaPosting' => [
                     'allProperties' => true,
-                    'vocabularyNamespace' => TypesGenerator::SCHEMA_ORG_NAMESPACE,
+                    'vocabularyNamespace' => TypesGeneratorConfiguration::SCHEMA_ORG_NAMESPACE,
                 ],
                 'Thing' => [
                     'allProperties' => true,
-                    'vocabularyNamespace' => TypesGenerator::SCHEMA_ORG_NAMESPACE,
+                    'vocabularyNamespace' => TypesGeneratorConfiguration::SCHEMA_ORG_NAMESPACE,
                 ],
             ],
             'generateId' => true,

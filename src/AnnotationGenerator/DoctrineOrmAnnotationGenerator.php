@@ -21,7 +21,7 @@ use ApiPlatform\SchemaGenerator\TypesGenerator;
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
+final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
 {
     /**
      * {@inheritdoc}
