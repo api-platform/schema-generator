@@ -12,6 +12,7 @@ HEADER;
 $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__)
     ->exclude('tests/Fixtures/app/cache')
+    ->exclude('build')
 ;
 
 return PhpCsFixer\Config::create()

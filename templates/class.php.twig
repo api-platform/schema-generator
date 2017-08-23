@@ -59,6 +59,7 @@ use {{ use }};
     }
 {% endif %}
 
+{% if config.mutatorMethods %}
 {% for field in class.fields %}
 {% if field.isArray %}
     /**
@@ -110,4 +111,5 @@ use {{ use }};
     }
 
 {% endfor %}
+{% endif %}
 }

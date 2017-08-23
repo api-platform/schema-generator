@@ -30,7 +30,7 @@ install:
   - if [[ $deps = 'low' ]]; then composer update --prefer-dist --no-progress --no-suggest --prefer-stable --prefer-lowest --ansi; fi
 
 script:
-  - if [[ $coverage = 1 ]]; then phpdbg -qrr php phpunit-6.3.phar --coverage-closer build/logs/clover.xml; else php phpunit-6.3.phar; fi
+  - if [[ $coverage = 1 ]]; then phpdbg -qrr phpunit-6.3.phar --coverage-clover build/logs/clover.xml; else php phpunit-6.3.phar; fi
   - if [[ $lint = 1 ]]; then php php-cs-fixer.phar fix --dry-run --diff --no-ansi; fi
   - if [[ $lint = 1 ]]; then phpstan analyse -l5 --ansi src; fi
   - if [[ ! $deps && $TRAVIS_PHP_VERSION = "7.1" ]]; then php box.phar build; fi;
