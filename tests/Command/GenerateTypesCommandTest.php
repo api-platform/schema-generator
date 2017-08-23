@@ -31,7 +31,6 @@ class GenerateTypesCommandTest extends TestCase
     public function setUp()
     {
         $this->fs = new Filesystem();
-        $this->fs->remove(__DIR__.'/../../build/');
     }
 
     /**
@@ -48,12 +47,13 @@ class GenerateTypesCommandTest extends TestCase
     public function getArguments()
     {
         return [
-            [__DIR__.'/../../build/address-book/', __DIR__.'/../config/address-book.yml'],
-            [__DIR__.'/../../build/blog/', __DIR__.'/../config/blog.yml'],
-            [__DIR__.'/../../build/ecommerce/', __DIR__.'/../config/ecommerce.yml'],
-            [__DIR__.'/../../build/vgo/', __DIR__.'/../config/vgo.yml'],
-            [__DIR__.'/../../build/mongodb/address-book/', __DIR__.'/../config/mongodb/address-book.yml'],
-            [__DIR__.'/../../build/mongodb/ecommerce/', __DIR__.'/../config/mongodb/ecommerce.yml'],
+            [__DIR__.'/../../build/address-book/', __DIR__.'/../config/address-book.yaml'],
+            [__DIR__.'/../../build/blog/', __DIR__.'/../config/blog.yaml'],
+            [__DIR__.'/../../build/ecommerce/', __DIR__.'/../config/ecommerce.yaml'],
+            [__DIR__.'/../../build/vgo/', __DIR__.'/../config/vgo.yaml'],
+            [__DIR__.'/../../build/public-properties/', __DIR__.'/../config/public-properties.yaml'],
+            [__DIR__.'/../../build/mongodb/address-book/', __DIR__.'/../config/mongodb/address-book.yaml'],
+            [__DIR__.'/../../build/mongodb/ecommerce/', __DIR__.'/../config/mongodb/ecommerce.yaml'],
         ];
     }
 }

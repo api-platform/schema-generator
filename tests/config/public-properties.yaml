@@ -1,0 +1,42 @@
+rdfa: [{ uri: tests/data/schema.rdfa, format: rdfa }]
+relations: [tests/data/v1.owl]
+
+fieldVisibility: public
+mutatorMethods: false
+types:
+  Person:
+    properties:
+      name: ~
+      familyName: ~
+      givenName: ~
+      additionalName: ~
+      gender: ~
+      address: { range: PostalAddress }
+      # Custom range and custom ORM\Column content
+      birthDate: { range: DateTime, ormColumn: 'type="datetimetz", nullable=true, options={"comment" = "Birthdate with timezone."}' }
+      telephone: ~
+      email: ~
+      jobTitle: ~
+      # Default relation table name would be "person_organization" for all following fields, but we customize them
+      affiliation: ~
+      brand: { relationTableName: "person_brand"}
+      memberOf: { range: "Organization", cardinality: (1..*), relationTableName: "person_memberof"}
+      worksFor: { range: "Organization", cardinality: (0..*), relationTableName: "person_worksfor"}
+      # url field is a custom one without definition, it should render error
+      url: ~
+      friends: { range: "Person", cardinality: (0..*) }
+  PostalAddress:
+    # Disable the generation of the class hierarchy for this type
+    properties:
+      # Force the type of the addressCountry property to text
+      addressCountry: { range: "Text" }
+      addressLocality: ~
+      addressRegion: ~
+      postOfficeBoxNumber: ~
+      postalCode: ~
+      streetAddress: ~
+  Organization:
+    properties:
+      name: ~
+      # Custom property with custom ORM\Column content
+      adminCode: {range: Text, ormColumn: 'type="string", length=3, unique=true, nullable=false, options={"comment" = "A code for central administration."}' }
