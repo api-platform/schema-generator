@@ -24,6 +24,7 @@ and custom generator can be added (e.g.: a Doctrine ODM mapping generator).
 or any other framework including [Laravel](https://laravel.com) and [Zend Framework](http://framework.zend.com/)).
 
 [![Build Status](https://travis-ci.org/api-platform/schema-generator.svg?branch=master)](https://travis-ci.org/api-platform/schema-generator)
+[![Coverage Status](https://coveralls.io/repos/github/api-platform/schema-generator/badge.svg?branch=master)](https://coveralls.io/github/api-platform/schema-generator?branch=master)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/87ec89e6-57cd-4ac0-9ab1-d4549c5425c5/mini.png)](https://insight.sensiolabs.com/projects/87ec89e6-57cd-4ac0-9ab1-d4549c5425c5)
 
 ## What is Schema.org?
