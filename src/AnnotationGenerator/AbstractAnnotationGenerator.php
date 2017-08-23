@@ -149,14 +149,12 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
         $data = false;
         switch ($range) {
             case 'Boolean':
-                $data = 'boolean';
+                $data = 'bool';
                 break;
             case 'Date':
-                // No break
             case 'DateTime':
-                // No break
             case 'Time':
-                $data = '\DateTime';
+                $data = '\\'.\DateTimeInterface::class;
                 break;
             case 'Number':
                 // No break
@@ -167,7 +165,6 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
                 $data = 'integer';
                 break;
             case 'Text':
-                // No break
             case 'URL':
                 $data = 'string';
                 break;

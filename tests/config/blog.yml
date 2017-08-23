@@ -1,7 +1,9 @@
-annotationGenerators: # Generators we want to use, keep it as is for any API Platform project
-    - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
-    - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator
-    - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
+rdfa: [{ uri: tests/data/schema.rdfa, format: rdfa }]
+relations: [tests/data/v1.owl]
+annotationGenerators: # Generators we want to use
+  - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
+  - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator
+  - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
 namespaces:
   entity: AppBundle\Entity # The default namespace for entities, following API Platform and Symfony best practices
 types: # The list of type to generated (a PHP entity class by type will be generated)

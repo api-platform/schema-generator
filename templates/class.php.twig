@@ -66,11 +66,9 @@ use {{ use }};
      * {{ annotation }}
 {% endfor %}
      */
-    public function add{{ field.name|ucfirst }}({% if field.typeHint and not field.isEnum %}{{ field.typeHint }} {% endif %}${{ field.name }})
+    public function add{{ field.name|ucfirst }}({% if field.typeHint and not field.isEnum %}{{ field.typeHint }} {% endif %}${{ field.name }}): void
     {
         $this->{{ field.name }}[] = {% if field.isEnum %}(string) {% endif %}${{ field.name }};
-
-        return $this;
     }
 
     /**
@@ -78,7 +76,7 @@ use {{ use }};
      * {{ annotation }}
 {% endfor %}
      */
-    public function remove{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.typeHint }} {% endif %}${{ field.name }})
+    public function remove{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.typeHint }} {% endif %}${{ field.name }}): void
     {
 {% if config.doctrine.useCollection and field.isArray and field.typeHint and not field.isEnum %}
         $this->{{ field.name }}->removeElement({% if field.isEnum %}(string) {% endif %}${{ field.name }});
@@ -88,8 +86,6 @@ use {{ use }};
             unset($this->{{ field.name }}[$key]);
         }
 {% endif %}
-
-        return $this;
     }
 {% else %}
     /**
@@ -97,11 +93,9 @@ use {{ use }};
      * {{ annotation }}
 {% endfor %}
      */
-    public function set{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.typeHint }} {% endif %}${{ field.name }}{% if field.typeHint and field.isNullable %} = null{% endif %})
+    public function set{{ field.name|ucfirst }}({% if field.typeHint %}{% if field.isNullable %}?{% endif %}{{ field.typeHint }} {% endif %}${{ field.name }}): void
     {
         $this->{{ field.name }} = ${{ field.name }};
-
-        return $this;
     }
 {% endif %}
 
@@ -110,7 +104,7 @@ use {{ use }};
      * {{ annotation }}
 {% endfor %}
      */
-    public function get{{ field.name|ucfirst }}()
+    public function get{{ field.name|ucfirst }}(){% if field.typeHint %}: {% if field.isNullable %}?{% endif %}{{ field.typeHint }}{% endif %}
     {
         return $this->{{ field.name }};
     }

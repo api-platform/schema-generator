@@ -20,14 +20,14 @@ namespace ApiPlatform\SchemaGenerator;
  */
 class CardinalitiesExtractor
 {
-    const CARDINALITY_0_1 = '(0..1)';
-    const CARDINALITY_0_N = '(0..*)';
-    const CARDINALITY_1_1 = '(1..1)';
-    const CARDINALITY_1_N = '(1..*)';
-    const CARDINALITY_N_0 = '(*..0)';
-    const CARDINALITY_N_1 = '(*..1)';
-    const CARDINALITY_N_N = '(*..*)';
-    const CARDINALITY_UNKNOWN = 'unknown';
+    public const CARDINALITY_0_1 = '(0..1)';
+    public const CARDINALITY_0_N = '(0..*)';
+    public const CARDINALITY_1_1 = '(1..1)';
+    public const CARDINALITY_1_N = '(1..*)';
+    public const CARDINALITY_N_0 = '(*..0)';
+    public const CARDINALITY_N_1 = '(*..1)';
+    public const CARDINALITY_N_N = '(*..*)';
+    public const CARDINALITY_UNKNOWN = 'unknown';
 
     /**
      * @var \EasyRdf_Graph[]

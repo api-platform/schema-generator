@@ -21,9 +21,9 @@ use Psr\Log\LoggerInterface;
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
+final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
 {
-    const INDENT = '   ';
+    private const INDENT = '   ';
 
     /**
      * @var HtmlConverter
@@ -89,11 +89,11 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
      */
     public function generateGetterAnnotations(string $className, string $fieldName): array
     {
-        return [
-            sprintf('Gets %s.', $fieldName),
-            '',
-            sprintf('@return %s', $this->toPhpType($this->classes[$className]['fields'][$fieldName])),
-        ];
+        if (!$this->isDocUseful($className, $fieldName)) {
+            return [];
+        }
+
+        return [sprintf('@return %s', $this->toPhpType($this->classes[$className]['fields'][$fieldName]))];
     }
 
     /**
@@ -101,13 +101,11 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
      */
     public function generateSetterAnnotations(string $className, string $fieldName): array
     {
-        return [
-            sprintf('Sets %s.', $fieldName),
-            '',
-            sprintf('@param  %s $%s', $this->toPhpType($this->classes[$className]['fields'][$fieldName]), $fieldName),
-            '',
-            '@return $this',
-        ];
+        if (!$this->isDocUseful($className, $fieldName)) {
+            return [];
+        }
+
+        return [sprintf('@param  %s $%s', $this->toPhpType($this->classes[$className]['fields'][$fieldName]), $fieldName)];
     }
 
     /**
@@ -115,13 +113,11 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
      */
     public function generateAdderAnnotations(string $className, string $fieldName): array
     {
-        return [
-            sprintf('Adds %s.', $fieldName),
-            '',
-            sprintf('@param  %s $%s', $this->toPhpType($this->classes[$className]['fields'][$fieldName], true), $fieldName),
-            '',
-            '@return $this',
-        ];
+        if (!$this->isDocUseful($className, $fieldName)) {
+            return [];
+        }
+
+        return [sprintf('@param  %s $%s', $this->toPhpType($this->classes[$className]['fields'][$fieldName], true), $fieldName)];
     }
 
     /**
@@ -129,13 +125,18 @@ class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
      */
     public function generateRemoverAnnotations(string $className, string $fieldName): array
     {
-        return [
-            sprintf('Removes %s.', $fieldName),
-            '',
-            sprintf('@param  %s $%s', $this->toPhpType($this->classes[$className]['fields'][$fieldName], true), $fieldName),
-            '',
-            '@return $this',
-        ];
+        if (!$this->isDocUseful($className, $fieldName)) {
+            return [];
+        }
+
+        return [sprintf('@param  %s $%s', $this->toPhpType($this->classes[$className]['fields'][$fieldName], true), $fieldName)];
+    }
+
+    private function isDocUseful(string $className, string $fieldName): bool
+    {
+        $typeHint = $this->classes[$className]['fields'][$fieldName]['typeHint'] ?? false;
+
+        return false === $typeHint || 'array' === $typeHint;
     }
 
     /**

@@ -33,43 +33,40 @@ class TypesGenerator
     /**
      * @var string
      *
+     * @internal
+     */
+    public const SCHEMA_ORG_ENUMERATION = 'http://schema.org/Enumeration';
+
+    /**
+     * @var string
+     *
      * @see https://github.com/myclabs/php-enum Used enum implementation
      */
-    const ENUM_USE = 'MyCLabs\Enum\Enum';
+    private const ENUM_USE = 'MyCLabs\Enum\Enum';
 
     /**
      * @var string
      *
      * @see https://github.com/doctrine/collections
      */
-    const DOCTRINE_COLLECTION_USE = 'Doctrine\Common\Collections\ArrayCollection';
+    private const DOCTRINE_COLLECTION_USE = 'Doctrine\Common\Collections\ArrayCollection';
 
     /**
      * @var string
      *
      * @see https://github.com/myclabs/php-enum Used enum implementation
      */
-    const ENUM_EXTENDS = 'Enum';
+    private const ENUM_EXTENDS = 'Enum';
 
     /**
      * @var string
      */
-    const SCHEMA_ORG_NAMESPACE = 'http://schema.org/';
+    private const SCHEMA_ORG_DOMAIN = 'schema:domainIncludes';
 
     /**
      * @var string
      */
-    const SCHEMA_ORG_ENUMERATION = 'http://schema.org/Enumeration';
-
-    /**
-     * @var string
-     */
-    const SCHEMA_ORG_DOMAIN = 'schema:domainIncludes';
-
-    /**
-     * @var string
-     */
-    const SCHEMA_ORG_RANGE = 'schema:rangeIncludes';
+    private const SCHEMA_ORG_RANGE = 'schema:rangeIncludes';
 
     /**
      * @var \Twig_Environment
@@ -266,16 +263,13 @@ class TypesGenerator
 
             foreach ($class['fields'] as &$field) {
                 $field['isEnum'] = isset($classes[$field['range']]) && $classes[$field['range']]['isEnum'];
+                $field['typeHint'] = $this->fieldToTypeHint($field, $classes) ?? false;
             }
         }
 
         // Third pass
         foreach ($classes as &$class) {
-            if (isset($config['types'][$class['name']]['abstract']) && null !== $config['types'][$class['name']]['abstract']) {
-                $class['abstract'] = $config['types'][$class['name']]['abstract'];
-            } else {
-                $class['abstract'] = $class['hasChild'];
-            }
+            $class['abstract'] = $config['types'][$class['name']]['abstract'] ?? $class['hasChild'];
 
             // When including all properties, ignore properties already set on parent
             if (isset($config['types'][$class['name']]['allProperties']) && $config['types'][$class['name']]['allProperties'] && isset($classes[$class['parent']])) {
@@ -329,6 +323,7 @@ class TypesGenerator
                             'isCustom' => true,
                             'isEnum' => false,
                             'isId' => true,
+                            'typeHint' => 'int',
                         ],
                     ] + $class['fields'];
                 }
@@ -358,18 +353,6 @@ class TypesGenerator
             }
 
             foreach ($class['fields'] as $fieldName => &$field) {
-                $typeHint = false;
-                if ($this->isDateTime($field['range'])) {
-                    $typeHint = '\\DateTime';
-                } elseif (!($this->isDatatype($field['range']) || $field['isEnum'])) {
-                    if (isset($classes[$field['range']]['interfaceName'])) {
-                        $typeHint = $classes[$field['range']]['interfaceName'];
-                    } else {
-                        $typeHint = $classes[$field['range']]['name'];
-                    }
-                }
-
-                $field['typeHint'] = $typeHint;
                 $field['annotations'] = $this->generateFieldAnnotations($annotationGenerators, $className, $fieldName);
                 $field['getterAnnotations'] = $this->generateGetterAnnotations($annotationGenerators, $className, $fieldName);
 
@@ -520,26 +503,42 @@ class TypesGenerator
 
     /**
      * Is this type a datatype?
-     *
-     * @param string $type
-     *
-     * @return bool
      */
-    private function isDatatype($type)
+    private function isDatatype(string $type): bool
     {
         return in_array($type, ['Boolean', 'DataType', 'Date', 'DateTime', 'Float', 'Integer', 'Number', 'Text', 'Time', 'URL'], true);
     }
 
-    /**
-     * Is this type a \DateTime?
-     *
-     * @param $type
-     *
-     * @return bool
-     */
-    private function isDateTime($type)
+    private function fieldToTypeHint(array $field, array $classes): ?string
     {
-        return in_array($type, ['Date', 'DateTime', 'Time'], true);
+        if ($field['isEnum']) {
+            return null;
+        }
+
+        if ($field['isArray']) {
+            return 'array';
+        }
+
+        switch ($field['range']) {
+            case 'Boolean':
+                return 'bool';
+            case 'Float':
+                return 'float';
+            case 'Integer':
+                return 'int';
+            case 'Text':
+            case 'URL':
+                return 'string';
+            case 'Date':
+            case 'DateTime':
+            case 'Time':
+                return '\\'.\DateTimeInterface::class;
+            case 'DataType':
+            case 'Number':
+                return null;
+        }
+
+        return $classes[$field['range']]['interfaceName'] ?? $classes[$field['range']]['name'];
     }
 
     /**
@@ -760,7 +759,7 @@ class TypesGenerator
     /**
      * @param AnnotationGeneratorInterface[] $annotationGenerators
      */
-    private function generateClassUses($annotationGenerators, array $classes, string $className): array
+    private function generateClassUses(array $annotationGenerators, array $classes, string $className): array
     {
         $uses = $classes[$className]['uses'];
 

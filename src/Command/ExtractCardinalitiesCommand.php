@@ -26,7 +26,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class ExtractCardinalitiesCommand extends Command
+final class ExtractCardinalitiesCommand extends Command
 {
     /**
      * {@inheritdoc}

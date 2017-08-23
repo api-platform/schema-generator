@@ -30,7 +30,7 @@ use Symfony\Component\Yaml\Parser;
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class GenerateTypesCommand extends Command
+final class GenerateTypesCommand extends Command
 {
     /**
      * {@inheritdoc}

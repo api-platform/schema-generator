@@ -1,3 +1,6 @@
+rdfa: [{ uri: tests/data/schema.rdfa, format: rdfa }]
+relations: [tests/data/v1.owl]
+
 header: |
   /*
    * This file is part of the Ecommerce package.
@@ -7,21 +10,15 @@ header: |
    * For the full copyright and license information, please view the LICENSE
    * file that was distributed with this source code.
    */
-rdfa:
-  -
-    uri:    tests/data/schema.rdfa
-    format: rdfa
-relations:
-  - tests/data/v1.owl
 namespaces:
-  entity:               'Dunglas\EcommerceBundle\Document'
-  enum:                 'Dunglas\EcommerceBundle\Enum'
-  interface:            'Dunglas\EcommerceBundle\Model'
+  entity: 'Dunglas\EcommerceBundle\Document'
+  enum: 'Dunglas\EcommerceBundle\Enum'
+  interface: 'Dunglas\EcommerceBundle\Model'
 annotationGenerators:
   - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
   - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
   - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineMongoDBAnnotationGenerator
-author: "Kévin Dunglas <dunglas@gmail.com>"
+author: 'Kévin Dunglas <dunglas@gmail.com>'
 debug: true
 useInterface: true
 checkIsGoodRelations: true
@@ -35,7 +32,7 @@ types:
   Product:
     properties:
       sku:
-        cardinality: "(0..1)"
+        cardinality: '(0..1)'
       url: ~
       brand: ~
       productID: ~
@@ -47,15 +44,15 @@ types:
       gtin8: ~
       mpn: ~
       color: ~
-      depth: { range: "Text" }
-      height: { range: "Text" }
-      weight: { range: "Text" }
-      width: { range: "Text" }
-      seller: { range: "Seller" }
+      depth: { range: 'Text' }
+      height: { range: 'Text' }
+      weight: { range: 'Text' }
+      width: { range: 'Text' }
+      seller: { range: 'Seller' }
   Brand:
-    parent: "Thing"
+    parent: 'Thing'
     properties:
-      logo: { range: "ImageObject" }
+      logo: { range: 'ImageObject' }
   Seller:
     parent: false
     guessFrom: Person
@@ -77,7 +74,7 @@ types:
       availabilityStarts: ~
       availabilityEnds: ~
       availableDeliveryMethod: ~
-      category: { range: "Text" }
+      category: { range: 'Text' }
       deliveryLeadTime: ~
       inventoryLevel: ~
       itemCondition: ~

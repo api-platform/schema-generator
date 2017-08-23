@@ -18,7 +18,7 @@ namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
+final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
 {
     /**
      * {@inheritdoc}

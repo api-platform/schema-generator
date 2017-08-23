@@ -1,7 +1,10 @@
+rdfa: [tests/data/vgo.rdf, tests/data/schema.rdfa]
+relations: [tests/data/v1.owl]
+
 annotationGenerators:
-    - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
-    - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator
-    - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
+  - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
+  - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator
+  - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
 
 namespaces:
   entity: 'AppBundle\Entity'
@@ -12,7 +15,3 @@ types:
   Thing: ~
 
 debug: true
-
-rdfa:
-  - tests/data/vgo.rdf
-  - tests/data/schema.rdfa

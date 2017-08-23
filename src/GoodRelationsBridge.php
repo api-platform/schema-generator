@@ -20,15 +20,15 @@ namespace ApiPlatform\SchemaGenerator;
  */
 class GoodRelationsBridge
 {
-    const GOOD_RELATIONS_NAMESPACE = 'http://purl.org/goodrelations/v1#';
-    const RDF_SCHEMA_NAMESPACE = 'http://www.w3.org/2000/01/rdf-schema#';
+    private const GOOD_RELATIONS_NAMESPACE = 'http://purl.org/goodrelations/v1#';
+    private const RDF_SCHEMA_NAMESPACE = 'http://www.w3.org/2000/01/rdf-schema#';
 
     /**
      * @var \SimpleXMLElement[]
      */
-    protected $relations;
+    private $relations;
 
-    protected static $objectPropertiesTable = [
+    private $objectPropertiesTable = [
         'priceSpecification' => 'hasPriceSpecification',
         'businessFunction' => 'hasBusinessFunction',
         'eligibleCustomerType' => 'eligibleCustomerTypes',
@@ -46,7 +46,7 @@ class GoodRelationsBridge
         'acceptedPaymentMethod' => 'acceptedPaymentMethods',
     ];
 
-    protected static $datatypePropertiesTable = [
+    private $datatypePropertiesTable = [
         'minPrice' => 'hasMinCurrencyValue',
         'unitCode' => 'hasUnitOfMeasurement',
         'isicV4' => 'hasISICv4',
@@ -75,7 +75,7 @@ class GoodRelationsBridge
         $this->relations = $relations;
 
         foreach ($this->relations as $relation) {
-            $relation->registerXPathNamespace('rdfs', static::RDF_SCHEMA_NAMESPACE);
+            $relation->registerXPathNamespace('rdfs', self::RDF_SCHEMA_NAMESPACE);
         }
     }
 
@@ -114,26 +114,12 @@ class GoodRelationsBridge
     }
 
     /**
-     * Converts Schema.org's id to Good Relations id.
-     */
-    private function convertPropertyId(string $id): string
-    {
-        if (isset(static::$datatypePropertiesTable[$id])) {
-            return static::$datatypePropertiesTable[$id];
-        }
-
-        if (isset(static::$objectPropertiesTable[$id])) {
-            return static::$objectPropertiesTable[$id];
-        }
-
-        return $id;
-    }
-
-    /**
      * Gets a property URL.
      */
     private function getPropertyUrl(string $id): string
     {
-        return self::GOOD_RELATIONS_NAMESPACE.$this->convertPropertyId($id);
+        $propertyId = $this->datatypePropertiesTable[$id] ?? $this->objectPropertiesTable[$id] ?? $id;
+
+        return self::GOOD_RELATIONS_NAMESPACE.$propertyId;
     }
 }
