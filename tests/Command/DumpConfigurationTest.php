@@ -83,6 +83,12 @@ config:
         # The Resolve Target Entity Listener config file pass
         resolveTargetEntityConfigPath: null
 
+    # Symfony Validator Component
+    validator:
+
+        # Generate @Assert\Type annotation
+        assertType:           false
+
     # The value of the phpDoc's @author annotation
     author:               false # Example: Kévin Dunglas <dunglas@gmail.com>
 
