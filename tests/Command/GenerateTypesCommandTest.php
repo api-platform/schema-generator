@@ -51,7 +51,6 @@ class GenerateTypesCommandTest extends TestCase
             [__DIR__.'/../../build/blog/', __DIR__.'/../config/blog.yaml'],
             [__DIR__.'/../../build/ecommerce/', __DIR__.'/../config/ecommerce.yaml'],
             [__DIR__.'/../../build/vgo/', __DIR__.'/../config/vgo.yaml'],
-            [__DIR__.'/../../build/public-properties/', __DIR__.'/../config/public-properties.yaml'],
             [__DIR__.'/../../build/mongodb/address-book/', __DIR__.'/../config/mongodb/address-book.yaml'],
             [__DIR__.'/../../build/mongodb/ecommerce/', __DIR__.'/../config/mongodb/ecommerce.yaml'],
         ];
@@ -61,14 +60,10 @@ class GenerateTypesCommandTest extends TestCase
     {
         $outputDir = __DIR__.'/../../build/fluent-mutators';
         $config = __DIR__.'/../config/fluent-mutators.yaml';
-
         $this->fs->mkdir($outputDir);
-
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
-
         $organization = file_get_contents($outputDir.'/AppBundle/Entity/Person.php');
-
         $this->assertContains(<<<'PHP'
     public function setUrl(?string $url): self
     {
@@ -77,8 +72,7 @@ class GenerateTypesCommandTest extends TestCase
         return $this;
     }
 PHP
-        , $organization);
-
+            , $organization);
         $this->assertContains(<<<'PHP'
     public function addFriends(Person $friends): self
     {
@@ -95,5 +89,22 @@ PHP
     }
 PHP
             , $organization);
+    }
+
+    public function testDoNotGenerateAccessorMethods()
+    {
+        $outputDir = __DIR__.'/../../build/public-properties';
+        $config = __DIR__.'/../config/public-properties.yaml';
+
+        $this->fs->mkdir($outputDir);
+
+        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $organization = file_get_contents($outputDir.'/AppBundle/Entity/Person.php');
+        $this->assertNotContains('function get', $organization);
+        $this->assertNotContains('function set', $organization);
+        $this->assertNotContains('function add', $organization);
+        $this->assertNotContains('function remove', $organization);
     }
 }

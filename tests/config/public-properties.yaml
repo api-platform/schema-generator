@@ -2,7 +2,7 @@ rdfa: [{ uri: tests/data/schema.rdfa, format: rdfa }]
 relations: [tests/data/v1.owl]
 
 fieldVisibility: public
-mutatorMethods: false
+accessorMethods: false
 types:
   Person:
     properties:
