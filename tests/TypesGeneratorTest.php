@@ -170,6 +170,10 @@ class TypesGeneratorTest extends TestCase
             ],
             'generateId' => true,
             'useInterface' => false,
+            'doctrine' => [
+                'useCollection' => true,
+                'resolveTargetEntityConfigPath' => null,
+            ],
         ];
     }
 

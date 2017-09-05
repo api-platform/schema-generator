@@ -113,7 +113,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
      */
     public function generateAdderAnnotations(string $className, string $fieldName): array
     {
-        if (!$this->isDocUseful($className, $fieldName)) {
+        if (!$this->isDocUseful($className, $fieldName, true)) {
             return [];
         }
 
@@ -125,16 +125,16 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
      */
     public function generateRemoverAnnotations(string $className, string $fieldName): array
     {
-        if (!$this->isDocUseful($className, $fieldName)) {
+        if (!$this->isDocUseful($className, $fieldName, true)) {
             return [];
         }
 
         return [sprintf('@param  %s $%s', $this->toPhpType($this->classes[$className]['fields'][$fieldName], true), $fieldName)];
     }
 
-    private function isDocUseful(string $className, string $fieldName): bool
+    private function isDocUseful(string $className, string $fieldName, $adderOrRemover = false): bool
     {
-        $typeHint = $this->classes[$className]['fields'][$fieldName]['typeHint'] ?? false;
+        $typeHint = $this->classes[$className]['fields'][$fieldName][$adderOrRemover ? 'adderRemoverTypeHint' : 'typeHint'] ?? false;
 
         return false === $typeHint || 'array' === $typeHint;
     }

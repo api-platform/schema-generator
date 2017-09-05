@@ -4,7 +4,7 @@
 
 * Generated classes include scalar typehints and return type
 * Nullable typehints are generated instead of a default `null` value
-* A fluent interface isn't generated anymore
+* A fluent interface isn't generated anymore by default unless you set the `fluentMutatorMethods` config flag to `true`
 * Useless PHPDoc (`@param` and `@return` annotations when a typehint exist and mutator description) isn't generated anymore
 * `DateTimeInterface` is used instead of `DateTime` when possible
 * Add the ability to not generate mutator methods (useful when generating public properties)
