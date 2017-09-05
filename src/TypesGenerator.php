@@ -264,6 +264,10 @@ class TypesGenerator
             foreach ($class['fields'] as &$field) {
                 $field['isEnum'] = isset($classes[$field['range']]) && $classes[$field['range']]['isEnum'];
                 $field['typeHint'] = $this->fieldToTypeHint($field, $classes) ?? false;
+
+                if ('array' === $field['typeHint']) {
+                    $field['adderRemoverTypeHint'] = $this->fieldToAdderRemoverTypeHint($field, $classes) ?? false;
+                }
             }
         }
 
@@ -404,7 +408,7 @@ class TypesGenerator
             }
         }
 
-        if (!empty($interfaceMappings) && $config['doctrine']['resolveTargetEntityConfigPath']) {
+        if (!$interfaceMappings && $config['doctrine']['resolveTargetEntityConfigPath']) {
             $file = $config['output'].'/'.$config['doctrine']['resolveTargetEntityConfigPath'];
             $dir = dirname($file);
             if (!file_exists($dir)) {
@@ -511,12 +515,17 @@ class TypesGenerator
 
     private function fieldToTypeHint(array $field, array $classes): ?string
     {
-        if ($field['isEnum']) {
-            return null;
-        }
-
         if ($field['isArray']) {
             return 'array';
+        }
+
+        return $this->fieldToAdderRemoverTypeHint($field, $classes);
+    }
+
+    private function fieldToAdderRemoverTypeHint(array $field, array $classes): ?string
+    {
+        if ($field['isEnum']) {
+            return 'string';
         }
 
         switch ($field['range']) {

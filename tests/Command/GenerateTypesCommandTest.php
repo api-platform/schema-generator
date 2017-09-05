@@ -56,4 +56,44 @@ class GenerateTypesCommandTest extends TestCase
             [__DIR__.'/../../build/mongodb/ecommerce/', __DIR__.'/../config/mongodb/ecommerce.yaml'],
         ];
     }
+
+    public function testFluentMutators()
+    {
+        $outputDir = __DIR__.'/../../build/fluent-mutators';
+        $config = __DIR__.'/../config/fluent-mutators.yaml';
+
+        $this->fs->mkdir($outputDir);
+
+        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $organization = file_get_contents($outputDir.'/AppBundle/Entity/Person.php');
+
+        $this->assertContains(<<<'PHP'
+    public function setUrl(?string $url): self
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+PHP
+        , $organization);
+
+        $this->assertContains(<<<'PHP'
+    public function addFriends(Person $friends): self
+    {
+        $this->friends[] = $friends;
+
+        return $this;
+    }
+
+    public function removeFriends(Person $friends): self
+    {
+        $this->friends->removeElement($friends);
+
+        return $this;
+    }
+PHP
+            , $organization);
+    }
 }

@@ -98,6 +98,9 @@ config:
     # Set this flag to false to not generate getter, setter, adder and remover methods
     mutatorMethods:       true
 
+    # Set this flag to true to generate fluent setter, adder and remover methods
+    fluentMutatorMethods: false
+
     # Schema.org's types to use
     types:
 

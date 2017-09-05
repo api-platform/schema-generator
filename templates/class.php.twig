@@ -67,9 +67,13 @@ use {{ use }};
      * {{ annotation }}
 {% endfor %}
      */
-    public function add{{ field.name|ucfirst }}({% if field.typeHint and not field.isEnum %}{{ field.typeHint }} {% endif %}${{ field.name }}): void
+    public function add{{ field.name|ucfirst }}({% if field.typeHint and not field.isEnum %}{{ field.adderRemoverTypeHint }} {% endif %}${{ field.name }}): {% if config.fluentMutatorMethods %}self{% else %}void{% endif %}
     {
         $this->{{ field.name }}[] = {% if field.isEnum %}(string) {% endif %}${{ field.name }};
+{% if config.fluentMutatorMethods %}
+
+        return $this;
+{% endif %}
     }
 
     /**
@@ -77,7 +81,7 @@ use {{ use }};
      * {{ annotation }}
 {% endfor %}
      */
-    public function remove{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.typeHint }} {% endif %}${{ field.name }}): void
+    public function remove{{ field.name|ucfirst }}({% if field.typeHint %}{{ field.adderRemoverTypeHint }} {% endif %}${{ field.name }}): {% if config.fluentMutatorMethods %}self{% else %}void{% endif %}
     {
 {% if config.doctrine.useCollection and field.isArray and field.typeHint and not field.isEnum %}
         $this->{{ field.name }}->removeElement({% if field.isEnum %}(string) {% endif %}${{ field.name }});
@@ -87,6 +91,10 @@ use {{ use }};
             unset($this->{{ field.name }}[$key]);
         }
 {% endif %}
+{% if config.fluentMutatorMethods %}
+
+        return $this;
+{% endif %}
     }
 {% else %}
     /**
@@ -94,9 +102,14 @@ use {{ use }};
      * {{ annotation }}
 {% endfor %}
      */
-    public function set{{ field.name|ucfirst }}({% if field.typeHint %}{% if field.isNullable %}?{% endif %}{{ field.typeHint }} {% endif %}${{ field.name }}): void
+    public function set{{ field.name|ucfirst }}({% if field.typeHint %}{% if field.isNullable %}?{% endif %}{{ field.typeHint }} {% endif %}${{ field.name }}): {% if config.fluentMutatorMethods %}self{% else %}void{% endif %}
     {
         $this->{{ field.name }} = ${{ field.name }};
+
+{% if config.fluentMutatorMethods %}
+
+        return $this;
+{% endif %}
     }
 {% endif %}
 
