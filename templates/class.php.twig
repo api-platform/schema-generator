@@ -59,7 +59,7 @@ use {{ use }};
     }
 {% endif %}
 
-{% if config.mutatorMethods %}
+{% if config.accessorMethods %}
 {% for field in class.fields %}
 {% if field.isArray %}
     /**

@@ -96,7 +96,7 @@ config:
     fieldVisibility:      private # One of "private"; "protected"; "public"
 
     # Set this flag to false to not generate getter, setter, adder and remover methods
-    mutatorMethods:       true
+    accessorMethods:      true
 
     # Set this flag to true to generate fluent setter, adder and remover methods
     fluentMutatorMethods: false
