@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\Tests;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
+use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
 use PHPUnit\Framework\TestCase;
@@ -27,19 +28,19 @@ class TypesGeneratorTest extends TestCase
 {
     public function testGenerate(): void
     {
-        $twigProphecy = $this->prophesize('Twig_Environment');
+        $twigProphecy = $this->prophesize(\Twig_Environment::class);
         foreach ($this->getClasses() as $class) {
             $twigProphecy->render('class.php.twig', Argument::that($this->getContextMatcher($class)))->willReturn()->shouldBeCalled();
         }
         $twigProphecy->render('class.php.twig', Argument::type('array'))->willReturn();
         $twig = $twigProphecy->reveal();
 
-        $cardinalitiesExtractorProphecy = $this->prophesize('ApiPlatform\SchemaGenerator\CardinalitiesExtractor');
+        $cardinalitiesExtractorProphecy = $this->prophesize(CardinalitiesExtractor::class);
         $cardinalities = $this->getCardinalities();
         $cardinalitiesExtractorProphecy->extract()->willReturn($cardinalities)->shouldBeCalled();
         $cardinalitiesExtractor = $cardinalitiesExtractorProphecy->reveal();
 
-        $goodRelationsBridgeProphecy = $this->prophesize('ApiPlatform\SchemaGenerator\GoodRelationsBridge');
+        $goodRelationsBridgeProphecy = $this->prophesize(GoodRelationsBridge::class);
         $goodRelationsBridge = $goodRelationsBridgeProphecy->reveal();
 
         $typesGenerator = new TypesGenerator($twig, new NullLogger(), $this->getGraphs(), $cardinalitiesExtractor, $goodRelationsBridge);
@@ -190,6 +191,8 @@ class TypesGeneratorTest extends TestCase
                         'isCustom' => false,
                         'isEnum' => false,
                         'isId' => false,
+                        'isReadable' => true,
+                        'isWritable' => true,
                         'isNullable' => true,
                         'isUnique' => false,
                         'name' => 'articleBody',
@@ -201,6 +204,8 @@ class TypesGeneratorTest extends TestCase
                         'isCustom' => false,
                         'isEnum' => false,
                         'isId' => false,
+                        'isReadable' => true,
+                        'isWritable' => true,
                         'isNullable' => true,
                         'isUnique' => false,
                         'name' => 'articleSection',
@@ -223,6 +228,8 @@ class TypesGeneratorTest extends TestCase
                         'isCustom' => true,
                         'isEnum' => false,
                         'isId' => true,
+                        'isReadable' => true,
+                        'isWritable' => true,
                         'isNullable' => false,
                         'isUnique' => false,
                         'name' => 'id',
@@ -245,6 +252,8 @@ class TypesGeneratorTest extends TestCase
                         'isCustom' => false,
                         'isEnum' => false,
                         'isId' => false,
+                        'isReadable' => true,
+                        'isWritable' => true,
                         'isNullable' => true,
                         'isUnique' => false,
                         'name' => 'author',
@@ -256,6 +265,8 @@ class TypesGeneratorTest extends TestCase
                         'isCustom' => false,
                         'isEnum' => false,
                         'isId' => false,
+                        'isReadable' => true,
+                        'isWritable' => true,
                         'isNullable' => true,
                         'isUnique' => false,
                         'name' => 'datePublished',
@@ -267,6 +278,8 @@ class TypesGeneratorTest extends TestCase
                         'isCustom' => false,
                         'isEnum' => false,
                         'isId' => false,
+                        'isReadable' => true,
+                        'isWritable' => true,
                         'isNullable' => true,
                         'isUnique' => false,
                         'name' => 'headline',
@@ -278,6 +291,8 @@ class TypesGeneratorTest extends TestCase
                         'isCustom' => false,
                         'isEnum' => false,
                         'isId' => false,
+                        'isReadable' => true,
+                        'isWritable' => true,
                         'isNullable' => true,
                         'isUnique' => false,
                         'name' => 'isFamilyFriendly',
@@ -300,6 +315,8 @@ class TypesGeneratorTest extends TestCase
                         'isCustom' => true,
                         'isEnum' => false,
                         'isId' => true,
+                        'isReadable' => true,
+                        'isWritable' => true,
                         'isNullable' => false,
                         'isUnique' => false,
                         'name' => 'id',
@@ -322,6 +339,8 @@ class TypesGeneratorTest extends TestCase
                         'isCustom' => false,
                         'isEnum' => false,
                         'isId' => false,
+                        'isReadable' => true,
+                        'isWritable' => true,
                         'isNullable' => true,
                         'isUnique' => false,
                         'name' => 'sharedContent',
@@ -344,6 +363,8 @@ class TypesGeneratorTest extends TestCase
                         'isCustom' => false,
                         'isEnum' => false,
                         'isId' => false,
+                        'isReadable' => true,
+                        'isWritable' => true,
                         'isNullable' => true,
                         'isUnique' => false,
                         'name' => 'name',

@@ -157,7 +157,13 @@ config:
                     # Symfony Serialization Groups
                     groups:               []
 
-                    # The property nullable
+                    # Is the property readable?
+                    readable:             true
+
+                    # Is the property writable?
+                    writable:             true
+
+                    # Is the property nullable?
                     nullable:             true
 
                     # The property unique

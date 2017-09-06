@@ -295,24 +295,28 @@ class TypesGenerator
         // Generate ID
         if ($config['generateId']) {
             foreach ($classes as &$class) {
-                if (!$class['hasChild'] && !$class['isEnum'] && !$class['embeddable']) {
-                    $class['fields'] = [
-                        'id' => [
-                            'name' => 'id',
-                            'resource' => null,
-                            'range' => 'Integer',
-                            'cardinality' => CardinalitiesExtractor::CARDINALITY_1_1,
-                            'ormColumn' => null,
-                            'isArray' => false,
-                            'isNullable' => false,
-                            'isUnique' => false,
-                            'isCustom' => true,
-                            'isEnum' => false,
-                            'isId' => true,
-                            'typeHint' => 'int',
-                        ],
-                    ] + $class['fields'];
+                if ($class['hasChild'] || $class['isEnum'] || $class['embeddable']) {
+                    continue;
                 }
+
+                $class['fields'] = [
+                    'id' => [
+                        'name' => 'id',
+                        'resource' => null,
+                        'range' => 'Integer',
+                        'cardinality' => CardinalitiesExtractor::CARDINALITY_1_1,
+                        'ormColumn' => null,
+                        'isArray' => false,
+                        'isReadable' => true,
+                        'isWritable' => false,
+                        'isNullable' => false,
+                        'isUnique' => false,
+                        'isCustom' => true,
+                        'isEnum' => false,
+                        'isId' => true,
+                        'typeHint' => 'int',
+                    ],
+                ] + $class['fields'];
             }
         }
 
@@ -593,8 +597,6 @@ class TypesGenerator
                 $cardinality = $property ? $this->cardinalities[$propertyName] : CardinalitiesExtractor::CARDINALITY_1_1;
             }
 
-            $ormColumn = $propertyConfig['ormColumn'] ?? null;
-
             $isArray = in_array($cardinality, [
                 CardinalitiesExtractor::CARDINALITY_0_N,
                 CardinalitiesExtractor::CARDINALITY_1_N,
@@ -622,8 +624,10 @@ class TypesGenerator
                 'resource' => $property,
                 'range' => $ranges[0],
                 'cardinality' => $cardinality,
-                'ormColumn' => $ormColumn,
+                'ormColumn' => $propertyConfig['ormColumn'] ?? null,
                 'isArray' => $isArray,
+                'isReadable' => $propertyConfig['readable'] ?? true,
+                'isWritable' => $propertyConfig['writable'] ?? true,
                 'isNullable' => $isNullable,
                 'isUnique' => isset($propertyConfig['unique']) && $propertyConfig['unique'],
                 'isCustom' => empty($property),

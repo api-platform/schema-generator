@@ -61,6 +61,7 @@ use {{ use }};
 
 {% if config.accessorMethods %}
 {% for field in class.fields %}
+{% if field.isWritable %}
 {% if field.isArray %}
     /**
 {% for annotation in field.adderAnnotations %}
@@ -112,7 +113,9 @@ use {{ use }};
 {% endif %}
     }
 {% endif %}
+{% endif %}
 
+{% if field.isReadable %}
     /**
 {% for annotation in field.getterAnnotations %}
      * {{ annotation }}
@@ -123,6 +126,7 @@ use {{ use }};
         return $this->{{ field.name }};
     }
 
+{% endif %}
 {% endfor %}
 {% endif %}
 }
