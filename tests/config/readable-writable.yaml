@@ -1,0 +1,9 @@
+rdfa: [{ uri: tests/data/schema.rdfa, format: rdfa }]
+relations: [tests/data/v1.owl]
+
+types:
+  Person:
+    properties:
+      name: { writable: false }
+      familyName: { readable: false }
+      friends: { range: "Person", cardinality: (0..*), writable: false }

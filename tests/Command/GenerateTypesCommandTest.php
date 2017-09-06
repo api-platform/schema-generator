@@ -66,7 +66,6 @@ class GenerateTypesCommandTest extends TestCase
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents($outputDir.'/AddressBook/Entity/Person.php');
-
         $this->assertContains('use Doctrine\Common\Collections\ArrayCollection;', $person);
         $this->assertContains('use Doctrine\Common\Collections\Collection;', $person);
 
@@ -86,8 +85,8 @@ PHP
         $this->fs->mkdir($outputDir);
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
-        $person = file_get_contents($outputDir.'/AppBundle/Entity/Person.php');
 
+        $person = file_get_contents($outputDir.'/AppBundle/Entity/Person.php');
         $this->assertContains(<<<'PHP'
     public function setUrl(?string $url): self
     {
@@ -126,10 +125,30 @@ PHP
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
-        $organization = file_get_contents($outputDir.'/AppBundle/Entity/Person.php');
-        $this->assertNotContains('function get', $organization);
-        $this->assertNotContains('function set', $organization);
-        $this->assertNotContains('function add', $organization);
-        $this->assertNotContains('function remove', $organization);
+        $person = file_get_contents($outputDir.'/AppBundle/Entity/Person.php');
+        $this->assertNotContains('function get', $person);
+        $this->assertNotContains('function set', $person);
+        $this->assertNotContains('function add', $person);
+        $this->assertNotContains('function remove', $person);
+    }
+
+    public function testReadableWritable()
+    {
+        $outputDir = __DIR__.'/../../build/readable-writable';
+        $config = __DIR__.'/../config/readable-writable.yaml';
+
+        $this->fs->mkdir($outputDir);
+
+        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $person = file_get_contents($outputDir.'/AppBundle/Entity/Person.php');
+        $this->assertContains('function getId(', $person);
+        $this->assertNotContains('function setId(', $person);
+        $this->assertContains('function getName(', $person);
+        $this->assertNotContains('function setName(', $person);
+        $this->assertContains('function getFriends(', $person);
+        $this->assertNotContains('function addFriends(', $person);
+        $this->assertNotContains('function removeFriends(', $person);
     }
 }
