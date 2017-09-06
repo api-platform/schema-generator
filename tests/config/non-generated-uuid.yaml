@@ -1,0 +1,10 @@
+rdfa: [{ uri: tests/data/schema.rdfa, format: rdfa }]
+relations: [tests/data/v1.owl]
+
+id:
+  generationStrategy: uuid
+  writable: true
+types:
+  Person:
+    properties:
+      name: ~

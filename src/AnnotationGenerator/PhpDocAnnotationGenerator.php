@@ -78,7 +78,8 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         $comment = $field['resource'] ? $field['resource']->get('rdfs:comment') : '';
 
         $annotations = $this->formatDoc((string) $comment, true);
-        $annotations[0] = sprintf('@var %s %s', $this->toPhpType($field), $annotations[0]);
+
+        $annotations[0] = sprintf('@var %s %s', $this->toPhpDocType($field), $annotations[0]);
         $annotations[] = '';
 
         return $annotations;
@@ -93,7 +94,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             return [];
         }
 
-        return [sprintf('@return %s', $this->toPhpType($this->classes[$className]['fields'][$fieldName]))];
+        return [sprintf('@return %s', $this->toPhpDocType($this->classes[$className]['fields'][$fieldName]))];
     }
 
     /**
@@ -105,7 +106,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             return [];
         }
 
-        return [sprintf('@param  %s $%s', $this->toPhpType($this->classes[$className]['fields'][$fieldName]), $fieldName)];
+        return [sprintf('@param  %s $%s', $this->toPhpDocType($this->classes[$className]['fields'][$fieldName]), $fieldName)];
     }
 
     /**
@@ -178,5 +179,15 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         }
 
         return $doc;
+    }
+
+    private function toPhpDocType(array $field): string
+    {
+        $type = $this->toPhpType($field);
+        if ($field['isNullable']) {
+            $type .= '|null';
+        }
+
+        return $type;
     }
 }

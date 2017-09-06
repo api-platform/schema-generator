@@ -48,8 +48,10 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
      */
     public function generateFieldAnnotations(string $className, string $fieldName): array
     {
-        $this->classes[$className];
         $field = $this->classes[$className]['fields'][$fieldName];
+        if ($field['isId']) {
+            return $this->generateIdAnnotations();
+        }
 
         $annotations = [];
 
@@ -85,17 +87,15 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
         }
 
         if (isset($type)) {
-            if (!$field['isId']) {
-                $annotation = '@MongoDB\Field';
+            $annotation = '@MongoDB\Field';
 
-                if ($field['isArray']) {
-                    $type = 'collection';
-                }
-
-                $annotation .= sprintf('(type="%s")', $type);
-
-                $annotations[] = $annotation;
+            if ($field['isArray']) {
+                $type = 'collection';
             }
+
+            $annotation .= sprintf('(type="%s")', $type);
+
+            $annotations[] = $annotation;
         } else {
             if ($field['cardinality'] === CardinalitiesExtractor::CARDINALITY_0_1
                 || $field['cardinality'] === CardinalitiesExtractor::CARDINALITY_1_1
@@ -107,10 +107,6 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
                 || $field['cardinality'] === CardinalitiesExtractor::CARDINALITY_N_N) {
                 $annotations[] = sprintf('@MongoDB\ReferenceMany(targetDocument="%s", simple=true)', $this->getRelationName($field['range']));
             }
-        }
-
-        if ($field['isId']) {
-            $annotations[] = '@MongoDB\Id';
         }
 
         return $annotations;
@@ -137,5 +133,23 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
         $class = $this->classes[$range];
 
         return $class[$range]['interfaceName'] ?? $class['name'];
+    }
+
+    private function generateIdAnnotations(): array
+    {
+        switch ($this->config['id']['generationStrategy']) {
+            case 'uuid':
+                if ($this->config['id']['writable']) {
+                    return ['@MongoDB\Id(strategy="NONE", type="bin_uuid")'];
+                }
+
+                return ['@MongoDB\Id(strategy="UUID")'];
+            case 'auto':
+                return ['@MongoDB\Id(strategy="INCREMENT")'];
+            case 'mongoid':
+                return ['@MongoDB\Id'];
+            default:
+                return ['@MongoDB\Id(strategy="NONE", type="string")'];
+        }
     }
 }

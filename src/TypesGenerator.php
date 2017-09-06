@@ -293,28 +293,55 @@ class TypesGenerator
         }
 
         // Generate ID
-        if ($config['generateId']) {
+        if ($config['id']['generate']) {
             foreach ($classes as &$class) {
                 if ($class['hasChild'] || $class['isEnum'] || $class['embeddable']) {
                     continue;
+                }
+
+                switch ($config['id']['generationStrategy']) {
+                    case 'auto':
+                        $range = 'Integer';
+                        $typeHint = 'int';
+                        $writable = false;
+                        $nullable = true;
+                        break;
+                    case 'uuid':
+                        $range = 'Text';
+                        $typeHint = 'string';
+                        $writable = $config['id']['writable'];
+                        $nullable = !$writable;
+                        break;
+                    case 'mongoid':
+                        $range = 'Text';
+                        $typeHint = 'string';
+                        $writable = false;
+                        $nullable = true;
+                        break;
+                    default:
+                        $range = 'Text';
+                        $typeHint = 'string';
+                        $writable = true;
+                        $nullable = false;
+                        break;
                 }
 
                 $class['fields'] = [
                     'id' => [
                         'name' => 'id',
                         'resource' => null,
-                        'range' => 'Integer',
+                        'range' => $range,
                         'cardinality' => CardinalitiesExtractor::CARDINALITY_1_1,
                         'ormColumn' => null,
                         'isArray' => false,
                         'isReadable' => true,
-                        'isWritable' => false,
-                        'isNullable' => false,
+                        'isWritable' => $writable,
+                        'isNullable' => $nullable,
                         'isUnique' => false,
                         'isCustom' => true,
                         'isEnum' => false,
                         'isId' => true,
-                        'typeHint' => 'int',
+                        'typeHint' => $typeHint,
                     ],
                 ] + $class['fields'];
             }

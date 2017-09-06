@@ -56,14 +56,17 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
      */
     public function generateFieldAnnotations(string $className, string $fieldName): array
     {
-        $this->classes[$className];
         $field = $this->classes[$className]['fields'][$fieldName];
+        if ($field['isId']) {
+            return $this->generateIdAnnotations();
+        }
+
+        $annotations = [];
 
         $field['relationTableName'] = null;
-        if (!$field['isId'] && isset($this->config['types'][$className]['properties'][$fieldName])) {
+        if (isset($this->config['types'][$className]['properties'][$fieldName])) {
             $field['relationTableName'] = $this->config['types'][$className]['properties'][$fieldName]['relationTableName'];
         }
-        $annotations = [];
 
         if ($field['isEnum']) {
             $type = $field['isArray'] ? 'simple_array' : 'string';
@@ -82,7 +85,6 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                     $type = 'time';
                     break;
                 case 'Number':
-                    // No break
                 case 'Float':
                     $type = 'float';
                     break;
@@ -90,9 +92,8 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                     $type = 'integer';
                     break;
                 case 'Text':
-                    // No break
                 case 'URL':
-                    $type = 'string';
+                    $type = 'text';
                     break;
             }
         }
@@ -102,7 +103,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
             $isColumnHasProperties = false;
 
             if ($field['ormColumn']) {
-                $annotation .= '('.$field['ormColumn'].')';
+                $annotation .= sprintf('(%s)', $field['ormColumn']);
             } else {
                 if ($type !== 'string' || $field['isNullable'] || $field['isUnique']) {
                     $isColumnHasProperties = true;
@@ -182,11 +183,6 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
             }
         }
 
-        if ($field['isId']) {
-            $annotations[] = '@ORM\Id';
-            $annotations[] = '@ORM\GeneratedValue(strategy="AUTO")';
-        }
-
         return $annotations;
     }
 
@@ -201,6 +197,30 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         $typeIsEnum = $subClassOf && $subClassOf->getUri() === TypesGenerator::SCHEMA_ORG_ENUMERATION;
 
         return $typeIsEnum ? [] : ['Doctrine\ORM\Mapping as ORM'];
+    }
+
+    private function generateIdAnnotations(): array
+    {
+        $annotations = ['@ORM\Id'];
+        if ('none' !== $this->config['id']['generationStrategy'] && !$this->config['id']['writable']) {
+            $annotations[] = sprintf('@ORM\GeneratedValue(strategy="%s")', strtoupper($this->config['id']['generationStrategy']));
+        }
+
+        switch ($this->config['id']['generationStrategy']) {
+            case 'uuid':
+                $type = 'guid';
+            break;
+            case 'auto':
+                $type = 'integer';
+            break;
+            default:
+                $type = 'string';
+            break;
+        }
+
+        $annotations[] = sprintf('@ORM\Column(type="%s")', $type);
+
+        return $annotations;
     }
 
     /**

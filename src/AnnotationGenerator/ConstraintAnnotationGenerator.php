@@ -30,6 +30,10 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
         $field = $this->classes[$className]['fields'][$fieldName];
 
         if ($field['isId']) {
+            if ('uuid' === $this->config['id']['generationStrategy']) {
+                return ['@Assert\Uuid'];
+            }
+
             return [];
         }
 
