@@ -14,6 +14,9 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator;
 
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\AnnotationGeneratorInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use MyCLabs\Enum\Enum;
 use PhpCsFixer\Cache\NullCacheManager;
 use PhpCsFixer\Differ\NullDiffer;
 use PhpCsFixer\Error\ErrorsManager;
@@ -36,27 +39,6 @@ class TypesGenerator
      * @internal
      */
     public const SCHEMA_ORG_ENUMERATION = 'http://schema.org/Enumeration';
-
-    /**
-     * @var string
-     *
-     * @see https://github.com/myclabs/php-enum Used enum implementation
-     */
-    private const ENUM_USE = 'MyCLabs\Enum\Enum';
-
-    /**
-     * @var string
-     *
-     * @see https://github.com/doctrine/collections
-     */
-    private const DOCTRINE_COLLECTION_USE = 'Doctrine\Common\Collections\ArrayCollection';
-
-    /**
-     * @var string
-     *
-     * @see https://github.com/myclabs/php-enum Used enum implementation
-     */
-    private const ENUM_EXTENDS = 'Enum';
 
     /**
      * @var string
@@ -177,8 +159,8 @@ class TypesGenerator
             $class['isEnum'] = $this->isEnum($type);
             if ($class['isEnum']) {
                 $class['namespace'] = $typeConfig['namespace'] ?? $config['namespaces']['enum'];
-                $class['parent'] = self::ENUM_EXTENDS;
-                $class['uses'][] = self::ENUM_USE;
+                $class['parent'] = 'Enum';
+                $class['uses'][] = Enum::class;
 
                 // Constants
                 foreach ($this->graphs as $graph) {
@@ -263,9 +245,9 @@ class TypesGenerator
 
             foreach ($class['fields'] as &$field) {
                 $field['isEnum'] = isset($classes[$field['range']]) && $classes[$field['range']]['isEnum'];
-                $field['typeHint'] = $this->fieldToTypeHint($field, $classes) ?? false;
+                $field['typeHint'] = $this->fieldToTypeHint($config, $field, $classes) ?? false;
 
-                if ('array' === $field['typeHint']) {
+                if ($field['isArray']) {
                     $field['adderRemoverTypeHint'] = $this->fieldToAdderRemoverTypeHint($field, $classes) ?? false;
                 }
             }
@@ -513,10 +495,10 @@ class TypesGenerator
         return in_array($type, ['Boolean', 'DataType', 'Date', 'DateTime', 'Float', 'Integer', 'Number', 'Text', 'Time', 'URL'], true);
     }
 
-    private function fieldToTypeHint(array $field, array $classes): ?string
+    private function fieldToTypeHint(array $config, array $field, array $classes): ?string
     {
         if ($field['isArray']) {
-            return 'array';
+            return $config['doctrine']['useCollection'] ? 'Collection' : 'array';
         }
 
         return $this->fieldToAdderRemoverTypeHint($field, $classes);
@@ -649,11 +631,13 @@ class TypesGenerator
                 'columnPrefix' => $columnPrefix,
                 'isId' => false,
             ];
+
             if ($isArray) {
                 $class['hasConstructor'] = true;
 
-                if (isset($config['doctrine']['useCollection']) && $config['doctrine']['useCollection'] && !in_array(self::DOCTRINE_COLLECTION_USE, $class['uses'], true)) {
-                    $class['uses'][] = self::DOCTRINE_COLLECTION_USE;
+                if ($config['doctrine']['useCollection'] && !in_array(ArrayCollection::class, $class['uses'], true)) {
+                    $class['uses'][] = ArrayCollection::class;
+                    $class['uses'][] = Collection::class;
                 }
             }
         }

@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 /**
  * Constraint annotation generator.
  *
@@ -90,7 +92,7 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
 
         $uses = [];
         $uses[] = 'Symfony\Component\Validator\Constraints as Assert';
-        $uses[] = 'Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity';
+        $uses[] = UniqueEntity::class;
 
         foreach ($this->classes[$className]['fields'] as $field) {
             if ($field['isEnum']) {

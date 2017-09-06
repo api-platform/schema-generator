@@ -184,7 +184,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
 
         if ($field['isArray'] && !$adderOrRemover) {
             if ($this->config['doctrine']['useCollection']) {
-                return sprintf('ArrayCollection<%s>', $range);
+                return sprintf('Collection<%s>', $range);
             }
 
             return sprintf('%s[]', $range);

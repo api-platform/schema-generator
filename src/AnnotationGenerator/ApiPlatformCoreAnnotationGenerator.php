@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 
 /**
@@ -52,6 +54,6 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
         $subClassOf = $resource->get('rdfs:subClassOf');
         $typeIsEnum = $subClassOf && $subClassOf->getUri() === TypesGenerator::SCHEMA_ORG_ENUMERATION;
 
-        return $typeIsEnum ? [] : ['ApiPlatform\Core\Annotation\ApiResource', 'ApiPlatform\Core\Annotation\ApiProperty'];
+        return $typeIsEnum ? [] : [ApiResource::class, ApiProperty::class];
     }
 }

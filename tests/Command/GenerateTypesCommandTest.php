@@ -47,13 +47,36 @@ class GenerateTypesCommandTest extends TestCase
     public function getArguments()
     {
         return [
-            [__DIR__.'/../../build/address-book/', __DIR__.'/../config/address-book.yaml'],
             [__DIR__.'/../../build/blog/', __DIR__.'/../config/blog.yaml'],
             [__DIR__.'/../../build/ecommerce/', __DIR__.'/../config/ecommerce.yaml'],
             [__DIR__.'/../../build/vgo/', __DIR__.'/../config/vgo.yaml'],
             [__DIR__.'/../../build/mongodb/address-book/', __DIR__.'/../config/mongodb/address-book.yaml'],
             [__DIR__.'/../../build/mongodb/ecommerce/', __DIR__.'/../config/mongodb/ecommerce.yaml'],
         ];
+    }
+
+    public function testDoctrineCollection()
+    {
+        $outputDir = __DIR__.'/../../build/address-book';
+        $config = __DIR__.'/../config/address-book.yaml';
+
+        $this->fs->mkdir($outputDir);
+
+        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $person = file_get_contents($outputDir.'/AddressBook/Entity/Person.php');
+
+        $this->assertContains('use Doctrine\Common\Collections\ArrayCollection;', $person);
+        $this->assertContains('use Doctrine\Common\Collections\Collection;', $person);
+
+        $this->assertContains(<<<'PHP'
+    public function getFriends(): Collection
+    {
+        return $this->friends;
+    }
+PHP
+            , $person);
     }
 
     public function testFluentMutators()
@@ -63,7 +86,8 @@ class GenerateTypesCommandTest extends TestCase
         $this->fs->mkdir($outputDir);
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
-        $organization = file_get_contents($outputDir.'/AppBundle/Entity/Person.php');
+        $person = file_get_contents($outputDir.'/AppBundle/Entity/Person.php');
+
         $this->assertContains(<<<'PHP'
     public function setUrl(?string $url): self
     {
@@ -72,7 +96,8 @@ class GenerateTypesCommandTest extends TestCase
         return $this;
     }
 PHP
-            , $organization);
+        , $person);
+
         $this->assertContains(<<<'PHP'
     public function addFriends(Person $friends): self
     {
@@ -88,7 +113,7 @@ PHP
         return $this;
     }
 PHP
-            , $organization);
+            , $person);
     }
 
     public function testDoNotGenerateAccessorMethods()
