@@ -118,7 +118,7 @@ use {{ use }};
      * {{ annotation }}
 {% endfor %}
      */
-    public function get{{ field.name|ucfirst }}(){% if field.typeHint %}: {% if field.isNullable %}?{% endif %}{{ field.typeHint }}{% endif %}
+    public function get{{ field.name|ucfirst }}(){% if field.typeHint %}: {% if field.isNullable and not field.isArray %}?{% endif %}{{ field.typeHint }}{% endif %}
     {
         return $this->{{ field.name }};
     }

@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
+use Symfony\Component\Serializer\Annotation\Groups;
+
 /**
  * Symfony Serializer Groups annotation generator.
  *
@@ -43,6 +45,6 @@ final class SerializerGroupsAnnotationGenerator extends AbstractAnnotationGenera
      */
     public function generateUses(string $className): array
     {
-        return ['Symfony\Component\Serializer\Annotation\Groups'];
+        return [Groups::class];
     }
 }
