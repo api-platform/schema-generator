@@ -17,6 +17,7 @@ use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
+use Doctrine\Common\Util\Inflector;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -86,10 +87,11 @@ final class GenerateTypesCommand extends Command
         $goodRelationsBridge = new GoodRelationsBridge($relations);
         $cardinalitiesExtractor = new CardinalitiesExtractor($graphs, $goodRelationsBridge);
 
-        $ucfirstFilter = new \Twig_SimpleFilter('ucfirst', 'ucfirst');
         $loader = new \Twig_Loader_Filesystem(__DIR__.'/../../templates/');
         $twig = new \Twig_Environment($loader, ['autoescape' => false, 'debug' => $processedConfiguration['debug']]);
-        $twig->addFilter($ucfirstFilter);
+        $twig->addFilter(new \Twig_SimpleFilter('ucfirst', 'ucfirst'));
+        $twig->addFilter(new \Twig_SimpleFilter('pluralize', [Inflector::class, 'pluralize']));
+        $twig->addFilter(new \Twig_SimpleFilter('singularize', [Inflector::class, 'singularize']));
 
         if ($processedConfiguration['debug']) {
             $twig->addExtension(new \Twig_Extension_Debug());

@@ -19,6 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * Symfony Serializer Groups annotation generator.
  *
  * @author Youssef El Montaser <youssef@elmontaser.com>
+ * @author Kévin Dunglas <dunglas@gmail.com>
  *
  * @see https://symfony.com/doc/master/components/serializer.html
  */
@@ -29,15 +30,15 @@ final class SerializerGroupsAnnotationGenerator extends AbstractAnnotationGenera
      */
     public function generateFieldAnnotations(string $className, string $fieldName): array
     {
-        $annotations = [];
-
-        $properties = $this->config['types'][$className]['properties'];
-
-        if (false === $this->classes[$className]['fields'][$fieldName]['isId'] && $groups = $properties[$fieldName]['groups'] ?? false) {
-            $annotations[] = sprintf('@Groups({"%s"})', implode('","', $groups));
+        if (null === $field = $this->config['types'][$className]['properties'] ?? null) {
+            return [];
         }
 
-        return $annotations;
+        if (false === $this->classes[$className]['fields'][$fieldName]['isId'] && $groups = $field[$fieldName]['groups'] ?? false) {
+            return [sprintf('@Groups({"%s"})', implode('", "', $groups))];
+        }
+
+        return [];
     }
 
     /**
