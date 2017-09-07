@@ -169,7 +169,11 @@ class TypesGeneratorTest extends TestCase
                     'vocabularyNamespace' => TypesGeneratorConfiguration::SCHEMA_ORG_NAMESPACE,
                 ],
             ],
-            'generateId' => true,
+            'id' => [
+                'generate' => true,
+                'generationStrategy' => 'auto',
+                'writable' => false,
+            ],
             'useInterface' => false,
             'doctrine' => [
                 'useCollection' => true,

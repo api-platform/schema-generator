@@ -4,6 +4,12 @@ relations: [tests/data/v1.owl]
 # The PHP namespace of generated entities
 namespaces:
   entity: 'AddressBook\Document'
+annotationGenerators:
+  - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
+  - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
+  - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineMongoDBAnnotationGenerator
+id:
+  generationStrategy: uuid
 # The list of types and properties we want to use
 types:
   Person:

@@ -22,6 +22,8 @@ author: 'Kévin Dunglas <dunglas@gmail.com>'
 debug: true
 useInterface: true
 checkIsGoodRelations: true
+id:
+  generationStrategy: mongoid
 types:
   Thing:
     properties:

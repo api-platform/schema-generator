@@ -65,7 +65,7 @@ class GenerateTypesCommandTest extends TestCase
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
-        $person = file_get_contents($outputDir.'/AddressBook/Entity/Person.php');
+        $person = file_get_contents("$outputDir/AddressBook/Entity/Person.php");
         $this->assertContains('use Doctrine\Common\Collections\ArrayCollection;', $person);
         $this->assertContains('use Doctrine\Common\Collections\Collection;', $person);
 
@@ -86,7 +86,7 @@ PHP
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
-        $person = file_get_contents($outputDir.'/AppBundle/Entity/Person.php');
+        $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
         $this->assertContains(<<<'PHP'
     public function setUrl(?string $url): self
     {
@@ -125,7 +125,7 @@ PHP
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
-        $person = file_get_contents($outputDir.'/AppBundle/Entity/Person.php');
+        $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
         $this->assertNotContains('function get', $person);
         $this->assertNotContains('function set', $person);
         $this->assertNotContains('function add', $person);
@@ -142,13 +142,170 @@ PHP
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
-        $person = file_get_contents($outputDir.'/AppBundle/Entity/Person.php');
-        $this->assertContains('function getId(', $person);
+        $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
+        $this->assertContains('public function getId(', $person);
         $this->assertNotContains('function setId(', $person);
-        $this->assertContains('function getName(', $person);
+        $this->assertContains('public function getName(', $person);
         $this->assertNotContains('function setName(', $person);
-        $this->assertContains('function getFriends(', $person);
+        $this->assertContains('public function getFriends(', $person);
         $this->assertNotContains('function addFriends(', $person);
         $this->assertNotContains('function removeFriends(', $person);
+    }
+
+    public function testGeneratedId()
+    {
+        $outputDir = __DIR__.'/../../build/generated-id';
+        $config = __DIR__.'/../config/generated-id.yaml';
+
+        $this->fs->mkdir($outputDir);
+
+        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
+
+        $this->assertContains(<<<'PHP'
+    /**
+     * @var int|null
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+PHP
+            , $person);
+
+        $this->assertContains(<<<'PHP'
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+PHP
+        , $person);
+
+        $this->assertNotContains('function setId(', $person);
+    }
+
+    public function testNonGeneratedId()
+    {
+        $outputDir = __DIR__.'/../../build/non-generated-id';
+        $config = __DIR__.'/../config/non-generated-id.yaml';
+
+        $this->fs->mkdir($outputDir);
+
+        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
+
+        $this->assertContains(<<<'PHP'
+    /**
+     * @var string
+     *
+     * @ORM\Id
+     * @ORM\Column(type="string")
+     */
+    private $id;
+PHP
+            , $person);
+
+        $this->assertContains(<<<'PHP'
+    public function getId(): string
+    {
+        return $this->id;
+    }
+PHP
+            , $person);
+
+        $this->assertContains('public function setId(string $id): void', $person);
+    }
+
+    public function testGeneratedUuid()
+    {
+        $outputDir = __DIR__.'/../../build/generated-uuid';
+        $config = __DIR__.'/../config/generated-uuid.yaml';
+
+        $this->fs->mkdir($outputDir);
+
+        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
+
+        $this->assertContains(<<<'PHP'
+    /**
+     * @var string|null
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="guid")
+     * @Assert\Uuid
+     */
+    private $id;
+PHP
+            , $person);
+
+        $this->assertContains(<<<'PHP'
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+PHP
+            , $person);
+
+        $this->assertNotContains('function setId(', $person);
+    }
+
+    public function testNonGeneratedUuid()
+    {
+        $outputDir = __DIR__.'/../../build/non-generated-uuid';
+        $config = __DIR__.'/../config/non-generated-uuid.yaml';
+
+        $this->fs->mkdir($outputDir);
+
+        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
+
+        $this->assertContains(<<<'PHP'
+    /**
+     * @var string
+     *
+     * @ORM\Id
+     * @ORM\Column(type="guid")
+     * @Assert\Uuid
+     */
+    private $id;
+PHP
+            , $person);
+
+        $this->assertContains(<<<'PHP'
+    public function getId(): string
+    {
+        return $this->id;
+    }
+PHP
+            , $person);
+
+        $this->assertContains('public function setId(string $id): void', $person);
+    }
+
+    public function testDoNotGenerateId()
+    {
+        $outputDir = __DIR__.'/../../build/no-id';
+        $config = __DIR__.'/../config/no-id.yaml';
+
+        $this->fs->mkdir($outputDir);
+
+        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
+
+        $this->assertNotContains('$id', $person);
+        $this->assertNotContains('function getId', $person);
+        $this->assertNotContains('function setId', $person);
     }
 }

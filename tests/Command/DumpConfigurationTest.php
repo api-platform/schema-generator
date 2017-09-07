@@ -50,8 +50,17 @@ config:
     # Debug mode
     debug:                false
 
-    # Automatically add an id field to entities
-    generateId:           true
+    # IDs configuration
+    id:
+
+        # Automatically add an id field to entities
+        generate:             true
+
+        # The ID generation strategy to use ("none" to not let the database generate IDs).
+        generationStrategy:   auto # One of "auto"; "none"; "uuid"; "mongoid"
+
+        # Is the ID writable? Only applicable if "generationStrategy" is "uuid".
+        writable:             false
 
     # Generate interfaces and use Doctrine's Resolve Target Entity feature
     useInterface:         false
