@@ -33,6 +33,8 @@ use Symfony\Component\Yaml\Parser;
  */
 final class GenerateTypesCommand extends Command
 {
+    private const DEFAULT_CONFIG_FILE = 'schema.yaml';
+
     /**
      * {@inheritdoc}
      */
@@ -42,7 +44,7 @@ final class GenerateTypesCommand extends Command
             ->setName('generate-types')
             ->setDescription('Generate types')
             ->addArgument('output', InputArgument::REQUIRED, 'The output directory')
-            ->addArgument('config', InputArgument::OPTIONAL, 'The config file to use');
+            ->addArgument('config', InputArgument::OPTIONAL, 'The config file to use (default to "schema.yaml" in the current directory, will generate all types if no config file exists)');
     }
 
     /**
@@ -50,10 +52,43 @@ final class GenerateTypesCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): void
     {
+        $outputDir = $input->getArgument('output');
+        if ($dir = realpath($input->getArgument('output'))) {
+            if (!is_dir($dir)) {
+                throw new \InvalidArgumentException(sprintf('The file "%s" is not a directory.', $dir));
+            }
+
+            if (!is_writable($dir)) {
+                throw new \InvalidArgumentException(sprintf('The "%s" directory is not writable.', $dir));
+            }
+
+            $outputDir = $dir;
+        } elseif (!@mkdir($outputDir, 0777, true)) {
+            throw new \InvalidArgumentException(sprintf('Cannot create the "%s" directory. Check that the parent directory is writable.', $outputDir));
+        } else {
+            $outputDir = realpath($outputDir);
+        }
+
         $configArgument = $input->getArgument('config');
         if ($configArgument) {
+            if (!file_exists($configArgument)) {
+                throw new \InvalidArgumentException(sprintf('The file "%s" doesn\'t exist.', $configArgument));
+            }
+
+            if (!is_file($configArgument)) {
+                throw new \InvalidArgumentException(sprintf('"%s" isn\'t a file.', $configArgument));
+            }
+
+            if (!is_readable($configArgument)) {
+                throw new \InvalidArgumentException(sprintf('The file "%s" isn\'t readable.', $configArgument));
+            }
+
             $parser = new Parser();
             $config = $parser->parse(file_get_contents($configArgument));
+            unset($parser);
+        } elseif (is_readable(self::DEFAULT_CONFIG_FILE)) {
+            $parser = new Parser();
+            $config = $parser->parse(file_get_contents(self::DEFAULT_CONFIG_FILE));
             unset($parser);
         } else {
             $config = [];
@@ -62,7 +97,7 @@ final class GenerateTypesCommand extends Command
         $processor = new Processor();
         $configuration = new TypesGeneratorConfiguration();
         $processedConfiguration = $processor->processConfiguration($configuration, [$config]);
-        $processedConfiguration['output'] = realpath($input->getArgument('output'));
+        $processedConfiguration['output'] = $outputDir;
         if (!$processedConfiguration['output']) {
             throw new \RuntimeException('The specified output is invalid');
         }
