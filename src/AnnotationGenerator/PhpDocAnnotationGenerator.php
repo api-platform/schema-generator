@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
+use Doctrine\Common\Util\Inflector;
 use League\HTMLToMarkdown\HtmlConverter;
 use Psr\Log\LoggerInterface;
 
@@ -106,7 +107,9 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             return [];
         }
 
-        return [sprintf('@param  %s $%s', $this->toPhpDocType($this->classes[$className]['fields'][$fieldName]), $fieldName)];
+        $field = $this->classes[$className]['fields'][$fieldName];
+
+        return [sprintf('@param %s $%s', $this->toPhpDocType($this->classes[$className]['fields'][$fieldName]), $field['name'])];
     }
 
     /**
@@ -118,7 +121,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             return [];
         }
 
-        return [sprintf('@param  %s $%s', $this->toPhpType($this->classes[$className]['fields'][$fieldName], true), $fieldName)];
+        return [sprintf('@param %s $%s', $this->toPhpType($this->classes[$className]['fields'][$fieldName], true), Inflector::singularize($fieldName))];
     }
 
     /**
@@ -130,7 +133,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             return [];
         }
 
-        return [sprintf('@param  %s $%s', $this->toPhpType($this->classes[$className]['fields'][$fieldName], true), $fieldName)];
+        return [sprintf('@param  %s $%s', $this->toPhpType($this->classes[$className]['fields'][$fieldName], true), Inflector::singularize($fieldName))];
     }
 
     private function isDocUseful(string $className, string $fieldName, $adderOrRemover = false): bool

@@ -98,16 +98,16 @@ PHP
         , $person);
 
         $this->assertContains(<<<'PHP'
-    public function addFriends(Person $friends): self
+    public function addFriend(Person $friend): self
     {
-        $this->friends[] = $friends;
+        $this->friends[] = $friend;
 
         return $this;
     }
 
-    public function removeFriends(Person $friends): self
+    public function removeFriend(Person $friend): self
     {
-        $this->friends->removeElement($friends);
+        $this->friends->removeElement($friend);
 
         return $this;
     }
@@ -148,8 +148,8 @@ PHP
         $this->assertContains('public function getName(', $person);
         $this->assertNotContains('function setName(', $person);
         $this->assertContains('public function getFriends(', $person);
-        $this->assertNotContains('function addFriends(', $person);
-        $this->assertNotContains('function removeFriends(', $person);
+        $this->assertNotContains('function addFriend(', $person);
+        $this->assertNotContains('function removeFriend(', $person);
     }
 
     public function testGeneratedId()
