@@ -66,7 +66,7 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
             }
         }
 
-        if (!$field['isNullable']) {
+        if ($this->config['validator']['assertType'] && !$field['isNullable']) {
             $asserts[] = '@Assert\NotNull';
         }
 
