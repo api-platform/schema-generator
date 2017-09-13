@@ -1,6 +1,3 @@
-rdfa: [{ uri: tests/data/schema.rdfa, format: rdfa }]
-relations: [tests/data/v1.owl]
-
 fluentMutatorMethods: true
 types:
   Person:

@@ -26,7 +26,7 @@ class DumpConfigurationTest extends TestCase
     {
         $commandTester = new CommandTester(new DumpConfigurationCommand());
         $this->assertEquals(0, $commandTester->execute([]));
-        $this->assertEquals(<<<YAML
+        $this->assertEquals(sprintf(<<<'YAML'
 config:
 
     # RDFa files
@@ -36,16 +36,16 @@ config:
         -
 
             # RDFa URI to use
-            uri:                  'https://schema.org/docs/schema_org_rdfa.html' # Example: https://schema.org/docs/schema_org_rdfa.html
+            uri:                  %s # Example: https://schema.org/docs/schema_org_rdfa.html
 
             # RDFa URI data format
             format:               null # Example: rdfxml
 
     # OWL relation files to use
-    relations:
+    relations:            # Example: https://purl.org/goodrelations/v1.owl
 
         # Default:
-        - https://purl.org/goodrelations/v1.owl
+        - %s
 
     # Debug mode
     debug:                false
@@ -196,6 +196,6 @@ config:
 
 
 YAML
-, $commandTester->getDisplay());
+, realpath(__DIR__.'/../../data/schema.rdfa'), realpath(__DIR__.'/../../data/v1.owl')), $commandTester->getDisplay());
     }
 }

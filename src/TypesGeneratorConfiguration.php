@@ -28,8 +28,15 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 final class TypesGeneratorConfiguration implements ConfigurationInterface
 {
-    public const SCHEMA_ORG_RDFA_URL = 'https://schema.org/docs/schema_org_rdfa.html';
-    public const GOOD_RELATIONS_OWL_URL = 'https://purl.org/goodrelations/v1.owl';
+    /**
+     * @see https://schema.org/docs/schema_org_rdfa.html
+     */
+    public const SCHEMA_ORG_RDFA_URL = __DIR__.'/../data/schema.rdfa';
+
+    /**
+     * @see https://purl.org/goodrelations/v1.owl
+     */
+    public const GOOD_RELATIONS_OWL_URL = __DIR__.'/../data/v1.owl';
     public const SCHEMA_ORG_NAMESPACE = 'http://schema.org/';
 
     /**
@@ -43,9 +50,7 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
             ->children()
                 ->arrayNode('rdfa')
                     ->info('RDFa files')
-                    ->defaultValue([
-                        ['uri' => self::SCHEMA_ORG_RDFA_URL, 'format' => null],
-                    ])
+                    ->defaultValue([['uri' => realpath(self::SCHEMA_ORG_RDFA_URL), 'format' => 'rdfa']])
                     ->beforeNormalization()
                         ->ifArray()
                         ->then(function (array $v) {
@@ -59,14 +64,15 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->end()
                     ->prototype('array')
                         ->children()
-                            ->scalarNode('uri')->defaultValue(self::SCHEMA_ORG_RDFA_URL)->info('RDFa URI to use')->example(self::SCHEMA_ORG_RDFA_URL)->end()
+                            ->scalarNode('uri')->defaultValue(realpath(self::SCHEMA_ORG_RDFA_URL))->info('RDFa URI to use')->example('https://schema.org/docs/schema_org_rdfa.html')->end()
                             ->scalarNode('format')->defaultNull()->info('RDFa URI data format')->example('rdfxml')->end()
                         ->end()
                     ->end()
                 ->end()
                 ->arrayNode('relations')
                     ->info('OWL relation files to use')
-                    ->defaultValue([self::GOOD_RELATIONS_OWL_URL])
+                    ->example('https://purl.org/goodrelations/v1.owl')
+                    ->defaultValue([realpath(self::GOOD_RELATIONS_OWL_URL)])
                     ->prototype('scalar')->end()
                 ->end()
                 ->booleanNode('debug')->defaultFalse()->info('Debug mode')->end()

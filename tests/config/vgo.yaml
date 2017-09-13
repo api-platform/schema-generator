@@ -1,5 +1,4 @@
-rdfa: [tests/data/vgo.rdf, tests/data/schema.rdfa]
-relations: [tests/data/v1.owl]
+rdfa: [tests/data/vgo.rdf, data/schema.rdfa]
 
 annotationGenerators:
   - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
