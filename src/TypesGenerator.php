@@ -16,7 +16,7 @@ namespace ApiPlatform\SchemaGenerator;
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\AnnotationGeneratorInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Util\Inflector;
+use Doctrine\Common\Inflector\Inflector;
 use MyCLabs\Enum\Enum;
 use PhpCsFixer\Cache\NullCacheManager;
 use PhpCsFixer\Differ\NullDiffer;
