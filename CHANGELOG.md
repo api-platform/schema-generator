@@ -1,6 +1,11 @@
 # Changelog
 
-## 2.0
+## 2.0.1
+
+* The generator now relies on embeded schema file to prevent issues with online XML files and allow offline usage
+* An issue regarding the Inflector namespace has been fixed
+
+## 2.0.0
 
 * Generated classes include scalar typehints and return type
 * New options to generate autoincremented IDs, UUIDs, custom IDs or to not generate IDs at all (DTO)
