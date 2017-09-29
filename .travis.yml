@@ -18,6 +18,7 @@ before_install:
   - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - export PATH="$PATH:$HOME/.composer/vendor/bin"
   - wget https://phar.phpunit.de/phpunit-6.3.phar
+  - composer global require humbug/php-scoper:^1.0@dev
   - if [[ $coverage = 1 ]]; then mkdir -p build/logs; fi
   - if [[ $coverage = 1 ]]; then wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar; fi
   - if [[ $lint = 1 ]]; then wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.4.0/php-cs-fixer.phar; fi
@@ -36,6 +37,8 @@ script:
   - |
     if [[ ! $deps && $TRAVIS_PHP_VERSION = "7.1" ]]; then
       composer install --no-dev --prefer-dist --classmap-authoritative --no-progress --no-suggest --ansi;
+      ~/.composer/vendor/bin/php-scoper add-prefix --force;
+      composer -d=build dump-autoload --classmap-authoritative --no-dev;
       php -d phar.readonly=0 box.phar build;
       php schema.phar generate-types tmp/ tests/e2e/schema.yml;
       diff tests/e2e/src/AppBundle/Entity/Person.php tmp/AppBundle/Entity/Person.php;
