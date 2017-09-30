@@ -40,7 +40,7 @@ script:
       ~/.composer/vendor/bin/php-scoper add-prefix --force;
       composer -d=build dump-autoload --classmap-authoritative --no-dev;
       php -d phar.readonly=0 box.phar build;
-      php build/bin/schema generate-types tmp/ tests/schema.yml
+      php schema.phar generate-types tmp/ tests/e2e/schema.yml
       diff tests/e2e/src/AppBundle/Entity/Person.php tmp/src/AppBundle/Entity/Person.php
       diff tests/e2e/src/AppBundle/Entity/PostalAddress.php tmp/src/AppBundle/Entity/PostalAddress.php
       diff tests/e2e/src/AppBundle/Entity/Thing.php tmp/src/AppBundle/Entity/Thing.php
