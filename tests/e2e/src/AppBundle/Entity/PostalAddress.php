@@ -5,26 +5,22 @@ declare(strict_types=1);
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use PhpScoper59cf7a2150abb\ApiPlatform\Core\Annotation\ApiProperty;
-use PhpScoper59cf7a2150abb\ApiPlatform\Core\Annotation\ApiResource;
-use PhpScoper59cf7a2150abb\Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use PhpScoper59cf7a2150abb\Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
+use PhpScoper59cf84a420e8d\ApiPlatform\Core\Annotation\ApiProperty;
+use PhpScoper59cf84a420e8d\ApiPlatform\Core\Annotation\ApiResource;
 
 /**
  * The mailing address.
- * 
+ *
  * @see http://schema.org/PostalAddress Documentation on Schema.org
- * 
+ *
  * @ORM\Entity
  * @ApiResource(iri="http://schema.org/PostalAddress")
  */
 class PostalAddress
 {
-
     /**
-     * @var integer|null 
-     * 
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
@@ -33,7 +29,7 @@ class PostalAddress
 
     /**
      * @var string|null The country. For example, USA. You can also provide the two-letter \[ISO 3166-1 alpha-2 country code\](http://en.wikipedia.org/wiki/ISO\_3166-1).
-     * 
+     *
      * @ORM\Column(type="text", nullable=true)
      * @ApiProperty(iri="http://schema.org/addressCountry")
      */
@@ -41,7 +37,7 @@ class PostalAddress
 
     /**
      * @var string|null The locality. For example, Mountain View.
-     * 
+     *
      * @ORM\Column(type="text", nullable=true)
      * @ApiProperty(iri="http://schema.org/addressLocality")
      */
@@ -49,15 +45,15 @@ class PostalAddress
 
     /**
      * @var string|null The region. For example, CA.
-     * 
+     *
      * @ORM\Column(type="text", nullable=true)
      * @ApiProperty(iri="http://schema.org/addressRegion")
      */
     private $addressRegion;
 
     /**
-     * @var string|null The post office box number for PO box addresses.
-     * 
+     * @var string|null the post office box number for PO box addresses
+     *
      * @ORM\Column(type="text", nullable=true)
      * @ApiProperty(iri="http://schema.org/postOfficeBoxNumber")
      */
@@ -65,7 +61,7 @@ class PostalAddress
 
     /**
      * @var string|null The postal code. For example, 94043.
-     * 
+     *
      * @ORM\Column(type="text", nullable=true)
      * @ApiProperty(iri="http://schema.org/postalCode")
      */
@@ -73,97 +69,74 @@ class PostalAddress
 
     /**
      * @var string|null The street address. For example, 1600 Amphitheatre Pkwy.
-     * 
+     *
      * @ORM\Column(type="text", nullable=true)
      * @ApiProperty(iri="http://schema.org/streetAddress")
      */
     private $streetAddress;
 
-
-
-
-    /**
-     */
-    public function getId(): ?int    {
+    public function getId(): ?int
+    {
         return $this->id;
     }
 
-    /**
-     */
-    public function setAddressCountry(?string $addressCountry): void    {
+    public function setAddressCountry(?string $addressCountry): void
+    {
         $this->addressCountry = $addressCountry;
-
     }
 
-    /**
-     */
-    public function getAddressCountry(): ?string    {
+    public function getAddressCountry(): ?string
+    {
         return $this->addressCountry;
     }
 
-    /**
-     */
-    public function setAddressLocality(?string $addressLocality): void    {
+    public function setAddressLocality(?string $addressLocality): void
+    {
         $this->addressLocality = $addressLocality;
-
     }
 
-    /**
-     */
-    public function getAddressLocality(): ?string    {
+    public function getAddressLocality(): ?string
+    {
         return $this->addressLocality;
     }
 
-    /**
-     */
-    public function setAddressRegion(?string $addressRegion): void    {
+    public function setAddressRegion(?string $addressRegion): void
+    {
         $this->addressRegion = $addressRegion;
-
     }
 
-    /**
-     */
-    public function getAddressRegion(): ?string    {
+    public function getAddressRegion(): ?string
+    {
         return $this->addressRegion;
     }
 
-    /**
-     */
-    public function setPostOfficeBoxNumber(?string $postOfficeBoxNumber): void    {
+    public function setPostOfficeBoxNumber(?string $postOfficeBoxNumber): void
+    {
         $this->postOfficeBoxNumber = $postOfficeBoxNumber;
-
     }
 
-    /**
-     */
-    public function getPostOfficeBoxNumber(): ?string    {
+    public function getPostOfficeBoxNumber(): ?string
+    {
         return $this->postOfficeBoxNumber;
     }
 
-    /**
-     */
-    public function setPostalCode(?string $postalCode): void    {
+    public function setPostalCode(?string $postalCode): void
+    {
         $this->postalCode = $postalCode;
-
     }
 
-    /**
-     */
-    public function getPostalCode(): ?string    {
+    public function getPostalCode(): ?string
+    {
         return $this->postalCode;
     }
 
-    /**
-     */
-    public function setStreetAddress(?string $streetAddress): void    {
+    public function setStreetAddress(?string $streetAddress): void
+    {
         $this->streetAddress = $streetAddress;
-
     }
 
-    /**
-     */
-    public function getStreetAddress(): ?string    {
+    public function getStreetAddress(): ?string
+    {
         return $this->streetAddress;
     }
-
 }
