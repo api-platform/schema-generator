@@ -1,5 +1,4 @@
 {
-  "base-path": "build",
   "directories": [
     "data/",
     "src/",
