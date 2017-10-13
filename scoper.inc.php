@@ -3,10 +3,9 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the humbug/php-scoper package.
+ * This file is part of the API Platform project.
  *
- * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
- *                    Pádraic Brady <padraic.brady@gmail.com>
+ * (c) Kévin Dunglas <dunglas@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,8 +18,7 @@ return [
         Finder::create()->files()
             ->in('src')
             ->in('data')
-            ->in('templates')
-        ,
+            ->in('templates'),
         Finder::create()
             ->files()
             ->ignoreVCS(true)
