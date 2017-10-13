@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace AppBundle\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
-use PhpScoper59cf84a420e8d\ApiPlatform\Core\Annotation\ApiProperty;
-use PhpScoper59cf84a420e8d\ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**

@@ -38,9 +38,9 @@ script:
       composer install --no-dev --prefer-dist --classmap-authoritative --no-progress --no-suggest --ansi;
       php -d phar.readonly=0 box.phar build;
       php schema.phar generate-types tmp/ tests/e2e/schema.yml;
-      diff tests/e2e/src/AppBundle/Entity/Person.php tmp/src/AppBundle/Entity/Person.php;
-      diff tests/e2e/src/AppBundle/Entity/PostalAddress.php tmp/src/AppBundle/Entity/PostalAddress.php;
-      diff tests/e2e/src/AppBundle/Entity/Thing.php tmp/src/AppBundle/Entity/Thing.php;
+      diff tests/e2e/src/AppBundle/Entity/Person.php tmp/AppBundle/Entity/Person.php;
+      diff tests/e2e/src/AppBundle/Entity/PostalAddress.php tmp/AppBundle/Entity/PostalAddress.php;
+      diff tests/e2e/src/AppBundle/Entity/Thing.php tmp/AppBundle/Entity/Thing.php;
     fi;
 
 after_success:
