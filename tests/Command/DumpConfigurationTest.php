@@ -26,7 +26,9 @@ class DumpConfigurationTest extends TestCase
     {
         $commandTester = new CommandTester(new DumpConfigurationCommand());
         $this->assertEquals(0, $commandTester->execute([]));
-        $this->assertEquals(sprintf(<<<'YAML'
+        $this->assertEquals(
+            sprintf(
+                <<<'YAML'
 config:
 
     # RDFa files
@@ -196,6 +198,11 @@ config:
 
 
 YAML
-, realpath(__DIR__.'/../../data/schema.rdfa'), realpath(__DIR__.'/../../data/v1.owl')), $commandTester->getDisplay());
+                ,
+                str_replace('generator/data', 'generator/src/../data', realpath(__DIR__.'/../../data/schema.rdfa')),
+                str_replace('generator/data', 'generator/src/../data', realpath(__DIR__.'/../../data/v1.owl'))
+            ),
+            $commandTester->getDisplay()
+        );
     }
 }
