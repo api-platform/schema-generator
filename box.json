@@ -1,5 +1,9 @@
 {
-  "directories": ["src/"],
+  "directories": [
+    "data/",
+    "src/",
+    "templates/"
+  ],
   "finder": [
     {
       "name": "*.php",
@@ -11,7 +15,7 @@
         "Tests",
         "tests"
       ],
-      "in": "vendor"
+      "in": "vendor/"
     }
   ],
   "compactors": [

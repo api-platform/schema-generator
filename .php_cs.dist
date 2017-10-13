@@ -13,6 +13,7 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__)
     ->exclude('tests/Fixtures/app/cache')
     ->exclude('build')
+    ->exclude('tests/e2e')
 ;
 
 return PhpCsFixer\Config::create()

@@ -33,7 +33,15 @@ script:
   - if [[ $coverage = 1 ]]; then phpdbg -qrr phpunit-6.3.phar --coverage-clover build/logs/clover.xml; else php phpunit-6.3.phar; fi
   - if [[ $lint = 1 ]]; then php php-cs-fixer.phar fix --dry-run --diff --no-ansi; fi
   - if [[ $lint = 1 ]]; then phpstan analyse -l5 --ansi src; fi
-  - if [[ ! $deps && $TRAVIS_PHP_VERSION = "7.1" ]]; then php box.phar build; fi;
+  - |
+    if [[ ! $deps && $TRAVIS_PHP_VERSION = "7.1" ]]; then
+      composer install --no-dev --prefer-dist --classmap-authoritative --no-progress --no-suggest --ansi;
+      php -d phar.readonly=0 box.phar build;
+      php schema.phar generate-types tmp/ tests/e2e/schema.yml;
+      diff tests/e2e/src/AppBundle/Entity/Person.php tmp/AppBundle/Entity/Person.php;
+      diff tests/e2e/src/AppBundle/Entity/PostalAddress.php tmp/AppBundle/Entity/PostalAddress.php;
+      diff tests/e2e/src/AppBundle/Entity/Thing.php tmp/AppBundle/Entity/Thing.php;
+    fi;
 
 after_success:
   - if [[ $coverage = 1 ]]; then travis_retry php coveralls.phar; fi
