@@ -1,4 +1,5 @@
 {
+  "base-path": "build/schema-generator",
   "directories": [
     "data/",
     "src/",
