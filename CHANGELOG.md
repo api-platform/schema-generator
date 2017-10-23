@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.2
+
+* Use PHPScoper build the PHAR (to prevent conflicts with libraries installed in the project)
+* Add E2E tests
+
 ## 2.0.1
 
 * The generator now relies on embeded schema file to prevent issues with online XML files and allow offline usage
