@@ -617,7 +617,7 @@ class TypesGenerator
             $this->logger->error(sprintf('The property "%s" (type "%s") has an unknown type. Add its type to the config file.', $propertyName, $type->localName()));
         } else {
             if ($numberOfRanges > 1) {
-                $this->logger->warning(sprintf('The property "%s" (type "%s") has several types. Using the first one.', $propertyName, $type->localName()));
+                $this->logger->warning(sprintf('The property "%s" (type "%s") has several types. Using the first one ("%s") or possible options("%s").', $propertyName, $type->localName(), reset($ranges), implode('", "', $ranges)));
             }
 
             $cardinality = $propertyConfig['cardinality'] ?? false;
