@@ -829,7 +829,7 @@ class TypesGenerator
     {
         if (!empty($config['namespaces']['alias'])) {
             foreach ($config['namespaces']['alias'] as $a) {
-                $namespace = str_replace($a['namespace'], $a['path'], $namespace);
+                $namespace = str_replace($a['namespace'], $a['resolvePath'], $namespace);
             }
         }
         return sprintf('%s/%s/', $config['output'], strtr($namespace, '\\', '/'));
