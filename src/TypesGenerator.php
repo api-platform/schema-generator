@@ -827,6 +827,11 @@ class TypesGenerator
      */
     private function namespaceToDir(array $config, string $namespace): string
     {
+        if (!empty($config['namespaces']['alias'])) {
+            foreach ($config['namespaces']['alias'] as $a) {
+                $namespace = str_replace($a['namespace'], $a['path'], $namespace);
+            }
+        }
         return sprintf('%s/%s/', $config['output'], strtr($namespace, '\\', '/'));
     }
 
