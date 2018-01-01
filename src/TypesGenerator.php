@@ -828,10 +828,22 @@ class TypesGenerator
     private function namespaceToDir(array $config, string $namespace): string
     {
         if (!empty($config['namespaces']['alias'])) {
+            $prepend = '';
             foreach ($config['namespaces']['alias'] as $a) {
-                $namespace = str_replace($a['namespace'], $a['resolvePath'], $namespace);
+                if (!file_exists($a['resolvePath']) && !is_dir($a['resolvePath'])) {
+                    $this->logger->warning(sprintf('the path to resolve "%s" does not exists or is not a directory.', $a['resolvePath']));
+                } else {
+                    if (null !== $a['namespace']) {
+                        $namespace = str_replace($a['namespace'], $a['resolvePath'], $namespace);
+                    } else {
+                        // Keep the last resolvePath if there is multiple definition with empty namespace.
+                        $prepend = $a['resolvePath'];
+                    }
+                }
             }
+            $namespace = $prepend . $namespace;
         }
+
         return sprintf('%s/%s/', $config['output'], strtr($namespace, '\\', '/'));
     }
 
