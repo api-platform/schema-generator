@@ -308,4 +308,19 @@ PHP
         $this->assertNotContains('function getId', $person);
         $this->assertNotContains('function setId', $person);
     }
+
+    public function testNamespacesPrefix()
+    {
+        $outputDir = __DIR__.'/../../build/namespaces-prefix';
+        $config = __DIR__.'/../config/namespaces-prefix.yaml';
+
+        $this->fs->mkdir($outputDir);
+
+        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $person = file_get_contents("$outputDir/Entity/Person.php");
+
+        $this->assertContains('namespace App\Entity;', $person);
+    }
 }

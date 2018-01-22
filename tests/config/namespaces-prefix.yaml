@@ -1,0 +1,7 @@
+namespaces:
+  prefix: App\
+  entity: App\Entity
+types:
+  Person:
+    properties:
+      name: ~
