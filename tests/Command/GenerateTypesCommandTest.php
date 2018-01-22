@@ -323,4 +323,26 @@ PHP
 
         $this->assertContains('namespace App\Entity;', $person);
     }
+
+    public function testNamespacesPrefixAutodetect()
+    {
+        $outputDir = __DIR__.'/../../build/namespaces-prefix-autodetect/';
+
+        $this->fs->mkdir($outputDir);
+        $this->fs->copy(__DIR__.'/../config/namespaces-prefix-autodetect/composer.json', "$outputDir/composer.json");
+        $this->fs->copy(__DIR__.'/../config/namespaces-prefix-autodetect/schema.yaml', "$outputDir/schema.yaml");
+
+        $currentDir = getcwd();
+        chdir($outputDir);
+        try {
+            $commandTester = new CommandTester(new GenerateTypesCommand());
+            $this->assertEquals(0, $commandTester->execute([]));
+
+            $person = file_get_contents("$outputDir/src/Entity/Person.php");
+
+            $this->assertContains('namespace App\Entity;', $person);
+        } finally {
+            chdir($currentDir);
+        }
+    }
 }
