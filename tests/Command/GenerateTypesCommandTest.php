@@ -98,14 +98,14 @@ PHP
         , $person);
 
         $this->assertContains(<<<'PHP'
-    public function addFriend(Person $friend): self
+    public function addFriend(self $friend): self
     {
         $this->friends[] = $friend;
 
         return $this;
     }
 
-    public function removeFriend(Person $friend): self
+    public function removeFriend(self $friend): self
     {
         $this->friends->removeElement($friend);
 
