@@ -447,7 +447,7 @@ class TypesGenerator
     {
         $subClassOf = $type->get('rdfs:subClassOf');
 
-        return $subClassOf && $subClassOf->getUri() === self::SCHEMA_ORG_ENUMERATION;
+        return $subClassOf && self::SCHEMA_ORG_ENUMERATION === $subClassOf->getUri();
     }
 
     /**
@@ -621,7 +621,7 @@ class TypesGenerator
             }
 
             $cardinality = $propertyConfig['cardinality'] ?? false;
-            if (!$cardinality || $cardinality === CardinalitiesExtractor::CARDINALITY_UNKNOWN) {
+            if (!$cardinality || CardinalitiesExtractor::CARDINALITY_UNKNOWN === $cardinality) {
                 $cardinality = $property ? $this->cardinalities[$propertyName] : CardinalitiesExtractor::CARDINALITY_1_1;
             }
 

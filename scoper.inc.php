@@ -38,6 +38,7 @@ return [
         ]),
         Finder::create()->append([
             'vendor/friendsofphp/php-cs-fixer/tests/Test',
+            'vendor/friendsofphp/php-cs-fixer/tests/TestCase.php',
         ]),
     ],
     'whitelist' => [

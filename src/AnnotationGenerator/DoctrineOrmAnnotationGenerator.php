@@ -105,7 +105,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
             if ($field['ormColumn']) {
                 $annotation .= sprintf('(%s)', $field['ormColumn']);
             } else {
-                if ($type !== 'string' || $field['isNullable'] || $field['isUnique']) {
+                if ('string' !== $type || $field['isNullable'] || $field['isUnique']) {
                     $isColumnHasProperties = true;
                 }
 
@@ -117,11 +117,11 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                     $annotation .= '(';
                 }
 
-                if ($type !== 'string') {
+                if ('string' !== $type) {
                     $annotation .= sprintf('type="%s"', $type);
                 }
 
-                if ($type !== 'string' && $field['isNullable']) {
+                if ('string' !== $type && $field['isNullable']) {
                     $annotation .= ', ';
                 }
 
@@ -156,7 +156,6 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                     $annotations[] = '@ORM\JoinColumn(nullable=false)';
                     break;
                 case CardinalitiesExtractor::CARDINALITY_UNKNOWN:
-                    // No break
                 case CardinalitiesExtractor::CARDINALITY_N_0:
                     $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $this->getRelationName($field['range']));
                     break;
@@ -194,7 +193,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         $resource = $this->classes[$className]['resource'];
 
         $subClassOf = $resource->get('rdfs:subClassOf');
-        $typeIsEnum = $subClassOf && $subClassOf->getUri() === TypesGenerator::SCHEMA_ORG_ENUMERATION;
+        $typeIsEnum = $subClassOf && TypesGenerator::SCHEMA_ORG_ENUMERATION === $subClassOf->getUri();
 
         return $typeIsEnum ? [] : ['Doctrine\ORM\Mapping as ORM'];
     }

@@ -22,7 +22,7 @@
         "doctrine/inflector": "^1.0",
         "easyrdf/easyrdf": "^0.9",
         "ext-json": "*",
-        "friendsofphp/php-cs-fixer": "^2.4",
+        "friendsofphp/php-cs-fixer": "^2.10",
         "league/html-to-markdown": "^4.0",
         "psr/log": "^1.0",
         "symfony/config": "^3.3 || ^4.0",

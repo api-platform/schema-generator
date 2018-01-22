@@ -63,7 +63,6 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
                     $type = 'boolean';
                     break;
                 case 'Date':
-                    // No break
                 case 'DateTime':
                     $type = 'date';
                     break;
@@ -71,7 +70,6 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
                     $type = 'time';
                     break;
                 case 'Number':
-                    // No break
                 case 'Float':
                     $type = 'float';
                     break;
@@ -79,7 +77,6 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
                     $type = 'integer';
                     break;
                 case 'Text':
-                    // No break
                 case 'URL':
                     $type = 'string';
                     break;
@@ -97,14 +94,14 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
 
             $annotations[] = $annotation;
         } else {
-            if ($field['cardinality'] === CardinalitiesExtractor::CARDINALITY_0_1
-                || $field['cardinality'] === CardinalitiesExtractor::CARDINALITY_1_1
-                || $field['cardinality'] === CardinalitiesExtractor::CARDINALITY_N_0
-                || $field['cardinality'] === CardinalitiesExtractor::CARDINALITY_N_1) {
+            if (CardinalitiesExtractor::CARDINALITY_0_1 === $field['cardinality']
+                || CardinalitiesExtractor::CARDINALITY_1_1 === $field['cardinality']
+                || CardinalitiesExtractor::CARDINALITY_N_0 === $field['cardinality']
+                || CardinalitiesExtractor::CARDINALITY_N_1 === $field['cardinality']) {
                 $annotations[] = sprintf('@MongoDB\ReferenceOne(targetDocument="%s", simple=true))', $this->getRelationName($field['range']));
-            } elseif ($field['cardinality'] === CardinalitiesExtractor::CARDINALITY_0_N
-                || $field['cardinality'] === CardinalitiesExtractor::CARDINALITY_1_N
-                || $field['cardinality'] === CardinalitiesExtractor::CARDINALITY_N_N) {
+            } elseif (CardinalitiesExtractor::CARDINALITY_0_N === $field['cardinality']
+                || CardinalitiesExtractor::CARDINALITY_1_N === $field['cardinality']
+                || CardinalitiesExtractor::CARDINALITY_N_N === $field['cardinality']) {
                 $annotations[] = sprintf('@MongoDB\ReferenceMany(targetDocument="%s", simple=true)', $this->getRelationName($field['range']));
             }
         }
@@ -120,7 +117,7 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
         $resource = $this->classes[$className]['resource'];
 
         $subClassOf = $resource->get('rdfs:subClassOf');
-        $typeIsEnum = $subClassOf && $subClassOf->getUri() === TypesGenerator::SCHEMA_ORG_ENUMERATION;
+        $typeIsEnum = $subClassOf && TypesGenerator::SCHEMA_ORG_ENUMERATION === $subClassOf->getUri();
 
         return $typeIsEnum ? [] : ['Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB'];
     }
