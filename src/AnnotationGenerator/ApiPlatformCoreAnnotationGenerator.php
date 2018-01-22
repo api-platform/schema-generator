@@ -52,7 +52,7 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
         $resource = $this->classes[$className]['resource'];
 
         $subClassOf = $resource->get('rdfs:subClassOf');
-        $typeIsEnum = $subClassOf && $subClassOf->getUri() === TypesGenerator::SCHEMA_ORG_ENUMERATION;
+        $typeIsEnum = $subClassOf && TypesGenerator::SCHEMA_ORG_ENUMERATION === $subClassOf->getUri();
 
         return $typeIsEnum ? [] : [ApiResource::class, ApiProperty::class];
     }
