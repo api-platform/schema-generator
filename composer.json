@@ -28,7 +28,7 @@
         "symfony/config": "^3.3 || ^4.0",
         "symfony/console": "^2.7 || ^3.0 || ^4.0",
         "symfony/yaml": "^2.7 || ^3.0 || ^4.0",
-        "twig/twig": "^1.12 || ^2.0"
+        "twig/twig": "^1.35 || ^2.0"
     },
     "require-dev": {
         "api-platform/core": "^2.0",
