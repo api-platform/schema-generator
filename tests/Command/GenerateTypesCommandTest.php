@@ -345,4 +345,27 @@ PHP
             chdir($currentDir);
         }
     }
+
+    public function testGeneratedEnum()
+    {
+        $outputDir = __DIR__.'/../../build/enum';
+        $config = __DIR__.'/../config/enum.yaml';
+
+        $this->fs->mkdir($outputDir);
+
+        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $gender = file_get_contents("$outputDir/AppBundle/Enum/GenderType.php");
+
+        $this->assertContains(<<<'PHP'
+    /**
+     * @var string the female gender
+     */
+    public const FEMALE = 'http://schema.org/Female';
+PHP
+            , $gender);
+
+        $this->assertNotContains('function setId(', $gender);
+    }
 }

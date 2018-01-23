@@ -1,0 +1,9 @@
+fieldVisibility: public
+accessorMethods: false
+types:
+  Person:
+    properties:
+      gender: { range: GenderType }
+  GenderType:
+    parent: false
+    guessFrom: GenderType
