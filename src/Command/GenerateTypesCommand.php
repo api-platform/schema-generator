@@ -35,15 +35,32 @@ final class GenerateTypesCommand extends Command
 {
     private const DEFAULT_CONFIG_FILE = 'schema.yaml';
 
+    private $namespacePrefix;
+    private $defaultOutput;
+
     /**
      * {@inheritdoc}
      */
     protected function configure(): void
     {
+        if (file_exists('composer.json') && is_file('composer.json') && is_readable('composer.json')) {
+            $composer = json_decode(file_get_contents('composer.json'), true);
+            foreach ($composer['autoload']['psr-4'] ?? [] as $prefix => $output) {
+                if ('' === $prefix) {
+                    continue;
+                }
+
+                $this->namespacePrefix = $prefix;
+                $this->defaultOutput = $output;
+
+                break;
+            }
+        }
+
         $this
             ->setName('generate-types')
             ->setDescription('Generate types')
-            ->addArgument('output', InputArgument::REQUIRED, 'The output directory')
+            ->addArgument('output', $this->defaultOutput ? InputArgument::OPTIONAL : InputArgument::REQUIRED, 'The output directory', $this->defaultOutput)
             ->addArgument('config', InputArgument::OPTIONAL, 'The config file to use (default to "schema.yaml" in the current directory, will generate all types if no config file exists)');
     }
 
@@ -52,10 +69,18 @@ final class GenerateTypesCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): void
     {
+        $defaultOutput = $this->defaultOutput ? realpath($this->defaultOutput) : null;
         $outputDir = $input->getArgument('output');
+        $configArgument = $input->getArgument('config');
+
         if ($dir = realpath($input->getArgument('output'))) {
             if (!is_dir($dir)) {
-                throw new \InvalidArgumentException(sprintf('The file "%s" is not a directory.', $dir));
+                if (!$this->defaultOutput) {
+                    throw new \InvalidArgumentException(sprintf('The file "%s" is not a directory.', $dir));
+                }
+
+                $dir = $defaultOutput;
+                $configArgument = $outputDir;
             }
 
             if (!is_writable($dir)) {
@@ -69,7 +94,6 @@ final class GenerateTypesCommand extends Command
             $outputDir = realpath($outputDir);
         }
 
-        $configArgument = $input->getArgument('config');
         if ($configArgument) {
             if (!file_exists($configArgument)) {
                 throw new \InvalidArgumentException(sprintf('The file "%s" doesn\'t exist.', $configArgument));
@@ -95,7 +119,7 @@ final class GenerateTypesCommand extends Command
         }
 
         $processor = new Processor();
-        $configuration = new TypesGeneratorConfiguration();
+        $configuration = new TypesGeneratorConfiguration($dir === $defaultOutput ? $this->namespacePrefix : null);
         $processedConfiguration = $processor->processConfiguration($configuration, [$config]);
         $processedConfiguration['output'] = $outputDir;
         if (!$processedConfiguration['output']) {

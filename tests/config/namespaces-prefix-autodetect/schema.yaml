@@ -1,0 +1,4 @@
+types:
+  Person:
+    properties:
+      name: ~

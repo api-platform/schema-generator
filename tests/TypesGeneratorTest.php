@@ -392,9 +392,8 @@ class TypesGeneratorTest extends TestCase
     private function getContextMatcher(array $class)
     {
         $config = $this->getConfig();
-        $classes = $this->getClasses();
 
-        return function ($context) use ($config, $classes, $class) {
+        return function ($context) use ($config, $class) {
             if (!isset($context['config']) || $config !== $context['config']) {
                 return false;
             }
@@ -402,7 +401,7 @@ class TypesGeneratorTest extends TestCase
             $baseClass = $class;
             unset($baseClass['fields']);
 
-            if (!isset($context['class']) || !is_array($context['class']) || $this->arrayEqual($baseClass, array_intersect_key($context['class'], $baseClass))) {
+            if (!isset($context['class']) || !\is_array($context['class']) || $this->arrayEqual($baseClass, array_intersect_key($context['class'], $baseClass))) {
                 return false;
             }
 
@@ -416,6 +415,6 @@ class TypesGeneratorTest extends TestCase
 
     private function arrayEqual(array $a, array $b): bool
     {
-        return count($a) === count($b) && !array_diff($a, $b);
+        return \count($a) === \count($b) && !array_diff($a, $b);
     }
 }

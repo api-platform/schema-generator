@@ -39,11 +39,20 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
     public const GOOD_RELATIONS_OWL_URL = __DIR__.'/../data/v1.owl';
     public const SCHEMA_ORG_NAMESPACE = 'http://schema.org/';
 
+    private $defaultPrefix;
+
+    public function __construct(?string $defaultPrefix = null)
+    {
+        $this->defaultPrefix = $defaultPrefix;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getConfigTreeBuilder(): TreeBuilder
     {
+        $namespacePrefix = $this->defaultPrefix ?? 'AppBundle\\';
+
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('config');
         $rootNode
@@ -92,9 +101,10 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->addDefaultsIfNotSet()
                     ->info('PHP namespaces')
                     ->children()
-                        ->scalarNode('entity')->defaultValue('AppBundle\Entity')->info('The namespace of the generated entities')->example('Acme\Entity')->end()
-                        ->scalarNode('enum')->defaultValue('AppBundle\Enum')->info('The namespace of the generated enumerations')->example('Acme\Enum')->end()
-                        ->scalarNode('interface')->defaultValue('AppBundle\Model')->info('The namespace of the generated interfaces')->example('Acme\Model')->end()
+                        ->scalarNode('prefix')->defaultValue($this->defaultPrefix)->info('The global namespace\'s prefix')->example('App\\')->end()
+                        ->scalarNode('entity')->defaultValue("{$namespacePrefix}Entity")->info('The namespace of the generated entities')->example('App\Entity')->end()
+                        ->scalarNode('enum')->defaultValue("{$namespacePrefix}Enum")->info('The namespace of the generated enumerations')->example('App\Enum')->end()
+                        ->scalarNode('interface')->defaultValue("{$namespacePrefix}Model")->info('The namespace of the generated interfaces')->example('App\Model')->end()
                     ->end()
                 ->end()
                 ->arrayNode('doctrine')

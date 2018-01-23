@@ -76,14 +76,17 @@ config:
     # PHP namespaces
     namespaces:
 
+        # The global namespace's prefix
+        prefix:               null # Example: App\
+
         # The namespace of the generated entities
-        entity:               AppBundle\Entity # Example: Acme\Entity
+        entity:               AppBundle\Entity # Example: App\Entity
 
         # The namespace of the generated enumerations
-        enum:                 AppBundle\Enum # Example: Acme\Enum
+        enum:                 AppBundle\Enum # Example: App\Enum
 
         # The namespace of the generated interfaces
-        interface:            AppBundle\Model # Example: Acme\Model
+        interface:            AppBundle\Model # Example: App\Model
 
     # Doctrine
     doctrine:
