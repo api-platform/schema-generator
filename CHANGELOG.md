@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.0
+
+* Allow to use a PSR-4 namespace's prefix
+* Autodetect Flex-like directory structure
+* Improve the message when using 1st type in range
+
 ## 2.0.2
 
 * Use PHPScoper build the PHAR (to prevent conflicts with libraries installed in the project)
