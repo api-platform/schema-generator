@@ -18,7 +18,8 @@ return [
         Finder::create()->files()
             ->in('src')
             ->in('data')
-            ->in('templates'),
+            ->in('templates')
+            ->in('vendor/friendsofphp/php-cs-fixer/tests'),
         Finder::create()
             ->files()
             ->ignoreVCS(true)
@@ -35,10 +36,6 @@ return [
         Finder::create()->append([
             'bin/schema',
             'composer.json',
-        ]),
-        Finder::create()->append([
-            'vendor/friendsofphp/php-cs-fixer/tests/Test',
-            'vendor/friendsofphp/php-cs-fixer/tests/TestCase.php',
         ]),
     ],
     'whitelist' => [

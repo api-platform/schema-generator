@@ -19,12 +19,16 @@ before_install:
   - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - export PATH="$PATH:$HOME/.composer/vendor/bin"
   - wget https://phar.phpunit.de/phpunit-6.5.phar
-  - composer global require humbug/php-scoper:dev-master#674e24d2b9e90b2f629dab7f30d5070e4d49d815
+  - composer global require humbug/php-scoper:^1.0@dev
+  - export PHP_SCOPER_BIN=~/.composer/vendor/bin/php-scoper
   - if [[ $coverage = 1 ]]; then mkdir -p build/logs; fi
   - if [[ $coverage = 1 ]]; then wget https://github.com/satooshi/php-coveralls/releases/download/v2.0.0/php-coveralls.phar; fi
   - if [[ $lint = 1 ]]; then wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.10.0/php-cs-fixer.phar; fi
   - if [[ $lint = 1 ]]; then composer global require --dev 'phpstan/phpstan:^0.10'; fi
   - if [[ ! $deps && $TRAVIS_PHP_VERSION = "7.2" ]]; then curl -LSs https://box-project.github.io/box2/installer.php | php; fi;
+  - if [[ $lint = 1 ]]; then composer global require --dev 'phpstan/phpstan:^0.8'; fi
+  - composer global require humbug/box:^3.0@dev
+  - export BOX_BIN=~/.composer/vendor/bin/box
 
 install:
   - if [[ $coverage = 1 ]]; then composer require --dev --no-update 'phpunit/php-code-coverage:^5.3'; fi
@@ -47,6 +51,8 @@ script:
       diff tests/e2e/src/AppBundle/Entity/PostalAddress.php tmp/AppBundle/Entity/PostalAddress.php;
       diff tests/e2e/src/AppBundle/Entity/Thing.php tmp/AppBundle/Entity/Thing.php;
     fi;
+  - if [[ $lint = 1 ]]; then phpstan analyse -l5 --ansi src; fi
+  - if [[ ! $deps && $TRAVIS_PHP_VERSION = "7.2" ]]; then bin/compile fi;
 
 after_success:
   - if [[ $coverage = 1 ]]; then travis_retry php php-coveralls.phar; fi

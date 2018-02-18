@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+set -x
+
+composer install --prefer-dist --classmap-authoritative --no-progress --no-suggest --ansi;
+$PHP_SCOPER_BIN add-prefix --output-dir=build/schema-generator --force;
+composer dump-autoload --classmap-authoritative --no-dev --working-dir=build/schema-generator;
+php -d phar.readonly=0 $BOX_BIN build;
+php schema.phar generate-types tmp/ tests/e2e/schema.yml;
+diff tests/e2e/src/AppBundle/Entity/Person.php tmp/AppBundle/Entity/Person.php;
+diff tests/e2e/src/AppBundle/Entity/PostalAddress.php tmp/AppBundle/Entity/PostalAddress.php;
+diff tests/e2e/src/AppBundle/Entity/Thing.php tmp/AppBundle/Entity/Thing.php;
