@@ -129,7 +129,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                     $annotation .= 'nullable=true';
                 }
 
-                if ($field['isUnique'] && $field['isNullable']) {
+                if (($field['isUnique'] && $field['isNullable']) || ($field['isUnique'] && !$field['isNullable'])) {
                     $annotation .= ', ';
                 }
 

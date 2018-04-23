@@ -15,9 +15,10 @@ types:
             address: ~
             birthDate: ~
             telephone: ~
-            email: ~
             url: ~
             jobTitle: ~
+            email: { unique: true, nullable: false }
+            identifier: { range: "Text", unique: true, nullable: false }
     PostalAddress:
         # Disable the generation of the class hierarchy for this type
         parent: false

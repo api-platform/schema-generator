@@ -86,13 +86,23 @@ class Person
     private $telephone;
 
     /**
-     * @var string|null email address
+     * @var string email address
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text", unique=true)
      * @ApiProperty(iri="http://schema.org/email")
      * @Assert\Email
+     * @Assert\NotNull
      */
     private $email;
+
+    /**
+     * @var string The identifier property represents any kind of identifier for any kind of \[\[Thing\]\], such as ISBNs, GTIN codes, UUIDs etc. Schema.org provides dedicated properties for representing many of these, either as textual strings or as URL (URI) links. See \[background notes\](/docs/datamodel.html#identifierBg) for more details.
+     *
+     * @ORM\Column(type="text", unique=true)
+     * @ApiProperty(iri="http://schema.org/identifier")
+     * @Assert\NotNull
+     */
+    private $identifier;
 
     /**
      * @var string|null URL of the item
@@ -194,6 +204,16 @@ class Person
     public function getEmail(): ?string
     {
         return $this->email;
+    }
+
+    public function setIdentifier(string $identifier): void
+    {
+        $this->identifier = $identifier;
+    }
+
+    public function getIdentifier(): string
+    {
+        return $this->identifier;
     }
 
     public function setUrl(?string $url): void
