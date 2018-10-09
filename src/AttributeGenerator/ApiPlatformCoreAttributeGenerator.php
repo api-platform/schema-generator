@@ -44,6 +44,9 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
             $arguments['shortName'] = $localName;
         }
         $arguments['iri'] = $class->resourceUri();
+        if ($class->security) {
+            $arguments['security'] = $class->security;
+        }
 
         if ([] !== $class->operations()) {
             $operations = $this->validateClassOperations($class->operations());
@@ -106,7 +109,13 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generatePropertyAttributes(Property $property, string $className): array
     {
-        return $property->isCustom ? [] : [['ApiProperty' => ['iri' => $property->resourceUri()]]];
+        $arguments['iri'] = $property->resourceUri();
+
+        if ($property->security) {
+            $arguments['security'] = $property->security;
+        }
+
+        return $property->isCustom ? [] : [['ApiProperty' => $arguments]];
     }
 
     /**

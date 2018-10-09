@@ -7,6 +7,7 @@ types:
         properties:
             name: ~
     Person:
+        security: "is_granted('ROLE_USER')"
         properties:
             familyName: ~
             givenName: ~
@@ -14,7 +15,7 @@ types:
             address: { range: https://schema.org/PostalAddress }
             birthDate: ~
             telephone: ~
-            email: { unique: true }
+            email: { unique: true, security: "is_granted('ROLE_ADMIN')" }
             url: ~
             customColumn: { ormColumn: {type: "decimal", precision: 5, scale: 1, options: {comment: "my comment"}} }
     PostalAddress:

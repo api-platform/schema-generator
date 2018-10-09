@@ -68,14 +68,30 @@ class ApiPlatformCoreAttributeGeneratorTest extends TestCase
         yield 'abstract' => [(new Class_('Abstract', new Resource('https://schema.org/Abstract')))->setIsAbstract(true), []];
 
         yield 'with short name' => [(new Class_('WithShortName', new Resource('https://schema.org/DifferentLocalName'))), [['ApiResource' => ['shortName' => 'DifferentLocalName', 'iri' => 'https://schema.org/DifferentLocalName']]]];
+
+        $class = new Class_('WithSecurity', new Resource('https://schema.org/WithSecurity'));
+        $class->security = "is_granted('ROLE_USER')";
+        yield 'with security' => [$class, [['ApiResource' => ['iri' => 'https://schema.org/WithSecurity', 'security' => "is_granted('ROLE_USER')"]]]];
     }
 
-    public function testGeneratePropertyAttributes(): void
+    /**
+     * @dataProvider provideGeneratePropertyAttributesCases
+     */
+    public function testGeneratePropertyAttributes(Property $property, array $attributes): void
+    {
+        $this->assertSame($attributes, $this->generator->generatePropertyAttributes($property, 'Res'));
+    }
+
+    public function provideGeneratePropertyAttributesCases(): \Generator
     {
         $property = new Property('prop');
         $property->resource = new Resource('https://schema.org/prop');
+        yield 'classical' => [$property, [['ApiProperty' => ['iri' => 'https://schema.org/prop']]]];
 
-        $this->assertSame([['ApiProperty' => ['iri' => 'https://schema.org/prop']]], $this->generator->generatePropertyAttributes($property, 'Res'));
+        $property = new Property('WithSecurity');
+        $property->resource = new Resource('https://schema.org/WithSecurity');
+        $property->security = "is_granted('ROLE_ADMIN')";
+        yield 'with security' => [$property, [['ApiProperty' => ['iri' => 'https://schema.org/WithSecurity', 'security' => "is_granted('ROLE_ADMIN')"]]]];
     }
 
     public function testGenerateCustomPropertyAttributes(): void
