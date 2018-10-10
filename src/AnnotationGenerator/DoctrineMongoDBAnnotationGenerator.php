@@ -127,6 +127,10 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
      */
     private function getRelationName(string $range): string
     {
+        if (! in_array($range, $this->classes) ) {
+            return $range;
+        }
+
         $class = $this->classes[$range];
 
         return $class[$range]['interfaceName'] ?? $class['name'];

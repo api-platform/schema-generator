@@ -32,8 +32,10 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
     public function generateClassAnnotations(string $className): array
     {
         $resource = $this->classes[$className]['resource'];
-
-        return [sprintf('@ApiResource(iri="%s")', $resource->getUri())];
+        $security = $this->classes[$className]['config']['security'];
+        //Security default value is false
+        return ($security) ? [sprintf('@ApiResource(iri="%s", %s)', $resource->getUri(), preg_replace('/\n/', "\n *\t", "\n".$security))]
+            : [sprintf('@ApiResource(iri="%s")', $resource->getUri())];
     }
 
     /**
