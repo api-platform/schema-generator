@@ -8,7 +8,7 @@ To have your code integrated in the API Platform project, there is some rules to
 
 If you happen to find a bug, we kindly request you to report it. However, before submitting it, please:
 
-  * Check the [project documentation available online](https://api-platform.com/doc/)
+  * Check the [project documentation available online](https://api-platform.com/docs/)
 
 Then, if it appears that it's a real bug, you may report it using Github by following these 3 points:
 
