@@ -18,17 +18,15 @@ before_install:
   - phpenv config-rm xdebug.ini || echo "xdebug not available"
   - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - export PATH="$PATH:$HOME/.composer/vendor/bin"
-  - wget https://phar.phpunit.de/phpunit-6.5.phar
-  - composer global require humbug/php-scoper:^1.0@dev
-  - export PHP_SCOPER_BIN=~/.composer/vendor/bin/php-scoper
+  - wget -O phpunit.phar https://phar.phpunit.de/phpunit-6.5.phar
   - if [[ $coverage = 1 ]]; then mkdir -p build/logs; fi
   - if [[ $coverage = 1 ]]; then wget https://github.com/satooshi/php-coveralls/releases/download/v2.0.0/php-coveralls.phar; fi
   - if [[ $lint = 1 ]]; then wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.10.0/php-cs-fixer.phar; fi
   - if [[ $lint = 1 ]]; then composer global require --dev 'phpstan/phpstan:^0.10'; fi
   - if [[ ! $deps && $TRAVIS_PHP_VERSION = "7.2" ]]; then curl -LSs https://box-project.github.io/box2/installer.php | php; fi;
   - if [[ $lint = 1 ]]; then composer global require --dev 'phpstan/phpstan:^0.8'; fi
-  - composer global require humbug/box:^3.0@dev
-  - export BOX_BIN=~/.composer/vendor/bin/box
+  - wget -O box.phar https://github.com/humbug/box/releases/download/3.1.3/box.phar
+  - export BOX_BIN=$(pwd)/box.phar
 
 install:
   - if [[ $coverage = 1 ]]; then composer require --dev --no-update 'phpunit/php-code-coverage:^5.3'; fi
@@ -36,7 +34,7 @@ install:
   - if [[ $deps = 'low' ]]; then composer update --prefer-dist --no-progress --no-suggest --prefer-stable --prefer-lowest --ansi; fi
 
 script:
-  - if [[ $coverage = 1 ]]; then phpdbg -qrr phpunit-6.5.phar --coverage-clover build/logs/clover.xml; else php phpunit-6.5.phar; fi
+  - if [[ $coverage = 1 ]]; then phpdbg -qrr phpunit.phar --coverage-clover build/logs/clover.xml; else php phpunit.phar; fi
   - if [[ $lint = 1 ]]; then php php-cs-fixer.phar fix --dry-run --diff --no-ansi; fi
   - if [[ $lint = 1 ]]; then phpstan analyse -l5 --ansi -c phpstan.neon src; fi
   - |

@@ -11,33 +11,7 @@
 
 declare(strict_types=1);
 
-use Isolated\Symfony\Component\Finder\Finder;
-
 return [
-    'finders' => [
-        Finder::create()->files()
-            ->in('src')
-            ->in('data')
-            ->in('templates')
-            ->in('vendor/friendsofphp/php-cs-fixer/tests'),
-        Finder::create()
-            ->files()
-            ->ignoreVCS(true)
-            ->notName('/LICENSE|.*\\.md|.*\\.dist|Makefile|composer\\.json|composer\\.lock/')
-            ->exclude([
-                'doc',
-                'test',
-                'test_old',
-                'tests',
-                'Test',
-                'Tests',
-            ])
-            ->in('vendor'),
-        Finder::create()->append([
-            'bin/schema',
-            'composer.json',
-        ]),
-    ],
     'whitelist' => [
         'ApiPlatform\Core\Annotation\ApiProperty',
         'ApiPlatform\Core\Annotation\ApiResource',
