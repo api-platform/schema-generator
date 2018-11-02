@@ -75,7 +75,7 @@ class GenerateTypesCommandTest extends TestCase
         return $this->friends;
     }
 PHP
-            , $person);
+        , $person);
     }
 
     public function testFluentMutators()
@@ -98,14 +98,14 @@ PHP
         , $person);
 
         $this->assertContains(<<<'PHP'
-    public function addFriend(self $friend): self
+    public function addFriend(Person $friend): self
     {
         $this->friends[] = $friend;
 
         return $this;
     }
 
-    public function removeFriend(self $friend): self
+    public function removeFriend(Person $friend): self
     {
         $this->friends->removeElement($friend);
 
