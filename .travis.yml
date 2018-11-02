@@ -35,7 +35,7 @@ script:
   - if [[ $coverage = 1 ]]; then phpdbg -qrr phpunit.phar --coverage-clover build/logs/clover.xml; else php phpunit.phar; fi
   - if [[ $lint = 1 ]]; then php php-cs-fixer.phar fix --dry-run --diff --no-ansi; fi
   - if [[ $lint = 1 ]]; then phpstan analyse -l5 --ansi src; fi
-  - if [[ ! $deps && $TRAVIS_PHP_VERSION = "7.2" ]]; then bin/compile fi;
+  - if [[ ! $deps && $TRAVIS_PHP_VERSION = "7.2" ]]; then ./bin/compile; fi
 
 after_success:
   - if [[ $coverage = 1 ]]; then travis_retry php php-coveralls.phar; fi
