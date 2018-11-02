@@ -11,6 +11,9 @@
 
 declare(strict_types=1);
 
+// TODO: This file is ignored until the PHP-Scoper compactor is enabled in the Box config. PHP-Scoper is disabled
+// right now due to EasyRDF using a legacy PSR-0 configuration unsupported by PHP-Scoper.
+
 return [
     'whitelist' => [
         'ApiPlatform\Core\Annotation\ApiProperty',

@@ -1,5 +1,4 @@
-/composer.phar
-/box.phar
-/vendor
-/build
-/schema.phar
+/box.json
+/build/
+/vendor/
+/*.phar
