@@ -11,36 +11,10 @@
 
 declare(strict_types=1);
 
-use Isolated\Symfony\Component\Finder\Finder;
+// TODO: This file is ignored until the PHP-Scoper compactor is enabled in the Box config. PHP-Scoper is disabled
+// right now due to EasyRDF using a legacy PSR-0 configuration unsupported by PHP-Scoper.
 
 return [
-    'finders' => [
-        Finder::create()->files()
-            ->in('src')
-            ->in('data')
-            ->in('templates'),
-        Finder::create()
-            ->files()
-            ->ignoreVCS(true)
-            ->notName('/LICENSE|.*\\.md|.*\\.dist|Makefile|composer\\.json|composer\\.lock/')
-            ->exclude([
-                'doc',
-                'test',
-                'test_old',
-                'tests',
-                'Test',
-                'Tests',
-            ])
-            ->in('vendor'),
-        Finder::create()->append([
-            'bin/schema',
-            'composer.json',
-        ]),
-        Finder::create()->append([
-            'vendor/friendsofphp/php-cs-fixer/tests/Test',
-            'vendor/friendsofphp/php-cs-fixer/tests/TestCase.php',
-        ]),
-    ],
     'whitelist' => [
         'ApiPlatform\Core\Annotation\ApiProperty',
         'ApiPlatform\Core\Annotation\ApiResource',
