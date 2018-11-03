@@ -134,6 +134,8 @@ class TypesGenerator
 
                 if ($resource) {
                     $typesToGenerate[$typeName] = $resource;
+                } elseif (empty($graph)) {
+                    $this->logger->warning('Type "{typeName}" cannot be found and there is no graph to generate entity.');
                 } else {
                     $this->logger->warning('Type "{typeName}" cannot be found. Using "{guessFrom}" type to generate entity.', ['typeName' => $typeName, 'guessFrom' => $typeConfig['guessFrom']]);
                     $type = $graph->resource($typeConfig['vocabularyNamespace'].$typeConfig['guessFrom'], 'rdfs:Class');

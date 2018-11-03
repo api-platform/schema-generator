@@ -1,0 +1,33 @@
+{
+  "banner": [
+    "This file is part of the API Platform project.",
+    "",
+    "(c) Kévin Dunglas <dunglas@gmail.com>",
+    "",
+    "For the full copyright and license information, please view the LICENSE",
+    "file that was distributed with this source code."
+  ],
+
+  "directories-bin": [
+    "data/",
+    "templates/"
+  ],
+  "files": [
+    "vendor/friendsofphp/php-cs-fixer/tests/TestCase.php",
+    "vendor/twig/twig/lib/Twig/Test.php"
+  ],
+  "directories": [
+    "vendor/friendsofphp/php-cs-fixer/tests/Test"
+  ],
+  "force-autodiscovery": true,
+
+  "compression": "GZ",
+  "compactors": [
+    "Herrera\\Box\\Compactor\\Json",
+    "Herrera\\Box\\Compactor\\Php"
+  ],
+
+  "git-version": "package_version",
+
+  "output": "schema.phar"
+}
