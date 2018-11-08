@@ -22,7 +22,7 @@ return [
             // PHP-CS-Fixer patch
             //
 
-            if ($filePath === 'vendor/friendsofphp/php-cs-fixer/src/FixerFactory.php') {
+            if ('vendor/friendsofphp/php-cs-fixer/src/FixerFactory.php' === $filePath) {
                 return preg_replace(
                     '/\$fixerClass = \'PhpCsFixer(.*?\;)/',
                     sprintf('$fixerClass = \'%s\\PhpCsFixer$1', $prefix),
