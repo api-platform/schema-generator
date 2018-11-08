@@ -39,5 +39,8 @@
         "symfony/serializer": "^2.7 || ^3.0 || ^4.0",
         "symfony/validator": "^2.7 || ^3.0 || ^4.0"
     },
+    "replace": {
+        "symfony/polyfill-php70": "*"
+    },
     "bin": ["bin/schema"]
 }
