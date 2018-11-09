@@ -23,8 +23,9 @@
 
   "compression": "GZ",
   "compactors": [
-    "Herrera\\Box\\Compactor\\Json",
-    "Herrera\\Box\\Compactor\\Php"
+    "KevinGH\\Box\\Compactor\\Json",
+    "KevinGH\\Box\\Compactor\\Php",
+    "KevinGH\\Box\\Compactor\\PhpScoper"
   ],
 
   "git-version": "package_version",

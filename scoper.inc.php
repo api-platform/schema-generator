@@ -11,13 +11,10 @@
 
 declare(strict_types=1);
 
-// TODO: This file is ignored until the PHP-Scoper compactor is enabled in the Box config. PHP-Scoper is disabled
-// right now due to EasyRDF using a legacy PSR-0 configuration unsupported by PHP-Scoper.
-
 return [
     'whitelist' => [
-        'ApiPlatform\Core\Annotation\ApiProperty',
-        'ApiPlatform\Core\Annotation\ApiResource',
+        \ApiPlatform\Core\Annotation\ApiProperty::class,
+        \ApiPlatform\Core\Annotation\ApiResource::class,
     ],
     'patchers' => [
         function (string $filePath, string $prefix, string $content): string {
@@ -25,7 +22,7 @@ return [
             // PHP-CS-Fixer patch
             //
 
-            if ($filePath === __DIR__.'/vendor/friendsofphp/php-cs-fixer/src/FixerFactory.php') {
+            if ('vendor/friendsofphp/php-cs-fixer/src/FixerFactory.php' === $filePath) {
                 return preg_replace(
                     '/\$fixerClass = \'PhpCsFixer(.*?\;)/',
                     sprintf('$fixerClass = \'%s\\PhpCsFixer$1', $prefix),
@@ -34,6 +31,41 @@ return [
             }
 
             return $content;
+        },
+
+        // TODO: Temporary patch until the issue is fixed upstream
+        // @link https://github.com/humbug/php-scoper/issues/285
+        function (string $filePath, string $prefix, string $content): string {
+            if (false === strpos($content, '@')) {
+                return $content;
+            }
+
+            $regex = sprintf(
+                '/\'%s\\\\\\\\(@.*?)\'/',
+                $prefix
+            );
+
+            return preg_replace(
+                $regex,
+                '\'$1\'',
+                $content
+            );
+        },
+        function (string $filePath, string $prefix, string $content): string {
+            if (0 !== strpos($filePath, 'src/AnnotationGenerator/')) {
+                return $content;
+            }
+
+            $regex = sprintf(
+                '/\\\\%s(.*?::class)/',
+                $prefix
+            );
+
+            return preg_replace(
+                $regex,
+                '$1',
+                $content
+            );
         },
     ],
 ];
