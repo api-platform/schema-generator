@@ -362,7 +362,7 @@ PHP
     /**
      * @var string the female gender
      */
-    public const FEMALE = 'http://schema.org/Female';
+    public const FEMALE = 'https://schema.org/Female';
 PHP
             , $gender);
 

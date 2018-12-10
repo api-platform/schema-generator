@@ -31,7 +31,7 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
     public function setUp()
     {
         $graph = new \EasyRdf_Graph();
-        $myEnum = new \EasyRdf_Resource('http://schema.org/MyEnum', $graph);
+        $myEnum = new \EasyRdf_Resource('https://schema.org/MyEnum', $graph);
         $myEnum->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);
 
         $this->generator = new ApiPlatformCoreAnnotationGenerator(
@@ -41,7 +41,7 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
             [],
             [
                 'Res' => [
-                    'resource' => new \EasyRdf_Resource('http://schema.org/Res', $graph),
+                    'resource' => new \EasyRdf_Resource('https://schema.org/Res', $graph),
                     'fields' => [
                         'prop' => ['isCustom' => false],
                         'customProp' => ['isCustom' => true],
@@ -54,12 +54,12 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
 
     public function testGenerateClassAnnotations()
     {
-        $this->assertSame(['@ApiResource(iri="http://schema.org/Res")'], $this->generator->generateClassAnnotations('Res'));
+        $this->assertSame(['@ApiResource(iri="https://schema.org/Res")'], $this->generator->generateClassAnnotations('Res'));
     }
 
     public function testGenerateFieldAnnotations()
     {
-        $this->assertSame(['@ApiProperty(iri="http://schema.org/prop")'], $this->generator->generateFieldAnnotations('Res', 'prop'));
+        $this->assertSame(['@ApiProperty(iri="https://schema.org/prop")'], $this->generator->generateFieldAnnotations('Res', 'prop'));
         $this->assertSame([], $this->generator->generateFieldAnnotations('Res', 'customProp'));
     }
 

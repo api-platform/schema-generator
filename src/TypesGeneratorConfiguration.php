@@ -37,7 +37,7 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
      * @see https://purl.org/goodrelations/v1.owl
      */
     public const GOOD_RELATIONS_OWL_URL = __DIR__.'/../data/v1.owl';
-    public const SCHEMA_ORG_NAMESPACE = 'http://schema.org/';
+    public const SCHEMA_ORG_NAMESPACE = 'https://schema.org/';
 
     private $defaultPrefix;
 

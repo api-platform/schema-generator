@@ -122,7 +122,7 @@ config:
         id:
 
             # Namespace of the vocabulary the type belongs to.
-            vocabularyNamespace:  'http://schema.org/'
+            vocabularyNamespace:  'https://schema.org/'
 
             # Is the class abstract? (null to guess)
             abstract:             null

@@ -12,10 +12,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * A person (alive, dead, undead, or fictional).
  *
- * @see http://schema.org/Person Documentation on Schema.org
+ * @see https://schema.org/Person Documentation on Schema.org
  *
  * @ORM\Entity
- * @ApiResource(iri="http://schema.org/Person")
+ * @ApiResource(iri="https://schema.org/Person")
  */
 class Person
 {
@@ -32,7 +32,7 @@ class Person
      * @var string|null Family name. In the U.S., the last name of an Person. This can be used along with givenName instead of the name property.
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/familyName")
+     * @ApiProperty(iri="https://schema.org/familyName")
      */
     private $familyName;
 
@@ -40,7 +40,7 @@ class Person
      * @var string|null Given name. In the U.S., the first name of a Person. This can be used along with familyName instead of the name property.
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/givenName")
+     * @ApiProperty(iri="https://schema.org/givenName")
      */
     private $givenName;
 
@@ -48,15 +48,15 @@ class Person
      * @var string|null an additional name for a Person, can be used for a middle name
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/additionalName")
+     * @ApiProperty(iri="https://schema.org/additionalName")
      */
     private $additionalName;
 
     /**
-     * @var string|null Gender of the person. While http://schema.org/Male and http://schema.org/Female may be used, text strings are also acceptable for people who do not identify as a binary gender.
+     * @var string|null Gender of the person. While https://schema.org/Male and https://schema.org/Female may be used, text strings are also acceptable for people who do not identify as a binary gender.
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/gender")
+     * @ApiProperty(iri="https://schema.org/gender")
      */
     private $gender;
 
@@ -64,7 +64,7 @@ class Person
      * @var PostalAddress|null physical address of the item
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PostalAddress")
-     * @ApiProperty(iri="http://schema.org/address")
+     * @ApiProperty(iri="https://schema.org/address")
      */
     private $address;
 
@@ -72,7 +72,7 @@ class Person
      * @var \DateTimeInterface|null date of birth
      *
      * @ORM\Column(type="date", nullable=true)
-     * @ApiProperty(iri="http://schema.org/birthDate")
+     * @ApiProperty(iri="https://schema.org/birthDate")
      * @Assert\Date
      */
     private $birthDate;
@@ -81,7 +81,7 @@ class Person
      * @var string|null the telephone number
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/telephone")
+     * @ApiProperty(iri="https://schema.org/telephone")
      */
     private $telephone;
 
@@ -89,7 +89,7 @@ class Person
      * @var string|null email address
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/email")
+     * @ApiProperty(iri="https://schema.org/email")
      * @Assert\Email
      */
     private $email;
@@ -98,7 +98,7 @@ class Person
      * @var string|null URL of the item
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/url")
+     * @ApiProperty(iri="https://schema.org/url")
      * @Assert\Url
      */
     private $url;
@@ -107,7 +107,7 @@ class Person
      * @var string|null the job title of the person (for example, Financial Manager)
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/jobTitle")
+     * @ApiProperty(iri="https://schema.org/jobTitle")
      */
     private $jobTitle;
 

@@ -39,7 +39,7 @@ class TypesGenerator
      *
      * @internal
      */
-    public const SCHEMA_ORG_ENUMERATION = 'http://schema.org/Enumeration';
+    public const SCHEMA_ORG_ENUMERATION = 'https://schema.org/Enumeration';
 
     /**
      * @var string

@@ -15,7 +15,7 @@
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -71,7 +71,7 @@ PDF at http://www.heppnetz.de/publications/</rdfs:comment>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -85,8 +85,8 @@ PDF at http://www.heppnetz.de/publications/</rdfs:comment>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#BusinessEntity"/>
-          <rdf:Description rdf:about="http://schema.org/Organization"/>
-          <rdf:Description rdf:about="http://schema.org/Person"/>
+          <rdf:Description rdf:about="https://schema.org/Organization"/>
+          <rdf:Description rdf:about="https://schema.org/Person"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -100,8 +100,8 @@ PDF at http://www.heppnetz.de/publications/</rdfs:comment>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#BusinessEntity"/>
-          <rdf:Description rdf:about="http://schema.org/Organization"/>
-          <rdf:Description rdf:about="http://schema.org/Person"/>
+          <rdf:Description rdf:about="https://schema.org/Organization"/>
+          <rdf:Description rdf:about="https://schema.org/Person"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -128,7 +128,7 @@ PDF at http://www.heppnetz.de/publications/</rdfs:comment>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Individual"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -145,8 +145,8 @@ This property can also be attached to a gr:Offering in cases where the included 
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#BusinessEntity"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Location"/>
-          <rdf:Description rdf:about="http://schema.org/Organization"/>
-          <rdf:Description rdf:about="http://schema.org/Place"/>
+          <rdf:Description rdf:about="https://schema.org/Organization"/>
+          <rdf:Description rdf:about="https://schema.org/Place"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -186,7 +186,7 @@ Note 3: If the shop re-opens on the same day of the week or set of days of the w
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#BusinessEntity"/>
-          <rdf:Description rdf:about="http://schema.org/Organization"/>
+          <rdf:Description rdf:about="https://schema.org/Organization"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -203,7 +203,7 @@ Note: While NAICS codes are sometimes misused for classifying products or servic
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#BusinessEntity"/>
-          <rdf:Description rdf:about="http://schema.org/Organization"/>
+          <rdf:Description rdf:about="https://schema.org/Organization"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -217,7 +217,7 @@ Note: While NAICS codes are sometimes misused for classifying products or servic
   </gr:DeliveryModeParcelService>
   <owl:DatatypeProperty rdf:about="http://purl.org/goodrelations/v1#hasMPN">
     <rdfs:subPropertyOf>
-      <owl:DatatypeProperty rdf:about="http://schema.org/productID"/>
+      <owl:DatatypeProperty rdf:about="https://schema.org/productID"/>
     </rdfs:subPropertyOf>
     <rdfs:label xml:lang="en">has MPN (0..*)</rdfs:label>
     <rdfs:domain>
@@ -225,7 +225,7 @@ Note: While NAICS codes are sometimes misused for classifying products or servic
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -246,8 +246,8 @@ See also http://en.wikipedia.org/wiki/Part_number</rdfs:comment>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#BusinessEntity"/>
-          <rdf:Description rdf:about="http://schema.org/Organization"/>
-          <rdf:Description rdf:about="http://schema.org/Person"/>
+          <rdf:Description rdf:about="https://schema.org/Organization"/>
+          <rdf:Description rdf:about="https://schema.org/Person"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -274,10 +274,10 @@ See also http://en.wikipedia.org/wiki/Part_number</rdfs:comment>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Location"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#BusinessEntity"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
-          <rdf:Description rdf:about="http://schema.org/Place"/>
-          <rdf:Description rdf:about="http://schema.org/Organization"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Place"/>
+          <rdf:Description rdf:about="https://schema.org/Organization"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -295,7 +295,7 @@ Note 2: You can use greater signs or slashes to informally indicate a category h
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#BusinessEntity"/>
-          <rdf:Description rdf:about="http://schema.org/Organization"/>
+          <rdf:Description rdf:about="https://schema.org/Organization"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -309,7 +309,7 @@ Note 2: You can use greater signs or slashes to informally indicate a category h
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -340,7 +340,7 @@ Note: There is another property gr:availableAtOrFrom, which is used to indicate 
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -360,7 +360,7 @@ Note: There is another property gr:availableAtOrFrom, which is used to indicate 
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#SomeItems"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -376,7 +376,7 @@ This property can also be attached to a gr:Offering in cases where the included 
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -395,7 +395,7 @@ This property can also be attached to a gr:Offering in cases where the included 
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Location"/>
-          <rdf:Description rdf:about="http://schema.org/Place"/>
+          <rdf:Description rdf:about="https://schema.org/Place"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -412,7 +412,7 @@ This property can also be attached to a gr:Offering in cases where the included 
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#OpeningHoursSpecification"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#PriceSpecification"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#License"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -454,7 +454,7 @@ Note 2: For Google, attaching a gr:validThrough statement to a gr:UnitPriceSpeci
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -522,7 +522,7 @@ Note 3: If the shop re-opens on the same day of the week or set of days of the w
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -539,7 +539,7 @@ The difference to the gr:validFrom and gr:validThrough properties is that those 
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#PriceSpecification"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -563,8 +563,8 @@ The object is a gr:PriceSpecification that uses the properties gr:hasMaxCurrency
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#BusinessEntity"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Location"/>
-          <rdf:Description rdf:about="http://schema.org/Place"/>
-          <rdf:Description rdf:about="http://schema.org/Organization"/>
+          <rdf:Description rdf:about="https://schema.org/Place"/>
+          <rdf:Description rdf:about="https://schema.org/Organization"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -583,14 +583,14 @@ foo:Red_Ford_T_Model gr:isVariantOf foo:Ford_T_Model</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:ObjectProperty>
   <owl:DatatypeProperty rdf:about="http://purl.org/goodrelations/v1#hasGTIN-8">
-    <rdfs:subPropertyOf rdf:resource="http://schema.org/productID"/>
+    <rdfs:subPropertyOf rdf:resource="https://schema.org/productID"/>
     <rdfs:label xml:lang="en">has GTIN-8 (0..*)</rdfs:label>
     <rdfs:domain>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -612,7 +612,7 @@ Note: This is just a rough classification for filtering offers. It is up to the 
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -633,7 +633,7 @@ Recommended retail prices etc. can be marked by the gr:priceType property of the
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -648,7 +648,7 @@ Typical unit code(s): CMT for centimeters, INH for inches</rdfs:comment>
           <owl:Class>
             <owl:unionOf rdf:parseType="Collection">
               <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-              <rdf:Description rdf:about="http://schema.org/Product"/>
+              <rdf:Description rdf:about="https://schema.org/Product"/>
             </owl:unionOf>
           </owl:Class>
         </rdfs:domain>
@@ -684,7 +684,7 @@ Typical unit code(s): CMT for centimeters, INH for inches</rdfs:comment>
       </owl:DatatypeProperty>
     </rdfs:subPropertyOf>
   </owl:DatatypeProperty>
-  <owl:ObjectProperty rdf:about="http://schema.org/manufacturer">
+  <owl:ObjectProperty rdf:about="https://schema.org/manufacturer">
     <owl:equivalentProperty>
       <owl:ObjectProperty rdf:about="http://purl.org/goodrelations/v1#hasManufacturer">
         <rdfs:range rdf:resource="http://purl.org/goodrelations/v1#BusinessEntity"/>
@@ -693,7 +693,7 @@ Typical unit code(s): CMT for centimeters, INH for inches</rdfs:comment>
           <owl:Class>
             <owl:unionOf rdf:parseType="Collection">
               <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-              <rdf:Description rdf:about="http://schema.org/Product"/>
+              <rdf:Description rdf:about="https://schema.org/Product"/>
             </owl:unionOf>
           </owl:Class>
         </rdfs:domain>
@@ -704,7 +704,7 @@ Typical unit code(s): CMT for centimeters, INH for inches</rdfs:comment>
   </owl:ObjectProperty>
   <owl:AnnotationProperty rdf:about="http://purl.org/dc/elements/1.1/title"/>
   <owl:AnnotationProperty rdf:about="http://purl.org/dc/elements/1.1/creator"/>
-  <owl:DatatypeProperty rdf:about="http://schema.org/description">
+  <owl:DatatypeProperty rdf:about="https://schema.org/description">
     <owl:equivalentProperty>
       <owl:DatatypeProperty rdf:about="http://purl.org/goodrelations/v1#description">
         <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
@@ -795,7 +795,7 @@ DEPRECATED. Use the gr:priceType property instead.</rdfs:comment>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -809,7 +809,7 @@ DEPRECATED. Use the gr:priceType property instead.</rdfs:comment>
           <owl:Class>
             <owl:unionOf rdf:parseType="Collection">
               <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-              <rdf:Description rdf:about="http://schema.org/Product"/>
+              <rdf:Description rdf:about="https://schema.org/Product"/>
             </owl:unionOf>
           </owl:Class>
         </rdfs:domain>
@@ -827,7 +827,7 @@ In products and services ontologies, only such properties that are no quantitati
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -841,7 +841,7 @@ In products and services ontologies, only such properties that are no quantitati
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#BusinessEntity"/>
-          <rdf:Description rdf:about="http://schema.org/Organization"/>
+          <rdf:Description rdf:about="https://schema.org/Organization"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -869,7 +869,7 @@ In products and services ontologies, only such properties that are no quantitati
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -879,15 +879,15 @@ The duration is specified by attaching an instance of gr:QuantitativeValueIntege
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:ObjectProperty>
   <owl:DatatypeProperty rdf:about="http://purl.org/goodrelations/v1#hasStockKeepingUnit">
-    <rdfs:subPropertyOf rdf:resource="http://schema.org/productID"/>
+    <rdfs:subPropertyOf rdf:resource="https://schema.org/productID"/>
     <rdfs:label xml:lang="en">has Stock Keeping Unit (0..*)</rdfs:label>
     <rdfs:domain>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -913,7 +913,7 @@ See also http://en.wikipedia.org/wiki/Stock_Keeping_Unit.</rdfs:comment>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -931,7 +931,7 @@ See also http://en.wikipedia.org/wiki/Stock_Keeping_Unit.</rdfs:comment>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1006,8 +1006,8 @@ When linking to a gr:ProductOrServiceModel, it is equivalent to
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#BusinessEntity"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-          <rdf:Description rdf:about="http://schema.org/Organization"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Organization"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1057,7 +1057,7 @@ INVOICE: The invoice price, mostly used in the car industry - this is the price 
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#DeliveryChargeSpecification"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#License"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1102,7 +1102,7 @@ Important: Do NOT use 3-letter ISO 3166-1 codes!</rdfs:comment>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#OpeningHoursSpecification"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#PriceSpecification"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#License"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1144,7 +1144,7 @@ Note: If multiple contradicting instances of a gr:Offering, gr:PriceSpecificatio
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
     <rdfs:label xml:lang="en">Check in advance (payment method)</rdfs:label>
   </gr:PaymentMethod>
-  <owl:DatatypeProperty rdf:about="http://schema.org/name">
+  <owl:DatatypeProperty rdf:about="https://schema.org/name">
     <owl:equivalentProperty>
       <owl:DatatypeProperty rdf:about="http://purl.org/goodrelations/v1#name">
         <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
@@ -1197,7 +1197,7 @@ This property is semantically equivalent to dcterms:title and rdfs:label and jus
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1205,14 +1205,14 @@ This property is semantically equivalent to dcterms:title and rdfs:label and jus
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:ObjectProperty>
   <owl:DatatypeProperty rdf:about="http://purl.org/goodrelations/v1#hasGTIN-14">
-    <rdfs:subPropertyOf rdf:resource="http://schema.org/productID"/>
+    <rdfs:subPropertyOf rdf:resource="https://schema.org/productID"/>
     <rdfs:label xml:lang="en">has GTIN-14 (0..*)</rdfs:label>
     <rdfs:domain>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1284,7 +1284,7 @@ DEPRECATED. Use gr:seeks instead.</rdfs:comment>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Individual"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#SomeItems"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1334,7 +1334,7 @@ Note: This is a simple representation which may not properly reflect all details
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1349,7 +1349,7 @@ Note: This is a simple representation which may not properly reflect all details
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#TypeAndQuantityNode"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1380,7 +1380,7 @@ Note: Rely on this property only for data originating from a single RDF graph; o
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1396,7 +1396,7 @@ Typical unit code(s): GRM for gram, KGM for kilogram, LBR for pound</rdfs:commen
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1405,14 +1405,14 @@ Typical unit code(s): GRM for gram, KGM for kilogram, LBR for pound</rdfs:commen
   </owl:ObjectProperty>
   <owl:AnnotationProperty rdf:about="http://purl.org/dc/terms/license"/>
   <owl:DatatypeProperty rdf:about="http://purl.org/goodrelations/v1#hasEAN_UCC-13">
-    <rdfs:subPropertyOf rdf:resource="http://schema.org/productID"/>
+    <rdfs:subPropertyOf rdf:resource="https://schema.org/productID"/>
     <rdfs:label xml:lang="en">has EAN/UCC-13 (0..*)</rdfs:label>
     <rdfs:domain>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1455,7 +1455,7 @@ Note: This is just a rough classification for filtering offers. It is up to the 
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1471,7 +1471,7 @@ Typical unit code(s): CMT for centimeters, INH for inches</rdfs:comment>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1493,7 +1493,7 @@ Typical unit code(s): CMT for centimeters, INH for inches</rdfs:comment>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#PriceSpecification"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1501,7 +1501,7 @@ Typical unit code(s): CMT for centimeters, INH for inches</rdfs:comment>
 Note that if an offering is a bundle, i.e. it consists of more than one unit of a single type of good, or if the unit of measurement for the good is different from unit (Common Code C62), then gr:hasEligibleQuantity refers to units of this bundle. In other words, "C62" for "Units or pieces" is usually the appropriate unit of measurement.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:ObjectProperty>
-  <owl:ObjectProperty rdf:about="http://schema.org/image">
+  <owl:ObjectProperty rdf:about="https://schema.org/image">
     <owl:equivalentProperty>
       <owl:ObjectProperty rdf:about="http://xmlns.com/foaf/0.1/depiction"/>
     </owl:equivalentProperty>
@@ -1520,7 +1520,7 @@ Note that if an offering is a bundle, i.e. it consists of more than one unit of 
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#License"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1551,7 +1551,7 @@ The difference to the gr:validFrom and gr:validThrough properties is that those 
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#ProductOrService"/>
-          <rdf:Description rdf:about="http://schema.org/Product"/>
+          <rdf:Description rdf:about="https://schema.org/Product"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1601,8 +1601,8 @@ Example: Car maintenance could be expressed both as "provide the service car mai
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#BusinessEntity"/>
-          <rdf:Description rdf:about="http://schema.org/Organization"/>
-          <rdf:Description rdf:about="http://schema.org/Person"/>
+          <rdf:Description rdf:about="https://schema.org/Organization"/>
+          <rdf:Description rdf:about="https://schema.org/Person"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1640,7 +1640,7 @@ This property can also be safely applied to foaf:Agent instances.</rdfs:comment>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#BusinessEntity"/>
-          <rdf:Description rdf:about="http://schema.org/Organization"/>
+          <rdf:Description rdf:about="https://schema.org/Organization"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1654,7 +1654,7 @@ This property can also be safely applied to foaf:Agent instances.</rdfs:comment>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
           <rdf:Description rdf:about="http://purl.org/goodrelations/v1#Offering"/>
-          <rdf:Description rdf:about="http://schema.org/Offer"/>
+          <rdf:Description rdf:about="https://schema.org/Offer"/>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
@@ -1760,7 +1760,7 @@ Example: A rental car company may offer the Business Function Lease Out of cars 
 
 Note: Typical address standards (vcard) and location data (geo, WGC84) should be attached to a gr:Location node. Since there already exist established vocabularies for this, the GoodRelations ontology does not provide respective attributes. Instead, the use of respective vocabularies is recommended. However, the gr:hasGlobalLocationNumber property is  provided for linking to public identifiers for business locations.
 		
-Compatibility with schema.org: This class is equivalent to http://schema.org/Place.</rdfs:comment>
+Compatibility with schema.org: This class is equivalent to https://schema.org/Place.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:Class>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#LocationOfSalesOrServiceProvisioning">
@@ -1856,8 +1856,8 @@ Important: When querying for the price, always use gr:hasMaxCurrencyValue and gr
     <owl:equivalentClass>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
-          <rdf:Description rdf:about="http://schema.org/Person"/>
-          <rdf:Description rdf:about="http://schema.org/Organization"/>
+          <rdf:Description rdf:about="https://schema.org/Person"/>
+          <rdf:Description rdf:about="https://schema.org/Organization"/>
         </owl:unionOf>
       </owl:Class>
     </owl:equivalentClass>
@@ -1866,11 +1866,11 @@ Important: When querying for the price, always use gr:hasMaxCurrencyValue and gr
 		
 Example: Siemens Austria AG, Volkswagen Ltd., Peter Miller's Cell phone Shop LLC
 
-Compatibility with schema.org: This class is equivalent to the union of http://schema.org/Person and http://schema.org/Organization.		
+Compatibility with schema.org: This class is equivalent to the union of https://schema.org/Person and https://schema.org/Organization.
 </rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:Class>
-  <owl:Class rdf:about="http://schema.org/Person">
+  <owl:Class rdf:about="https://schema.org/Person">
     <rdfs:subClassOf rdf:resource="http://purl.org/goodrelations/v1#BusinessEntity"/>
   </owl:Class>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#QuantitativeValueInteger">
@@ -1883,7 +1883,7 @@ Example: A seating capacity between 1 and 8 persons.
 
 Note: Users must keep in mind that ranges in here mean that ALL possible values in this interval are covered. (Sometimes, the actual commitment may be less than that: "We sell cars from 2 - 12 seats" does often not really mean that they have cars with 2,3,4,...12 seats.). Someone renting out two types of rowing boats, one that fits for 1 or 2 people, and another that must be operated by 4 people cannot claim to rent boats with a seating capacity between 1 and 4 people. He or she is offering two boat types for 1-2 and 4 persons.
 		
-Compatibility with schema.org: This class is a subclass of http://schema.org/Quantity.</rdfs:comment>
+Compatibility with schema.org: This class is a subclass of https://schema.org/Quantity.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:Class>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#OpeningHoursSpecification">
@@ -1987,12 +1987,12 @@ This relation is transitive.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
     <gr:displayPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7</gr:displayPosition>
   </gr:DayOfWeek>
-  <owl:Class rdf:about="http://schema.org/Product">
+  <owl:Class rdf:about="https://schema.org/Product">
     <owl:equivalentClass rdf:resource="http://purl.org/goodrelations/v1#ProductOrService"/>
   </owl:Class>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#ProductOrServiceModel">
     <rdfs:subClassOf rdf:resource="http://purl.org/goodrelations/v1#ProductOrService"/>
-    <rdfs:subClassOf rdf:resource="http://schema.org/Product"/>
+    <rdfs:subClassOf rdf:resource="https://schema.org/Product"/>
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#SomeItems"/>
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#BusinessEntity"/>
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#Individual"/>
@@ -2004,7 +2004,7 @@ Examples: Ford T, Volkswagen Golf, Sony Ericsson W123 cell phone
 
 Note: An actual product or service (gr:Individual) by default shares the features of its model (e.g. the weight). However, this requires non-standard reasoning. See http://wiki.goodrelations-vocabulary.org/Axioms for respective rule sets.
 	
-Compatibility with schema.org: This class is (approximately) a subclass of http://schema.org/Product.</rdfs:comment>
+Compatibility with schema.org: This class is (approximately) a subclass of https://schema.org/Product.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:Class>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#PaymentChargeSpecification">
@@ -2057,7 +2057,7 @@ Note 2: For Google, attaching a gr:validThrough statement to a gr:UnitPriceSpeci
 </rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:Class>
-  <owl:Class rdf:about="http://schema.org/Organization">
+  <owl:Class rdf:about="https://schema.org/Organization">
     <rdfs:subClassOf rdf:resource="http://purl.org/goodrelations/v1#BusinessEntity"/>
   </owl:Class>
   <owl:ObjectProperty rdf:about="http://purl.org/goodrelations/v1#hasNext">
@@ -2107,7 +2107,7 @@ Examples: Parts and Labor, Parts</rdfs:comment>
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#DayOfWeek"/>
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#TypeAndQuantityNode"/>
   </owl:Class>
-  <owl:Class rdf:about="http://schema.org/Offer">
+  <owl:Class rdf:about="https://schema.org/Offer">
     <rdfs:subClassOf rdf:resource="http://purl.org/goodrelations/v1#Offering"/>
   </owl:Class>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#WarrantyPromise">
@@ -2144,7 +2144,7 @@ Examples: VISA, MasterCard, or American Express.</rdfs:comment>
   </owl:Class>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#Individual">
     <rdfs:subClassOf rdf:resource="http://purl.org/goodrelations/v1#ProductOrService"/>
-    <rdfs:subClassOf rdf:resource="http://schema.org/Product"/>
+    <rdfs:subClassOf rdf:resource="https://schema.org/Product"/>
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#SomeItems"/>
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#ProductOrServiceModel"/>
     <owl:equivalentClass rdf:resource="http://purl.org/goodrelations/v1#ActualProductOrServiceInstance"/>
@@ -2156,7 +2156,7 @@ Examples: MyThinkpad T60, the pint of beer standing in front of me, my Volkswage
 Note 1: In many cases, product or service instances are not explicitly exposed on the Web but only claimed to exist (i.e. existentially quantified). In this case, use gr:SomeItems.
 Note 2: This class is the new, shorter form of the former gr:ActualProductOrServiceInstance.
 
-Compatibility with schema.org: This class is a subclass of http://schema.org/Product.</rdfs:comment>
+Compatibility with schema.org: This class is a subclass of https://schema.org/Product.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:Class>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#DayOfWeek">
@@ -2197,7 +2197,7 @@ Examples: Monday, Tuesday, Wednesday,...</rdfs:comment>
 
 Examples: The intervals "between 10.0  and 25.4 kilogramms" or "10.2 and 15.5 milimeters".
 
-Compatibility with schema.org: This class is a subclass of http://schema.org/Quantity.</rdfs:comment>
+Compatibility with schema.org: This class is a subclass of https://schema.org/Quantity.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:Class>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#Brand">
@@ -2229,7 +2229,7 @@ Examples: the color "green" or the power cord plug type "US"; the garment sizes 
 	
 Note: Value sets are supported by creating subclasses of this class. Ordinal relations between values (gr:greater, gr:lesser, ...) are provided directly by GoodRelations.
 
-Compatibility with schema.org: This class is equivalent to http://schema.org/Enumeration.</rdfs:comment>
+Compatibility with schema.org: This class is equivalent to https://schema.org/Enumeration.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
     <rdfs:label xml:lang="en">Qualitative value</rdfs:label>
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#QuantitativeValue"/>
@@ -2255,7 +2255,7 @@ Compatibility with schema.org: This class is equivalent to http://schema.org/Enu
     <rdfs:comment xml:lang="en">This ordering relation for qualitative values indicates that the subject is greater than or equal to the object.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:ObjectProperty>
-  <owl:Class rdf:about="http://schema.org/Place">
+  <owl:Class rdf:about="https://schema.org/Place">
     <owl:equivalentClass rdf:resource="http://purl.org/goodrelations/v1#Location"/>
   </owl:Class>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#BusinessFunction">
@@ -2318,7 +2318,7 @@ Example: An offering may include of 100g of Butter and 1 kg of potatoes, or 1 ce
 	
 Example: a weight between 10 and 25 kilogramms, a length between 10 and 15 milimeters.
 
-Compatibility with schema.org: This class is equivalent to http://schema.org/Quantity.</rdfs:comment>
+Compatibility with schema.org: This class is equivalent to https://schema.org/Quantity.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
     <rdfs:label xml:lang="en">Quantitative value</rdfs:label>
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#ProductOrService"/>
@@ -2348,7 +2348,7 @@ c) dummyCellPhone123 as a placeholder for actual instances of a certain kind of 
 	
 Note: Your first choice for specializations of gr:ProductOrService should be http://www.productontology.org.
 
-Compatibility with schema.org: This class is (approximately) equivalent to http://schema.org/Product.</rdfs:comment>
+Compatibility with schema.org: This class is (approximately) equivalent to https://schema.org/Product.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
     <rdfs:label xml:lang="en">Product or service</rdfs:label>
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#OpeningHoursSpecification"/>
@@ -2374,7 +2374,7 @@ An offering may be constrained in terms of the eligible type of business partner
 
 Example: Peter Miller offers to repair TV sets made by Siemens, Volkswagen Innsbruck sells a particular instance of a Volkswagen Golf at $10,000.
 
-Compatibility with schema.org: This class is a superclass to http://schema.org/Offer, since gr:Offering can also represent demand.</rdfs:comment>
+Compatibility with schema.org: This class is a superclass to https://schema.org/Offer, since gr:Offering can also represent demand.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
     <rdfs:label xml:lang="en">Offering</rdfs:label>
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#ProductOrService"/>
@@ -2396,7 +2396,7 @@ Compatibility with schema.org: This class is a superclass to http://schema.org/O
   </owl:Class>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#SomeItems">
     <rdfs:subClassOf rdf:resource="http://purl.org/goodrelations/v1#ProductOrService"/>
-    <rdfs:subClassOf rdf:resource="http://schema.org/Product"/>
+    <rdfs:subClassOf rdf:resource="https://schema.org/Product"/>
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#ProductOrServiceModel"/>
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#Individual"/>
     <owl:equivalentClass rdf:resource="http://purl.org/goodrelations/v1#ProductOrServicesSomeInstancesPlaceholder"/>
@@ -2407,7 +2407,7 @@ Example: An instance of this class can represent an anonymous set of green Sieme
 
 Note: This class is the new, shorter form of the former gr:ProductOrServicesSomeInstancesPlaceholder.
 		
-Compatibility with schema.org: This class is (approximately) a subclass of http://schema.org/Product.</rdfs:comment>
+Compatibility with schema.org: This class is (approximately) a subclass of https://schema.org/Product.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:Class>
 </rdf:RDF>

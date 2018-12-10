@@ -52,54 +52,54 @@ class TypesGeneratorTest extends TestCase
     {
         $graph = new \EasyRdf_Graph();
 
-        $graph->addResource('http://schema.org/Article', 'rdf:type', 'rdfs:Class');
-        $graph->addResource('http://schema.org/Article', 'rdfs:subClassOf', 'http://schema.org/CreativeWork');
+        $graph->addResource('https://schema.org/Article', 'rdf:type', 'rdfs:Class');
+        $graph->addResource('https://schema.org/Article', 'rdfs:subClassOf', 'https://schema.org/CreativeWork');
 
-        $graph->addResource('http://schema.org/BlogPosting', 'rdf:type', 'rdfs:Class');
-        $graph->addResource('http://schema.org/BlogPosting', 'rdfs:subClassOf', 'http://schema.org/SocialMediaPosting');
+        $graph->addResource('https://schema.org/BlogPosting', 'rdf:type', 'rdfs:Class');
+        $graph->addResource('https://schema.org/BlogPosting', 'rdfs:subClassOf', 'https://schema.org/SocialMediaPosting');
 
-        $graph->addResource('http://schema.org/CreativeWork', 'rdf:type', 'rdfs:Class');
-        $graph->addResource('http://schema.org/CreativeWork', 'rdfs:subClassOf', 'http://schema.org/Thing');
+        $graph->addResource('https://schema.org/CreativeWork', 'rdf:type', 'rdfs:Class');
+        $graph->addResource('https://schema.org/CreativeWork', 'rdfs:subClassOf', 'https://schema.org/Thing');
 
-        $graph->addResource('http://schema.org/Person', 'rdf:type', 'rdfs:Class');
-        $graph->addResource('http://schema.org/Person', 'rdfs:subClassOf', 'http://schema.org/Thing');
+        $graph->addResource('https://schema.org/Person', 'rdf:type', 'rdfs:Class');
+        $graph->addResource('https://schema.org/Person', 'rdfs:subClassOf', 'https://schema.org/Thing');
 
-        $graph->addResource('http://schema.org/SocialMediaPosting', 'rdf:type', 'rdfs:Class');
-        $graph->addResource('http://schema.org/SocialMediaPosting', 'rdfs:subClassOf', 'http://schema.org/Article');
+        $graph->addResource('https://schema.org/SocialMediaPosting', 'rdf:type', 'rdfs:Class');
+        $graph->addResource('https://schema.org/SocialMediaPosting', 'rdfs:subClassOf', 'https://schema.org/Article');
 
-        $graph->addResource('http://schema.org/Thing', 'rdf:type', 'rdfs:Class');
+        $graph->addResource('https://schema.org/Thing', 'rdf:type', 'rdfs:Class');
 
-        $graph->addResource('http://schema.org/articleBody', 'rdf:type', 'rdf:Property');
-        $graph->addResource('http://schema.org/articleBody', 'schema:domainIncludes', 'http://schema.org/Article');
-        $graph->addResource('http://schema.org/articleBody', 'schema:rangeIncludes', 'http://schema.org/Text');
+        $graph->addResource('https://schema.org/articleBody', 'rdf:type', 'rdf:Property');
+        $graph->addResource('https://schema.org/articleBody', 'schema:domainIncludes', 'https://schema.org/Article');
+        $graph->addResource('https://schema.org/articleBody', 'schema:rangeIncludes', 'https://schema.org/Text');
 
-        $graph->addResource('http://schema.org/articleSection', 'rdf:type', 'rdf:Property');
-        $graph->addResource('http://schema.org/articleSection', 'schema:domainIncludes', 'http://schema.org/Article');
-        $graph->addResource('http://schema.org/articleSection', 'schema:rangeIncludes', 'http://schema.org/Text');
+        $graph->addResource('https://schema.org/articleSection', 'rdf:type', 'rdf:Property');
+        $graph->addResource('https://schema.org/articleSection', 'schema:domainIncludes', 'https://schema.org/Article');
+        $graph->addResource('https://schema.org/articleSection', 'schema:rangeIncludes', 'https://schema.org/Text');
 
-        $graph->addResource('http://schema.org/author', 'rdf:type', 'rdf:Property');
-        $graph->addResource('http://schema.org/author', 'schema:domainIncludes', 'http://schema.org/CreativeWork');
-        $graph->addResource('http://schema.org/author', 'schema:rangeIncludes', 'http://schema.org/Person');
+        $graph->addResource('https://schema.org/author', 'rdf:type', 'rdf:Property');
+        $graph->addResource('https://schema.org/author', 'schema:domainIncludes', 'https://schema.org/CreativeWork');
+        $graph->addResource('https://schema.org/author', 'schema:rangeIncludes', 'https://schema.org/Person');
 
-        $graph->addResource('http://schema.org/datePublished', 'rdf:type', 'rdf:Property');
-        $graph->addResource('http://schema.org/datePublished', 'schema:domainIncludes', 'http://schema.org/CreativeWork');
-        $graph->addResource('http://schema.org/datePublished', 'schema:rangeIncludes', 'http://schema.org/Date');
+        $graph->addResource('https://schema.org/datePublished', 'rdf:type', 'rdf:Property');
+        $graph->addResource('https://schema.org/datePublished', 'schema:domainIncludes', 'https://schema.org/CreativeWork');
+        $graph->addResource('https://schema.org/datePublished', 'schema:rangeIncludes', 'https://schema.org/Date');
 
-        $graph->addResource('http://schema.org/headline', 'rdf:type', 'rdf:Property');
-        $graph->addResource('http://schema.org/headline', 'schema:domainIncludes', 'http://schema.org/CreativeWork');
-        $graph->addResource('http://schema.org/headline', 'schema:rangeIncludes', 'http://schema.org/Text');
+        $graph->addResource('https://schema.org/headline', 'rdf:type', 'rdf:Property');
+        $graph->addResource('https://schema.org/headline', 'schema:domainIncludes', 'https://schema.org/CreativeWork');
+        $graph->addResource('https://schema.org/headline', 'schema:rangeIncludes', 'https://schema.org/Text');
 
-        $graph->addResource('http://schema.org/isFamilyFriendly', 'rdf:type', 'rdf:Property');
-        $graph->addResource('http://schema.org/isFamilyFriendly', 'schema:domainIncludes', 'http://schema.org/CreativeWork');
-        $graph->addResource('http://schema.org/isFamilyFriendly', 'schema:rangeIncludes', 'http://schema.org/Boolean');
+        $graph->addResource('https://schema.org/isFamilyFriendly', 'rdf:type', 'rdf:Property');
+        $graph->addResource('https://schema.org/isFamilyFriendly', 'schema:domainIncludes', 'https://schema.org/CreativeWork');
+        $graph->addResource('https://schema.org/isFamilyFriendly', 'schema:rangeIncludes', 'https://schema.org/Boolean');
 
-        $graph->addResource('http://schema.org/name', 'rdf:type', 'rdf:Property');
-        $graph->addResource('http://schema.org/name', 'schema:domainIncludes', 'http://schema.org/Thing');
-        $graph->addResource('http://schema.org/name', 'schema:rangeIncludes', 'http://schema.org/Text');
+        $graph->addResource('https://schema.org/name', 'rdf:type', 'rdf:Property');
+        $graph->addResource('https://schema.org/name', 'schema:domainIncludes', 'https://schema.org/Thing');
+        $graph->addResource('https://schema.org/name', 'schema:rangeIncludes', 'https://schema.org/Text');
 
-        $graph->addResource('http://schema.org/sharedContent', 'rdf:type', 'rdf:Property');
-        $graph->addResource('http://schema.org/sharedContent', 'schema:domainIncludes', 'http://schema.org/SocialMediaPosting');
-        $graph->addResource('http://schema.org/sharedContent', 'schema:rangeIncludes', 'http://schema.org/CreativeWork');
+        $graph->addResource('https://schema.org/sharedContent', 'rdf:type', 'rdf:Property');
+        $graph->addResource('https://schema.org/sharedContent', 'schema:domainIncludes', 'https://schema.org/SocialMediaPosting');
+        $graph->addResource('https://schema.org/sharedContent', 'schema:rangeIncludes', 'https://schema.org/CreativeWork');
 
         return [$graph];
     }

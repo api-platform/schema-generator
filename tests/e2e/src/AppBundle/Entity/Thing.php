@@ -11,10 +11,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * The most generic type of item.
  *
- * @see http://schema.org/Thing Documentation on Schema.org
+ * @see https://schema.org/Thing Documentation on Schema.org
  *
  * @ORM\Entity
- * @ApiResource(iri="http://schema.org/Thing")
+ * @ApiResource(iri="https://schema.org/Thing")
  */
 class Thing
 {
@@ -31,7 +31,7 @@ class Thing
      * @var string|null the name of the item
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/name")
+     * @ApiProperty(iri="https://schema.org/name")
      */
     private $name;
 
