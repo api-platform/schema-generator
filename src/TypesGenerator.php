@@ -273,7 +273,10 @@ class TypesGenerator
                     $parentClass = $classes[$class['parent']];
 
                     while ($parentClass) {
-                        if (!isset($parentConfig['properties']) || !is_array($parentConfig['properties'])) {
+                        if (!isset($parentConfig['properties']) ||
+                            !is_array($parentConfig['properties']) ||
+                            0 === count($parentConfig['properties'])
+                        ) {
                             // Unset implicit property
                             $parentType = $parentClass['resource'];
                             if (in_array($property, $propertiesMap[$parentType->getUri()], true)) {

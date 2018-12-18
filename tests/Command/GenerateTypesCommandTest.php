@@ -132,6 +132,38 @@ PHP
         $this->assertNotContains('function remove', $person);
     }
 
+    public function testImplicitAndExplicitPropertyInheritance()
+    {
+        $outputDir = __DIR__.'/../../build/inherited-properties';
+        $config = __DIR__.'/../config/inherited-properties.yaml';
+
+        $this->fs->mkdir($outputDir);
+
+        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $creativeWork = file_get_contents("$outputDir/AppBundle/Entity/CreativeWork.php");
+        $this->assertContains('class CreativeWork extends Thing', $creativeWork);
+        $this->assertContains('private $copyrightYear;', $creativeWork);
+        $this->assertContains('function getCopyrightYear(', $creativeWork);
+        $this->assertContains('function setCopyrightYear(', $creativeWork);
+        $this->assertNotContains('private $name;', $creativeWork);
+        $this->assertNotContains('function getName(', $creativeWork);
+        $this->assertNotContains('function setName(', $creativeWork);
+
+        $webPage = file_get_contents("$outputDir/AppBundle/Entity/WebPage.php");
+        $this->assertContains('class WebPage extends CreativeWork', $webPage);
+        $this->assertContains('private $mainEntity;', $webPage);
+        $this->assertContains('function getMainEntity(', $webPage);
+        $this->assertContains('function setMainEntity(', $webPage);
+        $this->assertNotContains('private $copyrightYear;', $webPage);
+        $this->assertNotContains('function getCopyrightYear(', $webPage);
+        $this->assertNotContains('function setCopyrightYear(', $webPage);
+        $this->assertNotContains('private $name;', $webPage);
+        $this->assertNotContains('function getName(', $webPage);
+        $this->assertNotContains('function setName(', $webPage);
+    }
+
     public function testReadableWritable()
     {
         $outputDir = __DIR__.'/../../build/readable-writable';
