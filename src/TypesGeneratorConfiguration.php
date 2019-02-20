@@ -209,6 +209,10 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                     ])
                     ->prototype('scalar')->end()
                 ->end()
+                ->arrayNode('generatorTemplates')
+                    ->info('Directories for custom generator twig templates')
+                    ->prototype('scalar')->end()
+                ->end()
             ->end();
 
         return $treeBuilder;

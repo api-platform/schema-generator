@@ -146,7 +146,10 @@ final class GenerateTypesCommand extends Command
         $goodRelationsBridge = new GoodRelationsBridge($relations);
         $cardinalitiesExtractor = new CardinalitiesExtractor($graphs, $goodRelationsBridge);
 
-        $loader = new \Twig_Loader_Filesystem(__DIR__.'/../../templates/');
+        $templatePaths = $processedConfiguration['generatorTemplates'];
+        $templatePaths[] = __DIR__ . '/../../templates/';
+
+        $loader = new \Twig_Loader_Filesystem($templatePaths);
         $twig = new \Twig_Environment($loader, ['autoescape' => false, 'debug' => $processedConfiguration['debug']]);
         $twig->addFilter(new \Twig_SimpleFilter('ucfirst', 'ucfirst'));
         $twig->addFilter(new \Twig_SimpleFilter('pluralize', [Inflector::class, 'pluralize']));
