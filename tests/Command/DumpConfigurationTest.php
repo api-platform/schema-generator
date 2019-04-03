@@ -171,6 +171,12 @@ config:
                     # Symfony Serialization Groups
                     groups:               []
 
+                    # The doctrine mapped by attribute
+                    mappedBy:             null # Example: partOfSeason
+
+                    # The doctrine inversed by attribute
+                    inversedBy:           null # Example: episodes
+
                     # Is the property readable?
                     readable:             true
 
