@@ -118,7 +118,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                 }
 
                 $annotArr = [];
-                
+
                 if ('string' !== $type) {
                     $annotArr[] = sprintf('type="%s"', $type);
                 }
@@ -132,7 +132,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                 }
 
                 if ($isColumnHasProperties) {
-                    if(count($annotArr) > 0) {
+                    if (\count($annotArr) > 0) {
                         $annotation .= implode(',', $annotArr);
                     }
                     $annotation .= ')';
