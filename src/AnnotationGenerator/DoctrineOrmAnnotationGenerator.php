@@ -117,27 +117,37 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                     $annotation .= '(';
                 }
 
+                // ended up with an annotation like @ORM\Column(type="text"unique=true)
+                // no comma!! Please, consider this fix
+                $annotArr = array();
+                
                 if ('string' !== $type) {
-                    $annotation .= sprintf('type="%s"', $type);
+                    //$annotation .= sprintf('type="%s"', $type);
+                    $annotArr[] = sprintf('type="%s"', $type);
                 }
 
-                if ('string' !== $type && $field['isNullable']) {
-                    $annotation .= ', ';
-                }
+                //if ('string' !== $type && $field['isNullable']) {
+                //    $annotation .= ', ';
+                //}
 
                 if ($field['isNullable']) {
-                    $annotation .= 'nullable=true';
+                    //$annotation .= 'nullable=true';
+                    $annotArr[] = 'nullable=true';
                 }
 
-                if ($field['isUnique'] && $field['isNullable']) {
-                    $annotation .= ', ';
-                }
+                //if ($field['isUnique'] && $field['isNullable']) {
+                //    $annotation .= ', ';
+                //}
 
                 if ($field['isUnique']) {
-                    $annotation .= 'unique=true';
+                    //$annotation .= 'unique=true';
+                    $annotArr[] = 'unique=true';
                 }
 
                 if ($isColumnHasProperties) {
+                    if(count($annotArr) > 0) {
+                        $annotation .= join(',', $annotArr);
+                    }
                     $annotation .= ')';
                 }
             }
