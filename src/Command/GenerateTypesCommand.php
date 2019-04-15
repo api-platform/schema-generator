@@ -147,7 +147,7 @@ final class GenerateTypesCommand extends Command
         $cardinalitiesExtractor = new CardinalitiesExtractor($graphs, $goodRelationsBridge);
 
         $templatePaths = $processedConfiguration['generatorTemplates'];
-        $templatePaths[] = __DIR__ . '/../../templates/';
+        $templatePaths[] = __DIR__.'/../../templates/';
 
         $loader = new \Twig_Loader_Filesystem($templatePaths);
         $twig = new \Twig_Environment($loader, ['autoescape' => false, 'debug' => $processedConfiguration['debug']]);
