@@ -186,6 +186,8 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                                             ->info('Symfony Serialization Groups')
                                             ->prototype('scalar')->end()
                                         ->end()
+                                        ->scalarNode('mappedBy')->defaultNull()->info('The doctrine mapped by attribute')->example('partOfSeason')->end()
+                                        ->scalarNode('inversedBy')->defaultNull()->info('The doctrine inversed by attribute')->example('episodes')->end()
                                         ->booleanNode('readable')->defaultTrue()->info('Is the property readable?')->end()
                                         ->booleanNode('writable')->defaultTrue()->info('Is the property writable?')->end()
                                         ->booleanNode('nullable')->defaultTrue()->info('Is the property nullable?')->end()
