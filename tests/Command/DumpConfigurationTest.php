@@ -205,6 +205,9 @@ config:
         - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
         - ApiPlatform\SchemaGenerator\AnnotationGenerator\SerializerGroupsAnnotationGenerator
 
+    # Directories for custom generator twig templates
+    generatorTemplates:   []
+
 
 YAML
                 ,
