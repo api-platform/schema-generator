@@ -117,27 +117,24 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                     $annotation .= '(';
                 }
 
-                if ('string' !== $type) {
-                    $annotation .= sprintf('type="%s"', $type);
-                }
+                $annotArr = [];
 
-                if ('string' !== $type && $field['isNullable']) {
-                    $annotation .= ', ';
+                if ('string' !== $type) {
+                    $annotArr[] = sprintf('type="%s"', $type);
                 }
 
                 if ($field['isNullable']) {
-                    $annotation .= 'nullable=true';
-                }
-
-                if ($field['isUnique'] && $field['isNullable']) {
-                    $annotation .= ', ';
+                    $annotArr[] = 'nullable=true';
                 }
 
                 if ($field['isUnique']) {
-                    $annotation .= 'unique=true';
+                    $annotArr[] = 'unique=true';
                 }
 
                 if ($isColumnHasProperties) {
+                    if (\count($annotArr) > 0) {
+                        $annotation .= implode(',', $annotArr);
+                    }
                     $annotation .= ')';
                 }
             }
