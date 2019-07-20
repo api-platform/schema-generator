@@ -30,7 +30,7 @@ class PostalAddress
     /**
      * @var string|null The country. For example, USA. You can also provide the two-letter \[ISO 3166-1 alpha-2 country code\](http://en.wikipedia.org/wiki/ISO\_3166-1).
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text",nullable=true)
      * @ApiProperty(iri="http://schema.org/addressCountry")
      */
     private $addressCountry;
@@ -38,7 +38,7 @@ class PostalAddress
     /**
      * @var string|null The locality. For example, Mountain View.
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text",nullable=true)
      * @ApiProperty(iri="http://schema.org/addressLocality")
      */
     private $addressLocality;
@@ -46,7 +46,7 @@ class PostalAddress
     /**
      * @var string|null The region. For example, CA.
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text",nullable=true)
      * @ApiProperty(iri="http://schema.org/addressRegion")
      */
     private $addressRegion;
@@ -54,7 +54,7 @@ class PostalAddress
     /**
      * @var string|null the post office box number for PO box addresses
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text",nullable=true)
      * @ApiProperty(iri="http://schema.org/postOfficeBoxNumber")
      */
     private $postOfficeBoxNumber;
@@ -62,7 +62,7 @@ class PostalAddress
     /**
      * @var string|null The postal code. For example, 94043.
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text",nullable=true)
      * @ApiProperty(iri="http://schema.org/postalCode")
      */
     private $postalCode;
@@ -70,7 +70,7 @@ class PostalAddress
     /**
      * @var string|null The street address. For example, 1600 Amphitheatre Pkwy.
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text",nullable=true)
      * @ApiProperty(iri="http://schema.org/streetAddress")
      */
     private $streetAddress;
