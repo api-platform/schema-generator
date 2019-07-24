@@ -52,6 +52,11 @@ class TypesGenerator
     private const SCHEMA_ORG_RANGE = 'schema:rangeIncludes';
 
     /**
+     * @var string
+     */
+    private const SCHEMA_ORG_SUPERSEDED_BY = 'schema:supersededBy';
+
+    /**
      * @var \Twig_Environment
      */
     private $twig;
@@ -232,7 +237,12 @@ class TypesGenerator
             } else {
                 // All properties
                 foreach ($propertiesMap[$type->getUri()] as $property) {
-                    $class = $this->generateField($config, $class, $type, $typeName, $property->localName(), $property);
+                    if ($property->hasProperty(self::SCHEMA_ORG_SUPERSEDED_BY)) {
+                        $supersededBy = $property->get('schema:supersededBy');
+                        $this->logger->warning(sprintf('The property "%s" is superseded by "%s". Using the superseding property.', $property->localName(), $supersededBy->localName()));
+                    } else {
+                        $class = $this->generateField($config, $class, $type, $typeName, $property->localName(), $property);
+                    }
                 }
             }
 

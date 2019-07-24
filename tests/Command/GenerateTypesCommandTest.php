@@ -368,4 +368,38 @@ PHP
 
         $this->assertNotContains('function setId(', $gender);
     }
+
+    public function testSupersededProperties()
+    {
+        $outputDir = __DIR__.'/../../build/superseded-properties';
+        $config = __DIR__.'/../config/superseded-properties.yaml';
+
+        $this->fs->mkdir($outputDir);
+
+        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $creativeWork = file_get_contents("$outputDir/AppBundle/Entity/CreativeWork.php");
+
+        $this->assertContains(<<<'PHP'
+    /**
+     * @var string|null an award won by or for this item
+     *
+     * @ORM\Column(type="text", nullable=true)
+     * @ApiProperty(iri="http://schema.org/award")
+     */
+    private $award;
+PHP
+            , $creativeWork);
+
+        $this->assertNotContains(<<<'PHP'
+    /**
+     * @var string|null awards won by or for this item
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    protected $award;
+PHP
+            , $creativeWork);
+    }
 }
