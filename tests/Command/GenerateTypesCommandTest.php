@@ -385,7 +385,7 @@ PHP
     /**
      * @var string|null an award won by or for this item
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text",nullable=true)
      * @ApiProperty(iri="http://schema.org/award")
      */
     private $award;
@@ -396,7 +396,7 @@ PHP
     /**
      * @var string|null awards won by or for this item
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text",nullable=true)
      */
     protected $award;
 PHP
