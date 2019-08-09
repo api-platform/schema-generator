@@ -47,7 +47,6 @@ When you send a PR, just make sure that:
 * You make a PR on the related documentation in the [api-platform/doc](https://github.com/api-platform/doc) repository.
 * You make the PR on the same branch you based your changes on. If you see commits
 that you did not make in your PR, you're doing it wrong.
-* Also don't forget to add a comment when you update a PR with a ping to the maintainer (`@dunglas`, `@sroze` or `@theofidry`), so he/she will get a notification.
 * Squash your commits into one commit. (see the next chapter)
 
 All Pull Requests must include the following header:
