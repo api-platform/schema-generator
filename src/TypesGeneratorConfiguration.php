@@ -158,6 +158,7 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                                 ->addDefaultsIfNotSet()
                                 ->children()
                                     ->scalarNode('inheritanceMapping')->defaultNull()->info('The Doctrine inheritance mapping type (override the guessed one)')->end()
+                                    ->scalarNode('entityName')->defaultNull()->info('The doctrine entity name (default to the schema.org resource name)')->end()
                                 ->end()
                             ->end()
                             ->scalarNode('parent')->defaultFalse()->info('The parent class, set to false for a top level class')->end()

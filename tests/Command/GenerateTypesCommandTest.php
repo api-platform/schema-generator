@@ -402,4 +402,32 @@ PHP
 PHP
             , $creativeWork);
     }
+
+    public function testOverrideEntityName()
+    {
+        $outputDir = __DIR__.'/../../build/entity-name';
+        $config = __DIR__.'/../config/entity-name.yaml';
+
+        $this->fs->mkdir($outputDir);
+
+        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $this->assertFileExists("$outputDir/AppBundle/Entity/CustomName.php");
+        $creativeWork = file_get_contents("$outputDir/AppBundle/Entity/CustomName.php");
+
+        $this->assertContains(<<<'PHP'
+/**
+ * The most generic kind of creative work, including books, movies, photographs, software programs, etc.
+ *
+ * @see http://schema.org/CreativeWork Documentation on Schema.org
+ *
+ * @ORM\Entity
+ * @ApiResource(iri="http://schema.org/CreativeWork")
+ */
+class CustomName
+{
+PHP
+            , $creativeWork);
+    }
 }

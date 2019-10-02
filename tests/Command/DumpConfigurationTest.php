@@ -143,6 +143,9 @@ config:
                 # The Doctrine inheritance mapping type (override the guessed one)
                 inheritanceMapping:   null
 
+                # The doctrine entity name (default to the schema.org resource name)
+                entityName:           null
+
             # The parent class, set to false for a top level class
             parent:               false
 

@@ -159,7 +159,7 @@ class TypesGenerator
 
             $comment = $type->get('rdfs:comment');
 
-            $class['name'] = $typeName;
+            $class['name'] = $typeConfig['doctrine']['entityName'] ?? $typeName;
             $class['label'] = $comment ? $comment->getValue() : '';
             $class['resource'] = $type;
             $class['config'] = $typeConfig;
@@ -400,7 +400,7 @@ class TypesGenerator
                 mkdir($classDir, 0777, true);
             }
 
-            $path = sprintf('%s%s.php', $classDir, $className);
+            $path = sprintf('%s%s.php', $classDir, $class['config']['doctrine']['entityName'] ?? $className);
             $generatedFiles[] = $path;
 
             file_put_contents(
