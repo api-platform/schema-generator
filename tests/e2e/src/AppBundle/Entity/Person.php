@@ -31,7 +31,7 @@ class Person
     /**
      * @var string|null Family name. In the U.S., the last name of an Person. This can be used along with givenName instead of the name property.
      *
-     * @ORM\Column(type="text",nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      * @ApiProperty(iri="http://schema.org/familyName")
      */
     private $familyName;
@@ -39,7 +39,7 @@ class Person
     /**
      * @var string|null Given name. In the U.S., the first name of a Person. This can be used along with familyName instead of the name property.
      *
-     * @ORM\Column(type="text",nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      * @ApiProperty(iri="http://schema.org/givenName")
      */
     private $givenName;
@@ -47,7 +47,7 @@ class Person
     /**
      * @var string|null an additional name for a Person, can be used for a middle name
      *
-     * @ORM\Column(type="text",nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      * @ApiProperty(iri="http://schema.org/additionalName")
      */
     private $additionalName;
@@ -55,7 +55,7 @@ class Person
     /**
      * @var string|null Gender of the person. While http://schema.org/Male and http://schema.org/Female may be used, text strings are also acceptable for people who do not identify as a binary gender.
      *
-     * @ORM\Column(type="text",nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      * @ApiProperty(iri="http://schema.org/gender")
      */
     private $gender;
@@ -71,7 +71,7 @@ class Person
     /**
      * @var \DateTimeInterface|null date of birth
      *
-     * @ORM\Column(type="date",nullable=true)
+     * @ORM\Column(type="date", nullable=true)
      * @ApiProperty(iri="http://schema.org/birthDate")
      * @Assert\Date
      */
@@ -80,7 +80,7 @@ class Person
     /**
      * @var string|null the telephone number
      *
-     * @ORM\Column(type="text",nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      * @ApiProperty(iri="http://schema.org/telephone")
      */
     private $telephone;
@@ -88,7 +88,7 @@ class Person
     /**
      * @var string|null email address
      *
-     * @ORM\Column(type="text",nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      * @ApiProperty(iri="http://schema.org/email")
      * @Assert\Email
      */
@@ -97,7 +97,7 @@ class Person
     /**
      * @var string|null URL of the item
      *
-     * @ORM\Column(type="text",nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      * @ApiProperty(iri="http://schema.org/url")
      * @Assert\Url
      */
@@ -106,7 +106,7 @@ class Person
     /**
      * @var string|null the job title of the person (for example, Financial Manager)
      *
-     * @ORM\Column(type="text",nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      * @ApiProperty(iri="http://schema.org/jobTitle")
      */
     private $jobTitle;

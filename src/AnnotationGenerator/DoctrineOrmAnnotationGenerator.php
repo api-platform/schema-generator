@@ -133,7 +133,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
 
                 if ($isColumnHasProperties) {
                     if (\count($annotArr) > 0) {
-                        $annotation .= implode(',', $annotArr);
+                        $annotation .= implode(', ', $annotArr);
                     }
                     $annotation .= ')';
                 }
