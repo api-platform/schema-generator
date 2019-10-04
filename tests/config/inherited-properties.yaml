@@ -1,0 +1,10 @@
+types:
+  CreativeWork:
+    allProperties: true
+    parent: Thing
+    properties:
+      copyrightYear:
+  Thing:
+  WebPage:
+    allProperties: true
+    parent: CreativeWork
