@@ -141,7 +141,12 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
 
             $annotations[] = $annotation;
         } elseif ($field['isEmbedded']) {
-            $columnPrefix = $field['columnPrefix'] ? ', columnPrefix=true' : ', columnPrefix=false';
+            $columnPrefix = ', columnPrefix=';
+            if (is_bool($field['columnPrefix'])) {
+                $columnPrefix .= $field['columnPrefix'] ? 'true' : 'false';
+            } else {
+                $columnPrefix .= sprintf('"%s"', $field['columnPrefix']);
+            }
             $annotations[] = sprintf('@ORM\Embedded(class="%s"%s)', $this->getRelationName($field['range']), $columnPrefix);
         } else {
             switch ($field['cardinality']) {
