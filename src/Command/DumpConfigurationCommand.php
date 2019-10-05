@@ -39,10 +39,12 @@ final class DumpConfigurationCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $configuration = new TypesGeneratorConfiguration();
         $dumper = new YamlReferenceDumper();
         $output->writeln($dumper->dump($configuration));
+
+        return 0;
     }
 }

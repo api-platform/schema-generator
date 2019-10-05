@@ -67,7 +67,7 @@ final class GenerateTypesCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $defaultOutput = $this->defaultOutput ? realpath($this->defaultOutput) : null;
         $outputDir = $input->getArgument('output');
@@ -163,5 +163,7 @@ final class GenerateTypesCommand extends Command
 
         $entitiesGenerator = new TypesGenerator($twig, $logger, $graphs, $cardinalitiesExtractor, $goodRelationsBridge);
         $entitiesGenerator->generate($processedConfiguration);
+
+        return 0;
     }
 }

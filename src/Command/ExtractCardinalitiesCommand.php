@@ -44,7 +44,7 @@ final class ExtractCardinalitiesCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $schemaOrgFile = $input->getOption('schemaorg-file');
 
@@ -65,5 +65,7 @@ final class ExtractCardinalitiesCommand extends Command
         $result = $cardinalitiesExtractor->extract();
 
         $output->writeln(json_encode($result, JSON_PRETTY_PRINT));
+
+        return 0;
     }
 }
