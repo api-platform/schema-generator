@@ -25,6 +25,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Parser;
+use Twig\Environment;
+use Twig\Extension\DebugExtension;
+use Twig\Loader\FilesystemLoader;
+use Twig\TwigFilter;
 
 /**
  * Generate entities command.
@@ -149,14 +153,14 @@ final class GenerateTypesCommand extends Command
         $templatePaths = $processedConfiguration['generatorTemplates'];
         $templatePaths[] = __DIR__.'/../../templates/';
 
-        $loader = new \Twig_Loader_Filesystem($templatePaths);
-        $twig = new \Twig_Environment($loader, ['autoescape' => false, 'debug' => $processedConfiguration['debug']]);
-        $twig->addFilter(new \Twig_SimpleFilter('ucfirst', 'ucfirst'));
-        $twig->addFilter(new \Twig_SimpleFilter('pluralize', [Inflector::class, 'pluralize']));
-        $twig->addFilter(new \Twig_SimpleFilter('singularize', [Inflector::class, 'singularize']));
+        $loader = new FilesystemLoader($templatePaths);
+        $twig = new Environment($loader, ['autoescape' => false, 'debug' => $processedConfiguration['debug']]);
+        $twig->addFilter(new TwigFilter('ucfirst', 'ucfirst'));
+        $twig->addFilter(new TwigFilter('pluralize', [Inflector::class, 'pluralize']));
+        $twig->addFilter(new TwigFilter('singularize', [Inflector::class, 'singularize']));
 
         if ($processedConfiguration['debug']) {
-            $twig->addExtension(new \Twig_Extension_Debug());
+            $twig->addExtension(new DebugExtension());
         }
 
         $logger = new ConsoleLogger($output);

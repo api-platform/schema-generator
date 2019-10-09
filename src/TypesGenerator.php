@@ -26,6 +26,7 @@ use PhpCsFixer\Linter\Linter;
 use PhpCsFixer\RuleSet;
 use PhpCsFixer\Runner\Runner;
 use Psr\Log\LoggerInterface;
+use Twig\Environment;
 
 /**
  * Generates entity files.
@@ -57,7 +58,7 @@ class TypesGenerator
     private const SCHEMA_ORG_SUPERSEDED_BY = 'schema:supersededBy';
 
     /**
-     * @var \Twig_Environment
+     * @var Environment
      */
     private $twig;
 
@@ -89,7 +90,7 @@ class TypesGenerator
     /**
      * @param \EasyRdf_Graph[] $graphs
      */
-    public function __construct(\Twig_Environment $twig, LoggerInterface $logger, array $graphs, CardinalitiesExtractor $cardinalitiesExtractor, GoodRelationsBridge $goodRelationsBridge)
+    public function __construct(Environment $twig, LoggerInterface $logger, array $graphs, CardinalitiesExtractor $cardinalitiesExtractor, GoodRelationsBridge $goodRelationsBridge)
     {
         if (!$graphs) {
             throw new \InvalidArgumentException('At least one graph must be injected.');
