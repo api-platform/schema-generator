@@ -41,7 +41,7 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
         $arguments = [sprintf('iri="%s"', $resource->getUri())];
 
         if (isset($class['operations'])) {
-            $operations = $this->validateClassOperations((array)$class['operations']);
+            $operations = $this->validateClassOperations((array) $class['operations']);
             foreach ($operations as $operationTarget => $targetOperations) {
                 $targetArguments = [];
                 foreach ($targetOperations as $method => $methodConfig) {
@@ -59,9 +59,8 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
         return [sprintf('@ApiResource(%s)', implode(', ', $arguments))];
     }
 
-
     /**
-     * Verifies that the operations config is valid
+     * Verifies that the operations config is valid.
      *
      * @param array $operations
      *
@@ -77,9 +76,8 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
         return $resolver->resolve($operations);
     }
 
-
     /**
-     * Validates the individual method config for an item/collection operation annotation
+     * Validates the individual method config for an item/collection operation annotation.
      *
      * @param array $methodConfig
      *
@@ -106,7 +104,6 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
         return $resolver->resolve($methodConfig);
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -119,7 +116,6 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
             ),
         ];
     }
-
 
     /**
      * {@inheritdoc}
