@@ -48,6 +48,13 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
                     ],
                 ],
                 'MyEnum' => ['resource' => $myEnum],
+                'WithOperations' => [
+                    'resource' => new \EasyRdf_Resource('http://schema.org/WithOperations', $graph),
+                    'operations' => [
+                        'item' => ['get' => ['route_name' => 'api_about_get']],
+                        'collection' => [],
+                    ],
+                ],
             ]
         );
     }
@@ -55,6 +62,11 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
     public function testGenerateClassAnnotations()
     {
         $this->assertSame(['@ApiResource(iri="http://schema.org/Res")'], $this->generator->generateClassAnnotations('Res'));
+    }
+
+    public function testGenerateClassAnnotationsWithOperations()
+    {
+        $this->assertSame(['@ApiResource(iri="http://schema.org/WithOperations", itemOperations={"get"={"route_name"="api_about_get"}}, collectionOperations={})'], $this->generator->generateClassAnnotations('WithOperations'));
     }
 
     public function testGenerateFieldAnnotations()
