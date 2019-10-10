@@ -51,7 +51,7 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
                 'WithOperations' => [
                     'resource' => new \EasyRdf_Resource('http://schema.org/WithOperations', $graph),
                     'operations' => [
-                        'item' => ['get' => ["route_name" => "api_about_get"]],
+                        'item' => ['get' => ['route_name' => 'api_about_get']],
                         'collection' => [],
                     ],
                 ],
