@@ -117,7 +117,6 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
         ];
     }
 
-
     /**
      * {@inheritdoc}
      */
