@@ -2,7 +2,7 @@
 
 This Schema.org based model generator is part of [the API Platform framework](https://api-platform.com) that instantly generates a PHP data model from the [Schema.org](https://schema.org)
 vocabulary. Browse Schema.org, choose the types and properties you need, run our code generator and you're done! You get
-a fully featured PHP data model including:
+a fully-featured PHP data model including:
 * A set of PHP entities with properties, constants (enum values), getters, setters, adders and removers. The class
 hierarchy provided by Schema.org will be translated to a PHP class hierarchy with parents as `abstract` classes. The generated
 code complies with [PSR](http://www.php-fig.org/) coding standards.
@@ -20,7 +20,7 @@ Bonus:
 
 * The code generator is fully configurable and extensible. All features can be deactivated (e.g., the Doctrine mapping generator)
 and a custom generator can be added (e.g., a Doctrine ODM mapping generator).
-* The generated code can be used as is in a [Symfony](https://symfony.com) app (but it will work too in a raw PHP project
+* The generated code can be used as-is in a [Symfony](https://symfony.com) app (but it will work too in a raw PHP project
 or any other framework including [Laravel](https://laravel.com) and [Zend Framework](http://framework.zend.com/)).
 
 [![Build Status](https://travis-ci.org/api-platform/schema-generator.svg?branch=master)](https://travis-ci.org/api-platform/schema-generator)
@@ -40,7 +40,7 @@ Google (Search, Gmail), Yahoo!, Bing and Yandex.
 
 Data models provided by Schema.org are popular and have proved efficient. They cover a broad spectrum of topics including
 creative work, e-commerce, event, medicine, social networking, people, postal address, organization, place or review.
-Schema.org has its roots in [a ton of preexisting well designed vocabularies](http://schema.rdfs.org/mappings.html) and is
+Schema.org has its roots in [a ton of preexisting well-designed vocabularies](http://schema.rdfs.org/mappings.html) and is
 successfully used by more and more websites and applications.
 
 Pick up schemas applicable to your application, generate your PHP model, then customize and specialize it to fit your needs.
@@ -56,7 +56,7 @@ specific mapping nor adaptation. It's a matter of minutes.
 ### Be ready for the future
 
 Schema.org improves the interoperability of your applications. Used with hypermedia technologies such as [Hydra](http://www.hydra-cg.com/)
-it's a big step towards the semantic and machine readable web.
+it's a big step towards the semantic and machine-readable web.
 It opens the way to generic web API clients able to extract and process data from any website or app using such technologies.
 
 ## Documentation
