@@ -28,7 +28,7 @@ class GenerateTypesCommandTest extends TestCase
      */
     private $fs;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->fs = new Filesystem();
     }

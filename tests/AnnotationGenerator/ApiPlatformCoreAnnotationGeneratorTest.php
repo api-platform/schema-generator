@@ -28,7 +28,7 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
      */
     private $generator;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $graph = new \EasyRdf_Graph();
         $myEnum = new \EasyRdf_Resource('http://schema.org/MyEnum', $graph);
