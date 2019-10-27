@@ -16,7 +16,7 @@ before_install:
   - phpenv config-rm xdebug.ini || echo "xdebug not available"
   - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - export PATH="$PATH:$HOME/.composer/vendor/bin"
-  - wget -O phpunit.phar https://phar.phpunit.de/phpunit-6.5.phar
+  - wget -O phpunit.phar https://phar.phpunit.de/phpunit-7.5.phar
   - if [[ $coverage = 1 ]]; then mkdir -p build/logs; fi
   - if [[ $coverage = 1 ]]; then wget https://github.com/satooshi/php-coveralls/releases/download/v2.0.0/php-coveralls.phar; fi
   - if [[ $lint = 1 ]]; then wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.10.0/php-cs-fixer.phar; fi
