@@ -22,7 +22,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class ExtractCardinalitiesCommandTest extends TestCase
 {
-    public function testExtractCardinalities()
+    public function testExtractCardinalities(): void
     {
         $commandTester = new CommandTester(new ExtractCardinalitiesCommand());
         $this->assertEquals(0, $commandTester->execute(

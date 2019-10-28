@@ -390,7 +390,7 @@ class TypesGeneratorTest extends TestCase
      *
      * @return \Closure
      */
-    private function getContextMatcher(array $class)
+    private function getContextMatcher(array $class): \Closure
     {
         $config = $this->getConfig();
 

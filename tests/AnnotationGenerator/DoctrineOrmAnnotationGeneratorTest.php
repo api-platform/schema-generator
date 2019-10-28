@@ -28,7 +28,7 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
      */
     private $generator;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $graph = new \EasyRdf_Graph();
         $myEnum = new \EasyRdf_Resource('https://schema.org/MyEnum', $graph);
@@ -79,7 +79,7 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
         );
     }
 
-    public function testGenerateClassAnnotations()
+    public function testGenerateClassAnnotations(): void
     {
         $this->assertSame([], $this->generator->generateClassAnnotations('MyEnum'));
         $this->assertSame(['', '@ORM\MappedSuperclass'], $this->generator->generateClassAnnotations('Product'));
@@ -87,7 +87,7 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
         $this->assertSame(['', '@ORM\Embeddable'], $this->generator->generateClassAnnotations('QuantitativeValue'));
     }
 
-    public function testGenerateFieldAnnotations()
+    public function testGenerateFieldAnnotations(): void
     {
         $this->assertSame(
             ['@ORM\Embedded(class="QuantitativeValue", columnPrefix=false)'],

@@ -59,23 +59,23 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
         );
     }
 
-    public function testGenerateClassAnnotations()
+    public function testGenerateClassAnnotations(): void
     {
         $this->assertSame(['@ApiResource(iri="http://schema.org/Res")'], $this->generator->generateClassAnnotations('Res'));
     }
 
-    public function testGenerateClassAnnotationsWithOperations()
+    public function testGenerateClassAnnotationsWithOperations(): void
     {
         $this->assertSame(['@ApiResource(iri="http://schema.org/WithOperations", itemOperations={"get"={"route_name"="api_about_get"}}, collectionOperations={})'], $this->generator->generateClassAnnotations('WithOperations'));
     }
 
-    public function testGenerateFieldAnnotations()
+    public function testGenerateFieldAnnotations(): void
     {
         $this->assertSame(['@ApiProperty(iri="http://schema.org/prop")'], $this->generator->generateFieldAnnotations('Res', 'prop'));
         $this->assertSame([], $this->generator->generateFieldAnnotations('Res', 'customProp'));
     }
 
-    public function testGenerateUses()
+    public function testGenerateUses(): void
     {
         $this->assertSame(['ApiPlatform\Core\Annotation\ApiResource', 'ApiPlatform\Core\Annotation\ApiProperty'], $this->generator->generateUses('Res'));
         $this->assertSame([], $this->generator->generateUses('MyEnum'));
