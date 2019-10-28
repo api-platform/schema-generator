@@ -474,7 +474,7 @@ class TypesGenerator
      *
      * @return array
      */
-    private function getParentClasses(\EasyRdf_Resource $resource, array $parentClasses = [])
+    private function getParentClasses(\EasyRdf_Resource $resource, array $parentClasses = []): array
     {
         if ([] === $parentClasses) {
             return $this->getParentClasses($resource, [$resource->getUri()]);
@@ -509,7 +509,7 @@ class TypesGenerator
      *
      * @return array
      */
-    private function createPropertiesMap(array $types)
+    private function createPropertiesMap(array $types): array
     {
         $typesAsString = [];
         $map = [];
@@ -592,7 +592,7 @@ class TypesGenerator
      *
      * @return array $class
      */
-    private function generateField(array $config, array $class, \EasyRdf_Resource $type, $typeName, $propertyName, \EasyRdf_Resource $property = null)
+    private function generateField(array $config, array $class, \EasyRdf_Resource $type, $typeName, $propertyName, \EasyRdf_Resource $property = null): array
     {
         $typeConfig = $config['types'][$typeName] ?? null;
         $typesDefined = !empty($config['types']);

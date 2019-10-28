@@ -66,7 +66,7 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
      *
      * @return array
      */
-    private function validateClassOperations(array $operations)
+    private function validateClassOperations(array $operations): array
     {
         $resolver = new OptionsResolver();
         $resolver->setDefaults(['item' => [], 'collection' => []]);
@@ -83,7 +83,7 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
      *
      * @return array
      */
-    private function validateClassOperationMethodConfig(array $methodConfig)
+    private function validateClassOperationMethodConfig(array $methodConfig): array
     {
         $resolver = new OptionsResolver();
 
