@@ -528,7 +528,7 @@ Note 3: If the shop re-opens on the same day of the week or set of days of the w
     </rdfs:domain>
     <rdfs:comment xml:lang="en">The minimal and maximal amount of time that is required between accepting the gr:Offering and the actual usage of the resource or service. This is mostly relevant for offers regarding hotel rooms, the rental of objects, or the provisioning of services. The duration is specified relatively to the beginning of the usage of the contracted object. It is represented by attaching an instance of the class gr:QuantitativeValueInteger. The lower and upper boundaries are specified using the properties gr:hasMinValueInteger and gr:hasMaxValueInteger to that instance. The unit of measurement is specified using the property gr:hasUnitOfMeasurement with a string holding a UN/CEFACT code suitable for durations, e.g. MON (months), DAY (days), HUR (hours), or MIN (minutes).
 
-The difference to the gr:validFrom and gr:validThrough properties is that those specify the interval during which the gr:Offering is valid, while gr:advanceBookingRequirement specifies the acceptable relative amount of time between accepting the offer and the fulfilment or usage.</rdfs:comment>
+The difference to the gr:validFrom and gr:validThrough properties is that those specify the interval during which the gr:Offering is valid, while gr:advanceBookingRequirement specifies the acceptable relative amount of time between accepting the offer and the fulfillment or usage.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:ObjectProperty>
   <owl:ObjectProperty rdf:about="http://purl.org/goodrelations/v1#eligibleTransactionVolume">
@@ -1288,7 +1288,7 @@ DEPRECATED. Use gr:seeks instead.</rdfs:comment>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
-    <rdfs:comment xml:lang="en">This states that an actual product instance (gr:Individual) or a placeholder instance for multiple, unidentified such instances (gr:SomeItems) is one occurence of a particular gr:ProductOrServiceModel.
+    <rdfs:comment xml:lang="en">This states that an actual product instance (gr:Individual) or a placeholder instance for multiple, unidentified such instances (gr:SomeItems) is one occurrence of a particular gr:ProductOrServiceModel.
 
 Example: myFordT hasMakeAndModel FordT.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
@@ -1416,9 +1416,9 @@ Typical unit code(s): GRM for gram, KGM for kilogram, LBR for pound</rdfs:commen
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
-    <rdfs:comment xml:lang="en">The EAN·UCC-13 code of the given gr:ProductOrService or gr:Offering. This code is now officially called GTIN-13 (Global Trade Identifier Number) or EAN·UCC-13. Former 12-digit UPC codes can be converted into EAN·UCC-13 code by simply adding a preceeding zero.
+    <rdfs:comment xml:lang="en">The EAN·UCC-13 code of the given gr:ProductOrService or gr:Offering. This code is now officially called GTIN-13 (Global Trade Identifier Number) or EAN·UCC-13. Former 12-digit UPC codes can be converted into EAN·UCC-13 code by simply adding a preceding zero.
 
-Note 1: When using this property for searching by 12-digit UPC codes, you must add a preceeding zero digit.
+Note 1: When using this property for searching by 12-digit UPC codes, you must add a preceding zero digit.
 Note 2: As of January 1, 2007, the former ISBN numbers for books etc. have been integrated into the EAN·UCC-13 code. For each old ISBN-10 code, there exists a proper translation into EAN·UCC-13 by adding "978" or "979" as prefix. Since the old ISBN-10 is now deprecated, GoodRelations does not provide a property for ISBNs.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
@@ -1559,7 +1559,7 @@ The difference to the gr:validFrom and gr:validThrough properties is that those 
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:DatatypeProperty>
   <gr:BusinessEntityType rdf:about="http://purl.org/goodrelations/v1#PublicInstitution">
-    <rdfs:comment xml:lang="en">The gr:BusinessEntityType representing such agents that are part of the adminstration or owned by the public.</rdfs:comment>
+    <rdfs:comment xml:lang="en">The gr:BusinessEntityType representing such agents that are part of the administration or owned by the public.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
     <rdfs:label xml:lang="en">Public institution (business entity type)</rdfs:label>
   </gr:BusinessEntityType>
@@ -1606,7 +1606,7 @@ Example: Car maintenance could be expressed both as "provide the service car mai
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
-    <rdfs:comment xml:lang="en">This property indicates that a particular person or business owns a particular product. It can be used to expose the products in one's posession in order to empower recommender systems to suggest matching offers.
+    <rdfs:comment xml:lang="en">This property indicates that a particular person or business owns a particular product. It can be used to expose the products in one's possession in order to empower recommender systems to suggest matching offers.
 
 Note that the product must be an instance of the class gr:Individual.
 
@@ -1756,7 +1756,7 @@ Examples: Consumers, Retailers, Wholesalers, or Public Institutions</rdfs:commen
     <rdfs:label xml:lang="en">Location</rdfs:label>
     <rdfs:comment xml:lang="en">A location is a point or area of interest from which a particular product or service is available, e.g. a store, a bus stop, a gas station, or a ticket booth. The difference to gr:BusinessEntity is that the gr:BusinessEntity is the legal entity (e.g. a person or corporation) making the offer, while gr:Location is the store, office, or place. A chain restaurant will e.g. have one legal entity but multiple restaurant locations. Locations are characterized by an address or geographical position and a set of opening hour specifications for various days of the week.
 		
-Example: A rental car company may offer the Business Function Lease Out of cars from two locations, one in Fort Myers, Florida, and one in Boston, Massachussetts. Both stations are open 7:00 - 23:00 Mondays through Saturdays.
+Example: A rental car company may offer the Business Function Lease Out of cars from two locations, one in Fort Myers, Florida, and one in Boston, Massachusetts. Both stations are open 7:00 - 23:00 Mondays through Saturdays.
 
 Note: Typical address standards (vcard) and location data (geo, WGC84) should be attached to a gr:Location node. Since there already exist established vocabularies for this, the GoodRelations ontology does not provide respective attributes. Instead, the use of respective vocabularies is recommended. However, the gr:hasGlobalLocationNumber property is  provided for linking to public identifiers for business locations.
 		
@@ -1792,7 +1792,7 @@ Examples: VISA, MasterCard, Diners, cash, or bank transfer in advance.</rdfs:com
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#TypeAndQuantityNode"/>
   </owl:Class>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#DeliveryMethod">
-    <rdfs:comment xml:lang="en">A delivery method is a standardized procedure for transferring the product or service to the destination of fulfilment chosen by the customer. Delivery methods are characterized by the means of transportation used, and by the organization or group that is the contracting party for the sending gr:BusinessEntity (this is important, since the contracted party may subcontract the fulfilment to smaller, regional businesses).
+    <rdfs:comment xml:lang="en">A delivery method is a standardized procedure for transferring the product or service to the destination of fulfillment chosen by the customer. Delivery methods are characterized by the means of transportation used, and by the organization or group that is the contracting party for the sending gr:BusinessEntity (this is important, since the contracted party may subcontract the fulfillment to smaller, regional businesses).
 
 Examples: Delivery by mail, delivery by direct download, delivery by UPS</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
@@ -2068,7 +2068,7 @@ Note 2: For Google, attaching a gr:validThrough statement to a gr:UnitPriceSpeci
         <owl:inverseOf rdf:resource="http://purl.org/goodrelations/v1#hasNext"/>
         <rdfs:label xml:lang="en">has previous (0..1)</rdfs:label>
         <rdfs:domain rdf:resource="http://purl.org/goodrelations/v1#DayOfWeek"/>
-        <rdfs:comment xml:lang="en">This ordering relation for gr:DayOfWeek indicates that the subject is directly preceeded by the object.
+        <rdfs:comment xml:lang="en">This ordering relation for gr:DayOfWeek indicates that the subject is directly preceded by the object.
 
 Example: Tuesday hasPrevious Monday
 
@@ -2195,7 +2195,7 @@ Examples: Monday, Tuesday, Wednesday,...</rdfs:comment>
     <rdfs:label xml:lang="en">Quantitative value float</rdfs:label>
     <rdfs:comment xml:lang="en">An instance of this class is an actual float value for a quantitative property of a product. This instance is usually characterized by a minimal value, a maximal value, and a unit of measurement.
 
-Examples: The intervals "between 10.0  and 25.4 kilogramms" or "10.2 and 15.5 milimeters".
+Examples: The intervals "between 10.0  and 25.4 kilogramms" or "10.2 and 15.5 millimeters".
 
 Compatibility with schema.org: This class is a subclass of http://schema.org/Quantity.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
@@ -2316,7 +2316,7 @@ Example: An offering may include of 100g of Butter and 1 kg of potatoes, or 1 ce
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#QuantitativeValue">
     <rdfs:comment xml:lang="en">A quantitative value is a numerical interval that represents the range of a certain gr:quantitativeProductOrServiceProperty in terms of the lower and upper bounds for a particular gr:ProductOrService. It is to be interpreted in combination with the respective unit of measurement. Most quantitative values are intervals even if they are in practice often treated as a single point value.
 	
-Example: a weight between 10 and 25 kilogramms, a length between 10 and 15 milimeters.
+Example: a weight between 10 and 25 kilogramms, a length between 10 and 15 millimeters.
 
 Compatibility with schema.org: This class is equivalent to http://schema.org/Quantity.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
