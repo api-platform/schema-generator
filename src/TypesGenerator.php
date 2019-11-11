@@ -154,7 +154,7 @@ class TypesGenerator
         $propertiesMap = $this->createPropertiesMap($typesToGenerate);
 
         foreach ($typesToGenerate as $typeName => $type) {
-            $typeName = is_string($typeName) ? $typeName : $type->localName();
+            $typeName = \is_string($typeName) ? $typeName : $type->localName();
             $typeConfig = $config['types'][$typeName] ?? null;
             $class = $baseClass;
 
@@ -188,7 +188,7 @@ class TypesGenerator
                 // Parent
                 $class['parent'] = $typeConfig['parent'] ?? null;
                 if (null === $class['parent']) {
-                    $numberOfSupertypes = count($type->all('rdfs:subClassOf'));
+                    $numberOfSupertypes = \count($type->all('rdfs:subClassOf'));
 
                     if ($numberOfSupertypes > 1) {
                         $this->logger->warning(sprintf('The type "%s" has several supertypes. Using the first one.', $type->localName()));
@@ -220,7 +220,7 @@ class TypesGenerator
             }
 
             // Fields
-            if (!$typeConfig['allProperties'] && isset($typeConfig['properties']) && is_array($typeConfig['properties'])) {
+            if (!$typeConfig['allProperties'] && isset($typeConfig['properties']) && \is_array($typeConfig['properties'])) {
                 foreach ($typeConfig['properties'] as $key => $value) {
                     foreach ($propertiesMap[$type->getUri()] as $property) {
                         if ($key !== $property->localName()) {
@@ -285,18 +285,18 @@ class TypesGenerator
 
                     while ($parentClass) {
                         if (!isset($parentConfig['properties']) ||
-                            !is_array($parentConfig['properties']) ||
-                            0 === count($parentConfig['properties'])
+                            !\is_array($parentConfig['properties']) ||
+                            0 === \count($parentConfig['properties'])
                         ) {
                             // Unset implicit property
                             $parentType = $parentClass['resource'];
-                            if (in_array($property, $propertiesMap[$parentType->getUri()], true)) {
+                            if (\in_array($property, $propertiesMap[$parentType->getUri()], true)) {
                                 unset($class['fields'][$property->localName()]);
                                 continue 2;
                             }
                         } else {
                             // Unset explicit property
-                            if (array_key_exists($property->localName(), $parentConfig['properties'])) {
+                            if (\array_key_exists($property->localName(), $parentConfig['properties'])) {
                                 unset($class['fields'][$property->localName()]);
                                 continue 2;
                             }
@@ -440,7 +440,7 @@ class TypesGenerator
 
         if (!$interfaceMappings && $config['doctrine']['resolveTargetEntityConfigPath']) {
             $file = $config['output'].'/'.$config['doctrine']['resolveTargetEntityConfigPath'];
-            $dir = dirname($file);
+            $dir = \dirname($file);
             if (!file_exists($dir)) {
                 mkdir($dir, 0777, true);
             }
@@ -469,10 +469,7 @@ class TypesGenerator
     /**
      * Gets the parent classes of the current one and add them to $parentClasses array.
      *
-     * @param \EasyRdf_Resource $resource
-     * @param string[]          $parentClasses
-     *
-     * @return array
+     * @param string[] $parentClasses
      */
     private function getParentClasses(\EasyRdf_Resource $resource, array $parentClasses = []): array
     {
@@ -504,10 +501,6 @@ class TypesGenerator
 
     /**
      * Creates a map between classes and properties.
-     *
-     * @param array $types
-     *
-     * @return array
      */
     private function createPropertiesMap(array $types): array
     {
@@ -524,7 +517,7 @@ class TypesGenerator
             foreach ($graph->allOfType('rdf:Property') as $property) {
                 foreach ($property->all(self::SCHEMA_ORG_DOMAIN) as $domain) {
                     foreach ($typesAsString as $typesAsStringItem) {
-                        if (in_array($domain->getUri(), $typesAsStringItem, true)) {
+                        if (\in_array($domain->getUri(), $typesAsStringItem, true)) {
                             $map[$typesAsStringItem[0]][] = $property;
                         }
                     }
@@ -540,7 +533,7 @@ class TypesGenerator
      */
     private function isDatatype(string $type): bool
     {
-        return in_array($type, ['Boolean', 'DataType', 'Date', 'DateTime', 'Float', 'Integer', 'Number', 'Text', 'Time', 'URL'], true);
+        return \in_array($type, ['Boolean', 'DataType', 'Date', 'DateTime', 'Float', 'Integer', 'Number', 'Text', 'Time', 'URL'], true);
     }
 
     private function fieldToTypeHint(array $config, array $field, array $classes): ?string
@@ -583,12 +576,8 @@ class TypesGenerator
     /**
      * Updates generated $class with given field config.
      *
-     * @param array                  $config
-     * @param array                  $class
-     * @param \EasyRdf_Resource      $type
-     * @param string                 $typeName
-     * @param string                 $propertyName
-     * @param \EasyRdf_Resource|null $property
+     * @param string $typeName
+     * @param string $propertyName
      *
      * @return array $class
      */
@@ -628,7 +617,7 @@ class TypesGenerator
             }
         }
 
-        $numberOfRanges = count($ranges);
+        $numberOfRanges = \count($ranges);
         if (0 === $numberOfRanges) {
             $this->logger->error(sprintf('The property "%s" (type "%s") has an unknown type. Add its type to the config file.', $propertyName, $type->localName()));
         } else {
@@ -641,7 +630,7 @@ class TypesGenerator
                 $cardinality = $property ? $this->cardinalities[$propertyName] : CardinalitiesExtractor::CARDINALITY_1_1;
             }
 
-            $isArray = in_array($cardinality, [
+            $isArray = \in_array($cardinality, [
                 CardinalitiesExtractor::CARDINALITY_0_N,
                 CardinalitiesExtractor::CARDINALITY_1_N,
                 CardinalitiesExtractor::CARDINALITY_N_N,
@@ -650,7 +639,7 @@ class TypesGenerator
             if (isset($propertyConfig['nullable'])) {
                 $isNullable = (bool) $propertyConfig['nullable'];
             } else {
-                $isNullable = !in_array($cardinality, [
+                $isNullable = !\in_array($cardinality, [
                     CardinalitiesExtractor::CARDINALITY_1_1,
                     CardinalitiesExtractor::CARDINALITY_1_N,
                 ], true);
@@ -685,7 +674,7 @@ class TypesGenerator
             if ($isArray) {
                 $class['hasConstructor'] = true;
 
-                if ($config['doctrine']['useCollection'] && !in_array(ArrayCollection::class, $class['uses'], true)) {
+                if ($config['doctrine']['useCollection'] && !\in_array(ArrayCollection::class, $class['uses'], true)) {
                     $class['uses'][] = ArrayCollection::class;
                     $class['uses'][] = Collection::class;
                 }
@@ -824,7 +813,7 @@ class TypesGenerator
                     $classes[$field['range']]['interfaceName']
                 );
 
-                if (!in_array($use, $uses, true)) {
+                if (!\in_array($use, $uses, true)) {
                     $uses[] = $use;
                 }
             }
@@ -846,7 +835,7 @@ class TypesGenerator
     private function namespaceToDir(array $config, string $namespace): string
     {
         if (null !== ($prefix = $config['namespaces']['prefix'] ?? null) && 0 === strpos($namespace, $prefix)) {
-            $namespace = substr($namespace, strlen($prefix));
+            $namespace = substr($namespace, \strlen($prefix));
         }
 
         return sprintf('%s/%s/', $config['output'], strtr($namespace, '\\', '/'));

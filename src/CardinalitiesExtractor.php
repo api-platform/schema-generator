@@ -66,8 +66,6 @@ class CardinalitiesExtractor
      *
      * Based on [Geraint Luff work](https://github.com/geraintluff/schema-org-gen).
      *
-     * @param \EasyRdf_Resource $property
-     *
      * @return string The cardinality
      */
     private function extractForProperty(\EasyRdf_Resource $property): string

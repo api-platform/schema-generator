@@ -60,7 +60,7 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
 
             if (!$asserts && $this->config['validator']['assertType']) {
                 $phpType = $this->toPhpType($field);
-                if (in_array($phpType, ['boolean', 'float', 'integer', 'string'], true)) {
+                if (\in_array($phpType, ['boolean', 'float', 'integer', 'string'], true)) {
                     $asserts[] = sprintf('@Assert\Type(type="%s")', $phpType);
                 }
             }
@@ -104,7 +104,7 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
                 $enumNamespace = isset($enumClass['namespaces']['class']) && $enumClass['namespaces']['class'] ? $enumClass['namespaces']['class'] : $this->config['namespaces']['enum'];
                 $use = sprintf('%s\%s', $enumNamespace, $field['range']);
 
-                if (!in_array($use, $uses, true)) {
+                if (!\in_array($use, $uses, true)) {
                     $uses[] = $use;
                 }
             }
@@ -137,7 +137,7 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
             return [];
         }
 
-        if (1 === count($uniqueFields)) {
+        if (1 === \count($uniqueFields)) {
             $annotation[] = sprintf('@UniqueEntity("%s")', $uniqueFields[0]);
         } else {
             $annotation[] = sprintf('@UniqueEntity(fields={"%s"})', implode('","', $uniqueFields));

@@ -2,3 +2,4 @@
 /build/
 /vendor/
 /*.phar
+/.phpunit.result.cache

@@ -61,10 +61,6 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
 
     /**
      * Verifies that the operations config is valid.
-     *
-     * @param array $operations
-     *
-     * @return array
      */
     private function validateClassOperations(array $operations): array
     {
@@ -78,10 +74,6 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
 
     /**
      * Validates the individual method config for an item/collection operation annotation.
-     *
-     * @param array $methodConfig
-     *
-     * @return array
      */
     private function validateClassOperationMethodConfig(array $methodConfig): array
     {

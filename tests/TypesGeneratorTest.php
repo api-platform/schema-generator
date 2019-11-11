@@ -385,11 +385,6 @@ class TypesGeneratorTest extends TestCase
         ];
     }
 
-    /**
-     * @param array $class
-     *
-     * @return \Closure
-     */
     private function getContextMatcher(array $class): \Closure
     {
         $config = $this->getConfig();

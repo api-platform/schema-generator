@@ -2,7 +2,7 @@
 
 set -eox pipefail
 
-php $BOX_BIN compile;
+php "$BOX_BIN" compile;
 
 php schema.phar generate-types tmp/ tests/e2e/schema.yml;
 
