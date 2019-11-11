@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.2.0
+
+* Symfony 5 compatibility
+* Add support for custom Twig templates
+* Add support for operations in API Platform annotations
+* Add support for custom `columnPrefix`
+* Use superseding props over which they superseded
+* Fix implicit and explicit property inheritance
+* Use nullable property for custom fields
+* Add `inversedBy` and `mappedBy` Doctrine attributes
+* Fix annotation generation
+
 ## 2.1.0
 
 * Allow to use a PSR-4 namespace's prefix
