@@ -22,7 +22,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class DumpConfigurationTest extends TestCase
 {
-    public function testDumpConfiguration()
+    public function testDumpConfiguration(): void
     {
         $commandTester = new CommandTester(new DumpConfigurationCommand());
         $this->assertEquals(0, $commandTester->execute([]));

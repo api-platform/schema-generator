@@ -36,7 +36,7 @@ class GenerateTypesCommandTest extends TestCase
     /**
      * @dataProvider getArguments
      */
-    public function testCommand($output, $config)
+    public function testCommand($output, $config): void
     {
         $this->fs->mkdir($output);
 
@@ -44,7 +44,7 @@ class GenerateTypesCommandTest extends TestCase
         $this->assertEquals(0, $commandTester->execute(['output' => $output, 'config' => $config]));
     }
 
-    public function getArguments()
+    public function getArguments(): array
     {
         return [
             [__DIR__.'/../../build/blog/', __DIR__.'/../config/blog.yaml'],
@@ -55,7 +55,7 @@ class GenerateTypesCommandTest extends TestCase
         ];
     }
 
-    public function testDoctrineCollection()
+    public function testDoctrineCollection(): void
     {
         $outputDir = __DIR__.'/../../build/address-book';
         $config = __DIR__.'/../config/address-book.yaml';
@@ -78,7 +78,7 @@ PHP
         , $person);
     }
 
-    public function testFluentMutators()
+    public function testFluentMutators(): void
     {
         $outputDir = __DIR__.'/../../build/fluent-mutators';
         $config = __DIR__.'/../config/fluent-mutators.yaml';
@@ -115,7 +115,7 @@ PHP
             , $person);
     }
 
-    public function testDoNotGenerateAccessorMethods()
+    public function testDoNotGenerateAccessorMethods(): void
     {
         $outputDir = __DIR__.'/../../build/public-properties';
         $config = __DIR__.'/../config/public-properties.yaml';
@@ -132,7 +132,7 @@ PHP
         $this->assertNotContains('function remove', $person);
     }
 
-    public function testImplicitAndExplicitPropertyInheritance()
+    public function testImplicitAndExplicitPropertyInheritance(): void
     {
         $outputDir = __DIR__.'/../../build/inherited-properties';
         $config = __DIR__.'/../config/inherited-properties.yaml';
@@ -164,7 +164,7 @@ PHP
         $this->assertNotContains('function setName(', $webPage);
     }
 
-    public function testReadableWritable()
+    public function testReadableWritable(): void
     {
         $outputDir = __DIR__.'/../../build/readable-writable';
         $config = __DIR__.'/../config/readable-writable.yaml';
@@ -184,7 +184,7 @@ PHP
         $this->assertNotContains('function removeFriend(', $person);
     }
 
-    public function testGeneratedId()
+    public function testGeneratedId(): void
     {
         $outputDir = __DIR__.'/../../build/generated-id';
         $config = __DIR__.'/../config/generated-id.yaml';
@@ -219,7 +219,7 @@ PHP
         $this->assertNotContains('function setId(', $person);
     }
 
-    public function testNonGeneratedId()
+    public function testNonGeneratedId(): void
     {
         $outputDir = __DIR__.'/../../build/non-generated-id';
         $config = __DIR__.'/../config/non-generated-id.yaml';
@@ -253,7 +253,7 @@ PHP
         $this->assertContains('public function setId(string $id): void', $person);
     }
 
-    public function testGeneratedUuid()
+    public function testGeneratedUuid(): void
     {
         $outputDir = __DIR__.'/../../build/generated-uuid';
         $config = __DIR__.'/../config/generated-uuid.yaml';
@@ -289,7 +289,7 @@ PHP
         $this->assertNotContains('function setId(', $person);
     }
 
-    public function testNonGeneratedUuid()
+    public function testNonGeneratedUuid(): void
     {
         $outputDir = __DIR__.'/../../build/non-generated-uuid';
         $config = __DIR__.'/../config/non-generated-uuid.yaml';
@@ -324,7 +324,7 @@ PHP
         $this->assertContains('public function setId(string $id): void', $person);
     }
 
-    public function testDoNotGenerateId()
+    public function testDoNotGenerateId(): void
     {
         $outputDir = __DIR__.'/../../build/no-id';
         $config = __DIR__.'/../config/no-id.yaml';
@@ -341,7 +341,7 @@ PHP
         $this->assertNotContains('function setId', $person);
     }
 
-    public function testNamespacesPrefix()
+    public function testNamespacesPrefix(): void
     {
         $outputDir = __DIR__.'/../../build/namespaces-prefix';
         $config = __DIR__.'/../config/namespaces-prefix.yaml';
@@ -356,7 +356,7 @@ PHP
         $this->assertContains('namespace App\Entity;', $person);
     }
 
-    public function testNamespacesPrefixAutodetect()
+    public function testNamespacesPrefixAutodetect(): void
     {
         $outputDir = __DIR__.'/../../build/namespaces-prefix-autodetect/';
 
@@ -378,7 +378,7 @@ PHP
         }
     }
 
-    public function testGeneratedEnum()
+    public function testGeneratedEnum(): void
     {
         $outputDir = __DIR__.'/../../build/enum';
         $config = __DIR__.'/../config/enum.yaml';
@@ -401,7 +401,7 @@ PHP
         $this->assertNotContains('function setId(', $gender);
     }
 
-    public function testSupersededProperties()
+    public function testSupersededProperties(): void
     {
         $outputDir = __DIR__.'/../../build/superseded-properties';
         $config = __DIR__.'/../config/superseded-properties.yaml';
