@@ -133,7 +133,7 @@ final class GenerateTypesCommand extends Command
         $graphs = [];
         foreach ($processedConfiguration['rdfa'] as $rdfa) {
             $graph = new \EasyRdf_Graph();
-            if ('http://' === substr($rdfa['uri'], 0, 7) || 'https://' === substr($rdfa['uri'], 0, 8)) {
+            if (0 === strpos($rdfa['uri'], 'http://') || 0 === strpos($rdfa['uri'], 'https://')) {
                 $graph->load($rdfa['uri'], $rdfa['format']);
             } else {
                 $graph->parseFile($rdfa['uri'], $rdfa['format']);

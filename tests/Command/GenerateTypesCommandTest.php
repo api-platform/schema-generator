@@ -66,10 +66,10 @@ class GenerateTypesCommandTest extends TestCase
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/AddressBook/Entity/Person.php");
-        $this->assertContains('use Doctrine\Common\Collections\ArrayCollection;', $person);
-        $this->assertContains('use Doctrine\Common\Collections\Collection;', $person);
+        $this->assertStringContainsString('use Doctrine\Common\Collections\ArrayCollection;', $person);
+        $this->assertStringContainsString('use Doctrine\Common\Collections\Collection;', $person);
 
-        $this->assertContains(<<<'PHP'
+        $this->assertStringContainsString(<<<'PHP'
     public function getFriends(): Collection
     {
         return $this->friends;
@@ -87,7 +87,7 @@ PHP
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
-        $this->assertContains(<<<'PHP'
+        $this->assertStringContainsString(<<<'PHP'
     public function setUrl(?string $url): self
     {
         $this->url = $url;
@@ -97,7 +97,7 @@ PHP
 PHP
         , $person);
 
-        $this->assertContains(<<<'PHP'
+        $this->assertStringContainsString(<<<'PHP'
     public function addFriend(Person $friend): self
     {
         $this->friends[] = $friend;
@@ -126,10 +126,10 @@ PHP
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
-        $this->assertNotContains('function get', $person);
-        $this->assertNotContains('function set', $person);
-        $this->assertNotContains('function add', $person);
-        $this->assertNotContains('function remove', $person);
+        $this->assertStringNotContainsString('function get', $person);
+        $this->assertStringNotContainsString('function set', $person);
+        $this->assertStringNotContainsString('function add', $person);
+        $this->assertStringNotContainsString('function remove', $person);
     }
 
     public function testImplicitAndExplicitPropertyInheritance(): void
@@ -143,25 +143,25 @@ PHP
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $creativeWork = file_get_contents("$outputDir/AppBundle/Entity/CreativeWork.php");
-        $this->assertContains('class CreativeWork extends Thing', $creativeWork);
-        $this->assertContains('private $copyrightYear;', $creativeWork);
-        $this->assertContains('function getCopyrightYear(', $creativeWork);
-        $this->assertContains('function setCopyrightYear(', $creativeWork);
-        $this->assertNotContains('private $name;', $creativeWork);
-        $this->assertNotContains('function getName(', $creativeWork);
-        $this->assertNotContains('function setName(', $creativeWork);
+        $this->assertStringContainsString('class CreativeWork extends Thing', $creativeWork);
+        $this->assertStringContainsString('private $copyrightYear;', $creativeWork);
+        $this->assertStringContainsString('function getCopyrightYear(', $creativeWork);
+        $this->assertStringContainsString('function setCopyrightYear(', $creativeWork);
+        $this->assertStringNotContainsString('private $name;', $creativeWork);
+        $this->assertStringNotContainsString('function getName(', $creativeWork);
+        $this->assertStringNotContainsString('function setName(', $creativeWork);
 
         $webPage = file_get_contents("$outputDir/AppBundle/Entity/WebPage.php");
-        $this->assertContains('class WebPage extends CreativeWork', $webPage);
-        $this->assertContains('private $mainEntity;', $webPage);
-        $this->assertContains('function getMainEntity(', $webPage);
-        $this->assertContains('function setMainEntity(', $webPage);
-        $this->assertNotContains('private $copyrightYear;', $webPage);
-        $this->assertNotContains('function getCopyrightYear(', $webPage);
-        $this->assertNotContains('function setCopyrightYear(', $webPage);
-        $this->assertNotContains('private $name;', $webPage);
-        $this->assertNotContains('function getName(', $webPage);
-        $this->assertNotContains('function setName(', $webPage);
+        $this->assertStringContainsString('class WebPage extends CreativeWork', $webPage);
+        $this->assertStringContainsString('private $mainEntity;', $webPage);
+        $this->assertStringContainsString('function getMainEntity(', $webPage);
+        $this->assertStringContainsString('function setMainEntity(', $webPage);
+        $this->assertStringNotContainsString('private $copyrightYear;', $webPage);
+        $this->assertStringNotContainsString('function getCopyrightYear(', $webPage);
+        $this->assertStringNotContainsString('function setCopyrightYear(', $webPage);
+        $this->assertStringNotContainsString('private $name;', $webPage);
+        $this->assertStringNotContainsString('function getName(', $webPage);
+        $this->assertStringNotContainsString('function setName(', $webPage);
     }
 
     public function testReadableWritable(): void
@@ -175,13 +175,13 @@ PHP
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
-        $this->assertContains('public function getId(', $person);
-        $this->assertNotContains('function setId(', $person);
-        $this->assertContains('public function getName(', $person);
-        $this->assertNotContains('function setName(', $person);
-        $this->assertContains('public function getFriends(', $person);
-        $this->assertNotContains('function addFriend(', $person);
-        $this->assertNotContains('function removeFriend(', $person);
+        $this->assertStringContainsString('public function getId(', $person);
+        $this->assertStringNotContainsString('function setId(', $person);
+        $this->assertStringContainsString('public function getName(', $person);
+        $this->assertStringNotContainsString('function setName(', $person);
+        $this->assertStringContainsString('public function getFriends(', $person);
+        $this->assertStringNotContainsString('function addFriend(', $person);
+        $this->assertStringNotContainsString('function removeFriend(', $person);
     }
 
     public function testGeneratedId(): void
@@ -196,7 +196,7 @@ PHP
 
         $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
 
-        $this->assertContains(<<<'PHP'
+        $this->assertStringContainsString(<<<'PHP'
     /**
      * @var int|null
      *
@@ -208,7 +208,7 @@ PHP
 PHP
             , $person);
 
-        $this->assertContains(<<<'PHP'
+        $this->assertStringContainsString(<<<'PHP'
     public function getId(): ?int
     {
         return $this->id;
@@ -216,7 +216,7 @@ PHP
 PHP
         , $person);
 
-        $this->assertNotContains('function setId(', $person);
+        $this->assertStringNotContainsString('function setId(', $person);
     }
 
     public function testNonGeneratedId(): void
@@ -231,7 +231,7 @@ PHP
 
         $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
 
-        $this->assertContains(<<<'PHP'
+        $this->assertStringContainsString(<<<'PHP'
     /**
      * @var string
      *
@@ -242,7 +242,7 @@ PHP
 PHP
             , $person);
 
-        $this->assertContains(<<<'PHP'
+        $this->assertStringContainsString(<<<'PHP'
     public function getId(): string
     {
         return $this->id;
@@ -250,7 +250,7 @@ PHP
 PHP
             , $person);
 
-        $this->assertContains('public function setId(string $id): void', $person);
+        $this->assertStringContainsString('public function setId(string $id): void', $person);
     }
 
     public function testGeneratedUuid(): void
@@ -265,7 +265,7 @@ PHP
 
         $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
 
-        $this->assertContains(<<<'PHP'
+        $this->assertStringContainsString(<<<'PHP'
     /**
      * @var string|null
      *
@@ -278,7 +278,7 @@ PHP
 PHP
             , $person);
 
-        $this->assertContains(<<<'PHP'
+        $this->assertStringContainsString(<<<'PHP'
     public function getId(): ?string
     {
         return $this->id;
@@ -286,7 +286,7 @@ PHP
 PHP
             , $person);
 
-        $this->assertNotContains('function setId(', $person);
+        $this->assertStringNotContainsString('function setId(', $person);
     }
 
     public function testNonGeneratedUuid(): void
@@ -301,7 +301,7 @@ PHP
 
         $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
 
-        $this->assertContains(<<<'PHP'
+        $this->assertStringContainsString(<<<'PHP'
     /**
      * @var string
      *
@@ -313,7 +313,7 @@ PHP
 PHP
             , $person);
 
-        $this->assertContains(<<<'PHP'
+        $this->assertStringContainsString(<<<'PHP'
     public function getId(): string
     {
         return $this->id;
@@ -321,7 +321,7 @@ PHP
 PHP
             , $person);
 
-        $this->assertContains('public function setId(string $id): void', $person);
+        $this->assertStringContainsString('public function setId(string $id): void', $person);
     }
 
     public function testDoNotGenerateId(): void
@@ -336,9 +336,9 @@ PHP
 
         $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
 
-        $this->assertNotContains('$id', $person);
-        $this->assertNotContains('function getId', $person);
-        $this->assertNotContains('function setId', $person);
+        $this->assertStringNotContainsString('$id', $person);
+        $this->assertStringNotContainsString('function getId', $person);
+        $this->assertStringNotContainsString('function setId', $person);
     }
 
     public function testNamespacesPrefix(): void
@@ -353,7 +353,7 @@ PHP
 
         $person = file_get_contents("$outputDir/Entity/Person.php");
 
-        $this->assertContains('namespace App\Entity;', $person);
+        $this->assertStringContainsString('namespace App\Entity;', $person);
     }
 
     public function testNamespacesPrefixAutodetect(): void
@@ -372,7 +372,7 @@ PHP
 
             $person = file_get_contents("$outputDir/src/Entity/Person.php");
 
-            $this->assertContains('namespace App\Entity;', $person);
+            $this->assertStringContainsString('namespace App\Entity;', $person);
         } finally {
             chdir($currentDir);
         }
@@ -390,7 +390,7 @@ PHP
 
         $gender = file_get_contents("$outputDir/AppBundle/Enum/GenderType.php");
 
-        $this->assertContains(<<<'PHP'
+        $this->assertStringContainsString(<<<'PHP'
     /**
      * @var string the female gender
      */
@@ -398,7 +398,7 @@ PHP
 PHP
             , $gender);
 
-        $this->assertNotContains('function setId(', $gender);
+        $this->assertStringNotContainsString('function setId(', $gender);
     }
 
     public function testSupersededProperties(): void
@@ -413,7 +413,7 @@ PHP
 
         $creativeWork = file_get_contents("$outputDir/AppBundle/Entity/CreativeWork.php");
 
-        $this->assertContains(<<<'PHP'
+        $this->assertStringContainsString(<<<'PHP'
     /**
      * @var string|null an award won by or for this item
      *
@@ -424,7 +424,7 @@ PHP
 PHP
             , $creativeWork);
 
-        $this->assertNotContains(<<<'PHP'
+        $this->assertStringNotContainsString(<<<'PHP'
     /**
      * @var string|null awards won by or for this item
      *
