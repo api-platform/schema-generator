@@ -6,6 +6,10 @@
          bootstrap="tests/bootstrap.php"
          backupGlobals="false"
          colors="true">
+    <php>
+        <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
+    </php>
+
     <testsuites>
         <testsuite name="Project Test Suite">
             <directory>tests</directory>

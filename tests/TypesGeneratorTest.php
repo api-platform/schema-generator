@@ -31,9 +31,9 @@ class TypesGeneratorTest extends TestCase
     {
         $twigProphecy = $this->prophesize(Environment::class);
         foreach ($this->getClasses() as $class) {
-            $twigProphecy->render('class.php.twig', Argument::that($this->getContextMatcher($class)))->willReturn()->shouldBeCalled();
+            $twigProphecy->render('class.php.twig', Argument::that($this->getContextMatcher($class)))->willReturn('')->shouldBeCalled();
         }
-        $twigProphecy->render('class.php.twig', Argument::type('array'))->willReturn();
+        $twigProphecy->render('class.php.twig', Argument::type('array'))->willReturn('');
         $twig = $twigProphecy->reveal();
 
         $cardinalitiesExtractorProphecy = $this->prophesize(CardinalitiesExtractor::class);
