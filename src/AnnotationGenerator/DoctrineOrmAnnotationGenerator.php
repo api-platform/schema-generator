@@ -142,7 +142,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
             $annotations[] = $annotation;
         } elseif ($field['isEmbedded']) {
             $columnPrefix = ', columnPrefix=';
-            if (is_bool($field['columnPrefix'])) {
+            if (\is_bool($field['columnPrefix'])) {
                 $columnPrefix .= $field['columnPrefix'] ? 'true' : 'false';
             } else {
                 $columnPrefix .= sprintf('"%s"', $field['columnPrefix']);
