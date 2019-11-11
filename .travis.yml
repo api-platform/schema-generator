@@ -17,7 +17,6 @@ before_install:
   - phpenv config-rm xdebug.ini || echo "xdebug not available"
   - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - export PATH="$PATH:$HOME/.composer/vendor/bin"
-  - wget -O phpunit.phar https://phar.phpunit.de/phpunit-7.5.phar
   - if [[ $coverage = 1 ]]; then mkdir -p build/logs; fi
   - if [[ $coverage = 1 ]]; then wget https://github.com/satooshi/php-coveralls/releases/download/v2.1.0/php-coveralls.phar; fi
   - if [[ $lint = 1 ]]; then wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.16.0/php-cs-fixer.phar; fi
@@ -26,13 +25,13 @@ before_install:
   - export BOX_BIN=$(pwd)/box.phar
 
 install:
-  - if [[ $coverage = 1 ]]; then composer require --dev --no-update 'phpunit/php-code-coverage:^5.3'; fi
+  - if [[ $coverage = 1 ]]; then composer require --dev --no-update 'phpunit/php-code-coverage:^7.0'; fi
   - if [[ ! $deps && $TRAVIS_PHP_VERSION = "7.3" ]]; then composer install --prefer-dist --no-progress --no-suggest --ansi; fi
-  - if [[ $TRAVIS_PHP_VERSION != "7.3" ]]; then composer update --prefer-dist --no-progress --no-suggest --ansi; fi
+  - if [[ $TRAVIS_PHP_VERSION != "7.3" ]]; then composer update --prefer-stable --prefer-dist --no-progress --no-suggest --ansi; fi
   - if [[ $deps = 'low' ]]; then composer update --prefer-dist --no-progress --no-suggest --prefer-stable --prefer-lowest --ansi; fi
 
 script:
-  - if [[ $coverage = 1 ]]; then phpdbg -qrr phpunit.phar --coverage-clover build/logs/clover.xml; else php phpunit.phar; fi
+  - if [[ $coverage = 1 ]]; then phpdbg -qrr vendor/bin/simple-phpunit --coverage-clover build/logs/clover.xml; else vendor/bin/simple-phpunit; fi
   - if [[ $lint = 1 ]]; then php php-cs-fixer.phar fix --dry-run --diff --no-ansi; fi
   - if [[ $lint = 1 ]]; then phpstan analyse -l5 --ansi src; fi
   - if [[ ! $deps && $TRAVIS_PHP_VERSION = "7.3" ]]; then ./bin/compile; fi
