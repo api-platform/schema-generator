@@ -22,22 +22,22 @@
         "doctrine/inflector": "^1.0",
         "easyrdf/easyrdf": "^0.9",
         "ext-json": "*",
-        "friendsofphp/php-cs-fixer": "^2.11",
+        "friendsofphp/php-cs-fixer": "^2.15",
         "league/html-to-markdown": "^4.0",
         "psr/log": "^1.0",
         "symfony/config": "^3.3 || ^4.0",
-        "symfony/console": "^2.7 || ^3.0 || ^4.0",
-        "symfony/yaml": "^2.7 || ^3.0 || ^4.0",
-        "twig/twig": "^1.35 || ^2.0"
+        "symfony/console": "^2.7 || ^3.0 || ^4.0 || ^5.0",
+        "symfony/yaml": "^2.7 || ^3.0 || ^4.0 || ^5.0",
+        "twig/twig": "^1.35 || ^2.0 || ^3.0"
     },
     "require-dev": {
         "api-platform/core": "^2.0",
         "doctrine/orm": "^2.2",
         "myclabs/php-enum": "^1.0",
-        "symfony/doctrine-bridge": "^2.7 || ^3.0 || ^4.0",
-        "symfony/filesystem": "^2.7 || ^3.0 || ^4.0",
-        "symfony/serializer": "^2.7 || ^3.0 || ^4.0",
-        "symfony/validator": "^2.7 || ^3.0 || ^4.0"
+        "symfony/doctrine-bridge": "^2.7 || ^3.0 || ^4.0 || ^5.0",
+        "symfony/filesystem": "^2.7 || ^3.0 || ^4.0 || ^5.0",
+        "symfony/serializer": "^2.7 || ^3.0 || ^4.0 || ^5.0",
+        "symfony/validator": "^2.7 || ^3.0 || ^4.0 || ^5.0"
     },
     "replace": {
         "symfony/polyfill-php70": "*"
