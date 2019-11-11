@@ -10,11 +10,11 @@ If you happen to find a bug, we kindly request you to report it. However, before
 
   * Check the [project documentation available online](https://api-platform.com/docs/)
 
-Then, if it appears that it's a real bug, you may report it using Github by following these 3 points:
+Then, if it appears that it's a real bug, you may report it using GitHub by following these 3 points:
 
   * Check if the bug is not already reported!
   * A clear title to resume the issue
-  * A description of the workflow needed to reproduce the bug,
+  * A description of the workflow needed to reproduce the bug
 
 > _NOTE:_ Don’t hesitate giving as much information as you can (OS, PHP version extensions...)
 
