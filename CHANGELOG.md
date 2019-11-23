@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.1
+
+* Allow `symfony/config` 5.0
+
 ## 2.2.0
 
 * Symfony 5 compatibility
