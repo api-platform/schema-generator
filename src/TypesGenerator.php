@@ -653,7 +653,7 @@ class TypesGenerator
             }
 
             $class['fields'][$propertyName] = [
-                'name' => $isArray ? Inflector::pluralize($propertyName) : Inflector::singularize($propertyName),
+                'name' => $this->getFieldName($propertyName, $isArray),
                 'resource' => $property,
                 'range' => $ranges[0],
                 'cardinality' => $cardinality,
@@ -872,5 +872,19 @@ class TypesGenerator
             new NullCacheManager()
         );
         $runner->fix();
+    }
+
+    private function getFieldName(string $propertyName, bool $isArray): string
+    {
+        $snakeProperty = preg_replace('/([A-Z])/', '_$1', $propertyName);
+        $exploded = explode('_', $snakeProperty);
+
+        if (2 < \strlen($word = $exploded[\count($exploded) - 1])) {
+            $exploded[\count($exploded) - 1] = $isArray ? Inflector::pluralize($word) : Inflector::singularize($word);
+
+            return implode('', $exploded);
+        }
+
+        return $propertyName;
     }
 }

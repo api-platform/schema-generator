@@ -175,6 +175,7 @@ PHP
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
+        $this->assertStringContainsString('private $sameAs;', $person);
         $this->assertStringContainsString('public function getId(', $person);
         $this->assertStringNotContainsString('function setId(', $person);
         $this->assertStringContainsString('public function getName(', $person);
@@ -182,6 +183,7 @@ PHP
         $this->assertStringContainsString('public function getFriends(', $person);
         $this->assertStringNotContainsString('function addFriend(', $person);
         $this->assertStringNotContainsString('function removeFriend(', $person);
+        $this->assertStringNotContainsString('function setSameAs(', $person);
     }
 
     public function testGeneratedId(): void
