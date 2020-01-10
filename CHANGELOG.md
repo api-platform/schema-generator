@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2.2
+
+* Update to Symfony 5
+* Fix an issue preventing to install the tool when using Symfony Flex
+* Fix a singularization issue with some words such as `sameAs`
+
 ## 2.2.1
 
 * Allow `symfony/config` 5.0
