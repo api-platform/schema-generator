@@ -15,6 +15,7 @@ namespace ApiPlatform\SchemaGenerator\Tests\Command;
 
 use ApiPlatform\SchemaGenerator\Command\GenerateTypesCommand;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -433,5 +434,18 @@ PHP
     protected $award;
 PHP
             , $creativeWork);
+    }
+
+    public function testGenerationWithoutConfigFileQuestion(): void
+    {
+        // No config file is given.
+        $application = new Application();
+        $application->add(new GenerateTypesCommand());
+
+        $command = $application->find('generate-types');
+        $commandTester = new CommandTester($command);
+        $commandTester->setInputs(['n']);
+        self::assertEquals(0, $commandTester->execute([]));
+        $this->assertRegExp('/The entire Schema\.org vocabulary will be built/', $commandTester->getDisplay());
     }
 }
