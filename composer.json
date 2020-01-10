@@ -40,10 +40,6 @@
         "symfony/serializer": "^2.7 || ^3.0 || ^4.0 || ^5.0",
         "symfony/validator": "^2.7 || ^3.0 || ^4.0 || ^5.0"
     },
-    "replace": {
-        "symfony/polyfill-php70": "*",
-        "symfony/polyfill-php71": "*"
-    },
     "bin": ["bin/schema"],
     "minimum-stability": "dev"
 }
