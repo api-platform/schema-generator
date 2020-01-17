@@ -24,6 +24,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Yaml\Parser;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
@@ -119,6 +120,13 @@ final class GenerateTypesCommand extends Command
             $config = $parser->parse(file_get_contents(self::DEFAULT_CONFIG_FILE));
             unset($parser);
         } else {
+            $helper = $this->getHelper('question');
+            $question = new ConfirmationQuestion('Your project has no config file. The entire Schema.org vocabulary will be built.'.PHP_EOL.'Continue? [yN]', false);
+
+            if (!$helper->ask($input, $output, $question)) {
+                return 0;
+            }
+
             $config = [];
         }
 
