@@ -438,7 +438,7 @@ class TypesGenerator
             }
         }
 
-        if (!$interfaceMappings && $config['doctrine']['resolveTargetEntityConfigPath']) {
+        if (\count($interfaceMappings) > 0 && $config['doctrine']['resolveTargetEntityConfigPath']) {
             $file = $config['output'].'/'.$config['doctrine']['resolveTargetEntityConfigPath'];
             $dir = \dirname($file);
             if (!file_exists($dir)) {
