@@ -194,6 +194,8 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                                         ->end()
                                         ->scalarNode('mappedBy')->defaultNull()->info('The doctrine mapped by attribute')->example('partOfSeason')->end()
                                         ->scalarNode('inversedBy')->defaultNull()->info('The doctrine inversed by attribute')->example('episodes')->end()
+                                        ->scalarNode('onDelete')->defaultNull()->info('Action on parent entity delete')->example('SET NULL or CASCADE')->end()
+                                        ->scalarNode('cascade')->defaultNull()->info('Persistance strategy')->example('{"PERSIST","REMOVE"}')->end()
                                         ->booleanNode('readable')->defaultTrue()->info('Is the property readable?')->end()
                                         ->booleanNode('writable')->defaultTrue()->info('Is the property writable?')->end()
                                         ->booleanNode('nullable')->defaultTrue()->info('Is the property nullable?')->end()
