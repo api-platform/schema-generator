@@ -149,54 +149,58 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
             }
             $annotations[] = sprintf('@ORM\Embedded(class="%s"%s)', $this->getRelationName($field['range']), $columnPrefix);
         } else {
+            $cascade = ($field['cascade'] ?? null ? sprintf(', cascade=%s', $field['cascade']): null);
             switch ($field['cardinality']) {
                 case CardinalitiesExtractor::CARDINALITY_0_1:
-                    $annotations[] = sprintf('@ORM\OneToOne(targetEntity="%s")', $this->getRelationName($field['range']));
+                    $annotations[] = sprintf('@ORM\OneToOne(targetEntity="%s"%s)', $this->getRelationName($field['range'], $cascade));
                     break;
                 case CardinalitiesExtractor::CARDINALITY_1_1:
-                    $annotations[] = sprintf('@ORM\OneToOne(targetEntity="%s")', $this->getRelationName($field['range']));
+                    $annotations[] = sprintf('@ORM\OneToOne(targetEntity="%s"%s)', $this->getRelationName($field['range'], $cascade));
                     $annotations[] = '@ORM\JoinColumn(nullable=false)';
                     break;
                 case CardinalitiesExtractor::CARDINALITY_UNKNOWN:
                 case CardinalitiesExtractor::CARDINALITY_N_0:
                     if ($field['inversedBy'] ?? false) {
-                        $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s", inversedBy="%s")', $this->getRelationName($field['range']), $field['inversedBy']);
+                        $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s", inversedBy="%s"%s)', $this->getRelationName($field['range']), $field['inversedBy'], $cascade);
                     } else {
-                        $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $this->getRelationName($field['range']));
+                        $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s"%s)', $this->getRelationName($field['range']), $cascade);
                     }
                     break;
                 case CardinalitiesExtractor::CARDINALITY_N_1:
                     if ($field['inversedBy'] ?? false) {
-                        $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s", inversedBy="%s")', $this->getRelationName($field['range']), $field['inversedBy']);
+                        $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s", inversedBy="%s"%s)', $this->getRelationName($field['range']), $field['inversedBy'], $cascade);
                     } else {
-                        $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $this->getRelationName($field['range']));
+                        $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s"%s)', $this->getRelationName($field['range']), $cascade);
                     }
                     $annotations[] = '@ORM\JoinColumn(nullable=false)';
                     break;
                 case CardinalitiesExtractor::CARDINALITY_0_N:
                     if ($field['mappedBy'] ?? false) {
-                        $annotations[] = sprintf('@ORM\OneToMany(targetEntity="%s", mappedBy="%s")', $this->getRelationName($field['range']), $field['mappedBy']);
+                        $annotations[] = sprintf('@ORM\OneToMany(targetEntity="%s", mappedBy="%s"%s)', $this->getRelationName($field['range']), $field['mappedBy'], $cascade);
                     } else {
-                        $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s")', $this->getRelationName($field['range']));
+                        $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s"%s)', $this->getRelationName($field['range']), $cascade);
                     }
                     $name = $field['relationTableName'] ? sprintf('name="%s", ', $field['relationTableName']) : '';
                     $annotations[] = '@ORM\JoinTable('.$name.'inverseJoinColumns={@ORM\JoinColumn(unique=true)})';
                     break;
                 case CardinalitiesExtractor::CARDINALITY_1_N:
                     if ($field['mappedBy'] ?? false) {
-                        $annotations[] = sprintf('@ORM\OneToMany(targetEntity="%s", mappedBy="%s")', $this->getRelationName($field['range']), $field['mappedBy']);
+                        $annotations[] = sprintf('@ORM\OneToMany(targetEntity="%s", mappedBy="%s"%s)', $this->getRelationName($field['range']), $field['mappedBy'], $cascade);
                     } else {
-                        $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s")', $this->getRelationName($field['range']));
+                        $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s"%s)', $this->getRelationName($field['range']), $cascade);
                     }
                     $name = $field['relationTableName'] ? sprintf('name="%s", ', $field['relationTableName']) : '';
                     $annotations[] = '@ORM\JoinTable('.$name.'inverseJoinColumns={@ORM\JoinColumn(nullable=false, unique=true)})';
                     break;
                 case CardinalitiesExtractor::CARDINALITY_N_N:
-                    $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s")', $this->getRelationName($field['range']));
+                    $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s"%s)', $this->getRelationName($field['range']), $cascade);
                     if ($field['relationTableName']) {
                         $annotations[] = sprintf('@ORM\JoinTable(name="%s")', $field['relationTableName']);
                     }
                     break;
+            }
+            if ($field['onDelete'] ?? null) {
+                $annotations[] = sprintf('@ORM\OnDelete(cascade="%s")', $field['onDelete']);
             }
         }
 
