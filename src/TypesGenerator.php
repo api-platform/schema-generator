@@ -668,6 +668,8 @@ class TypesGenerator
                 'columnPrefix' => $columnPrefix,
                 'mappedBy' => $propertyConfig['mappedBy'] ?? null,
                 'inversedBy' => $propertyConfig['inversedBy'] ?? null,
+                'cascade' => $propertyConfig['cascade'] ?? null,
+                'onDelete' => $propertyConfig['cascade'] ?? null,
                 'isId' => false,
             ];
 
