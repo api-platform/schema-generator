@@ -94,6 +94,15 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                 case 'Text':
                 case 'URL':
                     $type = 'text';
+                    break;               
+                case 'Array':
+                    $type = 'array';
+                    break;
+                case 'SimpleArray':
+                    $type = 'simple_array';
+                    break;
+                case 'JsonArray':
+                    $type = 'json_array';
                     break;
             }
         }
