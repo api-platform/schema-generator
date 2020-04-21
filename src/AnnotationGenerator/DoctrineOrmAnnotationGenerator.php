@@ -102,7 +102,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                     $type = 'simple_array';
                     break;
                 case 'JsonArray':
-                    $type = 'json_array';
+                    $type = 'json';
                     break;
             }
         }
