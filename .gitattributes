@@ -1,0 +1,11 @@
+data export-ignore
+tests export-ignore
+.editorconfig export-ignore
+.php_cs.dist export-ignore
+.travis.yml export-ignore
+box.json.dist export-ignore
+composer.lock export-ignore
+CONTRIBUTING.md export-ignore
+phpstan.neon export-ignore
+phpunit.xml.dist export-ignore
+scoper.inc.php export-ignore
