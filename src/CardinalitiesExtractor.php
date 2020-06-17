@@ -35,9 +35,8 @@ class CardinalitiesExtractor
     /**
      * @var Graph[]
      */
-    private $graphs;
-
-    private $goodRelationsBridge;
+    private array $graphs;
+    private GoodRelationsBridge $goodRelationsBridge;
 
     /**
      * @param Graph[] $graphs

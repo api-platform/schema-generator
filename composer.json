@@ -28,6 +28,7 @@
         "symfony/config": "^5.1",
         "symfony/console": "^5.1",
         "symfony/yaml": "^5.1",
+        "symfony/filesystem": "^5.1",
         "twig/twig": " ^3.0"
     },
     "require-dev": {
@@ -35,7 +36,6 @@
         "doctrine/orm": "^2.7",
         "myclabs/php-enum": "^1.7",
         "symfony/doctrine-bridge": "^5.1",
-        "symfony/filesystem": "^5.1",
         "symfony/phpunit-bridge": "^5.1",
         "symfony/serializer": "^5.1",
         "symfony/validator": "^5.1"

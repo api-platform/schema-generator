@@ -26,6 +26,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Parser;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
@@ -41,8 +42,8 @@ final class GenerateTypesCommand extends Command
 {
     private const DEFAULT_CONFIG_FILE = 'schema.yaml';
 
-    private $namespacePrefix;
-    private $defaultOutput;
+    private string $namespacePrefix;
+    private string $defaultOutput;
 
     /**
      * {@inheritdoc}
@@ -50,7 +51,7 @@ final class GenerateTypesCommand extends Command
     protected function configure(): void
     {
         if (file_exists('composer.json') && is_file('composer.json') && is_readable('composer.json')) {
-            $composer = json_decode(file_get_contents('composer.json'), true);
+            $composer = json_decode(file_get_contents('composer.json'), true, 512, JSON_THROW_ON_ERROR);
             foreach ($composer['autoload']['psr-4'] ?? [] as $prefix => $output) {
                 if ('' === $prefix) {
                     continue;
@@ -94,9 +95,8 @@ final class GenerateTypesCommand extends Command
             }
 
             $outputDir = $dir;
-        } elseif (!@mkdir($outputDir, 0777, true)) {
-            throw new \InvalidArgumentException(sprintf('Cannot create the "%s" directory. Check that the parent directory is writable.', $outputDir));
         } else {
+            (new Filesystem())->mkdir($outputDir);
             $outputDir = realpath($outputDir);
         }
 

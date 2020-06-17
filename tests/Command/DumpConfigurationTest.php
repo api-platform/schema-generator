@@ -41,7 +41,7 @@ config:
             uri:                  'https://schema.org/version/latest/schema.rdf' # Example: https://schema.org/version/latest/all-layers.rdf
 
             # RDF vocabulary format
-            format:               guess # Example: rdfxml
+            format:               null # Example: rdfxml
 
     # OWL relation files to use
     relations:            # Example: https://purl.org/goodrelations/v1.owl
