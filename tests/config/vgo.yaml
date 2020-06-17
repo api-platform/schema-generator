@@ -1,4 +1,7 @@
-rdfa: [tests/data/vgo.rdf, data/schema.rdfa]
+vocabs:
+    - tests/data/vgo.rdf
+    - uri: data/schema.rdfa
+      format: rdfa
 
 annotationGenerators:
   - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator

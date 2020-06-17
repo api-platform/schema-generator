@@ -3,3 +3,4 @@
 /vendor/
 /*.phar
 /.phpunit.result.cache
+/tmp

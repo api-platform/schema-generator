@@ -11,19 +11,16 @@ types:
             familyName: ~
             givenName: ~
             additionalName: ~
-            gender: ~
             address: ~
             birthDate: ~
             telephone: ~
             email: ~
             url: ~
-            jobTitle: ~
     PostalAddress:
         # Disable the generation of the class hierarchy for this type
         parent: false
         properties:
-            # Force the type of the addressCountry property to text
-            addressCountry: { range: "Text" }
+            addressCountry: { range: Text }
             addressLocality: ~
             addressRegion: ~
             postOfficeBoxNumber: ~
