@@ -24,35 +24,15 @@ use Psr\Log\LoggerInterface;
  */
 abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterface
 {
-    /**
-     * @var Inflector
-     */
-    protected $inflector;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
+    protected Inflector $inflector;
+    protected LoggerInterface $logger;
     /**
      * @var Graph[]
      */
-    protected $graphs;
-
-    /**
-     * @var array
-     */
-    protected $cardinalities;
-
-    /**
-     * @var array
-     */
-    protected $config;
-
-    /**
-     * @var array
-     */
-    protected $classes;
+    protected array $graphs;
+    protected array $cardinalities;
+    protected array $config;
+    protected array $classes;
 
     /**
      * {@inheritdoc}

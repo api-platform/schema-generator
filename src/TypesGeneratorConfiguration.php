@@ -39,7 +39,7 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
     public const GOOD_RELATIONS_URI = __DIR__.'/../data/v1.owl';
     public const SCHEMA_ORG_NAMESPACE = 'http://schema.org/';
 
-    private $defaultPrefix;
+    private ?string $defaultPrefix;
 
     public function __construct(?string $defaultPrefix = null)
     {
@@ -75,7 +75,7 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->arrayPrototype()
                         ->children()
                             ->scalarNode('uri')->defaultValue(self::SCHEMA_ORG_URI)->info('RDF vocabulary to use')->example('https://schema.org/version/latest/all-layers.rdf')->end()
-                            ->scalarNode('format')->defaultValue('guess')->info('RDF vocabulary format')->example('rdfxml')->end()
+                            ->scalarNode('format')->defaultNull()->info('RDF vocabulary format')->example('rdfxml')->end()
                         ->end()
                     ->end()
                 ->end()

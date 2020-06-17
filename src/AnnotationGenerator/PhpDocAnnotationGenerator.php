@@ -26,10 +26,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
 {
     private const INDENT = '   ';
 
-    /**
-     * @var HtmlConverter
-     */
-    private $htmlToMarkdown;
+    private HtmlConverter $htmlToMarkdown;
 
     /**
      * {@inheritdoc}

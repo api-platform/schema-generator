@@ -28,6 +28,7 @@ use PhpCsFixer\Linter\Linter;
 use PhpCsFixer\RuleSet;
 use PhpCsFixer\Runner\Runner;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Twig\Environment;
 
 /**
@@ -59,35 +60,16 @@ class TypesGenerator
      */
     private const SCHEMA_ORG_SUPERSEDED_BY = 'schema:supersededBy';
 
-    /**
-     * @var Environment
-     */
-    private $twig;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
+    private Environment $twig;
+    private LoggerInterface $logger;
     /**
      * @var Graph[]
      */
-    private $graphs;
-
-    /**
-     * @var GoodRelationsBridge
-     */
-    private $goodRelationsBridge;
-
-    /**
-     * @var array
-     */
-    private $cardinalities;
-
-    /**
-     * @var Inflector
-     */
-    private $inflector;
+    private array $graphs;
+    private GoodRelationsBridge $goodRelationsBridge;
+    private array $cardinalities;
+    private Inflector $inflector;
+    private Filesystem $filesystem;
 
     /**
      * @param Graph[] $graphs
@@ -98,13 +80,14 @@ class TypesGenerator
             throw new \InvalidArgumentException('At least one graph must be injected.');
         }
 
+        $this->inflector = $inflector;
         $this->twig = $twig;
         $this->logger = $logger;
         $this->graphs = $graphs;
         $this->goodRelationsBridge = $goodRelationsBridge;
+        $this->filesystem = new Filesystem();
 
         $this->cardinalities = $cardinalitiesExtractor->extract();
-        $this->inflector = $inflector;
     }
 
     /**
@@ -199,7 +182,7 @@ class TypesGenerator
                     $class['parent'] = $numberOfSupertypes ? $type->all('rdfs:subClassOf')[0]->localName() : false;
                 }
 
-                if (isset($class['parent']) && isset($config['types'][$class['parent']]['namespaces']['class'])) {
+                if (isset($class['parent'], $config['types'][$class['parent']]['namespaces']['class'])) {
                     $parentNamespace = $config['types'][$class['parent']]['namespaces']['class'];
 
                     if ($parentNamespace !== $class['namespace']) {
@@ -274,7 +257,7 @@ class TypesGenerator
             $class['abstract'] = $config['types'][$class['name']]['abstract'] ?? $class['hasChild'];
 
             // When including all properties, ignore properties already set on parent
-            if (isset($config['types'][$class['name']]['allProperties']) && $config['types'][$class['name']]['allProperties'] && isset($classes[$class['parent']])) {
+            if (isset($config['types'][$class['name']]['allProperties'], $classes[$class['parent']]) && $config['types'][$class['name']]['allProperties']) {
                 $type = $class['resource'];
 
                 foreach ($propertiesMap[$type->getUri()] as $property) {
@@ -401,10 +384,7 @@ class TypesGenerator
             }
 
             $classDir = $this->namespaceToDir($config, $class['namespace']);
-
-            if (!file_exists($classDir)) {
-                mkdir($classDir, 0777, true);
-            }
+            $this->filesystem->mkdir($classDir);
 
             $path = sprintf('%s%s.php', $classDir, $className);
             $generatedFiles[] = $path;
@@ -419,10 +399,7 @@ class TypesGenerator
 
             if (isset($class['interfaceNamespace'])) {
                 $interfaceDir = $this->namespaceToDir($config, $class['interfaceNamespace']);
-
-                if (!file_exists($interfaceDir)) {
-                    mkdir($interfaceDir, 0777, true);
-                }
+                $this->filesystem->mkdir($interfaceDir);
 
                 $path = sprintf('%s%s.php', $interfaceDir, $class['interfaceName']);
                 $generatedFiles[] = $path;
@@ -440,12 +417,10 @@ class TypesGenerator
             }
         }
 
-        if (\count($interfaceMappings) > 0 && $config['doctrine']['resolveTargetEntityConfigPath']) {
+        if ($config['doctrine']['resolveTargetEntityConfigPath'] && \count($interfaceMappings) > 0) {
             $file = $config['output'].'/'.$config['doctrine']['resolveTargetEntityConfigPath'];
             $dir = \dirname($file);
-            if (!file_exists($dir)) {
-                mkdir($dir, 0777, true);
-            }
+            $this->filesystem->mkdir($dir);
 
             file_put_contents(
                 $file,
@@ -697,10 +672,10 @@ class TypesGenerator
     {
         $annotations = [];
         foreach ($annotationGenerators as $generator) {
-            $annotations = array_merge($annotations, $generator->generateFieldAnnotations($className, $fieldName));
+            $annotations[] = $generator->generateFieldAnnotations($className, $fieldName);
         }
 
-        return $annotations;
+        return array_merge(...$annotations);
     }
 
     /**
@@ -710,10 +685,10 @@ class TypesGenerator
     {
         $annotations = [];
         foreach ($annotationGenerators as $generator) {
-            $annotations = array_merge($annotations, $generator->generateConstantAnnotations($className, $constantName));
+            $annotations[] = $generator->generateConstantAnnotations($className, $constantName);
         }
 
-        return $annotations;
+        return array_merge(...$annotations);
     }
 
     /**
@@ -723,10 +698,10 @@ class TypesGenerator
     {
         $annotations = [];
         foreach ($annotationGenerators as $generator) {
-            $annotations = array_merge($annotations, $generator->generateClassAnnotations($className));
+            $annotations[] = $generator->generateClassAnnotations($className);
         }
 
-        return $annotations;
+        return array_merge(...$annotations);
     }
 
     /**
@@ -736,10 +711,10 @@ class TypesGenerator
     {
         $annotations = [];
         foreach ($annotationGenerators as $generator) {
-            $annotations = array_merge($annotations, $generator->generateInterfaceAnnotations($className));
+            $annotations[] = $generator->generateInterfaceAnnotations($className);
         }
 
-        return $annotations;
+        return array_merge(...$annotations);
     }
 
     /**
@@ -749,10 +724,10 @@ class TypesGenerator
     {
         $annotations = [];
         foreach ($annotationGenerators as $generator) {
-            $annotations = array_merge($annotations, $generator->generateGetterAnnotations($className, $fieldName));
+            $annotations[] = $generator->generateGetterAnnotations($className, $fieldName);
         }
 
-        return $annotations;
+        return array_merge(...$annotations);
     }
 
     /**
@@ -762,10 +737,10 @@ class TypesGenerator
     {
         $annotations = [];
         foreach ($annotationGenerators as $generator) {
-            $annotations = array_merge($annotations, $generator->generateAdderAnnotations($className, $fieldName));
+            $annotations[] = $generator->generateAdderAnnotations($className, $fieldName);
         }
 
-        return $annotations;
+        return array_merge(...$annotations);
     }
 
     /**
@@ -775,10 +750,10 @@ class TypesGenerator
     {
         $annotations = [];
         foreach ($annotationGenerators as $generator) {
-            $annotations = array_merge($annotations, $generator->generateRemoverAnnotations($className, $fieldName));
+            $annotations[] = $generator->generateRemoverAnnotations($className, $fieldName);
         }
 
-        return $annotations;
+        return array_merge(...$annotations);
     }
 
     /**
@@ -788,10 +763,10 @@ class TypesGenerator
     {
         $annotations = [];
         foreach ($annotationGenerators as $generator) {
-            $annotations = array_merge($annotations, $generator->generateSetterAnnotations($className, $fieldName));
+            $annotations[] = $generator->generateSetterAnnotations($className, $fieldName);
         }
 
-        return $annotations;
+        return array_merge(...$annotations);
     }
 
     /**
@@ -825,9 +800,12 @@ class TypesGenerator
             }
         }
 
+        $newUses = [];
         foreach ($annotationGenerators as $generator) {
-            $uses = array_merge($uses, $generator->generateUses($className));
+            $newUses[] = $generator->generateUses($className);
         }
+
+        $uses = array_merge($uses, ...$newUses);
 
         // Order alphabetically
         sort($uses);
@@ -844,7 +822,7 @@ class TypesGenerator
             $namespace = substr($namespace, \strlen($prefix));
         }
 
-        return sprintf('%s/%s/', $config['output'], strtr($namespace, '\\', '/'));
+        return sprintf('%s/%s/', $config['output'], str_replace('\\', '/', $namespace));
     }
 
     /**

@@ -26,9 +26,9 @@ class GoodRelationsBridge
     /**
      * @var \SimpleXMLElement[]
      */
-    private $relations;
+    private array $relations;
 
-    private $objectPropertiesTable = [
+    private array $objectPropertiesTable = [
         'priceSpecification' => 'hasPriceSpecification',
         'businessFunction' => 'hasBusinessFunction',
         'eligibleCustomerType' => 'eligibleCustomerTypes',
@@ -46,7 +46,7 @@ class GoodRelationsBridge
         'acceptedPaymentMethod' => 'acceptedPaymentMethods',
     ];
 
-    private $datatypePropertiesTable = [
+    private array $datatypePropertiesTable = [
         'minPrice' => 'hasMinCurrencyValue',
         'unitCode' => 'hasUnitOfMeasurement',
         'isicV4' => 'hasISICv4',
