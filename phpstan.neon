@@ -1,7 +1,8 @@
 parameters:
+    level: 5
+    paths:
+        - src
     inferPrivatePropertyTypeFromConstructor: true
     ignoreErrors:
-    # BC layer
-    - '#Call to function method_exists\(\).*getRootNode. will always evaluate to false\.#'
-    - '#Class Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder constructor invoked with 0 parameters, 1-3 required\.#'
-    - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder::root\(\)\.#'
+    # False positive
+    - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\)\.#'
