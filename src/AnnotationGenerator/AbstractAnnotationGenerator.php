@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
 use Doctrine\Inflector\Inflector;
+use EasyRdf\Graph;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -34,7 +35,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     protected $logger;
 
     /**
-     * @var \EasyRdf_Graph[]
+     * @var Graph[]
      */
     protected $graphs;
 

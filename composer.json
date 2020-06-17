@@ -21,7 +21,7 @@
         "php": ">=7.4",
         "ext-json": "*",
         "doctrine/inflector": "^1.4.3 || ^2.0",
-        "easyrdf/easyrdf": "^0.9",
+        "easyrdf/easyrdf": "dev-master",
         "friendsofphp/php-cs-fixer": "^2.15",
         "league/html-to-markdown": "^4.9",
         "psr/log": "^1.0",
@@ -32,7 +32,7 @@
     },
     "require-dev": {
         "api-platform/core": "^2.6",
-        "doctrine/orm": "^2.8",
+        "doctrine/orm": "^2.7",
         "myclabs/php-enum": "^1.7",
         "symfony/doctrine-bridge": "^5.1",
         "symfony/filesystem": "^5.1",

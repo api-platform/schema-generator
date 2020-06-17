@@ -31,17 +31,17 @@ class DumpConfigurationTest extends TestCase
                 <<<'YAML'
 config:
 
-    # RDFa files
-    rdfa:
+    # RDF vocabularies
+    vocabs:
 
         # Prototype
         -
 
-            # RDFa URI to use
-            uri:                  %s # Example: https://schema.org/docs/schema_org_rdfa.html
+            # RDF vocabulary to use
+            uri:                  'https://schema.org/version/latest/schema.rdf' # Example: https://schema.org/version/latest/all-layers.rdf
 
-            # RDFa URI data format
-            format:               null # Example: rdfxml
+            # RDF vocabulary format
+            format:               guess # Example: rdfxml
 
     # OWL relation files to use
     relations:            # Example: https://purl.org/goodrelations/v1.owl
@@ -211,7 +211,6 @@ config:
 
 YAML
                 ,
-                str_replace('generator/data', 'generator/src/../data', realpath(__DIR__.'/../../data/schema.rdfa')),
                 str_replace('generator/data', 'generator/src/../data', realpath(__DIR__.'/../../data/v1.owl'))
             ),
             $commandTester->getDisplay()

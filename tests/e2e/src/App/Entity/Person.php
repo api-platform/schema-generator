@@ -53,14 +53,6 @@ class Person
     private $additionalName;
 
     /**
-     * @var string|null Gender of the person. While http://schema.org/Male and http://schema.org/Female may be used, text strings are also acceptable for people who do not identify as a binary gender.
-     *
-     * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/gender")
-     */
-    private $gender;
-
-    /**
      * @var PostalAddress|null physical address of the item
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\PostalAddress")
@@ -103,14 +95,6 @@ class Person
      */
     private $url;
 
-    /**
-     * @var string|null the job title of the person (for example, Financial Manager)
-     *
-     * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/jobTitle")
-     */
-    private $jobTitle;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -144,16 +128,6 @@ class Person
     public function getAdditionalName(): ?string
     {
         return $this->additionalName;
-    }
-
-    public function setGender(?string $gender): void
-    {
-        $this->gender = $gender;
-    }
-
-    public function getGender(): ?string
-    {
-        return $this->gender;
     }
 
     public function setAddress(?PostalAddress $address): void
@@ -204,15 +178,5 @@ class Person
     public function getUrl(): ?string
     {
         return $this->url;
-    }
-
-    public function setJobTitle(?string $jobTitle): void
-    {
-        $this->jobTitle = $jobTitle;
-    }
-
-    public function getJobTitle(): ?string
-    {
-        return $this->jobTitle;
     }
 }

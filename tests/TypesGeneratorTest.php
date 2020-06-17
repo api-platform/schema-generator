@@ -18,6 +18,7 @@ use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
 use Doctrine\Inflector\InflectorFactory;
+use EasyRdf\Graph;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Log\NullLogger;
@@ -52,7 +53,7 @@ class TypesGeneratorTest extends TestCase
 
     private function getGraphs(): array
     {
-        $graph = new \EasyRdf_Graph();
+        $graph = new Graph();
 
         $graph->addResource('http://schema.org/Article', 'rdf:type', 'rdfs:Class');
         $graph->addResource('http://schema.org/Article', 'rdfs:subClassOf', 'http://schema.org/CreativeWork');

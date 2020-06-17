@@ -29,14 +29,14 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 final class TypesGeneratorConfiguration implements ConfigurationInterface
 {
     /**
-     * @see https://schema.org/docs/schema_org_rdfa.html
+     * @see https://schema.org/version/latest/schema.rdf
      */
-    public const SCHEMA_ORG_RDFA_URL = __DIR__.'/../data/schema.rdfa';
+    public const SCHEMA_ORG_URI = 'https://schema.org/version/latest/schema.rdf';
 
     /**
      * @see https://purl.org/goodrelations/v1.owl
      */
-    public const GOOD_RELATIONS_OWL_URL = __DIR__.'/../data/v1.owl';
+    public const GOOD_RELATIONS_URI = __DIR__.'/../data/v1.owl';
     public const SCHEMA_ORG_NAMESPACE = 'http://schema.org/';
 
     private $defaultPrefix;
@@ -58,15 +58,15 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
         $treeBuilder
             ->getRootNode()
             ->children()
-                ->arrayNode('rdfa')
-                    ->info('RDFa files')
-                    ->defaultValue([['uri' => self::SCHEMA_ORG_RDFA_URL, 'format' => 'rdfa']])
+                ->arrayNode('vocabs')
+                    ->info('RDF vocabularies')
+                    ->defaultValue([['uri' => self::SCHEMA_ORG_URI, 'format' => 'rdfxml']])
                     ->beforeNormalization()
                         ->ifArray()
-                        ->then(function (array $v) {
+                        ->then(static function (array $v) {
                             return array_map(
-                                function ($rdfa) {
-                                    return is_scalar($rdfa) ? ['uri' => $rdfa, 'format' => null] : $rdfa;
+                                static function ($rdf) {
+                                    return is_scalar($rdf) ? ['uri' => $rdf, 'format' => null] : $rdf;
                                 },
                                 $v
                             );
@@ -74,15 +74,15 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->end()
                     ->arrayPrototype()
                         ->children()
-                            ->scalarNode('uri')->defaultValue(self::SCHEMA_ORG_RDFA_URL)->info('RDFa URI to use')->example('https://schema.org/docs/schema_org_rdfa.html')->end()
-                            ->scalarNode('format')->defaultNull()->info('RDFa URI data format')->example('rdfxml')->end()
+                            ->scalarNode('uri')->defaultValue(self::SCHEMA_ORG_URI)->info('RDF vocabulary to use')->example('https://schema.org/version/latest/all-layers.rdf')->end()
+                            ->scalarNode('format')->defaultValue('guess')->info('RDF vocabulary format')->example('rdfxml')->end()
                         ->end()
                     ->end()
                 ->end()
                 ->arrayNode('relations')
                     ->info('OWL relation files to use')
                     ->example('https://purl.org/goodrelations/v1.owl')
-                    ->defaultValue([self::GOOD_RELATIONS_OWL_URL])
+                    ->defaultValue([self::GOOD_RELATIONS_URI])
                     ->prototype('scalar')->end()
                 ->end()
                 ->booleanNode('debug')->defaultFalse()->info('Debug mode')->end()

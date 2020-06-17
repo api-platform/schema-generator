@@ -18,6 +18,7 @@ use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
 use Doctrine\Inflector\InflectorFactory;
+use EasyRdf\Graph;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -139,12 +140,12 @@ final class GenerateTypesCommand extends Command
         }
 
         $graphs = [];
-        foreach ($processedConfiguration['rdfa'] as $rdfa) {
-            $graph = new \EasyRdf_Graph();
-            if (0 === strpos($rdfa['uri'], 'http://') || 0 === strpos($rdfa['uri'], 'https://')) {
-                $graph->load($rdfa['uri'], $rdfa['format']);
+        foreach ($processedConfiguration['vocabs'] as $vocab) {
+            $graph = new Graph();
+            if (0 === strpos($vocab['uri'], 'http://') || 0 === strpos($vocab['uri'], 'https://')) {
+                $graph->load($vocab['uri'], $vocab['format']);
             } else {
-                $graph->parseFile($rdfa['uri'], $rdfa['format']);
+                $graph->parseFile($vocab['uri'], $vocab['format']);
             }
 
             $graphs[] = $graph;

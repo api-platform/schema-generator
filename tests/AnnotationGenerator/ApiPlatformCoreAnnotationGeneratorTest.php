@@ -16,6 +16,8 @@ namespace ApiPlatform\SchemaGenerator\Tests\AnnotationGenerator;
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\ApiPlatformCoreAnnotationGenerator;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use Doctrine\Inflector\InflectorFactory;
+use EasyRdf\Graph;
+use EasyRdf\Resource;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 
@@ -31,8 +33,8 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
 
     protected function setUp(): void
     {
-        $graph = new \EasyRdf_Graph();
-        $myEnum = new \EasyRdf_Resource('http://schema.org/MyEnum', $graph);
+        $graph = new Graph();
+        $myEnum = new Resource('http://schema.org/MyEnum', $graph);
         $myEnum->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);
 
         $this->generator = new ApiPlatformCoreAnnotationGenerator(
@@ -43,7 +45,7 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
             [],
             [
                 'Res' => [
-                    'resource' => new \EasyRdf_Resource('http://schema.org/Res', $graph),
+                    'resource' => new Resource('http://schema.org/Res', $graph),
                     'fields' => [
                         'prop' => ['isCustom' => false],
                         'customProp' => ['isCustom' => true],
@@ -51,7 +53,7 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
                 ],
                 'MyEnum' => ['resource' => $myEnum],
                 'WithOperations' => [
-                    'resource' => new \EasyRdf_Resource('http://schema.org/WithOperations', $graph),
+                    'resource' => new Resource('http://schema.org/WithOperations', $graph),
                     'operations' => [
                         'item' => ['get' => ['route_name' => 'api_about_get']],
                         'collection' => [],

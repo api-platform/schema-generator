@@ -16,6 +16,8 @@ namespace ApiPlatform\SchemaGenerator\Tests\AnnotationGenerator;
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use Doctrine\Inflector\InflectorFactory;
+use EasyRdf\Graph;
+use EasyRdf\Resource;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 
@@ -31,8 +33,8 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
 
     protected function setUp(): void
     {
-        $graph = new \EasyRdf_Graph();
-        $myEnum = new \EasyRdf_Resource('https://schema.org/MyEnum', $graph);
+        $graph = new Graph();
+        $myEnum = new Resource('https://schema.org/MyEnum', $graph);
         $myEnum->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);
         $this->generator = new DoctrineOrmAnnotationGenerator(
             InflectorFactory::create()->build(),
@@ -43,7 +45,7 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
             [
                 'Product' => [
                     'isEnum' => false,
-                    'resource' => new \EasyRdf_Resource('https://schema.org/Product', $graph),
+                    'resource' => new Resource('https://schema.org/Product', $graph),
                     'abstract' => true,
                     'embeddable' => false,
                 ],
@@ -51,7 +53,7 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
                     'isEnum' => false,
                     'abstract' => false,
                     'embeddable' => false,
-                    'resource' => new \EasyRdf_Resource('https://schema.org/Vehicle', $graph),
+                    'resource' => new Resource('https://schema.org/Vehicle', $graph),
                     'fields' => [
                         'weight' => [
                             'isEnum' => false,
@@ -73,7 +75,7 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
                     'isEnum' => false,
                     'abstract' => false,
                     'name' => 'QuantitativeValue',
-                    'resource' => new \EasyRdf_Resource('https://schema.org/QuantitativeValue', $graph),
+                    'resource' => new Resource('https://schema.org/QuantitativeValue', $graph),
                     'embeddable' => true,
                 ],
                 'MyEnum' => ['isEnum' => true, 'resource' => $myEnum],

@@ -16,6 +16,7 @@ namespace ApiPlatform\SchemaGenerator\Command;
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
+use EasyRdf\Graph;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -36,8 +37,8 @@ final class ExtractCardinalitiesCommand extends Command
         $this
             ->setName('extract-cardinalities')
             ->setDescription('Extract properties\' cardinality')
-            ->addOption('schemaorg-file', 's', InputOption::VALUE_REQUIRED, 'The path or URL of the Schema.org RDFa file to use.', TypesGeneratorConfiguration::SCHEMA_ORG_RDFA_URL)
-            ->addOption('goodrelations-file', 'g', InputOption::VALUE_REQUIRED, 'The path or URL of the GoodRelations OWL file to use.', TypesGeneratorConfiguration::GOOD_RELATIONS_OWL_URL)
+            ->addOption('schemaorg-file', 's', InputOption::VALUE_REQUIRED, 'The path or URL of the Schema.org RDF file to use.', TypesGeneratorConfiguration::SCHEMA_ORG_URI)
+            ->addOption('goodrelations-file', 'g', InputOption::VALUE_REQUIRED, 'The path or URL of the GoodRelations OWL file to use.', TypesGeneratorConfiguration::GOOD_RELATIONS_URI)
         ;
     }
 
@@ -49,11 +50,13 @@ final class ExtractCardinalitiesCommand extends Command
         $schemaOrgFile = $input->getOption('schemaorg-file');
 
         $relations = [];
-        $schemaOrg = new \EasyRdf_Graph();
-        if ('http://' === substr($schemaOrgFile, 0, 7) || 'https://' === substr($schemaOrgFile, 0, 8)) {
-            $schemaOrg->load($input->getOption('schemaorg-file'), 'rdfa');
+        $schemaOrg = new Graph();
+
+        $format = pathinfo($schemaOrgFile, PATHINFO_EXTENSION) ?: 'guess';
+        if (0 === strpos($schemaOrgFile, 'http://') || 0 === strpos($schemaOrgFile, 'https://')) {
+            $schemaOrg->load($input->getOption('schemaorg-file'), $format);
         } else {
-            $schemaOrg->parseFile($input->getOption('schemaorg-file'), 'rdfa');
+            $schemaOrg->parseFile($input->getOption('schemaorg-file'), $format);
         }
 
         $relations[] = $schemaOrg;

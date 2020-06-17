@@ -17,6 +17,8 @@ use ApiPlatform\SchemaGenerator\AnnotationGenerator\AnnotationGeneratorInterface
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Inflector\Inflector;
+use EasyRdf\Graph;
+use EasyRdf\Resource;
 use MyCLabs\Enum\Enum;
 use PhpCsFixer\Cache\NullCacheManager;
 use PhpCsFixer\Differ\NullDiffer;
@@ -68,7 +70,7 @@ class TypesGenerator
     private $logger;
 
     /**
-     * @var \EasyRdf_Graph[]
+     * @var Graph[]
      */
     private $graphs;
 
@@ -88,7 +90,7 @@ class TypesGenerator
     private $inflector;
 
     /**
-     * @param \EasyRdf_Graph[] $graphs
+     * @param Graph[] $graphs
      */
     public function __construct(Inflector $inflector, Environment $twig, LoggerInterface $logger, array $graphs, CardinalitiesExtractor $cardinalitiesExtractor, GoodRelationsBridge $goodRelationsBridge)
     {
@@ -459,7 +461,7 @@ class TypesGenerator
     /**
      * Tests if a type is an enum.
      */
-    private function isEnum(\EasyRdf_Resource $type): bool
+    private function isEnum(Resource $type): bool
     {
         $subClassOf = $type->get('rdfs:subClassOf');
 
@@ -471,7 +473,7 @@ class TypesGenerator
      *
      * @param string[] $parentClasses
      */
-    private function getParentClasses(\EasyRdf_Resource $resource, array $parentClasses = []): array
+    private function getParentClasses(Resource $resource, array $parentClasses = []): array
     {
         if ([] === $parentClasses) {
             return $this->getParentClasses($resource, [$resource->getUri()]);
@@ -575,13 +577,8 @@ class TypesGenerator
 
     /**
      * Updates generated $class with given field config.
-     *
-     * @param string $typeName
-     * @param string $propertyName
-     *
-     * @return array $class
      */
-    private function generateField(array $config, array $class, \EasyRdf_Resource $type, $typeName, $propertyName, \EasyRdf_Resource $property = null): array
+    private function generateField(array $config, array $class, Resource $type, string $typeName, string $propertyName, ?Resource $property = null): array
     {
         $typeConfig = $config['types'][$typeName] ?? null;
         $typesDefined = !empty($config['types']);
@@ -594,7 +591,7 @@ class TypesGenerator
         }
 
         // Ignore or warn when properties are legacy
-        if (!empty($property) && preg_match('/legacy spelling/', (string) $property->get('rdfs:comment'))) {
+        if (null !== $property && preg_match('/legacy spelling/', (string) $property->get('rdfs:comment'))) {
             if (isset($typeConfig['properties'])) {
                 $this->logger->warning(sprintf('The property "%s" (type "%s") is legacy.', $propertyName, $type->localName()));
             } else {
@@ -604,15 +601,24 @@ class TypesGenerator
             }
         }
 
-        $propertyConfig = $typeConfig['properties'][$propertyName] ?? null;
-
+        $propertyConfig = $typeConfig['properties'][$propertyName] ?? [];
         $ranges = [];
-        if (isset($propertyConfig['range']) && $propertyConfig['range']) {
+
+        $isCustom = true;
+        if ($propertyConfig['range'] ?? false) {
             $ranges[] = $propertyConfig['range'];
-        } elseif (!empty($property)) {
+        }
+
+        if (null !== $property) {
             foreach ($property->all(self::SCHEMA_ORG_RANGE) as $range) {
-                if (!$typesDefined || $this->isDatatype($range->localName()) || isset($config['types'][$range->localName()])) {
-                    $ranges[] = $range->localName();
+                $localName = $range->localName();
+                if (!$typesDefined || isset($config['types'][$localName]) || $this->isDatatype($localName)) {
+                    if (($propertyConfig['range'] ?? null) === $localName) {
+                        $isCustom = false;
+                        break;
+                    }
+                    $isCustom = false;
+                    $ranges[] = $localName;
                 }
             }
         }
@@ -663,7 +669,7 @@ class TypesGenerator
                 'isWritable' => $propertyConfig['writable'] ?? true,
                 'isNullable' => $isNullable,
                 'isUnique' => isset($propertyConfig['unique']) && $propertyConfig['unique'],
-                'isCustom' => empty($property),
+                'isCustom' => $isCustom,
                 'isEmbedded' => $isEmbedded,
                 'columnPrefix' => $columnPrefix,
                 'mappedBy' => $propertyConfig['mappedBy'] ?? null,
