@@ -87,7 +87,7 @@ PHP
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
-        $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
+        $person = file_get_contents("$outputDir/App/Entity/Person.php");
         $this->assertStringContainsString(<<<'PHP'
     public function setUrl(?string $url): self
     {
@@ -126,7 +126,7 @@ PHP
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
-        $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
+        $person = file_get_contents("$outputDir/App/Entity/Person.php");
         $this->assertStringNotContainsString('function get', $person);
         $this->assertStringNotContainsString('function set', $person);
         $this->assertStringNotContainsString('function add', $person);
@@ -143,7 +143,7 @@ PHP
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
-        $creativeWork = file_get_contents("$outputDir/AppBundle/Entity/CreativeWork.php");
+        $creativeWork = file_get_contents("$outputDir/App/Entity/CreativeWork.php");
         $this->assertStringContainsString('class CreativeWork extends Thing', $creativeWork);
         $this->assertStringContainsString('private $copyrightYear;', $creativeWork);
         $this->assertStringContainsString('function getCopyrightYear(', $creativeWork);
@@ -152,7 +152,7 @@ PHP
         $this->assertStringNotContainsString('function getName(', $creativeWork);
         $this->assertStringNotContainsString('function setName(', $creativeWork);
 
-        $webPage = file_get_contents("$outputDir/AppBundle/Entity/WebPage.php");
+        $webPage = file_get_contents("$outputDir/App/Entity/WebPage.php");
         $this->assertStringContainsString('class WebPage extends CreativeWork', $webPage);
         $this->assertStringContainsString('private $mainEntity;', $webPage);
         $this->assertStringContainsString('function getMainEntity(', $webPage);
@@ -175,7 +175,7 @@ PHP
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
-        $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
+        $person = file_get_contents("$outputDir/App/Entity/Person.php");
         $this->assertStringContainsString('private $sameAs;', $person);
         $this->assertStringContainsString('public function getId(', $person);
         $this->assertStringNotContainsString('function setId(', $person);
@@ -197,7 +197,7 @@ PHP
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
-        $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
+        $person = file_get_contents("$outputDir/App/Entity/Person.php");
 
         $this->assertStringContainsString(<<<'PHP'
     /**
@@ -232,7 +232,7 @@ PHP
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
-        $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
+        $person = file_get_contents("$outputDir/App/Entity/Person.php");
 
         $this->assertStringContainsString(<<<'PHP'
     /**
@@ -266,7 +266,7 @@ PHP
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
-        $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
+        $person = file_get_contents("$outputDir/App/Entity/Person.php");
 
         $this->assertStringContainsString(<<<'PHP'
     /**
@@ -302,7 +302,7 @@ PHP
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
-        $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
+        $person = file_get_contents("$outputDir/App/Entity/Person.php");
 
         $this->assertStringContainsString(<<<'PHP'
     /**
@@ -337,7 +337,7 @@ PHP
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
-        $person = file_get_contents("$outputDir/AppBundle/Entity/Person.php");
+        $person = file_get_contents("$outputDir/App/Entity/Person.php");
 
         $this->assertStringNotContainsString('$id', $person);
         $this->assertStringNotContainsString('function getId', $person);
@@ -391,7 +391,7 @@ PHP
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
-        $gender = file_get_contents("$outputDir/AppBundle/Enum/GenderType.php");
+        $gender = file_get_contents("$outputDir/App/Enum/GenderType.php");
 
         $this->assertStringContainsString(<<<'PHP'
     /**
@@ -414,7 +414,7 @@ PHP
         $commandTester = new CommandTester(new GenerateTypesCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
-        $creativeWork = file_get_contents("$outputDir/AppBundle/Entity/CreativeWork.php");
+        $creativeWork = file_get_contents("$outputDir/App/Entity/CreativeWork.php");
 
         $this->assertStringContainsString(<<<'PHP'
     /**

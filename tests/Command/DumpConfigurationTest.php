@@ -80,13 +80,13 @@ config:
         prefix:               null # Example: App\
 
         # The namespace of the generated entities
-        entity:               AppBundle\Entity # Example: App\Entity
+        entity:               App\Entity # Example: App\Entity
 
         # The namespace of the generated enumerations
-        enum:                 AppBundle\Enum # Example: App\Enum
+        enum:                 App\Enum # Example: App\Enum
 
         # The namespace of the generated interfaces
-        interface:            AppBundle\Model # Example: App\Model
+        interface:            App\Model # Example: App\Model
 
     # Doctrine
     doctrine:

@@ -17,7 +17,7 @@ use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
-use Doctrine\Common\Inflector\Inflector;
+use Doctrine\Inflector\InflectorFactory;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -161,11 +161,13 @@ final class GenerateTypesCommand extends Command
         $templatePaths = $processedConfiguration['generatorTemplates'];
         $templatePaths[] = __DIR__.'/../../templates/';
 
+        $inflector = InflectorFactory::create()->build();
+
         $loader = new FilesystemLoader($templatePaths);
         $twig = new Environment($loader, ['autoescape' => false, 'debug' => $processedConfiguration['debug']]);
         $twig->addFilter(new TwigFilter('ucfirst', 'ucfirst'));
-        $twig->addFilter(new TwigFilter('pluralize', [Inflector::class, 'pluralize']));
-        $twig->addFilter(new TwigFilter('singularize', [Inflector::class, 'singularize']));
+        $twig->addFilter(new TwigFilter('pluralize', [$inflector, 'pluralize']));
+        $twig->addFilter(new TwigFilter('singularize', [$inflector, 'singularize']));
 
         if ($processedConfiguration['debug']) {
             $twig->addExtension(new DebugExtension());
@@ -173,7 +175,7 @@ final class GenerateTypesCommand extends Command
 
         $logger = new ConsoleLogger($output);
 
-        $entitiesGenerator = new TypesGenerator($twig, $logger, $graphs, $cardinalitiesExtractor, $goodRelationsBridge);
+        $entitiesGenerator = new TypesGenerator($inflector, $twig, $logger, $graphs, $cardinalitiesExtractor, $goodRelationsBridge);
         $entitiesGenerator->generate($processedConfiguration);
 
         return 0;

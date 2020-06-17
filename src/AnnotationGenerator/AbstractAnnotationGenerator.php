@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
+use Doctrine\Inflector\Inflector;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -22,6 +23,11 @@ use Psr\Log\LoggerInterface;
  */
 abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterface
 {
+    /**
+     * @var Inflector
+     */
+    protected $inflector;
+
     /**
      * @var LoggerInterface
      */
@@ -50,8 +56,9 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function __construct(LoggerInterface $logger, array $graphs, array $cardinalities, array $config, array $classes)
+    public function __construct(Inflector $inflector, LoggerInterface $logger, array $graphs, array $cardinalities, array $config, array $classes)
     {
+        $this->inflector = $inflector;
         $this->logger = $logger;
         $this->graphs = $graphs;
         $this->cardinalities = $cardinalities;

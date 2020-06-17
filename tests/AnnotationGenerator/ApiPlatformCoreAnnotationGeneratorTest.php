@@ -15,6 +15,7 @@ namespace ApiPlatform\SchemaGenerator\Tests\AnnotationGenerator;
 
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\ApiPlatformCoreAnnotationGenerator;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
+use Doctrine\Inflector\InflectorFactory;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 
@@ -35,6 +36,7 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
         $myEnum->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);
 
         $this->generator = new ApiPlatformCoreAnnotationGenerator(
+            InflectorFactory::create()->build(),
             new NullLogger(),
             [],
             [],

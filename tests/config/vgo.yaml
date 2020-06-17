@@ -6,7 +6,7 @@ annotationGenerators:
   - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
 
 namespaces:
-  entity: 'AppBundle\Entity'
+  entity: 'App\Entity'
 
 types:
   Session:

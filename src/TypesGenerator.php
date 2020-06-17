@@ -16,7 +16,7 @@ namespace ApiPlatform\SchemaGenerator;
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\AnnotationGeneratorInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Inflector\Inflector;
+use Doctrine\Inflector\Inflector;
 use MyCLabs\Enum\Enum;
 use PhpCsFixer\Cache\NullCacheManager;
 use PhpCsFixer\Differ\NullDiffer;
@@ -73,11 +73,6 @@ class TypesGenerator
     private $graphs;
 
     /**
-     * @var CardinalitiesExtractor
-     */
-    private $cardinalitiesExtractor;
-
-    /**
      * @var GoodRelationsBridge
      */
     private $goodRelationsBridge;
@@ -88,9 +83,14 @@ class TypesGenerator
     private $cardinalities;
 
     /**
+     * @var Inflector
+     */
+    private $inflector;
+
+    /**
      * @param \EasyRdf_Graph[] $graphs
      */
-    public function __construct(Environment $twig, LoggerInterface $logger, array $graphs, CardinalitiesExtractor $cardinalitiesExtractor, GoodRelationsBridge $goodRelationsBridge)
+    public function __construct(Inflector $inflector, Environment $twig, LoggerInterface $logger, array $graphs, CardinalitiesExtractor $cardinalitiesExtractor, GoodRelationsBridge $goodRelationsBridge)
     {
         if (!$graphs) {
             throw new \InvalidArgumentException('At least one graph must be injected.');
@@ -99,10 +99,10 @@ class TypesGenerator
         $this->twig = $twig;
         $this->logger = $logger;
         $this->graphs = $graphs;
-        $this->cardinalitiesExtractor = $cardinalitiesExtractor;
         $this->goodRelationsBridge = $goodRelationsBridge;
 
-        $this->cardinalities = $this->cardinalitiesExtractor->extract();
+        $this->cardinalities = $cardinalitiesExtractor->extract();
+        $this->inflector = $inflector;
     }
 
     /**
@@ -367,7 +367,7 @@ class TypesGenerator
         // Initialize annotation generators
         $annotationGenerators = [];
         foreach ($config['annotationGenerators'] as $annotationGenerator) {
-            $generator = new $annotationGenerator($this->logger, $this->graphs, $this->cardinalities, $config, $classes);
+            $generator = new $annotationGenerator($this->inflector, $this->logger, $this->graphs, $this->cardinalities, $config, $classes);
 
             $annotationGenerators[] = $generator;
         }
@@ -880,7 +880,7 @@ class TypesGenerator
         $exploded = explode('_', $snakeProperty);
 
         if (2 < \strlen($word = $exploded[\count($exploded) - 1])) {
-            $exploded[\count($exploded) - 1] = $isArray ? Inflector::pluralize($word) : Inflector::singularize($word);
+            $exploded[\count($exploded) - 1] = $isArray ? $this->inflector->pluralize($word) : $this->inflector->singularize($word);
 
             return implode('', $exploded);
         }

@@ -15,6 +15,7 @@ namespace ApiPlatform\SchemaGenerator\Tests\AnnotationGenerator;
 
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
+use Doctrine\Inflector\InflectorFactory;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 
@@ -34,6 +35,7 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
         $myEnum = new \EasyRdf_Resource('https://schema.org/MyEnum', $graph);
         $myEnum->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);
         $this->generator = new DoctrineOrmAnnotationGenerator(
+            InflectorFactory::create()->build(),
             new NullLogger(),
             [],
             [],

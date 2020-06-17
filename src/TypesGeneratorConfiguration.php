@@ -51,17 +51,12 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $namespacePrefix = $this->defaultPrefix ?? 'AppBundle\\';
+        $namespacePrefix = $this->defaultPrefix ?? 'App\\';
 
-        if (method_exists(TreeBuilder::class, 'getRootNode')) {
-            $treeBuilder = new TreeBuilder('config');
-            $rootNode = $treeBuilder->getRootNode();
-        } else {
-            $treeBuilder = new TreeBuilder();
-            $rootNode = $treeBuilder->root('config');
-        }
+        $treeBuilder = new TreeBuilder('config');
 
-        $rootNode
+        $treeBuilder
+            ->getRootNode()
             ->children()
                 ->arrayNode('rdfa')
                     ->info('RDFa files')
