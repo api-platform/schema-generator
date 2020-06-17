@@ -51,9 +51,11 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $namespacePrefix = $this->defaultPrefix ?? 'AppBundle\\';
+        $namespacePrefix = $this->defaultPrefix ?? 'App\\';
 
-        return (new TreeBuilder('config'))
+        $treeBuilder = new TreeBuilder('config');
+
+        $treeBuilder
             ->getRootNode()
             ->children()
                 ->arrayNode('rdfa')
@@ -215,5 +217,7 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->prototype('scalar')->end()
                 ->end()
             ->end();
+
+        return $treeBuilder;
     }
 }

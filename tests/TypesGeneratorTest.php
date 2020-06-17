@@ -127,7 +127,7 @@ class TypesGeneratorTest extends TestCase
             ],
             'checkIsGoodRelations' => false,
             'namespaces' => [
-                'entity' => 'AppBundle\Entity',
+                'entity' => 'App\Entity',
             ],
             'output' => 'build/type-generator-test',
             'types' => [
@@ -221,7 +221,7 @@ class TypesGeneratorTest extends TestCase
                 'hasChild' => true,
                 'isEnum' => false,
                 'name' => 'Article',
-                'namespace' => 'AppBundle\Entity',
+                'namespace' => 'App\Entity',
                 'parent' => 'CreativeWork',
             ],
             'BlogPosting' => [
@@ -245,7 +245,7 @@ class TypesGeneratorTest extends TestCase
                 'hasChild' => false,
                 'isEnum' => false,
                 'name' => 'BlogPosting',
-                'namespace' => 'AppBundle\Entity',
+                'namespace' => 'App\Entity',
                 'parent' => 'SocialMediaPosting',
             ],
             'CreativeWork' => [
@@ -308,7 +308,7 @@ class TypesGeneratorTest extends TestCase
                 'hasChild' => true,
                 'isEnum' => false,
                 'name' => 'CreativeWork',
-                'namespace' => 'AppBundle\Entity',
+                'namespace' => 'App\Entity',
                 'parent' => 'Thing',
             ],
             'Person' => [
@@ -332,7 +332,7 @@ class TypesGeneratorTest extends TestCase
                 'hasChild' => false,
                 'isEnum' => false,
                 'name' => 'Person',
-                'namespace' => 'AppBundle\Entity',
+                'namespace' => 'App\Entity',
                 'parent' => 'Thing',
             ],
             'SocialMediaPosting' => [
@@ -356,7 +356,7 @@ class TypesGeneratorTest extends TestCase
                 'hasChild' => true,
                 'isEnum' => false,
                 'name' => 'SocialMediaPosting',
-                'namespace' => 'AppBundle\Entity',
+                'namespace' => 'App\Entity',
                 'parent' => 'Article',
             ],
             'Thing' => [
@@ -380,7 +380,7 @@ class TypesGeneratorTest extends TestCase
                 'hasChild' => true,
                 'isEnum' => false,
                 'name' => 'Thing',
-                'namespace' => 'AppBundle\Entity',
+                'namespace' => 'App\Entity',
                 'parent' => false,
             ],
         ];
