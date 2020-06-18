@@ -182,13 +182,38 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         return $doc;
     }
 
-    protected function toPhpDocType(array $field, bool $adderOrRemover = false): string
+    /**
+     * Converts a RDF range to a PHPDoc type.
+     */
+    protected function toPhpDocType(array $field, bool $adderOrRemover = false): ?string
     {
-        $type = parent::toPhpDocType($field, $adderOrRemover);
-        if ($field['isNullable']) {
-            $type .= '|null';
+        $suffix = $field['isNullable'] ? '|null' : '';
+        if ($field['isEnum']) {
+            if ($field['isArray']) {
+                return 'string[]'.$suffix;
+            }
+
+            return 'string'.$suffix;
         }
 
-        return $type;
+        if (null !== $phpDocType = $this->phpTypeConverter->getPhpType(['isArray' => false] + $field)) {
+            return ($field['isArray'] ? sprintf('%s[]', $phpDocType) : $phpDocType).$suffix;
+        }
+
+        if (!isset($field['range'])) {
+            return null;
+        }
+
+        $rangeName = $field['range']->localName();
+        $phpDocType = $this->classes[$rangeName]['interfaceName'] ?? $rangeName;
+        if (!$field['isArray'] || $adderOrRemover) {
+            return $phpDocType.$suffix;
+        }
+
+        if ($this->config['doctrine']['useCollection']) {
+            return sprintf('Collection<%s>%s', $phpDocType, $suffix);
+        }
+
+        return sprintf('%s[]%s', $phpDocType, $suffix);
     }
 }

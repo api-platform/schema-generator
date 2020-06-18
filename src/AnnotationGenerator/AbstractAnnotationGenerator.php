@@ -118,38 +118,4 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     {
         return [];
     }
-
-    /**
-     * Converts a RDF range to a PHPDoc type.
-     */
-    protected function toPhpDocType(array $field, bool $adderOrRemover = false): ?string
-    {
-        if ($field['isEnum']) {
-            if ($field['isArray']) {
-                return 'string[]';
-            }
-
-            return 'string';
-        }
-
-        if (null !== $phpDocType = $this->phpTypeConverter->getPhpType(['isArray' => false] + $field)) {
-            return $field['isArray'] ? sprintf('%s[]', $phpDocType) : $phpDocType;
-        }
-
-        if (!isset($field['range'])) {
-            return null;
-        }
-
-        $rangeName = $field['range']->localName();
-        $phpDocType = $this->classes[$rangeName]['interfaceName'] ?? $rangeName;
-        if (!$field['isArray'] || $adderOrRemover) {
-            return $phpDocType;
-        }
-
-        if ($this->config['doctrine']['useCollection']) {
-            return sprintf('Collection<%s>', $phpDocType);
-        }
-
-        return sprintf('%s[]', $phpDocType);
-    }
 }

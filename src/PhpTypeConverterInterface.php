@@ -22,9 +22,9 @@ interface PhpTypeConverterInterface
         'http://www.w3.org/2001/XMLSchema#boolean' => 'bool',
         'http://schema.org/Boolean' => 'bool',
         // float
-          'http://www.w3.org/2001/XMLSchema#float' => 'float',
-         'http://www.w3.org/2001/XMLSchema#double' => 'float',
-         'http://schema.org/Float' => 'float',
+        'http://www.w3.org/2001/XMLSchema#float' => 'float',
+        'http://www.w3.org/2001/XMLSchema#double' => 'float',
+        'http://schema.org/Float' => 'float',
         // int
         'http://schema.org/Integer' => 'int',
         'http://www.w3.org/2001/XMLSchema#integer' => 'int',
@@ -63,18 +63,18 @@ interface PhpTypeConverterInterface
         'http://schema.org/URL' => 'string',
         'http://schema.org/Number' => 'string',
         // DateTimeInterface
-         'http://www.w3.org/2001/XMLSchema#dateTime' => '\\'.\DateTimeInterface::class,
-         'http://www.w3.org/2001/XMLSchema#time' => '\\'.\DateTimeInterface::class,
-         'http://www.w3.org/2001/XMLSchema#date' => '\\'.\DateTimeInterface::class,
-         'http://www.w3.org/2001/XMLSchema#gYearMonth' => '\\'.\DateTimeInterface::class,
-         'http://www.w3.org/2001/XMLSchema#gYear' => '\\'.\DateTimeInterface::class,
-         'http://www.w3.org/2001/XMLSchema#gMonthDay' => '\\'.\DateTimeInterface::class,
-         'http://www.w3.org/2001/XMLSchema#gDay' => '\\'.\DateTimeInterface::class,
-         'http://www.w3.org/2001/XMLSchema#gMonth' => '\\'.\DateTimeInterface::class,
-         'http://schema.org/Date' => '\\'.\DateTimeInterface::class,
-         'http://schema.org/DateTime' => '\\'.\DateTimeInterface::class,
-         'http://schema.org/Time' => '\\'.\DateTimeInterface::class,
-    // DateInterval
+        'http://www.w3.org/2001/XMLSchema#dateTime' => '\\'.\DateTimeInterface::class,
+        'http://www.w3.org/2001/XMLSchema#time' => '\\'.\DateTimeInterface::class,
+        'http://www.w3.org/2001/XMLSchema#date' => '\\'.\DateTimeInterface::class,
+        'http://www.w3.org/2001/XMLSchema#gYearMonth' => '\\'.\DateTimeInterface::class,
+        'http://www.w3.org/2001/XMLSchema#gYear' => '\\'.\DateTimeInterface::class,
+        'http://www.w3.org/2001/XMLSchema#gMonthDay' => '\\'.\DateTimeInterface::class,
+        'http://www.w3.org/2001/XMLSchema#gDay' => '\\'.\DateTimeInterface::class,
+        'http://www.w3.org/2001/XMLSchema#gMonth' => '\\'.\DateTimeInterface::class,
+        'http://schema.org/Date' => '\\'.\DateTimeInterface::class,
+        'http://schema.org/DateTime' => '\\'.\DateTimeInterface::class,
+        'http://schema.org/Time' => '\\'.\DateTimeInterface::class,
+        // DateInterval
         'http://www.w3.org/2001/XMLSchema#duration' => '\\'.\DateInterval::class,
         // mixed
         'http://schema.org/DataType' => null,

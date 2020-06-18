@@ -57,94 +57,87 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
     public function generateFieldAnnotations(string $className, string $fieldName): array
     {
         $field = $this->classes[$className]['fields'][$fieldName];
+        if (null === $field['range']) {
+            return [];
+        }
+
+        $annotation = '@ORM\Column';
+        if ($field['ormColumn'] ?? false) {
+            $annotation .= sprintf('(%s)', $field['ormColumn']);
+
+            return [$annotation];
+        }
+
         if ($field['isId']) {
             return $this->generateIdAnnotations();
         }
-
-        $annotations = [];
 
         $field['relationTableName'] = null;
         if (isset($this->config['types'][$className]['properties'][$fieldName])) {
             $field['relationTableName'] = $this->config['types'][$className]['properties'][$fieldName]['relationTableName'];
         }
 
+        $type = null;
         if ($field['isEnum']) {
             $type = $field['isArray'] ? 'simple_array' : 'string';
-        } else {
+        } elseif ($field['isArray'] ?? false) {
+            $type = 'json';
+        } elseif (null !== $phpType = $this->phpTypeConverter->getPhpType($field, $this->config, [])) {
             switch ($field['range']->getUri()) {
-                case 'http://schema.org/Boolean':
-                    $type = 'boolean';
-                    break;
-                case 'http://schema.org/Date':
-                    $type = 'date';
-                    break;
-                case 'http://schema.org/DateTime':
-                    $type = 'datetime';
-                    break;
+                // TODO: use more precise types for int (smallint, bigint...)
+                case  'http://www.w3.org/2001/XMLSchema#time':
                 case 'http://schema.org/Time':
                     $type = 'time';
                     break;
-                case 'http://schema.org/Number':
-                case 'http://schema.org/Float':
-                    $type = 'float';
+                case 'http://www.w3.org/2001/XMLSchema#dateTime':
+                case 'http://schema.org/DateTime':
+                    $type = 'date';
                     break;
-                case 'http://schema.org/Integer':
-                    $type = 'integer';
-                    break;
-                case 'http://schema.org/Text':
-                case 'http://schema.org/URL':
-                    $type = 'text';
-                    break;
-            }
-        }
-
-        if (isset($type)) {
-            $annotation = '@ORM\Column';
-            $isColumnHasProperties = false;
-
-            if ($field['ormColumn']) {
-                $annotation .= sprintf('(%s)', $field['ormColumn']);
-            } else {
-                if ('string' !== $type || $field['isNullable'] || $field['isUnique']) {
-                    $isColumnHasProperties = true;
-                }
-
-                if ($field['isArray']) {
-                    $type = 'simple_array';
-                }
-
-                if ($isColumnHasProperties) {
-                    $annotation .= '(';
-                }
-
-                $annotArr = [];
-
-                if ('string' !== $type) {
-                    $annotArr[] = sprintf('type="%s"', $type);
-                }
-
-                if ($field['isNullable']) {
-                    $annotArr[] = 'nullable=true';
-                }
-
-                if ($field['isUnique']) {
-                    $annotArr[] = 'unique=true';
-                }
-
-                if ($isColumnHasProperties) {
-                    if (\count($annotArr) > 0) {
-                        $annotation .= implode(', ', $annotArr);
+                default:
+                    $type = $phpType;
+                    switch ($phpType) {
+                        case 'bool':
+                            $type = 'boolean';
+                            break;
+                        case 'int':
+                            $type = 'integer';
+                            break;
+                        case 'string':
+                            $type = 'text';
+                            break;
+                        case '\\'.\DateTimeInterface::class:
+                            $type = 'date';
+                            break;
+                        case '\\'.\DateInterval::class:
+                            $type = 'string';
+                            break;
                     }
-                    $annotation .= ')';
-                }
+                    break;
             }
-
-            $annotations[] = $annotation;
-
-            return $annotations;
         }
 
-        $relationName = $field['range'] ? $this->getRelationName($field['range']->localName()) : null;
+        if (null !== $type) {
+            $annotArr = [];
+            if ('string' !== $type) {
+                $annotArr[] = sprintf('type="%s"', $type);
+            }
+
+            if ($field['isNullable']) {
+                $annotArr[] = 'nullable=true';
+            }
+
+            if ($field['isUnique']) {
+                $annotArr[] = 'unique=true';
+            }
+
+            if ($annotArr) {
+                $annotation .= sprintf('(%s)', implode(', ', $annotArr));
+            }
+
+            return [$annotation];
+        }
+
+        $relationName = $this->getRelationName($field['range']->localName());
         if ($field['isEmbedded']) {
             $columnPrefix = ', columnPrefix=';
             if (\is_bool($field['columnPrefix'])) {
@@ -153,17 +146,10 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                 $columnPrefix .= sprintf('"%s"', $field['columnPrefix']);
             }
 
-            if ($relationName) {
-                $annotations[] = sprintf('@ORM\Embedded(class="%s"%s)', $relationName, $columnPrefix);
-            }
-
-            return $annotations;
+            return [sprintf('@ORM\Embedded(class="%s"%s)', $relationName, $columnPrefix)];
         }
 
-        if (!$relationName) {
-            return $annotations;
-        }
-
+        $annotations = [];
         switch ($field['cardinality']) {
             case CardinalitiesExtractor::CARDINALITY_0_1:
                     $annotations[] = sprintf('@ORM\OneToOne(targetEntity="%s")', $relationName);

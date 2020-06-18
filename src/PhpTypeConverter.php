@@ -27,7 +27,7 @@ final class PhpTypeConverter implements PhpTypeConverterInterface
 
     public function getPhpType(array $field, array $config = [], array $classes = []): ?string
     {
-        if ($field['isArray']) {
+        if ($field['isArray'] ?? false) {
             return $config['doctrine']['useCollection'] ?? false ? 'Collection' : 'array';
         }
 
