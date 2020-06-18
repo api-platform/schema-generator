@@ -71,28 +71,28 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         if ($field['isEnum']) {
             $type = $field['isArray'] ? 'simple_array' : 'string';
         } else {
-            switch ($field['range']) {
-                case 'Boolean':
+            switch ($field['range']->getUri()) {
+                case 'http://schema.org/Boolean':
                     $type = 'boolean';
                     break;
-                case 'Date':
+                case 'http://schema.org/Date':
                     $type = 'date';
                     break;
-                case 'DateTime':
+                case 'http://schema.org/DateTime':
                     $type = 'datetime';
                     break;
-                case 'Time':
+                case 'http://schema.org/Time':
                     $type = 'time';
                     break;
-                case 'Number':
-                case 'Float':
+                case 'http://schema.org/Number':
+                case 'http://schema.org/Float':
                     $type = 'float';
                     break;
-                case 'Integer':
+                case 'http://schema.org/Integer':
                     $type = 'integer';
                     break;
-                case 'Text':
-                case 'URL':
+                case 'http://schema.org/Text':
+                case 'http://schema.org/URL':
                     $type = 'text';
                     break;
             }
@@ -144,7 +144,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
             return $annotations;
         }
 
-        $relationName = $field['range'] ? $this->getRelationName($field['range']) : null;
+        $relationName = $field['range'] ? $this->getRelationName($field['range']->localName()) : null;
         if ($field['isEmbedded']) {
             $columnPrefix = ', columnPrefix=';
             if (\is_bool($field['columnPrefix'])) {

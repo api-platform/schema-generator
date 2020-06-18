@@ -58,26 +58,26 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
         if ($field['isEnum']) {
             $type = $field['isArray'] ? 'simple_array' : 'string';
         } else {
-            switch ($field['range']) {
-                case 'Boolean':
+            switch ($field['range'] ? $field['range']->getUri() : null) {
+                case 'http://schema.org/Boolean':
                     $type = 'boolean';
                     break;
-                case 'Date':
-                case 'DateTime':
+                case 'http://schema.org/Date':
+                case 'http://schema.org/DateTime':
                     $type = 'date';
                     break;
-                case 'Time':
+                case 'http://schema.org/Time':
                     $type = 'time';
                     break;
-                case 'Number':
-                case 'Float':
+                case 'http://schema.org/Number':
+                case 'http://schema.org/Float':
                     $type = 'float';
                     break;
-                case 'Integer':
+                case 'http://schema.org/Integer':
                     $type = 'integer';
                     break;
-                case 'Text':
-                case 'URL':
+                case 'http://schema.org/Text':
+                case 'http://schema.org/URL':
                     $type = 'string';
                     break;
             }
@@ -93,17 +93,27 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
             $annotation .= sprintf('(type="%s")', $type);
 
             $annotations[] = $annotation;
-        } else {
-            if (CardinalitiesExtractor::CARDINALITY_0_1 === $field['cardinality']
+
+            return $annotations;
+        }
+
+        if (!$field['range']) {
+            return $annotations;
+        }
+
+        if (CardinalitiesExtractor::CARDINALITY_0_1 === $field['cardinality']
                 || CardinalitiesExtractor::CARDINALITY_1_1 === $field['cardinality']
                 || CardinalitiesExtractor::CARDINALITY_N_0 === $field['cardinality']
                 || CardinalitiesExtractor::CARDINALITY_N_1 === $field['cardinality']) {
-                $annotations[] = sprintf('@MongoDB\ReferenceOne(targetDocument="%s", simple=true))', $this->getRelationName($field['range']));
-            } elseif (CardinalitiesExtractor::CARDINALITY_0_N === $field['cardinality']
+            $annotations[] = sprintf('@MongoDB\ReferenceOne(targetDocument="%s", simple=true))', $this->getRelationName($field['range']->localName()));
+
+            return $annotations;
+        }
+
+        if (CardinalitiesExtractor::CARDINALITY_0_N === $field['cardinality']
                 || CardinalitiesExtractor::CARDINALITY_1_N === $field['cardinality']
                 || CardinalitiesExtractor::CARDINALITY_N_N === $field['cardinality']) {
-                $annotations[] = sprintf('@MongoDB\ReferenceMany(targetDocument="%s", simple=true)', $this->getRelationName($field['range']));
-            }
+            $annotations[] = sprintf('@MongoDB\ReferenceMany(targetDocument="%s", simple=true)', $this->getRelationName($field['range']->localName()));
         }
 
         return $annotations;

@@ -15,6 +15,7 @@ namespace ApiPlatform\SchemaGenerator\Tests;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
+use ApiPlatform\SchemaGenerator\PhpTypeConverter;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
 use Doctrine\Inflector\InflectorFactory;
@@ -46,7 +47,7 @@ class TypesGeneratorTest extends TestCase
         $goodRelationsBridgeProphecy = $this->prophesize(GoodRelationsBridge::class);
         $goodRelationsBridge = $goodRelationsBridgeProphecy->reveal();
 
-        $typesGenerator = new TypesGenerator(InflectorFactory::create()->build(), $twig, new NullLogger(), $this->getGraphs(), $cardinalitiesExtractor, $goodRelationsBridge);
+        $typesGenerator = new TypesGenerator(InflectorFactory::create()->build(), $twig, new NullLogger(), $this->getGraphs(), new PhpTypeConverter(), $cardinalitiesExtractor, $goodRelationsBridge);
 
         $typesGenerator->generate($this->getConfig());
     }

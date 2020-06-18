@@ -26,13 +26,11 @@ class DumpConfigurationTest extends TestCase
     {
         $commandTester = new CommandTester(new DumpConfigurationCommand());
         $this->assertEquals(0, $commandTester->execute([]));
-        $this->assertEquals(
-            sprintf(
-                <<<'YAML'
+        $this->assertEquals(<<<'YAML'
 config:
 
     # RDF vocabularies
-    vocabs:
+    vocabularies:
 
         # Prototype
         -
@@ -43,11 +41,14 @@ config:
             # RDF vocabulary format
             format:               null # Example: rdfxml
 
-    # OWL relation files to use
+    # Namespace of the vocabulary to import
+    vocabularyNamespace:  'http://schema.org/' # Example: http://www.w3.org/ns/activitystreams#
+
+    # OWL relation files containing cardinality information in the GoodRelations format
     relations:            # Example: https://purl.org/goodrelations/v1.owl
 
         # Default:
-        - %s
+        - https://purl.org/goodrelations/v1.owl
 
     # Debug mode
     debug:                false
@@ -115,14 +116,14 @@ config:
     # Set this flag to true to generate fluent setter, adder and remover methods
     fluentMutatorMethods: false
 
-    # Schema.org's types to use
+    # Types to import from the vocabulary
     types:
 
         # Prototype
         id:
 
-            # Namespace of the vocabulary the type belongs to.
-            vocabularyNamespace:  'http://schema.org/'
+            # Namespace of the vocabulary of this type (defaults to the global "vocabularyNamespace" entry)
+            vocabularyNamespace:  null # Example: http://www.w3.org/ns/activitystreams#
 
             # Is the class abstract? (null to guess)
             abstract:             null
@@ -211,8 +212,6 @@ config:
 
 YAML
                 ,
-                str_replace('generator/data', 'generator/src/../data', realpath(__DIR__.'/../../data/v1.owl'))
-            ),
             $commandTester->getDisplay()
         );
     }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
+use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
 use Doctrine\Inflector\Inflector;
 use League\HTMLToMarkdown\HtmlConverter;
 use Psr\Log\LoggerInterface;
@@ -31,9 +32,9 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function __construct(Inflector $inflector, LoggerInterface $logger, array $graphs, array $cardinalities, array $config, array $classes)
+    public function __construct(PhpTypeConverterInterface $phpTypeConverter, LoggerInterface $logger, Inflector $inflector, array $graphs, array $cardinalities, array $config, array $classes)
     {
-        parent::__construct($inflector, $logger, $graphs, $cardinalities, $config, $classes);
+        parent::__construct($phpTypeConverter, $logger, $inflector, $graphs, $cardinalities, $config, $classes);
 
         $this->htmlToMarkdown = new HtmlConverter();
     }
@@ -118,7 +119,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             return [];
         }
 
-        return [sprintf('@param %s $%s', $this->toPhpType($this->classes[$className]['fields'][$fieldName], true), $this->inflector->singularize($fieldName))];
+        return [sprintf('@param %s $%s', $this->toPhpDocType($this->classes[$className]['fields'][$fieldName], true), $this->inflector->singularize($fieldName))];
     }
 
     /**
@@ -130,7 +131,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             return [];
         }
 
-        return [sprintf('@param  %s $%s', $this->toPhpType($this->classes[$className]['fields'][$fieldName], true), $this->inflector->singularize($fieldName))];
+        return [sprintf('@param  %s $%s', $this->toPhpDocType($this->classes[$className]['fields'][$fieldName], true), $this->inflector->singularize($fieldName))];
     }
 
     private function isDocUseful(string $className, string $fieldName, $adderOrRemover = false): bool
@@ -154,7 +155,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         } else {
             $annotations = $this->formatDoc((string) $resource->get('rdfs:comment'));
             $annotations[] = '';
-            $annotations[] = sprintf('@see %s %s', $resource->getUri(), 'Documentation on Schema.org');
+            $annotations[] = sprintf('@see %s', $resource->getUri());
         }
 
         if ($this->config['author']) {
@@ -181,9 +182,9 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         return $doc;
     }
 
-    private function toPhpDocType(array $field): string
+    protected function toPhpDocType(array $field, bool $adderOrRemover = false): string
     {
-        $type = $this->toPhpType($field);
+        $type = parent::toPhpDocType($field, $adderOrRemover);
         if ($field['isNullable']) {
             $type .= '|null';
         }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
+use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
 use Doctrine\Inflector\Inflector;
 use EasyRdf\Graph;
 use Psr\Log\LoggerInterface;
@@ -24,6 +25,7 @@ use Psr\Log\LoggerInterface;
  */
 abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterface
 {
+    protected PhpTypeConverterInterface $phpTypeConverter;
     protected Inflector $inflector;
     protected LoggerInterface $logger;
     /**
@@ -34,11 +36,9 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     protected array $config;
     protected array $classes;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct(Inflector $inflector, LoggerInterface $logger, array $graphs, array $cardinalities, array $config, array $classes)
+    public function __construct(PhpTypeConverterInterface $phpTypeConverter, LoggerInterface $logger, Inflector $inflector, array $graphs, array $cardinalities, array $config, array $classes)
     {
+        $this->phpTypeConverter = $phpTypeConverter;
         $this->inflector = $inflector;
         $this->logger = $logger;
         $this->graphs = $graphs;
@@ -120,12 +120,10 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     }
 
     /**
-     * Converts a Schema.org range to a PHP type.
+     * Converts a RDF range to a PHPDoc type.
      */
-    protected function toPhpType(array $field, bool $adderOrRemover = false): string
+    protected function toPhpDocType(array $field, bool $adderOrRemover = false): ?string
     {
-        $range = $field['range'];
-
         if ($field['isEnum']) {
             if ($field['isArray']) {
                 return 'string[]';
@@ -134,49 +132,24 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
             return 'string';
         }
 
-        $data = false;
-        switch ($range) {
-            case 'Boolean':
-                $data = 'bool';
-                break;
-            case 'Date':
-            case 'DateTime':
-            case 'Time':
-                $data = '\\'.\DateTimeInterface::class;
-                break;
-            case 'Number':
-            case 'Float':
-                $data = 'float';
-                break;
-            case 'Integer':
-                $data = 'integer';
-                break;
-            case 'Text':
-            case 'URL':
-                $data = 'string';
-                break;
+        if (null !== $phpDocType = $this->phpTypeConverter->getPhpType(['isArray' => false] + $field)) {
+            return $field['isArray'] ? sprintf('%s[]', $phpDocType) : $phpDocType;
         }
 
-        if (false !== $data) {
-            if ($field['isArray']) {
-                return sprintf('%s[]', $data);
-            }
-
-            return $data;
+        if (!isset($field['range'])) {
+            return null;
         }
 
-        if (isset($this->classes[$field['range']]['interfaceName'])) {
-            $range = $this->classes[$field['range']]['interfaceName'];
+        $rangeName = $field['range']->localName();
+        $phpDocType = $this->classes[$rangeName]['interfaceName'] ?? $rangeName;
+        if (!$field['isArray'] || $adderOrRemover) {
+            return $phpDocType;
         }
 
-        if ($field['isArray'] && !$adderOrRemover) {
-            if ($this->config['doctrine']['useCollection']) {
-                return sprintf('Collection<%s>', $range);
-            }
-
-            return sprintf('%s[]', $range);
+        if ($this->config['doctrine']['useCollection']) {
+            return sprintf('Collection<%s>', $phpDocType);
         }
 
-        return $range;
+        return sprintf('%s[]', $phpDocType);
     }
 }

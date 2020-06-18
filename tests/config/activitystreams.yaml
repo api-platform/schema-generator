@@ -1,0 +1,3 @@
+vocabularies:
+    - tests/data/activitystreams2.owl
+vocabularyNamespace: http://www.w3.org/ns/activitystreams#

@@ -103,8 +103,8 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
     {
         return $this->classes[$className]['fields'][$fieldName]['isCustom'] ? [] : [
             sprintf(
-                '@ApiProperty(iri="http://schema.org/%s")',
-                $fieldName
+                '@ApiProperty(iri="%s")',
+                $this->classes[$className]['fields'][$fieldName]['resource']->getUri(),
             ),
         ];
     }

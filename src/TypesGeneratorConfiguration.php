@@ -28,15 +28,8 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 final class TypesGeneratorConfiguration implements ConfigurationInterface
 {
-    /**
-     * @see https://schema.org/version/latest/schema.rdf
-     */
     public const SCHEMA_ORG_URI = 'https://schema.org/version/latest/schema.rdf';
-
-    /**
-     * @see https://purl.org/goodrelations/v1.owl
-     */
-    public const GOOD_RELATIONS_URI = __DIR__.'/../data/v1.owl';
+    public const GOOD_RELATIONS_URI = 'https://purl.org/goodrelations/v1.owl';
     public const SCHEMA_ORG_NAMESPACE = 'http://schema.org/';
 
     private ?string $defaultPrefix;
@@ -58,7 +51,7 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
         $treeBuilder
             ->getRootNode()
             ->children()
-                ->arrayNode('vocabs')
+                ->arrayNode('vocabularies')
                     ->info('RDF vocabularies')
                     ->defaultValue([['uri' => self::SCHEMA_ORG_URI, 'format' => 'rdfxml']])
                     ->beforeNormalization()
@@ -79,8 +72,9 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->scalarNode('vocabularyNamespace')->defaultValue(self::SCHEMA_ORG_NAMESPACE)->info('Namespace of the vocabulary to import')->example('http://www.w3.org/ns/activitystreams#')->end()
                 ->arrayNode('relations')
-                    ->info('OWL relation files to use')
+                    ->info('OWL relation files containing cardinality information in the GoodRelations format')
                     ->example('https://purl.org/goodrelations/v1.owl')
                     ->defaultValue([self::GOOD_RELATIONS_URI])
                     ->prototype('scalar')->end()
@@ -140,11 +134,11 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                             return $v;
                         })
                     ->end()
-                    ->info('Schema.org\'s types to use')
+                    ->info('Types to import from the vocabulary')
                     ->useAttributeAsKey('id')
                     ->arrayPrototype()
                         ->children()
-                            ->scalarNode('vocabularyNamespace')->defaultValue(self::SCHEMA_ORG_NAMESPACE)->info('Namespace of the vocabulary the type belongs to.')->end()
+                            ->scalarNode('vocabularyNamespace')->defaultNull()->info('Namespace of the vocabulary of this type (defaults to the global "vocabularyNamespace" entry)')->example('http://www.w3.org/ns/activitystreams#')->end()
                             ->booleanNode('abstract')->defaultNull()->info('Is the class abstract? (null to guess)')->end()
                             ->booleanNode('embeddable')->defaultFalse()->info('Is the class embeddable?')->end()
                             ->arrayNode('namespaces')

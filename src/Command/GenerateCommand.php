@@ -15,6 +15,7 @@ namespace ApiPlatform\SchemaGenerator\Command;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
+use ApiPlatform\SchemaGenerator\PhpTypeConverter;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
 use Doctrine\Inflector\InflectorFactory;
@@ -38,7 +39,7 @@ use Twig\TwigFilter;
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-final class GenerateTypesCommand extends Command
+final class GenerateCommand extends Command
 {
     private const DEFAULT_CONFIG_FILE = 'schema.yaml';
 
@@ -65,8 +66,8 @@ final class GenerateTypesCommand extends Command
         }
 
         $this
-            ->setName('generate-types')
-            ->setDescription('Generate types')
+            ->setName('generate')
+            ->setDescription('Generate the PHP code')
             ->addArgument('output', $this->defaultOutput ? InputArgument::OPTIONAL : InputArgument::REQUIRED, 'The output directory', $this->defaultOutput)
             ->addArgument('config', InputArgument::OPTIONAL, 'The config file to use (default to "schema.yaml" in the current directory, will generate all types if no config file exists)');
     }
@@ -122,7 +123,7 @@ final class GenerateTypesCommand extends Command
             unset($parser);
         } else {
             $helper = $this->getHelper('question');
-            $question = new ConfirmationQuestion('Your project has no config file. The entire Schema.org vocabulary will be built.'.PHP_EOL.'Continue? [yN]', false);
+            $question = new ConfirmationQuestion('Your project has no config file. The entire vocabulary will be imported.'.PHP_EOL.'Continue? [yN]', false);
 
             if (!$helper->ask($input, $output, $question)) {
                 return 0;
@@ -140,7 +141,7 @@ final class GenerateTypesCommand extends Command
         }
 
         $graphs = [];
-        foreach ($processedConfiguration['vocabs'] as $vocab) {
+        foreach ($processedConfiguration['vocabularies'] as $vocab) {
             $graph = new Graph();
             if (0 === strpos($vocab['uri'], 'http://') || 0 === strpos($vocab['uri'], 'https://')) {
                 $graph->load($vocab['uri'], $vocab['format']);
@@ -176,7 +177,7 @@ final class GenerateTypesCommand extends Command
 
         $logger = new ConsoleLogger($output);
 
-        $entitiesGenerator = new TypesGenerator($inflector, $twig, $logger, $graphs, $cardinalitiesExtractor, $goodRelationsBridge);
+        $entitiesGenerator = new TypesGenerator($inflector, $twig, $logger, $graphs, new PhpTypeConverter(), $cardinalitiesExtractor, $goodRelationsBridge);
         $entitiesGenerator->generate($processedConfiguration);
 
         return 0;

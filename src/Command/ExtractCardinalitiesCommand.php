@@ -37,8 +37,8 @@ final class ExtractCardinalitiesCommand extends Command
         $this
             ->setName('extract-cardinalities')
             ->setDescription('Extract properties\' cardinality')
-            ->addOption('schemaorg-file', 's', InputOption::VALUE_REQUIRED, 'The path or URL of the Schema.org RDF file to use.', TypesGeneratorConfiguration::SCHEMA_ORG_URI)
-            ->addOption('goodrelations-file', 'g', InputOption::VALUE_REQUIRED, 'The path or URL of the GoodRelations OWL file to use.', TypesGeneratorConfiguration::GOOD_RELATIONS_URI)
+            ->addOption('vocabulary-file', 'v', InputOption::VALUE_REQUIRED, 'The path or URL of the vocabulary RDF file to use.', TypesGeneratorConfiguration::SCHEMA_ORG_URI)
+            ->addOption('cardinality-file', 'g', InputOption::VALUE_REQUIRED, 'The path or URL of the OWL file containing the cardinality definitions.', TypesGeneratorConfiguration::GOOD_RELATIONS_URI)
         ;
     }
 
@@ -47,27 +47,27 @@ final class ExtractCardinalitiesCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $schemaOrgFile = $input->getOption('schemaorg-file');
+        $vocabFile = $input->getOption('vocabulary-file');
 
         $relations = [];
-        $schemaOrg = new Graph();
+        $graph = new Graph();
 
-        $format = pathinfo($schemaOrgFile, PATHINFO_EXTENSION) ?: 'guess';
-        if (0 === strpos($schemaOrgFile, 'http://') || 0 === strpos($schemaOrgFile, 'https://')) {
-            $schemaOrg->load($input->getOption('schemaorg-file'), $format);
+        $format = pathinfo($vocabFile, PATHINFO_EXTENSION) ?: 'guess';
+        if (0 === strpos($vocabFile, 'http://') || 0 === strpos($vocabFile, 'https://')) {
+            $graph->load($input->getOption('vocabulary-file'), $format);
         } else {
-            $schemaOrg->parseFile($input->getOption('schemaorg-file'), $format);
+            $graph->parseFile($input->getOption('vocabulary-file'), $format);
         }
 
-        $relations[] = $schemaOrg;
+        $relations[] = $graph;
 
-        $goodRelations = [new \SimpleXMLElement($input->getOption('goodrelations-file'), 0, true)];
+        $cardinality = [new \SimpleXMLElement($input->getOption('cardinality-file'), 0, true)];
 
-        $goodRelationsBridge = new GoodRelationsBridge($goodRelations);
+        $goodRelationsBridge = new GoodRelationsBridge($cardinality);
         $cardinalitiesExtractor = new CardinalitiesExtractor($relations, $goodRelationsBridge);
         $result = $cardinalitiesExtractor->extract();
 
-        $output->writeln(json_encode($result, JSON_PRETTY_PRINT));
+        $output->writeln(json_encode($result, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
 
         return 0;
     }

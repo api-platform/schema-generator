@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\Tests\Command;
 
-use ApiPlatform\SchemaGenerator\Command\GenerateTypesCommand;
+use ApiPlatform\SchemaGenerator\Command\GenerateCommand;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -22,7 +22,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class GenerateTypesCommandTest extends TestCase
+class GenerateCommandTest extends TestCase
 {
     /**
      * @var Filesystem
@@ -41,7 +41,7 @@ class GenerateTypesCommandTest extends TestCase
     {
         $this->fs->mkdir($output);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $output, 'config' => $config]));
     }
 
@@ -63,7 +63,7 @@ class GenerateTypesCommandTest extends TestCase
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/AddressBook/Entity/Person.php");
@@ -84,7 +84,7 @@ PHP
         $outputDir = __DIR__.'/../../build/fluent-mutators';
         $config = __DIR__.'/../config/fluent-mutators.yaml';
         $this->fs->mkdir($outputDir);
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
@@ -123,7 +123,7 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
@@ -140,7 +140,7 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $creativeWork = file_get_contents("$outputDir/App/Entity/CreativeWork.php");
@@ -172,7 +172,7 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
@@ -194,7 +194,7 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
@@ -229,7 +229,7 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
@@ -263,7 +263,7 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
@@ -299,7 +299,7 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
@@ -334,7 +334,7 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
@@ -351,7 +351,7 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/Entity/Person.php");
@@ -370,7 +370,7 @@ PHP
         $currentDir = getcwd();
         chdir($outputDir);
         try {
-            $commandTester = new CommandTester(new GenerateTypesCommand());
+            $commandTester = new CommandTester(new GenerateCommand());
             $this->assertEquals(0, $commandTester->execute([]));
 
             $person = file_get_contents("$outputDir/src/Entity/Person.php");
@@ -388,7 +388,7 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $gender = file_get_contents("$outputDir/App/Enum/GenderType.php");
@@ -411,7 +411,7 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $creativeWork = file_get_contents("$outputDir/App/Entity/CreativeWork.php");
@@ -442,12 +442,12 @@ PHP
     {
         // No config file is given.
         $application = new Application();
-        $application->add(new GenerateTypesCommand());
+        $application->add(new GenerateCommand());
 
-        $command = $application->find('generate-types');
+        $command = $application->find('generate');
         $commandTester = new CommandTester($command);
         $commandTester->setInputs(['n']);
         self::assertEquals(0, $commandTester->execute([]));
-        $this->assertRegExp('/The entire Schema\.org vocabulary will be built/', $commandTester->getDisplay());
+        $this->assertRegExp('/The entire vocabulary will be imported/', $commandTester->getDisplay());
     }
 }
