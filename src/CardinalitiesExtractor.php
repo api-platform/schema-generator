@@ -17,7 +17,7 @@ use EasyRdf\Graph;
 use EasyRdf\Resource;
 
 /**
- * Cardinality extractor.
+ * Extracts cardinalities from the OWL definition, from GoodRelations or from Schema.org's comments.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
@@ -97,6 +97,10 @@ class CardinalitiesExtractor
         }
         if ($property->isA('owl:InverseFunctionalProperty')) {
             return self::CARDINALITY_0_N;
+        }
+
+        if (0 !== strpos($property->getUri(), 'http://schema.org')) {
+            return self::CARDINALITY_UNKNOWN;
         }
 
         $localName = $property->localName();

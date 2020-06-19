@@ -215,14 +215,16 @@ class TypesGenerator
 
                 // Parent
                 $class['parent'] = $typeConfig['parent'] ?? null;
-                if (null === $class['parent']) {
-                    $numberOfSupertypes = \count($type->all('rdfs:subClassOf'));
-
-                    if ($numberOfSupertypes > 1) {
-                        $this->logger->warning(sprintf('The type "%s" has several supertypes. Using the first one.', $type->localName()));
+                if (
+                    (null === $class['parent']) &&
+                    $subclassOf = array_filter($type->all('rdfs:subClassOf'), fn (Resource $resource) => !$resource->isBNode())
+                ) {
+                    if (\count($subclassOf) > 1) {
+                        $this->logger->warning(sprintf('The type "%s" has several supertypes. Using the first one.', $type->getUri()));
                     }
 
-                    $class['parent'] = $numberOfSupertypes ? $type->all('rdfs:subClassOf')[0]->localName() : false;
+                    $parentName = $subclassOf[0]->localName();
+                    $class['parent'] = $parentName;
                 }
 
                 if (isset($class['parent'], $config['types'][$class['parent']]['namespaces']['class'])) {
@@ -303,11 +305,11 @@ class TypesGenerator
             $class['abstract'] = $config['types'][$class['name']]['abstract'] ?? $class['hasChild'];
 
             // When including all properties, ignore properties already set on parent
-            if (isset($config['types'][$class['name']]['allProperties'], $classes[$class['parent']]) && $config['types'][$class['name']]['allProperties']) {
+            if (($config['types'][$class['name']]['allProperties'] ?? true) && isset($classes[$class['parent']])) {
                 $type = $class['resource'];
-
                 foreach ($propertiesMap[$type->getUri()] as $property) {
-                    if (!isset($class['fields'][$property->localName()])) {
+                    $propertyName = $property->localName();
+                    if (!isset($class['fields'][$propertyName])) {
                         continue;
                     }
 
@@ -322,15 +324,13 @@ class TypesGenerator
                             // Unset implicit property
                             $parentType = $parentClass['resource'];
                             if (\in_array($property, $propertiesMap[$parentType->getUri()], true)) {
-                                unset($class['fields'][$property->localName()]);
+                                unset($class['fields'][$propertyName]);
                                 continue 2;
                             }
-                        } else {
+                        } elseif (\array_key_exists($propertyName, $parentConfig['properties'])) {
                             // Unset explicit property
-                            if (\array_key_exists($property->localName(), $parentConfig['properties'])) {
-                                unset($class['fields'][$property->localName()]);
-                                continue 2;
-                            }
+                            unset($class['fields'][$propertyName]);
+                            continue 2;
                         }
 
                         $parentConfig = $parentClass['parent'] ? ($config['types'][$parentClass['parent']] ?? null) : null;

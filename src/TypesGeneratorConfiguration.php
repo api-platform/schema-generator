@@ -124,11 +124,9 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                 ->arrayNode('types')
                     ->beforeNormalization()
                         ->always()
-                        ->then(function ($v) {
+                        ->then(static function ($v) {
                             foreach ($v as $key => $type) {
-                                if (!isset($type['properties'])) {
-                                    $v[$key]['allProperties'] = true;
-                                }
+                                $v[$key]['allProperties'] ??= !isset($type['properties']);
                             }
 
                             return $v;
