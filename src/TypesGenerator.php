@@ -285,7 +285,7 @@ class TypesGenerator
                     $classes[$class['parent']]['hasChild'] = true;
                     $class['parentHasConstructor'] = $classes[$class['parent']]['hasConstructor'];
                 } else {
-                    $this->logger->error(sprintf('The type "%s" (parent of "%s") doesn\'t exist', $class['parent'], $type->getUri()));
+                    $this->logger->error(sprintf('The type "%s" (parent of "%s") doesn\'t exist', $class['parent'], $class['resource']->getUri()));
                 }
             }
 
@@ -492,7 +492,7 @@ class TypesGenerator
     /**
      * Gets the parent classes of the current one and add them to $parentClasses array.
      *
-     * @param resource[] $parentClasses
+     * @return resource[]
      */
     private function getParentClasses(Resource $resource, array $parentClasses = []): array
     {
@@ -886,15 +886,6 @@ class TypesGenerator
 
     private function getFieldName(string $propertyName, bool $isArray): string
     {
-        $snakeProperty = preg_replace('/([A-Z])/', '_$1', $propertyName);
-        $exploded = explode('_', $snakeProperty);
-
-        if (2 < \strlen($word = $exploded[\count($exploded) - 1])) {
-            $exploded[\count($exploded) - 1] = $isArray ? $this->inflector->pluralize($word) : $this->inflector->singularize($word);
-
-            return implode('', $exploded);
-        }
-
         return $propertyName;
     }
 }
