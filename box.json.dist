@@ -9,7 +9,6 @@
   ],
 
   "directories-bin": [
-    "data/",
     "templates/"
   ],
   "files": [

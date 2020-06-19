@@ -137,7 +137,12 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
             return [$annotation];
         }
 
-        $relationName = $this->getRelationName($field['range']->localName());
+        if (null === $relationName = $this->getRelationName($rangeName = $field['range']->localName())) {
+            $this->logger->error('The type "{type}" of the property "{property}" from the class "{class}" doesn\'t exist', ['type' => $rangeName, 'property' => $field['name'], 'class' => $className]);
+
+            return [];
+        }
+
         if ($field['isEmbedded']) {
             $columnPrefix = ', columnPrefix=';
             if (\is_bool($field['columnPrefix'])) {

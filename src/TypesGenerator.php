@@ -166,7 +166,7 @@ class TypesGenerator
         }
 
         $classes = [];
-        $propertiesMap = $this->createPropertiesMap($typesToGenerate);
+        $propertiesMap = $this->createPropertiesMap($typesToGenerate, $config);
 
         foreach ($typesToGenerate as $typeName => $type) {
             if ($type->isBNode()) {
@@ -175,6 +175,14 @@ class TypesGenerator
             }
 
             $typeName = \is_string($typeName) ? $typeName : $type->localName();
+            if ($type->isA('owl:DeprecatedClass')) {
+                if (!isset($config['types'][$typeName])) {
+                    continue;
+                }
+
+                $this->logger->warning('The type "{type}" is deprecated', ['type' => $type->getUri()]);
+            }
+
             $typeConfig = $config['types'][$typeName] ?? null;
             $class = $baseClass;
 
@@ -228,10 +236,6 @@ class TypesGenerator
                 // Embeddable
                 $class['embeddable'] = $typeConfig['embeddable'] ?? false;
 
-                if (!$config['types'] && $class['parent'] && !isset($config['types'][$class['parent']])) {
-                    $this->logger->error(sprintf('The type "%s" (parent of "%s") doesn\'t exist', $class['parent'], $type->getUri()));
-                }
-
                 // Interfaces
                 if ($config['useInterface']) {
                     $class['interfaceNamespace'] = isset($typeConfig['namespaces']['interface']) && $typeConfig['namespaces']['interface'] ? $typeConfig['namespaces']['interface'] : $config['namespaces']['interface'];
@@ -274,9 +278,13 @@ class TypesGenerator
 
         // Second pass
         foreach ($classes as &$class) {
-            if ($class['parent'] && isset($classes[$class['parent']])) {
-                $classes[$class['parent']]['hasChild'] = true;
-                $class['parentHasConstructor'] = $classes[$class['parent']]['hasConstructor'];
+            if ($class['parent']) {
+                if (isset($classes[$class['parent']])) {
+                    $classes[$class['parent']]['hasChild'] = true;
+                    $class['parentHasConstructor'] = $classes[$class['parent']]['hasConstructor'];
+                } else {
+                    $this->logger->error(sprintf('The type "%s" (parent of "%s") doesn\'t exist', $class['parent'], $type->getUri()));
+                }
             }
 
             foreach ($class['fields'] as &$field) {
@@ -484,12 +492,12 @@ class TypesGenerator
     /**
      * Gets the parent classes of the current one and add them to $parentClasses array.
      *
-     * @param string[] $parentClasses
+     * @param resource[] $parentClasses
      */
     private function getParentClasses(Resource $resource, array $parentClasses = []): array
     {
         if ([] === $parentClasses) {
-            return $this->getParentClasses($resource, [$resource->getUri()]);
+            return $this->getParentClasses($resource, [$resource]);
         }
 
         if (!$subclasses = $resource->all('rdfs:subClassOf')) {
@@ -497,7 +505,7 @@ class TypesGenerator
         }
 
         $parentClassUri = $subclasses[0]->getUri();
-        $parentClasses[] = $parentClassUri;
+        $parentClasses[] = $subclasses[0];
 
         foreach ($this->graphs as $graph) {
             foreach (self::$classTypes as $classType) {
@@ -515,14 +523,18 @@ class TypesGenerator
     /**
      * Creates a map between classes and properties.
      */
-    private function createPropertiesMap(array $types): array
+    private function createPropertiesMap(array $types, array $config): array
     {
-        $typesAsString = [];
+        $typesResources = [];
         $map = [];
         foreach ($types as $type) {
             // get all parent classes until the root
             $parentClasses = $this->getParentClasses($type);
-            $typesAsString[] = $parentClasses;
+            $typesResources[] = [
+                'resources' => $parentClasses,
+                'uris' => array_map(fn (Resource $parentClass) => $parentClass->getUri(), $parentClasses),
+                'names' => array_map(fn (Resource $parentClass) => $parentClass->localName(), $parentClasses),
+            ];
             $map[$type->getUri()] = [];
         }
 
@@ -535,9 +547,18 @@ class TypesGenerator
 
                     foreach (self::$domainProperties as $domainPropertyType) {
                         foreach ($property->all($domainPropertyType) as $domain) {
-                            foreach ($typesAsString as $typesAsStringItem) {
-                                if (\in_array($domain->getUri(), $typesAsStringItem, true)) {
-                                    $map[$typesAsStringItem[0]][] = $property;
+                            foreach ($typesResources as $typesResourceHierarchy) {
+                                if (\in_array($domain->getUri(), $typesResourceHierarchy['uris'], true)) {
+                                    $typeUri = $typesResourceHierarchy['uris'][0];
+                                    if ($property->isA('owl:DeprecatedProperty')) {
+                                        $propertyName = $property->localName();
+                                        if (!isset($config['types'][$typesResourceHierarchy['names'][0]]['properties'][$propertyName])) {
+                                            continue;
+                                        }
+
+                                        $this->logger->warning('The property "{property}" of the type "{type}" is deprecated', ['property' => $property->getUri(), 'type' => $typeUri]);
+                                    }
+                                    $map[$typeUri][] = $property;
                                 }
                             }
                         }
@@ -584,7 +605,7 @@ class TypesGenerator
         $ranges = [];
         foreach (self::$rangeProperties as $rangePropertyType) {
             foreach ($property->all($rangePropertyType) as $range) {
-                if (!$range instanceof Resource) {
+                if (!$range instanceof Resource || $range->isBNode()) {
                     continue;
                 }
 
