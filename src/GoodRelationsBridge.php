@@ -82,7 +82,7 @@ class GoodRelationsBridge
     /**
      * Checks if a property exists in GoodRelations.
      */
-    public function exist(string $id): bool
+    public function exists(string $id): bool
     {
         foreach ($this->relations as $relation) {
             $result = $relation->xpath(sprintf('//*[@rdf:about="%s"]', $this->getPropertyUrl($id)));

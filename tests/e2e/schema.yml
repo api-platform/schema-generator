@@ -20,7 +20,7 @@ types:
         # Disable the generation of the class hierarchy for this type
         parent: false
         properties:
-            addressCountry: { range: Text }
+            addressCountry: { range: http://schema.org/Text }
             addressLocality: ~
             addressRegion: ~
             postOfficeBoxNumber: ~

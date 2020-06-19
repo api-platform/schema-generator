@@ -132,6 +132,7 @@ class TypesGeneratorTest extends TestCase
                 'entity' => 'App\Entity',
             ],
             'output' => 'build/type-generator-test',
+            'allTypes' => false,
             'types' => [
                 'Article' => [
                     'allProperties' => false,

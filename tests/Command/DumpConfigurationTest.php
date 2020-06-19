@@ -116,6 +116,9 @@ config:
     # Set this flag to true to generate fluent setter, adder and remover methods
     fluentMutatorMethods: false
 
+    # Generate all types, even if an explicit configuration exists
+    allTypes:             false
+
     # Types to import from the vocabulary
     types:
 

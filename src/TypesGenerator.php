@@ -131,7 +131,7 @@ class TypesGenerator
         ];
 
         $typesToGenerate = [];
-        if (!$config['types']) {
+        if ($config['allTypes'] || !$config['types']) {
             foreach ($this->graphs as $graph) {
                 foreach (self::$classTypes as $type) {
                     $typesToGenerate[] = $graph->allOfType($type);
@@ -217,7 +217,7 @@ class TypesGenerator
                 $class['parent'] = $typeConfig['parent'] ?? null;
                 if (
                     (null === $class['parent']) &&
-                    $subclassOf = array_filter($type->all('rdfs:subClassOf'), fn (Resource $resource) => !$resource->isBNode())
+                    $subclassOf = array_filter($type->all('rdfs:subClassOf', 'resource'), fn (Resource $resource) => !$resource->isBNode())
                 ) {
                     if (\count($subclassOf) > 1) {
                         $this->logger->warning(sprintf('The type "%s" has several supertypes. Using the first one.', $type->getUri()));
@@ -261,7 +261,7 @@ class TypesGenerator
                     $this->logger->info(sprintf('The property "%s" (type "%s") is a custom property.', $key, $type->getUri()));
                     $customResource = new Resource('_:'.$key, new Graph());
                     $customResource->add('rdfs:range', $type);
-                    $class = $this->generateField($config, $class, $type, $typeName, $customResource);
+                    $class = $this->generateField($config, $class, $type, $typeName, $customResource, true);
                 }
             } else {
                 // All properties
@@ -501,7 +501,7 @@ class TypesGenerator
         }
 
         $filterBNodes = fn ($parentClasses) => array_filter($parentClasses, fn ($parentClass) => !$parentClass->isBNode());
-        if (!$subclasses = $resource->all('rdfs:subClassOf')) {
+        if (!$subclasses = $resource->all('rdfs:subClassOf', 'resource')) {
             return $filterBNodes($parentClasses);
         }
 
@@ -547,7 +547,7 @@ class TypesGenerator
                     }
 
                     foreach (self::$domainProperties as $domainPropertyType) {
-                        foreach ($property->all($domainPropertyType) as $domain) {
+                        foreach ($property->all($domainPropertyType, 'resource') as $domain) {
                             foreach ($typesResources as $typesResourceHierarchy) {
                                 if (\in_array($domain->getUri(), $typesResourceHierarchy['uris'], true)) {
                                     $typeUri = $typesResourceHierarchy['uris'][0];
@@ -574,7 +574,7 @@ class TypesGenerator
     /**
      * Updates generated $class with given field config.
      */
-    private function generateField(array $config, array $class, Resource $type, string $typeName, Resource $property): array
+    private function generateField(array $config, array $class, Resource $type, string $typeName, Resource $property, bool $isCustom = false): array
     {
         $typeUri = $type->getUri();
         $propertyName = $property->localName();
@@ -583,10 +583,8 @@ class TypesGenerator
         $typesDefined = !empty($config['types']);
 
         // Warn when property are not part of GoodRelations
-        if ($config['checkIsGoodRelations']) {
-            if (!$this->goodRelationsBridge->exist($propertyName)) {
-                $this->logger->warning(sprintf('The property "%s" (type "%s") is not part of GoodRelations.', $propertyUri, $typeUri));
-            }
+        if ($config['checkIsGoodRelations'] && !$this->goodRelationsBridge->exists($propertyName)) {
+            $this->logger->warning(sprintf('The property "%s" (type "%s") is not part of GoodRelations.', $propertyUri, $typeUri));
         }
 
         // Ignore or warn when properties are legacy
@@ -594,7 +592,7 @@ class TypesGenerator
             if (isset($typeConfig['properties'])) {
                 $this->logger->warning(sprintf('The property "%s" (type "%s") is legacy.', $propertyUri, $typeUri));
             } else {
-                $this->logger->info(sprintf('The property "%s" (type "%s") is legacy. Ignoring.', $propertyUri, $typeUri));
+                $this->logger->debug(sprintf('The property "%s" (type "%s") is legacy. Ignoring.', $propertyUri, $typeUri));
 
                 return $class;
             }
@@ -602,34 +600,34 @@ class TypesGenerator
 
         $propertyConfig = $typeConfig['properties'][$propertyName] ?? [];
 
-        $isCustom = true;
         $ranges = [];
         foreach (self::$rangeProperties as $rangePropertyType) {
-            foreach ($property->all($rangePropertyType) as $range) {
-                if (!$range instanceof Resource || $range->isBNode()) {
+            foreach ($property->all($rangePropertyType, 'resource') as $range) {
+                $localName = $range->localName();
+                $dataType = $this->phpTypeConverter->isDatatype($range);
+                if (!$dataType && $range->isBNode()) {
                     continue;
                 }
 
-                $localName = $range->localName();
                 if (
                     (!isset($propertyConfig['range']) || $propertyConfig['range'] === $localName) &&
-                    (!$typesDefined || isset($config['types'][$localName]) || $this->phpTypeConverter->isDatatype($range))
+                    (!$typesDefined || isset($config['types'][$localName]) || $dataType)
                 ) {
-                    $isCustom = false;
                     $ranges[] = $range;
                 }
             }
         }
 
-        $numberOfRanges = \count($ranges);
-        if (0 === $numberOfRanges) {
+        if (!$ranges) {
             if (isset($propertyConfig['range'])) {
-                $ranges[] = $property->get('rdf:Property');
+                $ranges[] = new Resource($propertyConfig['range'], $type->getGraph());
             } else {
                 $this->logger->error(sprintf('The property "%s" (type "%s") has an unknown type. Add its type to the config file.', $propertyUri, $typeUri));
             }
-        } else {
-            if ($numberOfRanges > 1) {
+        }
+
+        if ($ranges) {
+            if (\count($ranges) > 1) {
                 $this->logger->warning(sprintf('The property "%s" (type "%s") has several types. Using the first one ("%s") or possible options("%s").', $propertyUri, $typeUri, $ranges[0]->getUri(), implode('", "', array_map(fn (Resource $range) => $range->getUri(), $ranges))));
             }
 
@@ -637,7 +635,6 @@ class TypesGenerator
             if (!$cardinality || CardinalitiesExtractor::CARDINALITY_UNKNOWN === $cardinality) {
                 $cardinality = $this->cardinalities[$propertyUri] ?? CardinalitiesExtractor::CARDINALITY_1_1;
             }
-            // TODO: extract OWL cardinalities here
 
             $isArray = \in_array($cardinality, [
                 CardinalitiesExtractor::CARDINALITY_0_N,

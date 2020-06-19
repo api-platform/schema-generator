@@ -17,7 +17,7 @@ types:
       givenName: ~
       additionalName: ~
       gender: ~
-      address: { range: PostalAddress }
+      address: { range: http://schema.org/PostalAddress }
       birthDate: ~
       telephone: ~
       email: ~
@@ -25,17 +25,17 @@ types:
       # Default relation table name would be "person_organization" for all following fields, but we customize them
       affiliation: ~
       brand: { relationTableName: "person_brand"}
-      memberOf: { range: "Organization", cardinality: (1..*), relationTableName: "person_memberof"}
-      worksFor: { range: "Organization", cardinality: (0..*), relationTableName: "person_worksfor"}
+      memberOf: { range: "http://schema.org/Organization", cardinality: (1..*), relationTableName: "person_memberof"}
+      worksFor: { range: "http://schema.org/Organization", cardinality: (0..*), relationTableName: "person_worksfor"}
       # url field is a custom one without definition, it should render error
       url: ~
-      friends: { range: "Person", cardinality: (0..*) }
+      friends: { range: "http://schema.org/Person", cardinality: (0..*) }
   PostalAddress:
     # Disable the generation of the class hierarchy for this type
     parent: false
     properties:
       # Force the type of the addressCountry property to text
-      addressCountry: { range: "Text" }
+      addressCountry: { range: "http://schema.org/Text" }
       addressLocality: ~
       addressRegion: ~
       postOfficeBoxNumber: ~
