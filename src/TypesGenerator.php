@@ -500,8 +500,9 @@ class TypesGenerator
             return $this->getParentClasses($resource, [$resource]);
         }
 
+        $filterBNodes = fn ($parentClasses) => array_filter($parentClasses, fn ($parentClass) => !$parentClass->isBNode());
         if (!$subclasses = $resource->all('rdfs:subClassOf')) {
-            return $parentClasses;
+            return $filterBNodes($parentClasses);
         }
 
         $parentClassUri = $subclasses[0]->getUri();
@@ -517,7 +518,7 @@ class TypesGenerator
             }
         }
 
-        return $parentClasses;
+        return $filterBNodes($parentClasses);
     }
 
     /**
@@ -634,7 +635,7 @@ class TypesGenerator
 
             $cardinality = $propertyConfig['cardinality'] ?? false;
             if (!$cardinality || CardinalitiesExtractor::CARDINALITY_UNKNOWN === $cardinality) {
-                $cardinality = $this->cardinalities[$propertyName] ?? CardinalitiesExtractor::CARDINALITY_1_1;
+                $cardinality = $this->cardinalities[$propertyUri] ?? CardinalitiesExtractor::CARDINALITY_1_1;
             }
             // TODO: extract OWL cardinalities here
 

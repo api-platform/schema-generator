@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * A person (alive, dead, undead, or fictional).
  *
- * @see http://schema.org/Person Documentation on Schema.org
+ * @see http://schema.org/Person
  *
  * @ORM\Entity
  * @ApiResource(iri="http://schema.org/Person")

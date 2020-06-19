@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * The mailing address.
  *
- * @see http://schema.org/PostalAddress Documentation on Schema.org
+ * @see http://schema.org/PostalAddress
  *
  * @ORM\Entity
  * @ApiResource(iri="http://schema.org/PostalAddress")

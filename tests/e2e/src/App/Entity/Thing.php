@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * The most generic type of item.
  *
- * @see http://schema.org/Thing Documentation on Schema.org
+ * @see http://schema.org/Thing
  *
  * @ORM\Entity
  * @ApiResource(iri="http://schema.org/Thing")
