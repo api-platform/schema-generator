@@ -71,7 +71,7 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
         }
 
         if ($field['isEnum'] && $field['range']) {
-            $assert = sprintf('@Assert\Choice(callback={"%s", "toArray"}', $field['range']->localName());
+            $assert = sprintf('@Assert\Choice(callback={"%s", "toArray"}', $field['rangeName']);
 
             if ($field['isArray']) {
                 $assert .= ', multiple=true';
@@ -100,7 +100,7 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
 
         foreach ($this->classes[$className]['fields'] as $field) {
             if ($field['isEnum'] && $field['range']) {
-                $rangeName = $field['range']->localName();
+                $rangeName = $field['rangeName'];
                 $enumClass = $this->classes[$rangeName];
                 $enumNamespace = isset($enumClass['namespaces']['class']) && $enumClass['namespaces']['class'] ? $enumClass['namespaces']['class'] : $this->config['namespaces']['enum'];
                 $use = sprintf('%s\%s', $enumNamespace, $rangeName);

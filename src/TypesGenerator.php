@@ -47,6 +47,8 @@ class TypesGenerator
 
     /**
      * @var string
+     *
+     * @internal
      */
     private const SCHEMA_ORG_SUPERSEDED_BY = 'schema:supersededBy';
 
@@ -63,7 +65,7 @@ class TypesGenerator
      */
     public static array $propertyTypes = [
         'rdf:Property',
-        'ObjectProperty',
+        'owl:ObjectProperty',
         'owl:DatatypeProperty',
     ];
 
@@ -174,7 +176,7 @@ class TypesGenerator
                 continue;
             }
 
-            $typeName = \is_string($typeName) ? $typeName : $type->localName();
+            $typeName = $this->phpTypeConverter->escapeIdentifier(\is_string($typeName) ? $typeName : $type->localName());
             if ($type->isA('owl:DeprecatedClass')) {
                 if (!isset($config['types'][$typeName])) {
                     continue;
@@ -203,7 +205,7 @@ class TypesGenerator
                 foreach ($this->graphs as $graph) {
                     foreach ($graph->allOfType($type->getUri()) as $instance) {
                         $class['constants'][$instance->localName()] = [
-                            'name' => strtoupper(substr(preg_replace('/([A-Z])/', '_$1', $instance->localName()), 1)),
+                            'name' => $this->phpTypeConverter->escapeIdentifier(strtoupper(substr(preg_replace('/([A-Z])/', '_$1', $instance->localName()), 1))),
                             'resource' => $instance,
                             'value' => $instance->getUri(),
                         ];
@@ -223,8 +225,7 @@ class TypesGenerator
                         $this->logger->warning(sprintf('The type "%s" has several supertypes. Using the first one.', $type->getUri()));
                     }
 
-                    $parentName = $subclassOf[0]->localName();
-                    $class['parent'] = $parentName;
+                    $class['parent'] = $this->phpTypeConverter->escapeIdentifier($subclassOf[0]->localName());
                 }
 
                 if (isset($class['parent'], $config['types'][$class['parent']]['namespaces']['class'])) {
@@ -290,8 +291,7 @@ class TypesGenerator
             }
 
             foreach ($class['fields'] as &$field) {
-                $rangeName = $field['range'] ? $field['range']->localName() : null;
-                $field['isEnum'] = $classes[$rangeName]['isEnum'] ?? false;
+                $field['isEnum'] = $classes[$field['rangeName']]['isEnum'] ?? false;
                 $field['typeHint'] = $this->phpTypeConverter->getPhpType($field, $config, $classes);
 
                 if ($field['isArray']) {
@@ -378,6 +378,7 @@ class TypesGenerator
                     'id' => [
                         'name' => 'id',
                         'resource' => null,
+                        'rangeName' => 'Text',
                         'range' => new Resource($uri),
                         'cardinality' => CardinalitiesExtractor::CARDINALITY_1_1,
                         'ormColumn' => null,
@@ -580,7 +581,6 @@ class TypesGenerator
         $propertyName = $property->localName();
         $propertyUri = $property->getUri();
         $typeConfig = $config['types'][$typeName] ?? null;
-        $typesDefined = !empty($config['types']);
 
         // Warn when property are not part of GoodRelations
         if ($config['checkIsGoodRelations'] && !$this->goodRelationsBridge->exists($propertyName)) {
@@ -602,21 +602,14 @@ class TypesGenerator
 
         $ranges = [];
         foreach (self::$rangeProperties as $rangePropertyType) {
+            /**
+             * @var resource $range
+             */
             foreach ($property->all($rangePropertyType, 'resource') as $range) {
-                $localName = $range->localName();
-                $dataType = $this->phpTypeConverter->isDatatype($range);
-                if (!$dataType && $range->isBNode()) {
-                    continue;
-                }
-
-                if (
-                    (!isset($propertyConfig['range']) || $propertyConfig['range'] === $localName) &&
-                    (!$typesDefined || isset($config['types'][$localName]) || $dataType)
-                ) {
-                    $ranges[] = $range;
-                }
+                $ranges[] = $this->getRanges($range);
             }
         }
+        $ranges = array_merge(...$ranges);
 
         if (!$ranges) {
             if (isset($propertyConfig['range'])) {
@@ -659,8 +652,9 @@ class TypesGenerator
             }
 
             $class['fields'][$propertyName] = [
-                'name' => $this->getFieldName($propertyName, $isArray),
+                'name' => $this->phpTypeConverter->escapeIdentifier($propertyName),
                 'resource' => $property,
+                'rangeName' => isset($ranges[0]) ? $this->phpTypeConverter->escapeIdentifier($ranges[0]->localName()) : null,
                 'range' => $ranges[0] ?? null,
                 'cardinality' => $cardinality,
                 'ormColumn' => $propertyConfig['ormColumn'] ?? null,
@@ -701,6 +695,36 @@ class TypesGenerator
         }
 
         return array_merge(...$annotations);
+    }
+
+    private function getRanges(Resource $range): array
+    {
+        $localName = $range->localName();
+        $dataType = $this->phpTypeConverter->isDatatype($range);
+        $ranges = [];
+        if (!$dataType && $range->isBNode()) {
+            if (null !== ($unionOf = $range->get('owl:unionOf'))) {
+                return $this->getRanges($unionOf);
+            }
+
+            if (null !== ($rdfFirst = $range->get('rdf:first'))) {
+                $ranges = $this->getRanges($rdfFirst);
+                if (null !== ($rdfRest = $range->get('rdf:rest'))) {
+                    $ranges = array_merge($ranges, $this->getRanges($rdfRest));
+                }
+            }
+
+            return $ranges;
+        }
+
+        if (
+            (!isset($propertyConfig['range']) || $propertyConfig['range'] === $localName) &&
+            (empty($config['types']) || isset($config['types'][$localName]) || $dataType)
+        ) {
+            return [$range];
+        }
+
+        return [];
     }
 
     /**
@@ -812,12 +836,11 @@ class TypesGenerator
         }
 
         foreach ($classes[$className]['fields'] as $field) {
-            $rangeName = $field['range'] ? $field['range']->localName() : null;
-            if (isset($classes[$rangeName]['interfaceName'])) {
+            if (isset($classes[$field['rangeName']]['interfaceName'])) {
                 $use = sprintf(
                     '%s\\%s',
-                    $classes[$rangeName]['interfaceNamespace'],
-                    $classes[$rangeName]['interfaceName']
+                    $classes[$field['rangeName']]['interfaceNamespace'],
+                    $classes[$field['rangeName']]['interfaceName']
                 );
 
                 if (!\in_array($use, $uses, true)) {
@@ -882,10 +905,5 @@ class TypesGenerator
             new NullCacheManager()
         );
         $runner->fix();
-    }
-
-    private function getFieldName(string $propertyName, bool $isArray): string
-    {
-        return $propertyName;
     }
 }

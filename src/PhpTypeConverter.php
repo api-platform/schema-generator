@@ -34,6 +34,17 @@ final class PhpTypeConverter implements PhpTypeConverterInterface
         return $this->getNonArrayType($field, $classes);
     }
 
+    public function escapeIdentifier(string $identifier): string
+    {
+        foreach (self::RESERVED_KEYWORDS as $keyword) {
+            if (0 === strcasecmp($keyword, $identifier)) {
+                return $identifier.'_';
+            }
+        }
+
+        return $identifier;
+    }
+
     private function getNonArrayType(array $field, array $classes): ?string
     {
         if ($field['isEnum']) {
@@ -49,8 +60,8 @@ final class PhpTypeConverter implements PhpTypeConverterInterface
             return PhpTypeConverterInterface::BASE_MAPPING[$rangeUri];
         }
 
-        $rangeName = $field['range']->localName();
-        if ($type = $classes[$rangeName]['interfaceName'] ?? $classes[$rangeName]['name'] ?? null) {
+        $typeName = $field['rangeName'];
+        if ($type = $classes[$typeName]['interfaceName'] ?? $classes[$typeName]['name'] ?? null) {
             return $type;
         }
 

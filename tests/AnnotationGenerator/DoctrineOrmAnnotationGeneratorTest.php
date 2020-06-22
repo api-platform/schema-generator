@@ -46,12 +46,14 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
             [],
             [
                 'Product' => [
+                    'name' => 'Product',
                     'isEnum' => false,
                     'resource' => new Resource('http://schema.org/Product', $graph),
                     'abstract' => true,
                     'embeddable' => false,
                 ],
                 'Vehicle' => [
+                    'name' => 'Vehicle',
                     'isEnum' => false,
                     'abstract' => false,
                     'embeddable' => false,
@@ -61,6 +63,7 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
                             'isEnum' => false,
                             'isId' => false,
                             'isEmbedded' => true,
+                            'rangeName' => 'QuantitativeValue',
                             'range' => new Resource('http://schema.org/QuantitativeValue'),
                             'columnPrefix' => false,
                         ],
@@ -68,6 +71,7 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
                             'isEnum' => false,
                             'isId' => false,
                             'isEmbedded' => true,
+                            'rangeName' => 'QuantitativeValue',
                             'range' => new Resource('http://schema.org/QuantitativeValue'),
                             'columnPrefix' => 'weight_',
                         ],
@@ -80,7 +84,11 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
                     'resource' => new Resource('http://schema.org/QuantitativeValue', $graph),
                     'embeddable' => true,
                 ],
-                'MyEnum' => ['isEnum' => true, 'resource' => $myEnum],
+                'MyEnum' => [
+                    'name' => 'MyEnum',
+                    'isEnum' => true,
+                    'resource' => $myEnum,
+                ],
             ]
         );
     }

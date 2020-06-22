@@ -204,7 +204,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             return null;
         }
 
-        $rangeName = $field['range']->localName();
+        $rangeName = $field['rangeName'];
         $phpDocType = $this->classes[$rangeName]['interfaceName'] ?? $rangeName;
         if (!$field['isArray'] || $adderOrRemover) {
             return $phpDocType.$suffix;

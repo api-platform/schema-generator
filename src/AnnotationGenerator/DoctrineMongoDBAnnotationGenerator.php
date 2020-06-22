@@ -35,7 +35,7 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
 
         return [
             '',
-            $this->config['types'][$class['resource']->localName()]['doctrine']['inheritanceMapping'] ?? ($class['abstract'] ? '@MongoDB\MappedSuperclass' : '@MongoDB\Document'),
+            $this->config['types'][$class['name']]['doctrine']['inheritanceMapping'] ?? ($class['abstract'] ? '@MongoDB\MappedSuperclass' : '@MongoDB\Document'),
         ];
     }
 
@@ -97,13 +97,13 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
                 || CardinalitiesExtractor::CARDINALITY_1_1 === $field['cardinality']
                 || CardinalitiesExtractor::CARDINALITY_N_0 === $field['cardinality']
                 || CardinalitiesExtractor::CARDINALITY_N_1 === $field['cardinality']) {
-            return [sprintf('@MongoDB\ReferenceOne(targetDocument="%s", simple=true))', $this->getRelationName($field['range']->localName()))];
+            return [sprintf('@MongoDB\ReferenceOne(targetDocument="%s", simple=true))', $this->getRelationName($field['rangeName']))];
         }
 
         if (CardinalitiesExtractor::CARDINALITY_0_N === $field['cardinality']
                 || CardinalitiesExtractor::CARDINALITY_1_N === $field['cardinality']
                 || CardinalitiesExtractor::CARDINALITY_N_N === $field['cardinality']) {
-            return [sprintf('@MongoDB\ReferenceMany(targetDocument="%s", simple=true)', $this->getRelationName($field['range']->localName()))];
+            return [sprintf('@MongoDB\ReferenceMany(targetDocument="%s", simple=true)', $this->getRelationName($field['rangeName']))];
         }
 
         return [];
@@ -125,11 +125,9 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
     /**
      * Gets class or interface name to use in relations.
      */
-    private function getRelationName(string $range): string
+    private function getRelationName(string $rangeName): string
     {
-        $class = $this->classes[$range];
-
-        return $class[$range]['interfaceName'] ?? $class['name'];
+        return $this->classes[$rangeName]['interfaceName'] ?? $rangeName;
     }
 
     private function generateIdAnnotations(): array

@@ -34,8 +34,8 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
             return [];
         }
 
-        if (isset($this->config['types'][$class['resource']->localName()]['doctrine']['inheritanceMapping'])) {
-            $inheritanceMapping = $this->config['types'][$class['resource']->localName()]['doctrine']['inheritanceMapping'];
+        if (isset($this->config['types'][$class['name']]['doctrine']['inheritanceMapping'])) {
+            $inheritanceMapping = $this->config['types'][$class['name']]['doctrine']['inheritanceMapping'];
         } else {
             $inheritanceMapping = '@ORM\Entity';
 
@@ -137,8 +137,8 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
             return [$annotation];
         }
 
-        if (null === $relationName = $this->getRelationName($rangeName = $field['range']->localName())) {
-            $this->logger->error('The type "{type}" of the property "{property}" from the class "{class}" doesn\'t exist', ['type' => $rangeName, 'property' => $field['name'], 'class' => $className]);
+        if (null === $relationName = $this->getRelationName($field['rangeName'])) {
+            $this->logger->error('The type "{type}" of the property "{property}" from the class "{class}" doesn\'t exist', ['type' => $field['range']->getUri(), 'property' => $field['name'], 'class' => $className]);
 
             return [];
         }
@@ -248,26 +248,26 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * Gets class or interface name to use in relations.
      */
-    private function getRelationName(string $range): ?string
+    private function getRelationName(string $rangeName): ?string
     {
-        if (!isset($this->classes[$range])) {
+        if (!isset($this->classes[$rangeName])) {
             return null;
         }
 
-        $class = $this->classes[$range];
+        $class = $this->classes[$rangeName];
 
         if (isset($class['interfaceName'])) {
             return $class['interfaceName'];
         }
 
-        if (isset($this->config['types'][$class['name']]['namespaces']['class'])) {
+        if (isset($this->config['types'][$rangeName]['namespaces']['class'])) {
             return sprintf('%s\\%s', $this->config['types'][$class['name']]['namespaces']['class'], $class['name']);
         }
 
         if (isset($this->config['namespaces']['entity'])) {
-            return sprintf('%s\\%s', $this->config['namespaces']['entity'], $class['name']);
+            return sprintf('%s\\%s', $this->config['namespaces']['entity'], $rangeName);
         }
 
-        return $class['name'];
+        return $rangeName;
     }
 }
