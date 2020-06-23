@@ -343,7 +343,12 @@ class TypesGenerator
         // Generate ID
         if ($config['id']['generate']) {
             foreach ($classes as &$class) {
-                if ($class['hasChild'] || $class['isEnum'] || $class['embeddable']) {
+                if (
+                    $class['isEnum'] ||
+                    $class['embeddable'] ||
+                    ('child' === $config['id']['onClass'] && $class['hasChild']) ||
+                    ('parent' === $config['id']['onClass'] && $class['parent'])
+                ) {
                     continue;
                 }
 
@@ -549,20 +554,7 @@ class TypesGenerator
 
                     foreach (self::$domainProperties as $domainPropertyType) {
                         foreach ($property->all($domainPropertyType, 'resource') as $domain) {
-                            foreach ($typesResources as $typesResourceHierarchy) {
-                                if (\in_array($domain->getUri(), $typesResourceHierarchy['uris'], true)) {
-                                    $typeUri = $typesResourceHierarchy['uris'][0];
-                                    if ($property->isA('owl:DeprecatedProperty')) {
-                                        $propertyName = $property->localName();
-                                        if (!isset($config['types'][$typesResourceHierarchy['names'][0]]['properties'][$propertyName])) {
-                                            continue;
-                                        }
-
-                                        $this->logger->warning('The property "{property}" of the type "{type}" is deprecated', ['property' => $property->getUri(), 'type' => $typeUri]);
-                                    }
-                                    $map[$typeUri][] = $property;
-                                }
-                            }
+                            $this->addPropertyToMap($property, $domain, $typesResources, $map);
                         }
                     }
                 }
@@ -570,6 +562,45 @@ class TypesGenerator
         }
 
         return $map;
+    }
+
+    private function addPropertyToMap(Resource $property, Resource $domain, array $typesResources, array &$map): void
+    {
+        $propertyName = $property->localName();
+        $deprecated = $property->isA('owl:DeprecatedProperty');
+
+        if ($domain->isBNode()) {
+            if (null !== ($unionOf = $domain->get('owl:unionOf'))) {
+                $this->addPropertyToMap($property, $unionOf, $typesResources, $map);
+
+                return;
+            }
+
+            if (null !== ($rdfFirst = $domain->get('rdf:first'))) {
+                $this->addPropertyToMap($property, $rdfFirst, $typesResources, $map);
+                if (null !== ($rdfRest = $domain->get('rdf:rest'))) {
+                    $this->addPropertyToMap($property, $rdfRest, $typesResources, $map);
+                }
+            }
+
+            return;
+        }
+
+        foreach ($typesResources as $typesResourceHierarchy) {
+            if (!\in_array($domain->getUri(), $typesResourceHierarchy['uris'], true)) {
+                continue;
+            }
+
+            $typeUri = $typesResourceHierarchy['uris'][0];
+            if ($deprecated) {
+                if (!isset($config['types'][$typesResourceHierarchy['names'][0]]['properties'][$propertyName])) {
+                    continue;
+                }
+
+                $this->logger->warning('The property "{property}" of the type "{type}" is deprecated', ['property' => $property->getUri(), 'type' => $typeUri]);
+            }
+            $map[$typeUri][] = $property;
+        }
     }
 
     /**
@@ -606,7 +637,7 @@ class TypesGenerator
              * @var resource $range
              */
             foreach ($property->all($rangePropertyType, 'resource') as $range) {
-                $ranges[] = $this->getRanges($range);
+                $ranges[] = $this->getRanges($range, $propertyConfig);
             }
         }
         $ranges = array_merge(...$ranges);
@@ -619,65 +650,78 @@ class TypesGenerator
             }
         }
 
-        if ($ranges) {
-            if (\count($ranges) > 1) {
-                $this->logger->warning(sprintf('The property "%s" (type "%s") has several types. Using the first one ("%s") or possible options("%s").', $propertyUri, $typeUri, $ranges[0]->getUri(), implode('", "', array_map(fn (Resource $range) => $range->getUri(), $ranges))));
+        if (\count($ranges) > 1) {
+            $this->logger->warning(sprintf('The property "%s" (type "%s") has several types. Using the first one ("%s"). Other possible options: "%s".', $propertyUri, $typeUri, $ranges[0]->getUri(), implode('", "', array_map(fn (Resource $range) => $range->getUri(), $ranges))));
+        }
+
+        $rangeName = null;
+        $range = null;
+        if (isset($ranges[0])) {
+            $range = $ranges[0];
+            if (!isset($propertyConfig['range']) && $mappedUri = ($config['rangeMapping'][$ranges[0]->getUri()] ?? false)) {
+                $range = new Resource($mappedUri);
             }
 
-            $cardinality = $propertyConfig['cardinality'] ?? false;
-            if (!$cardinality || CardinalitiesExtractor::CARDINALITY_UNKNOWN === $cardinality) {
-                $cardinality = $this->cardinalities[$propertyUri] ?? CardinalitiesExtractor::CARDINALITY_1_1;
-            }
+            $rangeName = $this->phpTypeConverter->escapeIdentifier($range->localName());
+        }
 
-            $isArray = \in_array($cardinality, [
-                CardinalitiesExtractor::CARDINALITY_0_N,
+        if (!$ranges) {
+            return $class;
+        }
+
+        $cardinality = $propertyConfig['cardinality'] ?? false;
+        if (!$cardinality || CardinalitiesExtractor::CARDINALITY_UNKNOWN === $cardinality) {
+            $cardinality = $this->cardinalities[$propertyUri] ?? CardinalitiesExtractor::CARDINALITY_1_1;
+        }
+
+        $isArray = \in_array($cardinality, [
+            CardinalitiesExtractor::CARDINALITY_0_N,
+            CardinalitiesExtractor::CARDINALITY_1_N,
+            CardinalitiesExtractor::CARDINALITY_N_N,
+        ], true);
+
+        if (isset($propertyConfig['nullable'])) {
+            $isNullable = (bool) $propertyConfig['nullable'];
+        } else {
+            $isNullable = !\in_array($cardinality, [
+                CardinalitiesExtractor::CARDINALITY_1_1,
                 CardinalitiesExtractor::CARDINALITY_1_N,
-                CardinalitiesExtractor::CARDINALITY_N_N,
             ], true);
+        }
 
-            if (isset($propertyConfig['nullable'])) {
-                $isNullable = (bool) $propertyConfig['nullable'];
-            } else {
-                $isNullable = !\in_array($cardinality, [
-                    CardinalitiesExtractor::CARDINALITY_1_1,
-                    CardinalitiesExtractor::CARDINALITY_1_N,
-                ], true);
-            }
+        $columnPrefix = false;
+        $isEmbedded = $propertyConfig['embedded'] ?? false;
 
-            $columnPrefix = false;
-            $isEmbedded = $propertyConfig['embedded'] ?? false;
+        if (true === $isEmbedded) {
+            $columnPrefix = $propertyConfig['columnPrefix'] ?? false;
+        }
 
-            if (true === $isEmbedded) {
-                $columnPrefix = $propertyConfig['columnPrefix'] ?? false;
-            }
+        $class['fields'][$propertyName] = [
+            'name' => $propertyName,
+            'resource' => $property,
+            'rangeName' => $rangeName,
+            'range' => $range,
+            'cardinality' => $cardinality,
+            'ormColumn' => $propertyConfig['ormColumn'] ?? null,
+            'isArray' => $isArray,
+            'isReadable' => $propertyConfig['readable'] ?? true,
+            'isWritable' => $propertyConfig['writable'] ?? true,
+            'isNullable' => $isNullable,
+            'isUnique' => $propertyConfig['unique'] ?? false,
+            'isCustom' => $isCustom,
+            'isEmbedded' => $isEmbedded,
+            'columnPrefix' => $columnPrefix,
+            'mappedBy' => $propertyConfig['mappedBy'] ?? null,
+            'inversedBy' => $propertyConfig['inversedBy'] ?? null,
+            'isId' => false,
+        ];
 
-            $class['fields'][$propertyName] = [
-                'name' => $this->phpTypeConverter->escapeIdentifier($propertyName),
-                'resource' => $property,
-                'rangeName' => isset($ranges[0]) ? $this->phpTypeConverter->escapeIdentifier($ranges[0]->localName()) : null,
-                'range' => $ranges[0] ?? null,
-                'cardinality' => $cardinality,
-                'ormColumn' => $propertyConfig['ormColumn'] ?? null,
-                'isArray' => $isArray,
-                'isReadable' => $propertyConfig['readable'] ?? true,
-                'isWritable' => $propertyConfig['writable'] ?? true,
-                'isNullable' => $isNullable,
-                'isUnique' => $propertyConfig['unique'] ?? false,
-                'isCustom' => $isCustom,
-                'isEmbedded' => $isEmbedded,
-                'columnPrefix' => $columnPrefix,
-                'mappedBy' => $propertyConfig['mappedBy'] ?? null,
-                'inversedBy' => $propertyConfig['inversedBy'] ?? null,
-                'isId' => false,
-            ];
+        if ($isArray) {
+            $class['hasConstructor'] = true;
 
-            if ($isArray) {
-                $class['hasConstructor'] = true;
-
-                if ($config['doctrine']['useCollection'] && !\in_array(ArrayCollection::class, $class['uses'], true)) {
-                    $class['uses'][] = ArrayCollection::class;
-                    $class['uses'][] = Collection::class;
-                }
+            if ($config['doctrine']['useCollection'] && !\in_array(ArrayCollection::class, $class['uses'], true)) {
+                $class['uses'][] = ArrayCollection::class;
+                $class['uses'][] = Collection::class;
             }
         }
 
@@ -697,20 +741,20 @@ class TypesGenerator
         return array_merge(...$annotations);
     }
 
-    private function getRanges(Resource $range): array
+    private function getRanges(Resource $range, array $propertyConfig): array
     {
         $localName = $range->localName();
         $dataType = $this->phpTypeConverter->isDatatype($range);
         $ranges = [];
         if (!$dataType && $range->isBNode()) {
             if (null !== ($unionOf = $range->get('owl:unionOf'))) {
-                return $this->getRanges($unionOf);
+                return $this->getRanges($unionOf, $propertyConfig);
             }
 
             if (null !== ($rdfFirst = $range->get('rdf:first'))) {
-                $ranges = $this->getRanges($rdfFirst);
+                $ranges = $this->getRanges($rdfFirst, $propertyConfig);
                 if (null !== ($rdfRest = $range->get('rdf:rest'))) {
-                    $ranges = array_merge($ranges, $this->getRanges($rdfRest));
+                    $ranges = array_merge($ranges, $this->getRanges($rdfRest, $propertyConfig));
                 }
             }
 

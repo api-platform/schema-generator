@@ -23,32 +23,53 @@ use ApiPlatform\SchemaGenerator\TypesGenerator;
  */
 final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
 {
+    private const RESERVED_KEYWORDS = [
+        'add',
+        'create',
+        'delete',
+        'group',
+        'join',
+        'update',
+    ];
+
     /**
      * {@inheritdoc}
      */
     public function generateClassAnnotations(string $className): array
     {
         $class = $this->classes[$className];
+        if ($this->config['types'][$class['name']]['doctrine']['annotations'] ?? false) {
+            return array_merge([''], $this->config['types'][$class['name']]['doctrine']['annotations']);
+        }
 
         if ($class['isEnum']) {
             return [];
         }
 
-        if (isset($this->config['types'][$class['name']]['doctrine']['inheritanceMapping'])) {
-            $inheritanceMapping = $this->config['types'][$class['name']]['doctrine']['inheritanceMapping'];
-        } else {
-            $inheritanceMapping = '@ORM\Entity';
+        if ($class['embeddable']) {
+            return ['', '@ORM\Embeddable'];
+        }
 
-            if ($class['abstract']) {
-                $inheritanceMapping = '@ORM\MappedSuperclass';
+        $annotations = [''];
+        if ($class['abstract']) {
+            if ($this->config['doctrine']['inheritanceAnnotations'] ?? []) {
+                return array_merge($annotations, $this->config['doctrine']['inheritanceAnnotations']);
             }
 
-            if ($class['embeddable']) {
-                $inheritanceMapping = '@ORM\Embeddable';
+            $annotations[] = '@ORM\MappedSuperclass';
+        } else {
+            $annotations[] = '@ORM\Entity';
+        }
+
+        foreach (self::RESERVED_KEYWORDS as $keyword) {
+            if (0 === strcasecmp($keyword, $className)) {
+                $annotations[] = sprintf('@ORM\Table(name="`%s`")', $className);
+
+                return $annotations;
             }
         }
 
-        return ['', $inheritanceMapping];
+        return $annotations;
     }
 
     /**

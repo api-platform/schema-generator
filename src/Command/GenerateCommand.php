@@ -43,8 +43,8 @@ final class GenerateCommand extends Command
 {
     private const DEFAULT_CONFIG_FILE = 'schema.yaml';
 
-    private string $namespacePrefix;
-    private string $defaultOutput;
+    private ?string $namespacePrefix = null;
+    private ?string $defaultOutput = null;
 
     /**
      * {@inheritdoc}

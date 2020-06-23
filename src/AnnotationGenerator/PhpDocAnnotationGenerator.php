@@ -63,7 +63,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         $resource = $this->classes[$className]['constants'][$constantName]['resource'];
 
         $annotations = $this->formatDoc((string) $resource->get('rdfs:comment'), true);
-        $annotations[0] = sprintf('@var string %s', $annotations[0]);
+        $annotations[0] = sprintf('@var string %s', $this->escapePhpDoc($annotations[0]));
 
         return $annotations;
     }
@@ -78,7 +78,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
 
         $annotations = $this->formatDoc((string) $comment, true);
 
-        $annotations[0] = sprintf('@var %s %s', $this->toPhpDocType($field), $annotations[0]);
+        $annotations[0] = sprintf('@var %s %s', $this->toPhpDocType($field), $this->escapePhpDoc($annotations[0]));
         $annotations[] = '';
 
         return $annotations;
@@ -131,7 +131,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             return [];
         }
 
-        return [sprintf('@param  %s $%s', $this->toPhpDocType($this->classes[$className]['fields'][$fieldName], true), $this->inflector->singularize($fieldName))];
+        return [sprintf('@param %s $%s', $this->toPhpDocType($this->classes[$className]['fields'][$fieldName], true), $this->inflector->singularize($fieldName))];
     }
 
     private function isDocUseful(string $className, string $fieldName, $adderOrRemover = false): bool
@@ -170,7 +170,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
      */
     private function formatDoc(string $doc, bool $indent = false): array
     {
-        $doc = explode("\n", $this->htmlToMarkdown->convert($doc));
+        $doc = explode("\n", $this->escapePhpDoc($this->htmlToMarkdown->convert($doc)));
 
         if ($indent) {
             $count = \count($doc);
@@ -179,7 +179,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             }
         }
 
-        return $doc;
+        return$doc;
     }
 
     /**
@@ -215,5 +215,10 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         }
 
         return sprintf('%s[]%s', $phpDocType, $suffix);
+    }
+
+    private function escapePhpDoc(string $text): string
+    {
+        return str_replace('@', '\\@', $text);
     }
 }
