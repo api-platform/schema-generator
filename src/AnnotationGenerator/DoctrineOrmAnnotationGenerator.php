@@ -29,6 +29,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         'delete',
         'group',
         'join',
+        'like',
         'update',
         'to',
     ];
@@ -67,7 +68,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                 continue;
             }
 
-            $annotations[] = sprintf('@ORM\Table(name="`%s`")', $className);
+            $annotations[] = sprintf('@ORM\Table(name="`%s`")', strtolower($className));
 
             return $annotations;
         }

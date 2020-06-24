@@ -252,6 +252,10 @@ class TypesGenerator
             // Fields
             if (!($typeConfig['allProperties'] ?? false) && \is_array($typeConfig['properties'] ?? null)) {
                 foreach ($typeConfig['properties'] as $key => $value) {
+                    if ($value['exclude'] ?? false) {
+                        continue;
+                    }
+
                     foreach ($propertiesMap[$type->getUri()] as $property) {
                         if ($key !== $property->localName()) {
                             continue;
@@ -261,21 +265,26 @@ class TypesGenerator
                         continue 2;
                     }
 
-                    // Add custom fields (not defined in the vocabulary)
-                    $this->logger->info(sprintf('The property "%s" (type "%s") is a custom property.', $key, $type->getUri()));
-                    $customResource = new Resource('_:'.$key, new Graph());
-                    $customResource->add('rdfs:range', $type);
-                    $class = $this->generateField($config, $class, $type, $typeName, $customResource, true);
+                    $class = $this->generateCustomField($key, $type, $typeName, $class, $config);
                 }
             } else {
+                $remainingProperties = $typeConfig['properties'] ?? [];
                 // All properties
                 foreach ($propertiesMap[$type->getUri()] as $property) {
+                    unset($remainingProperties[$property->localName()]);
                     if ($property->hasProperty(self::SCHEMA_ORG_SUPERSEDED_BY)) {
                         $supersededBy = $property->get('schema:supersededBy');
                         $this->logger->warning(sprintf('The property "%s" is superseded by "%s". Using the superseding property.', $property->getUri(), $supersededBy->getUri()));
                     } else {
                         $class = $this->generateField($config, $class, $type, $typeName, $property);
                     }
+                }
+
+                foreach ($remainingProperties as $key => $remainingProperty) {
+                    if ($remainingProperty['exclude'] ?? false) {
+                        continue;
+                    }
+                    $class = $this->generateCustomField($key, $type, $typeName, $class, $config);
                 }
             }
 
@@ -320,18 +329,8 @@ class TypesGenerator
                     $parentClass = $classes[$class['parent']];
 
                     while ($parentClass) {
-                        if (!isset($parentConfig['properties']) ||
-                            !\is_array($parentConfig['properties']) ||
-                            0 === \count($parentConfig['properties'])
-                        ) {
-                            // Unset implicit property
-                            $parentType = $parentClass['resource'];
-                            if (\in_array($property, $propertiesMap[$parentType->getUri()], true)) {
-                                unset($class['fields'][$propertyName]);
-                                continue 2;
-                            }
-                        } elseif (\array_key_exists($propertyName, $parentConfig['properties'])) {
-                            // Unset explicit property
+                        $parentType = $parentClass['resource'];
+                        if (\array_key_exists($propertyName, $parentConfig['properties'] ?? []) || \in_array($property, $propertiesMap[$parentType->getUri()], true)) {
                             unset($class['fields'][$propertyName]);
                             continue 2;
                         }
@@ -486,6 +485,18 @@ class TypesGenerator
         }
 
         $this->fixCs($generatedFiles);
+    }
+
+    /**
+     * Add custom fields (not defined in the vocabulary).
+     */
+    private function generateCustomField(string $propertyName, Resource $type, string $typeName, array $class, array $config): array
+    {
+        $this->logger->info(sprintf('The property "%s" (type "%s") is a custom property.', $propertyName, $type->getUri()));
+        $customResource = new Resource('_:'.$propertyName, new Graph());
+        $customResource->add('rdfs:range', $type);
+
+        return $this->generateField($config, $class, $type, $typeName, $customResource, true);
     }
 
     /**
