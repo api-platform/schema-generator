@@ -40,7 +40,7 @@ use {{ use }};
      * {{ annotation }}
 {% endfor %}
      */
-    {{ config.fieldVisibility }} ${{ field.name }}{% if field.isArray and (field.isEnum or not field.typeHint or not config.doctrine.useCollection) %} = []{% endif %};
+    {{ config.fieldVisibility }} {% if field.typeHint %}{% if field.isNullable %}?{% endif %}{{ field.typeHint }}{% endif%} ${{ field.name }}{% if field.isNullable %} = null{% elseif field.isArray and (field.isEnum or not field.typeHint or field.typeHint == 'array' or not config.doctrine.useCollection) %} = []{% endif %};
 
 {% endfor %}
 
@@ -52,7 +52,7 @@ use {{ use }};
 
 {% endif %}
 {% for field in class.fields %}
-{% if config.doctrine.useCollection and field.isArray and field.typeHint and not field.isEnum %}
+{% if config.doctrine.useCollection and field.isArray and field.typeHint != 'array' and not field.isEnum %}
         $this->{{ field.name }} = new ArrayCollection();
 {% endif %}
 {% endfor %}
@@ -84,11 +84,10 @@ use {{ use }};
      */
     public function remove{{ field.name|singularize|ucfirst }}({% if field.typeHint %}{{ field.adderRemoverTypeHint }} {% endif %}${{ field.name|singularize }}): {% if config.fluentMutatorMethods %}self{% else %}void{% endif %}
     {
-{% if config.doctrine.useCollection and field.isArray and field.typeHint and not field.isEnum %}
+{% if config.doctrine.useCollection and field.isArray and field.typeHint and field.typeHint != 'array' and not field.isEnum %}
         $this->{{ field.name }}->removeElement({% if field.isEnum %}(string) {% endif %}${{ field.name|singularize }});
 {% else %}
-        $key = array_search({% if field.isEnum %}(string) {% endif %}${{ field.name|singularize }}, $this->{{ field.name }}, true);
-        if (false !== $key) {
+        if (false !== $key = array_search({% if field.isEnum %}(string) {% endif %}${{ field.name|singularize }}, $this->{{ field.name }}{% if field.isNullable %} ?? []{% endif %}, true)) {
             unset($this->{{ field.name }}[$key]);
         }
 {% endif %}
@@ -121,7 +120,7 @@ use {{ use }};
      * {{ annotation }}
 {% endfor %}
      */
-    public function get{{ field.name|ucfirst }}(){% if field.typeHint %}: {% if field.isNullable and not field.isArray %}?{% endif %}{{ field.typeHint }}{% endif %}
+    public function get{{ field.name|ucfirst }}(){% if field.typeHint %}: {% if field.isNullable and (not field.isArray or field.typeHint == 'array') %}?{% endif %}{{ field.typeHint }}{% endif %}
     {
         return $this->{{ field.name }};
     }

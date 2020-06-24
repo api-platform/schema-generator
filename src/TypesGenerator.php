@@ -135,11 +135,14 @@ class TypesGenerator
         $typesToGenerate = [];
         if ($config['allTypes'] || !$config['types']) {
             foreach ($this->graphs as $graph) {
-                foreach (self::$classTypes as $type) {
-                    $typesToGenerate[] = $graph->allOfType($type);
+                foreach (self::$classTypes as $classType) {
+                    foreach ($graph->allOfType($classType) as $type) {
+                        if (!($config['types'][$this->phpTypeConverter->escapeIdentifier($type->localName())]['exclude'] ?? false)) {
+                            $typesToGenerate[] = $type;
+                        }
+                    }
                 }
             }
-            $typesToGenerate = array_merge(...$typesToGenerate);
         } else {
             foreach ($config['types'] as $typeName => $typeConfig) {
                 $vocabularyNamespace = $typeConfig['vocabularyNamespace'] ?? $config['vocabularyNamespace'];
@@ -540,7 +543,7 @@ class TypesGenerator
             $typesResources[] = [
                 'resources' => $parentClasses,
                 'uris' => array_map(fn (Resource $parentClass) => $parentClass->getUri(), $parentClasses),
-                'names' => array_map(fn (Resource $parentClass) => $parentClass->localName(), $parentClasses),
+                'names' => array_map(fn (Resource $parentClass) => $this->phpTypeConverter->escapeIdentifier($parentClass->localName()), $parentClasses),
             ];
             $map[$type->getUri()] = [];
         }
@@ -554,7 +557,7 @@ class TypesGenerator
 
                     foreach (self::$domainProperties as $domainPropertyType) {
                         foreach ($property->all($domainPropertyType, 'resource') as $domain) {
-                            $this->addPropertyToMap($property, $domain, $typesResources, $map);
+                            $this->addPropertyToMap($property, $domain, $typesResources, $config, $map);
                         }
                     }
                 }
@@ -564,22 +567,22 @@ class TypesGenerator
         return $map;
     }
 
-    private function addPropertyToMap(Resource $property, Resource $domain, array $typesResources, array &$map): void
+    private function addPropertyToMap(Resource $property, Resource $domain, array $typesResources, array $config, array &$map): void
     {
         $propertyName = $property->localName();
         $deprecated = $property->isA('owl:DeprecatedProperty');
 
         if ($domain->isBNode()) {
             if (null !== ($unionOf = $domain->get('owl:unionOf'))) {
-                $this->addPropertyToMap($property, $unionOf, $typesResources, $map);
+                $this->addPropertyToMap($property, $unionOf, $typesResources, $config, $map);
 
                 return;
             }
 
             if (null !== ($rdfFirst = $domain->get('rdf:first'))) {
-                $this->addPropertyToMap($property, $rdfFirst, $typesResources, $map);
+                $this->addPropertyToMap($property, $rdfFirst, $typesResources, $config, $map);
                 if (null !== ($rdfRest = $domain->get('rdf:rest'))) {
-                    $this->addPropertyToMap($property, $rdfRest, $typesResources, $map);
+                    $this->addPropertyToMap($property, $rdfRest, $typesResources, $config, $map);
                 }
             }
 
@@ -591,15 +594,23 @@ class TypesGenerator
                 continue;
             }
 
-            $typeUri = $typesResourceHierarchy['uris'][0];
-            if ($deprecated) {
-                if (!isset($config['types'][$typesResourceHierarchy['names'][0]]['properties'][$propertyName])) {
+            foreach ($typesResourceHierarchy['uris'] as $k => $typeUri) {
+                $propertyConfig = $config['types'][$typesResourceHierarchy['names'][$k]]['properties'][$propertyName] ?? null;
+
+                if ($propertyConfig['exclude'] ?? false) {
                     continue;
                 }
 
-                $this->logger->warning('The property "{property}" of the type "{type}" is deprecated', ['property' => $property->getUri(), 'type' => $typeUri]);
+                if ($deprecated) {
+                    if (null === $propertyConfig) {
+                        continue;
+                    }
+
+                    $this->logger->warning('The property "{property}" of the type "{type}" is deprecated', ['property' => $property->getUri(), 'type' => $typeUri]);
+                }
+
+                $map[$typeUri][] = $property;
             }
-            $map[$typeUri][] = $property;
         }
     }
 

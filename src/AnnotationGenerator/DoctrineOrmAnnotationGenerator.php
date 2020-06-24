@@ -30,6 +30,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         'group',
         'join',
         'update',
+        'to',
     ];
 
     /**
@@ -62,11 +63,13 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         }
 
         foreach (self::RESERVED_KEYWORDS as $keyword) {
-            if (0 === strcasecmp($keyword, $className)) {
-                $annotations[] = sprintf('@ORM\Table(name="`%s`")', $className);
-
-                return $annotations;
+            if (0 !== strcasecmp($keyword, $className)) {
+                continue;
             }
+
+            $annotations[] = sprintf('@ORM\Table(name="`%s`")', $className);
+
+            return $annotations;
         }
 
         return $annotations;
@@ -149,6 +152,13 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
 
             if ($field['isUnique']) {
                 $annotArr[] = 'unique=true';
+            }
+
+            foreach (self::RESERVED_KEYWORDS as $keyword) {
+                if (0 === strcasecmp($keyword, $fieldName)) {
+                    $annotArr[] = sprintf('name="`%s`"', $fieldName);
+                    break;
+                }
             }
 
             if ($annotArr) {

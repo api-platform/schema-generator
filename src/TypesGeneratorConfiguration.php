@@ -146,6 +146,7 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->useAttributeAsKey('id')
                     ->arrayPrototype()
                         ->children()
+                            ->booleanNode('exclude')->defaultFalse()->info('Exclude this type, even if "allTypes" is set to true"')->end()
                             ->scalarNode('vocabularyNamespace')->defaultNull()->info('Namespace of the vocabulary of this type (defaults to the global "vocabularyNamespace" entry)')->example('http://www.w3.org/ns/activitystreams#')->end()
                             ->booleanNode('abstract')->defaultNull()->info('Is the class abstract? (null to guess)')->end()
                             ->booleanNode('embeddable')->defaultFalse()->info('Is the class embeddable?')->end()
@@ -175,6 +176,7 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                                 ->arrayPrototype()
                                     ->addDefaultsIfNotSet()
                                     ->children()
+                                        ->booleanNode('exclude')->defaultFalse()->info('Exclude this property, even if "allProperties" is set to true"')->end()
                                         ->scalarNode('range')->defaultNull()->info('The property range')->example('Offer')->end()
                                         ->scalarNode('relationTableName')->defaultNull()->info('The relation table name')->example('organization_member')->end()
                                         ->enumNode('cardinality')->defaultValue(CardinalitiesExtractor::CARDINALITY_UNKNOWN)->values([
