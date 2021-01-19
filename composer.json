@@ -38,7 +38,8 @@
         "symfony/doctrine-bridge": "^5.1",
         "symfony/phpunit-bridge": "^5.1",
         "symfony/serializer": "^5.1",
-        "symfony/validator": "^5.1"
+        "symfony/validator": "^5.1",
+        "phpspec/prophecy-phpunit": "2.0.x-dev"
     },
     "bin": ["bin/schema"],
     "minimum-stability": "dev"

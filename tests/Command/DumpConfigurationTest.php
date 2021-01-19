@@ -36,7 +36,7 @@ config:
         -
 
             # RDF vocabulary to use
-            uri:                  'https://schema.org/version/latest/schema.rdf' # Example: https://schema.org/version/latest/all-layers.rdf
+            uri:                  'https://schema.org/version/latest/schemaorg-current-http.rdf' # Example: https://schema.org/version/latest/schemaorg-current-http.rdf
 
             # RDF vocabulary format
             format:               null # Example: rdfxml

@@ -22,6 +22,7 @@ use Doctrine\Inflector\InflectorFactory;
 use EasyRdf\Graph;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\NullLogger;
 use Twig\Environment;
 
@@ -30,6 +31,8 @@ use Twig\Environment;
  */
 class TypesGeneratorTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testGenerate(): void
     {
         $twigProphecy = $this->prophesize(Environment::class);
@@ -178,6 +181,7 @@ class TypesGeneratorTest extends TestCase
                 'generate' => true,
                 'generationStrategy' => 'auto',
                 'writable' => false,
+                'onClass' => 'child',
             ],
             'useInterface' => false,
             'doctrine' => [
