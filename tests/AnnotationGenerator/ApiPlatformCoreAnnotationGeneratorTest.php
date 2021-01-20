@@ -29,10 +29,7 @@ use Psr\Log\NullLogger;
  */
 class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
 {
-    /**
-     * @var ApiPlatformCoreAnnotationGenerator
-     */
-    private $generator;
+    private ApiPlatformCoreAnnotationGenerator $generator;
 
     protected function setUp(): void
     {
