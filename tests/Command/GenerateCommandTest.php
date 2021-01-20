@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\Tests\Command;
 
-use ApiPlatform\SchemaGenerator\Command\GenerateTypesCommand;
+use ApiPlatform\SchemaGenerator\Command\GenerateCommand;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -22,12 +22,9 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class GenerateTypesCommandTest extends TestCase
+class GenerateCommandTest extends TestCase
 {
-    /**
-     * @var Filesystem
-     */
-    private $fs;
+    private Filesystem $fs;
 
     protected function setUp(): void
     {
@@ -37,23 +34,21 @@ class GenerateTypesCommandTest extends TestCase
     /**
      * @dataProvider getArguments
      */
-    public function testCommand($output, $config): void
+    public function testCommand(string $output, string $config): void
     {
         $this->fs->mkdir($output);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $output, 'config' => $config]));
     }
 
-    public function getArguments(): array
+    public function getArguments(): iterable
     {
-        return [
-            [__DIR__.'/../../build/blog/', __DIR__.'/../config/blog.yaml'],
-            [__DIR__.'/../../build/ecommerce/', __DIR__.'/../config/ecommerce.yaml'],
-            [__DIR__.'/../../build/vgo/', __DIR__.'/../config/vgo.yaml'],
-            [__DIR__.'/../../build/mongodb/address-book/', __DIR__.'/../config/mongodb/address-book.yaml'],
-            [__DIR__.'/../../build/mongodb/ecommerce/', __DIR__.'/../config/mongodb/ecommerce.yaml'],
-        ];
+        yield 'blog' => [__DIR__.'/../../build/blog/', __DIR__.'/../config/blog.yaml'];
+        yield 'ecommerce' => [__DIR__.'/../../build/ecommerce/', __DIR__.'/../config/ecommerce.yaml'];
+        yield 'vgo' => [__DIR__.'/../../build/vgo/', __DIR__.'/../config/vgo.yaml'];
+        yield 'address-book' => [__DIR__.'/../../build/mongodb/address-book/', __DIR__.'/../config/mongodb/address-book.yaml'];
+        yield 'mongodb-ecommerce' => [__DIR__.'/../../build/mongodb/ecommerce/', __DIR__.'/../config/mongodb/ecommerce.yaml'];
     }
 
     public function testDoctrineCollection(): void
@@ -63,7 +58,7 @@ class GenerateTypesCommandTest extends TestCase
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/AddressBook/Entity/Person.php");
@@ -84,7 +79,7 @@ PHP
         $outputDir = __DIR__.'/../../build/fluent-mutators';
         $config = __DIR__.'/../config/fluent-mutators.yaml';
         $this->fs->mkdir($outputDir);
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
@@ -123,7 +118,7 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
@@ -140,29 +135,29 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $creativeWork = file_get_contents("$outputDir/App/Entity/CreativeWork.php");
         $this->assertStringContainsString('class CreativeWork extends Thing', $creativeWork);
-        $this->assertStringContainsString('private $copyrightYear;', $creativeWork);
-        $this->assertStringContainsString('function getCopyrightYear(', $creativeWork);
-        $this->assertStringContainsString('function setCopyrightYear(', $creativeWork);
-        $this->assertStringNotContainsString('private $name;', $creativeWork);
-        $this->assertStringNotContainsString('function getName(', $creativeWork);
-        $this->assertStringNotContainsString('function setName(', $creativeWork);
+        $this->assertStringContainsString('private ?string $copyrightYear = null;', $creativeWork);
+        $this->assertStringContainsString('public function getCopyrightYear(): ?string', $creativeWork);
+        $this->assertStringContainsString('public function setCopyrightYear(?string $copyrightYear): void', $creativeWork);
+        $this->assertStringNotContainsString('$name;', $creativeWork);
+        $this->assertStringNotContainsString('getName(', $creativeWork);
+        $this->assertStringNotContainsString('setName(', $creativeWork);
 
         $webPage = file_get_contents("$outputDir/App/Entity/WebPage.php");
         $this->assertStringContainsString('class WebPage extends CreativeWork', $webPage);
-        $this->assertStringContainsString('private $mainEntity;', $webPage);
-        $this->assertStringContainsString('function getMainEntity(', $webPage);
-        $this->assertStringContainsString('function setMainEntity(', $webPage);
-        $this->assertStringNotContainsString('private $copyrightYear;', $webPage);
-        $this->assertStringNotContainsString('function getCopyrightYear(', $webPage);
-        $this->assertStringNotContainsString('function setCopyrightYear(', $webPage);
-        $this->assertStringNotContainsString('private $name;', $webPage);
-        $this->assertStringNotContainsString('function getName(', $webPage);
-        $this->assertStringNotContainsString('function setName(', $webPage);
+        $this->assertStringContainsString('private ?string $relatedLink = null;', $webPage);
+        $this->assertStringContainsString('public function getRelatedLink(): ?string', $webPage);
+        $this->assertStringContainsString('public function setRelatedLink(?string $relatedLink): void', $webPage);
+        $this->assertStringNotContainsString('$copyrightYear;', $webPage);
+        $this->assertStringNotContainsString('getCopyrightYear(', $webPage);
+        $this->assertStringNotContainsString('setCopyrightYear(', $webPage);
+        $this->assertStringNotContainsString('$name;', $webPage);
+        $this->assertStringNotContainsString('getName(', $webPage);
+        $this->assertStringNotContainsString('setName(', $webPage);
     }
 
     public function testReadableWritable(): void
@@ -172,19 +167,20 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
-        $this->assertStringContainsString('private $sameAs;', $person);
-        $this->assertStringContainsString('public function getId(', $person);
-        $this->assertStringNotContainsString('function setId(', $person);
-        $this->assertStringContainsString('public function getName(', $person);
-        $this->assertStringNotContainsString('function setName(', $person);
+        $this->assertStringContainsString('private ?string $sameAs = null;', $person);
+        $this->assertStringContainsString('public function getId(): ?int', $person);
+        $this->assertStringNotContainsString('setId(', $person);
+        $this->assertStringContainsString('private ?string $name = null;', $person);
+        $this->assertStringContainsString('public function getName(): ?string', $person);
+        $this->assertStringNotContainsString('setName(', $person);
         $this->assertStringContainsString('public function getFriends(', $person);
-        $this->assertStringNotContainsString('function addFriend(', $person);
-        $this->assertStringNotContainsString('function removeFriend(', $person);
-        $this->assertStringNotContainsString('function setSameAs(', $person);
+        $this->assertStringNotContainsString('addFriend(', $person);
+        $this->assertStringNotContainsString('removeFriend(', $person);
+        $this->assertStringNotContainsString('setSameAs(', $person);
     }
 
     public function testGeneratedId(): void
@@ -194,20 +190,18 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
 
         $this->assertStringContainsString(<<<'PHP'
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 PHP
             , $person);
 
@@ -219,7 +213,7 @@ PHP
 PHP
         , $person);
 
-        $this->assertStringNotContainsString('function setId(', $person);
+        $this->assertStringNotContainsString('setId(', $person);
     }
 
     public function testNonGeneratedId(): void
@@ -229,19 +223,17 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
 
         $this->assertStringContainsString(<<<'PHP'
     /**
-     * @var string
-     *
      * @ORM\Id
      * @ORM\Column(type="string")
      */
-    private $id;
+    private string $id;
 PHP
             , $person);
 
@@ -253,7 +245,13 @@ PHP
 PHP
             , $person);
 
-        $this->assertStringContainsString('public function setId(string $id): void', $person);
+        $this->assertStringContainsString(<<<'PHP'
+    public function setId(string $id): void
+    {
+        $this->id = $id;
+    }
+PHP
+            , $person);
     }
 
     public function testGeneratedUuid(): void
@@ -263,21 +261,19 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
 
         $this->assertStringContainsString(<<<'PHP'
     /**
-     * @var string|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
      * @Assert\Uuid
      */
-    private $id;
+    private ?string $id = null;
 PHP
             , $person);
 
@@ -289,7 +285,7 @@ PHP
 PHP
             , $person);
 
-        $this->assertStringNotContainsString('function setId(', $person);
+        $this->assertStringNotContainsString('setId(', $person);
     }
 
     public function testNonGeneratedUuid(): void
@@ -299,20 +295,18 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
 
         $this->assertStringContainsString(<<<'PHP'
     /**
-     * @var string
-     *
      * @ORM\Id
      * @ORM\Column(type="guid")
      * @Assert\Uuid
      */
-    private $id;
+    private string $id;
 PHP
             , $person);
 
@@ -324,7 +318,14 @@ PHP
 PHP
             , $person);
 
-        $this->assertStringContainsString('public function setId(string $id): void', $person);
+        $this->assertStringContainsString(<<<'PHP'
+    public function setId(string $id): void
+    {
+        $this->id = $id;
+    }
+
+PHP
+        , $person);
     }
 
     public function testDoNotGenerateId(): void
@@ -334,14 +335,14 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
 
         $this->assertStringNotContainsString('$id', $person);
-        $this->assertStringNotContainsString('function getId', $person);
-        $this->assertStringNotContainsString('function setId', $person);
+        $this->assertStringNotContainsString('getId', $person);
+        $this->assertStringNotContainsString('setId', $person);
     }
 
     public function testNamespacesPrefix(): void
@@ -351,7 +352,7 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/Entity/Person.php");
@@ -370,7 +371,7 @@ PHP
         $currentDir = getcwd();
         chdir($outputDir);
         try {
-            $commandTester = new CommandTester(new GenerateTypesCommand());
+            $commandTester = new CommandTester(new GenerateCommand());
             $this->assertEquals(0, $commandTester->execute([]));
 
             $person = file_get_contents("$outputDir/src/Entity/Person.php");
@@ -388,7 +389,7 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $gender = file_get_contents("$outputDir/App/Enum/GenderType.php");
@@ -411,43 +412,36 @@ PHP
 
         $this->fs->mkdir($outputDir);
 
-        $commandTester = new CommandTester(new GenerateTypesCommand());
+        $commandTester = new CommandTester(new GenerateCommand());
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $creativeWork = file_get_contents("$outputDir/App/Entity/CreativeWork.php");
 
         $this->assertStringContainsString(<<<'PHP'
     /**
-     * @var string|null an award won by or for this item
+     * An award won by or for this item.
+     *
+     * @see http://schema.org/award
      *
      * @ORM\Column(type="text", nullable=true)
      * @ApiProperty(iri="http://schema.org/award")
      */
-    private $award;
+    private ?string $award = null;
 PHP
             , $creativeWork);
 
-        $this->assertStringNotContainsString(<<<'PHP'
-    /**
-     * @var string|null awards won by or for this item
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    protected $award;
-PHP
-            , $creativeWork);
+        $this->assertStringNotContainsString('protected', $creativeWork);
     }
 
     public function testGenerationWithoutConfigFileQuestion(): void
     {
         // No config file is given.
         $application = new Application();
-        $application->add(new GenerateTypesCommand());
+        $application->add(new GenerateCommand());
 
-        $command = $application->find('generate-types');
+        $command = $application->find('generate');
         $commandTester = new CommandTester($command);
-        $commandTester->setInputs(['n']);
-        self::assertEquals(0, $commandTester->execute([]));
-        $this->assertRegExp('/The entire Schema\.org vocabulary will be built/', $commandTester->getDisplay());
+        $this->assertEquals(0, $commandTester->execute(['output' => sys_get_temp_dir()]));
+        $this->assertMatchesRegularExpression('/The entire vocabulary will be imported/', $commandTester->getDisplay());
     }
 }

@@ -6,32 +6,30 @@ cache:
 
 matrix:
   include:
-    - php: '7.4'
+    - php: '8.0'
       env: coverage=1 lint=1
     - php: '7.4'
-      env: deps='low'
 
 before_install:
   - phpenv config-rm xdebug.ini || echo "xdebug not available"
   - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - export PATH="$PATH:$HOME/.composer/vendor/bin"
   - if [[ $coverage = 1 ]]; then mkdir -p build/logs; fi
-  - if [[ $coverage = 1 ]]; then wget https://github.com/satooshi/php-coveralls/releases/download/v2.2.0/php-coveralls.phar; fi
-  - if [[ $lint = 1 ]]; then wget https://github.com/phpstan/phpstan/releases/download/0.12.9/phpstan.phar; fi
-  - wget -O box.phar https://github.com/humbug/box/releases/download/3.8.4/box.phar
+  - if [[ $coverage = 1 ]]; then wget https://github.com/satooshi/php-coveralls/releases/download/v2.4.3/php-coveralls.phar; fi
+  - wget -O box.phar https://github.com/humbug/box/releases/download/3.11.1/box.phar
   - export BOX_BIN=$(pwd)/box.phar
 
 install:
-  - if [[ $coverage = 1 ]]; then composer require --dev --no-update 'phpunit/php-code-coverage:^8.0'; fi
-  - if [[ ! $deps && $TRAVIS_PHP_VERSION = "7.4" ]]; then composer install --prefer-dist --no-progress --no-suggest --ansi; fi
-  - if [[ $TRAVIS_PHP_VERSION != "7.4" ]]; then composer update --prefer-stable --prefer-dist --no-progress --no-suggest --ansi; fi
+  - if [[ $coverage = 1 ]]; then composer require --dev --no-update 'phpunit/php-code-coverage:^9.2'; fi
+  - if [[ ! $deps && $TRAVIS_PHP_VERSION = "8.0" ]]; then composer install --prefer-dist --no-progress --no-suggest --ansi; fi
+  - if [[ $TRAVIS_PHP_VERSION != "8.0" ]]; then composer update --prefer-stable --prefer-dist --no-progress --no-suggest --ansi; fi
   - if [[ $deps = 'low' ]]; then composer update --prefer-dist --no-progress --no-suggest --prefer-stable --prefer-lowest --ansi; fi
 
 script:
   - if [[ $coverage = 1 ]]; then phpdbg -qrr vendor/bin/simple-phpunit --coverage-clover build/logs/clover.xml; else vendor/bin/simple-phpunit; fi
   - if [[ $lint = 1 ]]; then vendor/bin/php-cs-fixer fix --dry-run --diff --no-ansi; fi
-  - if [[ $lint = 1 ]]; then php phpstan.phar analyse; fi
-  - if [[ ! $deps && $TRAVIS_PHP_VERSION = "7.4" ]]; then ./bin/compile; fi
+  - if [[ $lint = 1 ]]; then vendor/bin/phpstan analyse; fi
+  - if [[ ! $deps && $TRAVIS_PHP_VERSION = "8.0" ]]; then ./bin/compile; fi
 
 after_success:
   - if [[ $coverage = 1 ]]; then travis_retry php php-coveralls.phar; fi
@@ -45,5 +43,5 @@ deploy:
   on:
     tags: true
     repo: api-platform/schema-generator
-    php:  '7.4'
+    php:  '8.0'
     condition: "! $deps"

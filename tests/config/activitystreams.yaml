@@ -1,0 +1,9 @@
+vocabularies:
+    - tests/data/activitystreams2.owl
+vocabularyNamespace: http://www.w3.org/ns/activitystreams#
+allTypes: true
+types:
+    Place:
+        allProperties: true
+        properties:
+            units: { range: 'http://www.w3.org/2001/XMLSchema#string' }

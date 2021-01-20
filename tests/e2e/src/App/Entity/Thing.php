@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * The most generic type of item.
  *
- * @see http://schema.org/Thing Documentation on Schema.org
+ * @see http://schema.org/Thing
  *
  * @ORM\Entity
  * @ApiResource(iri="http://schema.org/Thing")
@@ -19,21 +19,21 @@ use Doctrine\ORM\Mapping as ORM;
 class Thing
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @var string|null the name of the item
+     * The name of the item.
+     *
+     * @see http://schema.org/name
      *
      * @ORM\Column(type="text", nullable=true)
      * @ApiProperty(iri="http://schema.org/name")
      */
-    private $name;
+    private ?string $name = null;
 
     public function getId(): ?int
     {

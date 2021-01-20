@@ -26,7 +26,7 @@ types:
     properties:
       name: ~
       description: ~
-      image: { range: ImageObject }
+      image: { range: http://schema.org/ImageObject }
       additionalType: ~
   Product:
     properties:
@@ -43,15 +43,15 @@ types:
       gtin8: ~
       mpn: ~
       color: ~
-      depth: { range: 'Text' }
-      height: { range: 'Text' }
-      weight: { range: 'Text' }
-      width: { range: 'Text' }
-      seller: { range: 'Seller' }
+      depth: { range: 'http://schema.org/Text' }
+      height: { range: 'http://schema.org/Text' }
+      weight: { range: 'http://schema.org/Text' }
+      width: { range: 'http://schema.org/Text' }
+      seller: { range: 'http://schema.org/Seller' }
   Brand:
-    parent: 'Thing'
+    parent: 'http://schema.org/Thing'
     properties:
-      logo: { range: 'ImageObject' }
+      logo: { range: 'http://schema.org/ImageObject' }
   Seller:
     parent: false
     guessFrom: Person
@@ -73,11 +73,11 @@ types:
       availabilityStarts: ~
       availabilityEnds: ~
       availableDeliveryMethod: ~
-      category: { range: 'Text' }
+      category: { range: 'http://schema.org/Text' }
       deliveryLeadTime: ~
       inventoryLevel: ~
       itemCondition: ~
-      price: { range: Number }
+      price: { range: http://schema.org/Number }
       priceCurrency: ~
       validFrom: ~
       validThrough: ~

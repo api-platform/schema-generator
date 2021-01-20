@@ -15,12 +15,14 @@ namespace ApiPlatform\SchemaGenerator\Tests;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
+use ApiPlatform\SchemaGenerator\PhpTypeConverter;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
 use Doctrine\Inflector\InflectorFactory;
 use EasyRdf\Graph;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\NullLogger;
 use Twig\Environment;
 
@@ -29,6 +31,8 @@ use Twig\Environment;
  */
 class TypesGeneratorTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testGenerate(): void
     {
         $twigProphecy = $this->prophesize(Environment::class);
@@ -46,7 +50,7 @@ class TypesGeneratorTest extends TestCase
         $goodRelationsBridgeProphecy = $this->prophesize(GoodRelationsBridge::class);
         $goodRelationsBridge = $goodRelationsBridgeProphecy->reveal();
 
-        $typesGenerator = new TypesGenerator(InflectorFactory::create()->build(), $twig, new NullLogger(), $this->getGraphs(), $cardinalitiesExtractor, $goodRelationsBridge);
+        $typesGenerator = new TypesGenerator(InflectorFactory::create()->build(), $twig, new NullLogger(), $this->getGraphs(), new PhpTypeConverter(), $cardinalitiesExtractor, $goodRelationsBridge);
 
         $typesGenerator->generate($this->getConfig());
     }
@@ -131,6 +135,7 @@ class TypesGeneratorTest extends TestCase
                 'entity' => 'App\Entity',
             ],
             'output' => 'build/type-generator-test',
+            'allTypes' => false,
             'types' => [
                 'Article' => [
                     'allProperties' => false,
@@ -176,6 +181,7 @@ class TypesGeneratorTest extends TestCase
                 'generate' => true,
                 'generationStrategy' => 'auto',
                 'writable' => false,
+                'onClass' => 'child',
             ],
             'useInterface' => false,
             'doctrine' => [

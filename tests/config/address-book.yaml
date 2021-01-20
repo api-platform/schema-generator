@@ -30,7 +30,7 @@ types:
     parent: false
     properties:
       # Force the type of the addressCountry property to text
-      addressCountry: { range: "Text" }
+      addressCountry: { range: "http://schema.org/Text" }
       addressLocality: ~
       addressRegion: ~
       postOfficeBoxNumber: ~
@@ -41,4 +41,4 @@ types:
     properties:
       name: ~
       # Custom property with custom ORM\Column content
-      adminCode: {range: Text, ormColumn: 'type="string", length=3, unique=true, nullable=false, options={"comment" = "A code for central administration."}' }
+      adminCode: {range: http://schema.org/Text, ormColumn: 'type="string", length=3, unique=true, nullable=false, options={"comment" = "A code for central administration."}' }

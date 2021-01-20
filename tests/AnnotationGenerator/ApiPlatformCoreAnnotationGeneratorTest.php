@@ -13,7 +13,10 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\Tests\AnnotationGenerator;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\ApiPlatformCoreAnnotationGenerator;
+use ApiPlatform\SchemaGenerator\PhpTypeConverter;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use Doctrine\Inflector\InflectorFactory;
 use EasyRdf\Graph;
@@ -26,10 +29,7 @@ use Psr\Log\NullLogger;
  */
 class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
 {
-    /**
-     * @var ApiPlatformCoreAnnotationGenerator
-     */
-    private $generator;
+    private ApiPlatformCoreAnnotationGenerator $generator;
 
     protected function setUp(): void
     {
@@ -38,8 +38,9 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
         $myEnum->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);
 
         $this->generator = new ApiPlatformCoreAnnotationGenerator(
-            InflectorFactory::create()->build(),
+            new PhpTypeConverter(),
             new NullLogger(),
+            InflectorFactory::create()->build(),
             [],
             [],
             [],
@@ -47,8 +48,14 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
                 'Res' => [
                     'resource' => new Resource('http://schema.org/Res', $graph),
                     'fields' => [
-                        'prop' => ['isCustom' => false],
-                        'customProp' => ['isCustom' => true],
+                        'prop' => [
+                            'isCustom' => false,
+                            'resource' => new Resource('http://schema.org/prop'),
+                        ],
+                        'customProp' => [
+                            'isCustom' => true,
+                            'resource' => new Resource('http://schema.org/customProp'),
+                        ],
                     ],
                 ],
                 'MyEnum' => ['resource' => $myEnum],
@@ -81,7 +88,7 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
 
     public function testGenerateUses(): void
     {
-        $this->assertSame(['ApiPlatform\Core\Annotation\ApiResource', 'ApiPlatform\Core\Annotation\ApiProperty'], $this->generator->generateUses('Res'));
+        $this->assertSame([ApiResource::class, ApiProperty::class], $this->generator->generateUses('Res'));
         $this->assertSame([], $this->generator->generateUses('MyEnum'));
     }
 }

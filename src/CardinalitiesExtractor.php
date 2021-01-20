@@ -17,7 +17,7 @@ use EasyRdf\Graph;
 use EasyRdf\Resource;
 
 /**
- * Cardinality extractor.
+ * Extracts cardinalities from the OWL definition, from GoodRelations or from Schema.org's comments.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
@@ -55,8 +55,14 @@ class CardinalitiesExtractor
         $properties = [];
 
         foreach ($this->graphs as $graph) {
-            foreach ($graph->allOfType('rdf:Property') as $property) {
-                $properties[$property->localName()] = $this->extractForProperty($property);
+            foreach (TypesGenerator::$propertyTypes as $propertyType) {
+                foreach ($graph->allOfType($propertyType) as $property) {
+                    if ($property->isBNode()) {
+                        continue;
+                    }
+
+                    $properties[$property->getUri()] = $this->extractForProperty($property);
+                }
             }
         }
 
@@ -72,13 +78,41 @@ class CardinalitiesExtractor
      */
     private function extractForProperty(Resource $property): string
     {
+        $minCardinality = $property->get('owl:minCardinality');
+        $maxCardinality = $property->get('owl:maxCardinality');
+        if (null !== $minCardinality && null !== $maxCardinality && $minCardinality >= 1 && $maxCardinality <= 1) {
+            return self::CARDINALITY_1_1;
+        }
+
+        if ((null !== $minCardinality) && $minCardinality >= 1) {
+            return self::CARDINALITY_1_N;
+        }
+
+        if ((null !== $maxCardinality) && $maxCardinality <= 1) {
+            return self::CARDINALITY_0_1;
+        }
+
+        if ($property->isA('owl:FunctionalProperty')) {
+            return self::CARDINALITY_0_1;
+        }
+        if ($property->isA('owl:InverseFunctionalProperty')) {
+            return self::CARDINALITY_0_N;
+        }
+
+        if (0 !== strpos($property->getUri(), 'http://schema.org')) {
+            return self::CARDINALITY_UNKNOWN;
+        }
+
         $localName = $property->localName();
         $fromGoodRelations = $this->goodRelationsBridge->extractCardinality($localName);
         if (false !== $fromGoodRelations) {
             return $fromGoodRelations;
         }
 
-        $comment = $property->get('rdfs:comment')->getValue();
+        if (!$rdfsComment = $property->get('rdfs:comment')) {
+            return self::CARDINALITY_UNKNOWN;
+        }
+        $comment = $rdfsComment->getValue();
 
         if (
             // http://schema.org/acceptedOffer, http://schema.org/acceptedPaymentMethod, http://schema.org/exerciseType

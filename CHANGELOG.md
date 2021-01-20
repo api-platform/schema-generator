@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.0.0
+
+* Support for [the Web Ontology Language (OWL)](https://en.wikipedia.org/wiki/Web_Ontology_Language) (including for [the ActivityStream vocabulary](https://www.w3.org/TR/activitystreams-core/))
+* Support for [XML Schema](https://en.wikipedia.org/wiki/XML_Schema_(W3C)) types
+* Compatbility with the latest version of Schema.org
+* Improved PHP type hints generation (including support for typed properties)
+* Improved PHPDoc support
+* Upgrade to EasyRDF 1 and Doctrine Inflector 2
+* More flexible configuration
+* The `generate-types` command has been renamed `generate`
+
 ## 2.2.2
 
 * Update to Symfony 5

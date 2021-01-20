@@ -38,7 +38,11 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
 
         $resource = $class['resource'];
 
-        $arguments = [sprintf('iri="%s"', $resource->getUri())];
+        $arguments = [];
+        if ($className !== $localName = $resource->localName()) {
+            $arguments[] = sprintf('shortName="%s"', $localName);
+        }
+        $arguments[] = sprintf('iri="%s"', $resource->getUri());
 
         if (isset($class['operations'])) {
             $operations = $this->validateClassOperations((array) $class['operations']);
@@ -103,8 +107,8 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
     {
         return $this->classes[$className]['fields'][$fieldName]['isCustom'] ? [] : [
             sprintf(
-                '@ApiProperty(iri="http://schema.org/%s")',
-                $fieldName
+                '@ApiProperty(iri="%s")',
+                $this->classes[$className]['fields'][$fieldName]['resource']->getUri(),
             ),
         ];
     }

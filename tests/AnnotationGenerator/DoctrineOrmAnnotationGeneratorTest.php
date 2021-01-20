@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\Tests\AnnotationGenerator;
 
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator;
+use ApiPlatform\SchemaGenerator\PhpTypeConverter;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use Doctrine\Inflector\InflectorFactory;
 use EasyRdf\Graph;
@@ -34,39 +35,44 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
     protected function setUp(): void
     {
         $graph = new Graph();
-        $myEnum = new Resource('https://schema.org/MyEnum', $graph);
+        $myEnum = new Resource('http://schema.org/MyEnum', $graph);
         $myEnum->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);
         $this->generator = new DoctrineOrmAnnotationGenerator(
-            InflectorFactory::create()->build(),
+            new PhpTypeConverter(),
             new NullLogger(),
+            InflectorFactory::create()->build(),
             [],
             [],
             [],
             [
                 'Product' => [
+                    'name' => 'Product',
                     'isEnum' => false,
-                    'resource' => new Resource('https://schema.org/Product', $graph),
+                    'resource' => new Resource('http://schema.org/Product', $graph),
                     'abstract' => true,
                     'embeddable' => false,
                 ],
                 'Vehicle' => [
+                    'name' => 'Vehicle',
                     'isEnum' => false,
                     'abstract' => false,
                     'embeddable' => false,
-                    'resource' => new Resource('https://schema.org/Vehicle', $graph),
+                    'resource' => new Resource('http://schema.org/Vehicle', $graph),
                     'fields' => [
                         'weight' => [
                             'isEnum' => false,
                             'isId' => false,
                             'isEmbedded' => true,
-                            'range' => 'QuantitativeValue',
+                            'rangeName' => 'QuantitativeValue',
+                            'range' => new Resource('http://schema.org/QuantitativeValue'),
                             'columnPrefix' => false,
                         ],
                         'prefixedWeight' => [
                             'isEnum' => false,
                             'isId' => false,
                             'isEmbedded' => true,
-                            'range' => 'QuantitativeValue',
+                            'rangeName' => 'QuantitativeValue',
+                            'range' => new Resource('http://schema.org/QuantitativeValue'),
                             'columnPrefix' => 'weight_',
                         ],
                     ],
@@ -75,10 +81,14 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
                     'isEnum' => false,
                     'abstract' => false,
                     'name' => 'QuantitativeValue',
-                    'resource' => new Resource('https://schema.org/QuantitativeValue', $graph),
+                    'resource' => new Resource('http://schema.org/QuantitativeValue', $graph),
                     'embeddable' => true,
                 ],
-                'MyEnum' => ['isEnum' => true, 'resource' => $myEnum],
+                'MyEnum' => [
+                    'name' => 'MyEnum',
+                    'isEnum' => true,
+                    'resource' => $myEnum,
+                ],
             ]
         );
     }

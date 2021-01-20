@@ -1,6 +1,6 @@
-vocabs:
+vocabularies:
     - tests/data/vgo.rdf
-    - uri: data/schema.rdfa
+    - uri: tests/data/schema.rdfa
       format: rdfa
 
 annotationGenerators:
