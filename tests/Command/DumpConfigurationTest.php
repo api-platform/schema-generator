@@ -36,16 +36,16 @@ config:
         -
 
             # RDF vocabulary to use
-            uri:                  'https://schema.org/version/latest/schemaorg-current-http.rdf' # Example: https://schema.org/version/latest/schemaorg-current-http.rdf
+            uri:                  'https://schema.org/version/latest/schemaorg-current-http.rdf' # Example: 'https://schema.org/version/latest/schemaorg-current-http.rdf'
 
             # RDF vocabulary format
             format:               null # Example: rdfxml
 
     # Namespace of the vocabulary to import
-    vocabularyNamespace:  'http://schema.org/' # Example: http://www.w3.org/ns/activitystreams#
+    vocabularyNamespace:  'http://schema.org/' # Example: 'http://www.w3.org/ns/activitystreams#'
 
     # OWL relation files containing cardinality information in the GoodRelations format
-    relations:            # Example: https://purl.org/goodrelations/v1.owl
+    relations:            # Example: 'https://purl.org/goodrelations/v1.owl'
 
         # Default:
         - https://purl.org/goodrelations/v1.owl
@@ -65,6 +65,9 @@ config:
         # Is the ID writable? Only applicable if "generationStrategy" is "uuid".
         writable:             false
 
+        # Set to "child" to generate the id on the child class, and "parent" to use the parent class instead.
+        onClass:              child # One of "child"; "parent"
+
     # Generate interfaces and use Doctrine's Resolve Target Entity feature
     useInterface:         false
 
@@ -72,7 +75,7 @@ config:
     checkIsGoodRelations: false
 
     # A license or any text to use as header of generated files
-    header:               false # Example: // (c) Kévin Dunglas <dunglas@gmail.com>
+    header:               false # Example: '// (c) Kévin Dunglas <dunglas@gmail.com>'
 
     # PHP namespaces
     namespaces:
@@ -98,6 +101,9 @@ config:
         # The Resolve Target Entity Listener config file pass
         resolveTargetEntityConfigPath: null
 
+        # Doctrine inheritance annotations (if set, no other annotations are generated)
+        inheritanceAnnotations: []
+
     # Symfony Validator Component
     validator:
 
@@ -105,7 +111,7 @@ config:
         assertType:           false
 
     # The value of the phpDoc's @author annotation
-    author:               false # Example: Kévin Dunglas <dunglas@gmail.com>
+    author:               false # Example: 'Kévin Dunglas <dunglas@gmail.com>'
 
     # Visibility of entities fields
     fieldVisibility:      private # One of "private"; "protected"; "public"
@@ -115,6 +121,10 @@ config:
 
     # Set this flag to true to generate fluent setter, adder and remover methods
     fluentMutatorMethods: false
+    rangeMapping:
+
+        # Prototype
+        name:                 ~
 
     # Generate all types, even if an explicit configuration exists
     allTypes:             false
@@ -125,8 +135,11 @@ config:
         # Prototype
         id:
 
+            # Exclude this type, even if "allTypes" is set to true"
+            exclude:              false
+
             # Namespace of the vocabulary of this type (defaults to the global "vocabularyNamespace" entry)
-            vocabularyNamespace:  null # Example: http://www.w3.org/ns/activitystreams#
+            vocabularyNamespace:  null # Example: 'http://www.w3.org/ns/activitystreams#'
 
             # Is the class abstract? (null to guess)
             abstract:             null
@@ -144,8 +157,8 @@ config:
                 interface:            null
             doctrine:
 
-                # The Doctrine inheritance mapping type (override the guessed one)
-                inheritanceMapping:   null
+                # Doctrine annotations (if set, no other annotations are generated)
+                annotations:          []
 
             # The parent class, set to false for a top level class
             parent:               false
@@ -162,6 +175,9 @@ config:
                 # Prototype
                 id:
 
+                    # Exclude this property, even if "allProperties" is set to true"
+                    exclude:              false
+
                     # The property range
                     range:                null # Example: Offer
 
@@ -170,7 +186,7 @@ config:
                     cardinality:          unknown # One of "(0..1)"; "(0..*)"; "(1..1)"; "(1..*)"; "(*..0)"; "(*..1)"; "(*..*)"; "unknown"
 
                     # The doctrine column annotation content
-                    ormColumn:            null # Example: type="decimal", precision=5, scale=1, options={"comment" = "my comment"}
+                    ormColumn:            null # Example: 'type="decimal", precision=5, scale=1, options={"comment" = "my comment"}'
 
                     # Symfony Serialization Groups
                     groups:               []

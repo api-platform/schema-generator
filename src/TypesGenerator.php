@@ -256,13 +256,15 @@ class TypesGenerator
                         continue;
                     }
 
-                    foreach ($propertiesMap[$type->getUri()] as $property) {
-                        if ($key !== $property->localName()) {
-                            continue;
-                        }
+                    foreach ($this->getParentClasses($type) as $typeInHierarchy) {
+                        foreach ($propertiesMap[$typeInHierarchy->getUri()] as $property) {
+                            if ($key !== $property->localName()) {
+                                continue;
+                            }
 
-                        $class = $this->generateField($config, $class, $type, $typeName, $property);
-                        continue 2;
+                            $class = $this->generateField($config, $class, $type, $typeName, $property);
+                            continue 3;
+                        }
                     }
 
                     $class = $this->generateCustomField($key, $type, $typeName, $class, $config);
@@ -512,7 +514,7 @@ class TypesGenerator
     /**
      * Gets the parent classes of the current one and add them to $parentClasses array.
      *
-     * @return resource[]
+     * @return Resource[]
      */
     private function getParentClasses(Resource $resource, array $parentClasses = []): array
     {
@@ -601,11 +603,11 @@ class TypesGenerator
         }
 
         foreach ($typesResources as $typesResourceHierarchy) {
-            if (!\in_array($domain->getUri(), $typesResourceHierarchy['uris'], true)) {
-                continue;
-            }
-
             foreach ($typesResourceHierarchy['uris'] as $k => $typeUri) {
+                if ($domain->getUri() !== $typeUri) {
+                    continue;
+                }
+
                 $propertyConfig = $config['types'][$typesResourceHierarchy['names'][$k]]['properties'][$propertyName] ?? null;
 
                 if ($propertyConfig['exclude'] ?? false) {
@@ -656,7 +658,7 @@ class TypesGenerator
         $ranges = [];
         foreach (self::$rangeProperties as $rangePropertyType) {
             /**
-             * @var resource $range
+             * @var Resource $range
              */
             foreach ($property->all($rangePropertyType, 'resource') as $range) {
                 $ranges[] = $this->getRanges($range, $propertyConfig);
