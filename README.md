@@ -1,25 +1,29 @@
 # API Platform Model Generator
 
-This Schema.org based model generator is part of [the API Platform framework](https://api-platform.com) that instantly generates a PHP data model from the [Schema.org](https://schema.org)
-vocabulary. Browse Schema.org, choose the types and properties you need, run our code generator and you're done! You get
-a fully featured PHP data model including:
+This PHP model generator is part of [the API Platform framework](https://api-platform.com) that instantly generates a set
+of PHP classes from vocabularies such as (but not limited to) [Schema.org](https://schema.org)
+or [ActivityStreams](https://www.w3.org/TR/activitystreams-core/).
+
+Browse the vocabulary, choose the types and properties you need, run our code generator and you're done! You get a
+fully featured PHP data model including:
 * A set of PHP entities with properties, constants (enum values), getters, setters, adders and removers. The class
-hierarchy provided by Schema.org will be translated to a PHP class hierarchy with parents as `abstract` classes. The generated
-code complies with [PSR](http://www.php-fig.org/) coding standards.
-* Full, high-quality PHPDoc for classes, properties, constants and methods extracted from Schema.org.
+hierarchy provided by the vocabulary will be translated to a PHP class hierarchy with parents as `abstract` classes. The generated
+code complies with [PSR](http://www.php-fig.org/) coding standards ;
+* Full, high-quality PHPDoc for classes, properties, constants and methods extracted from the vocabulary ;
 * Doctrine ORM annotation mapping including database columns with type guessing, relations with cardinality guessing, class
-inheritance (through the `@AbstractSuperclass` annotation).
+inheritance (through the `@AbstractSuperclass` annotation) ;
 * Data validation through [Symfony Validator](https://symfony.com/doc/current/book/validation.html) annotations including
-data type validation, enum support (choices) and check for required properties.
+data type validation, enum support (choices) and check for required properties ;
+* API Platform Core annotations ;
 * Interfaces and [Doctrine `ResolveTargetEntityListener`](https://doctrine-orm.readthedocs.org/en/latest/cookbook/resolve-target-entity-listener.html)
-support.
-* Custom PHP namespace support.
-* List of values provided by [Schema.org](https://schema.org) with [PHP Enum](https://github.com/myclabs/php-enum) classes.
+support ;
+* Custom PHP namespace support ;
+* List of values provided the vocabulary with [PHP Enum](https://github.com/myclabs/php-enum) classes.
 
 Bonus:
 
 * The code generator is fully configurable and extensible. All features can be deactivated (e.g., the Doctrine mapping generator)
-and a custom generator can be added (e.g., a Doctrine ODM mapping generator).
+and a custom generator can be added (e.g., a Doctrine ODM mapping generator) ;
 * The generated code can be used as is in a [Symfony](https://symfony.com) app (but it will work too in a raw PHP project
 or any other framework including [Laravel](https://laravel.com) and [Zend Framework](http://framework.zend.com/)).
 
