@@ -419,7 +419,9 @@ PHP
 
         $this->assertStringContainsString(<<<'PHP'
     /**
-     * @var string|null an award won by or for this item
+     * An award won by or for this item.
+     *
+     * @see http://schema.org/award
      *
      * @ORM\Column(type="text", nullable=true)
      * @ApiProperty(iri="http://schema.org/award")

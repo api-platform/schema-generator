@@ -76,9 +76,21 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         $field = $this->classes[$className]['fields'][$fieldName];
         $comment = $field['resource'] ? $field['resource']->get('rdfs:comment') : '';
 
-        $annotations = $this->formatDoc((string) $comment, true);
+        $description = $this->formatDoc((string) $comment, true);
 
-        $annotations[0] = sprintf('@var %s %s', $this->toPhpDocType($field), $this->escapePhpDoc($annotations[0]));
+        $annotations = [];
+        $tags = false;
+        if ($this->isDocUseful($className, $fieldName)) {
+            $annotations[] = sprintf('@var %s %s', $this->toPhpDocType($field), $this->escapePhpDoc($description[0]));
+        } else {
+            $annotations = $description;
+            $annotations[] = '';
+        }
+
+        if (isset($this->classes[$className]['fields'][$fieldName]['resource'])) {
+            $annotations[] = sprintf('@see %s', $this->classes[$className]['fields'][$fieldName]['resource']->getUri());
+        }
+
         $annotations[] = '';
 
         return $annotations;

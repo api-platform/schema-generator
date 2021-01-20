@@ -18,7 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Inflector\Inflector;
 use EasyRdf\Graph;
-use EasyRdf\Resource;
+use EasyRdf\Resource as RdfResource;
 use MyCLabs\Enum\Enum;
 use PhpCsFixer\Cache\NullCacheManager;
 use PhpCsFixer\Differ\NullDiffer;
@@ -222,7 +222,7 @@ class TypesGenerator
                 $class['parent'] = $typeConfig['parent'] ?? null;
                 if (
                     (null === $class['parent']) &&
-                    $subclassOf = array_filter($type->all('rdfs:subClassOf', 'resource'), fn (Resource $resource) => !$resource->isBNode())
+                    $subclassOf = array_filter($type->all('rdfs:subClassOf', 'resource'), static fn (RdfResource $resource) => !$resource->isBNode())
                 ) {
                     if (\count($subclassOf) > 1) {
                         $this->logger->warning(sprintf('The type "%s" has several supertypes. Using the first one.', $type->getUri()));
@@ -388,7 +388,7 @@ class TypesGenerator
                         'name' => 'id',
                         'resource' => null,
                         'rangeName' => 'Text',
-                        'range' => new Resource($uri),
+                        'range' => new RdfResource($uri),
                         'cardinality' => CardinalitiesExtractor::CARDINALITY_1_1,
                         'ormColumn' => null,
                         'isArray' => false,
@@ -492,10 +492,10 @@ class TypesGenerator
     /**
      * Add custom fields (not defined in the vocabulary).
      */
-    private function generateCustomField(string $propertyName, Resource $type, string $typeName, array $class, array $config): array
+    private function generateCustomField(string $propertyName, RdfResource $type, string $typeName, array $class, array $config): array
     {
         $this->logger->info(sprintf('The property "%s" (type "%s") is a custom property.', $propertyName, $type->getUri()));
-        $customResource = new Resource('_:'.$propertyName, new Graph());
+        $customResource = new RdfResource('_:'.$propertyName, new Graph());
         $customResource->add('rdfs:range', $type);
 
         return $this->generateField($config, $class, $type, $typeName, $customResource, true);
@@ -504,7 +504,7 @@ class TypesGenerator
     /**
      * Tests if a type is an enum.
      */
-    private function isEnum(Resource $type): bool
+    private function isEnum(RdfResource $type): bool
     {
         $subClassOf = $type->get('rdfs:subClassOf');
 
@@ -514,9 +514,9 @@ class TypesGenerator
     /**
      * Gets the parent classes of the current one and add them to $parentClasses array.
      *
-     * @return resource[]
+     * @return RdfResource[]
      */
-    private function getParentClasses(Resource $resource, array $parentClasses = []): array
+    private function getParentClasses(RdfResource $resource, array $parentClasses = []): array
     {
         if ([] === $parentClasses) {
             return $this->getParentClasses($resource, [$resource]);
@@ -555,8 +555,8 @@ class TypesGenerator
             $parentClasses = $this->getParentClasses($type);
             $typesResources[] = [
                 'resources' => $parentClasses,
-                'uris' => array_map(fn (Resource $parentClass) => $parentClass->getUri(), $parentClasses),
-                'names' => array_map(fn (Resource $parentClass) => $this->phpTypeConverter->escapeIdentifier($parentClass->localName()), $parentClasses),
+                'uris' => array_map(static fn (RdfResource $parentClass) => $parentClass->getUri(), $parentClasses),
+                'names' => array_map(fn (RdfResource $parentClass) => $this->phpTypeConverter->escapeIdentifier($parentClass->localName()), $parentClasses),
             ];
             $map[$type->getUri()] = [];
         }
@@ -580,7 +580,7 @@ class TypesGenerator
         return $map;
     }
 
-    private function addPropertyToMap(Resource $property, Resource $domain, array $typesResources, array $config, array &$map): void
+    private function addPropertyToMap(RdfResource $property, RdfResource $domain, array $typesResources, array $config, array &$map): void
     {
         $propertyName = $property->localName();
         $deprecated = $property->isA('owl:DeprecatedProperty');
@@ -630,7 +630,7 @@ class TypesGenerator
     /**
      * Updates generated $class with given field config.
      */
-    private function generateField(array $config, array $class, Resource $type, string $typeName, Resource $property, bool $isCustom = false): array
+    private function generateField(array $config, array $class, RdfResource $type, string $typeName, RdfResource $property, bool $isCustom = false): array
     {
         $typeUri = $type->getUri();
         $propertyName = $property->localName();
@@ -658,24 +658,24 @@ class TypesGenerator
         $ranges = [];
         foreach (self::$rangeProperties as $rangePropertyType) {
             /**
-             * @var resource $range
+             * @var RdfResource $range
              */
             foreach ($property->all($rangePropertyType, 'resource') as $range) {
-                $ranges[] = $this->getRanges($range, $propertyConfig);
+                $ranges[] = $this->getRanges($range, $propertyConfig, $config);
             }
         }
         $ranges = array_merge(...$ranges);
 
         if (!$ranges) {
             if (isset($propertyConfig['range'])) {
-                $ranges[] = new Resource($propertyConfig['range'], $type->getGraph());
+                $ranges[] = new RdfResource($propertyConfig['range'], $type->getGraph());
             } else {
                 $this->logger->error(sprintf('The property "%s" (type "%s") has an unknown type. Add its type to the config file.', $propertyUri, $typeUri));
             }
         }
 
         if (\count($ranges) > 1) {
-            $this->logger->warning(sprintf('The property "%s" (type "%s") has several types. Using the first one ("%s"). Other possible options: "%s".', $propertyUri, $typeUri, $ranges[0]->getUri(), implode('", "', array_map(fn (Resource $range) => $range->getUri(), $ranges))));
+            $this->logger->warning(sprintf('The property "%s" (type "%s") has several types. Using the first one ("%s"). Other possible options: "%s".', $propertyUri, $typeUri, $ranges[0]->getUri(), implode('", "', array_map(static fn (RdfResource $range) => $range->getUri(), $ranges))));
         }
 
         $rangeName = null;
@@ -683,7 +683,7 @@ class TypesGenerator
         if (isset($ranges[0])) {
             $range = $ranges[0];
             if (!isset($propertyConfig['range']) && $mappedUri = ($config['rangeMapping'][$ranges[0]->getUri()] ?? false)) {
-                $range = new Resource($mappedUri);
+                $range = new RdfResource($mappedUri);
             }
 
             $rangeName = $this->phpTypeConverter->escapeIdentifier($range->localName());
@@ -765,20 +765,20 @@ class TypesGenerator
         return array_merge(...$annotations);
     }
 
-    private function getRanges(Resource $range, array $propertyConfig): array
+    private function getRanges(RdfResource $range, array $propertyConfig, array $config): array
     {
         $localName = $range->localName();
         $dataType = $this->phpTypeConverter->isDatatype($range);
         $ranges = [];
         if (!$dataType && $range->isBNode()) {
             if (null !== ($unionOf = $range->get('owl:unionOf'))) {
-                return $this->getRanges($unionOf, $propertyConfig);
+                return $this->getRanges($unionOf, $propertyConfig, $config);
             }
 
             if (null !== ($rdfFirst = $range->get('rdf:first'))) {
-                $ranges = $this->getRanges($rdfFirst, $propertyConfig);
+                $ranges = $this->getRanges($rdfFirst, $propertyConfig, $config);
                 if (null !== ($rdfRest = $range->get('rdf:rest'))) {
-                    $ranges = array_merge($ranges, $this->getRanges($rdfRest, $propertyConfig));
+                    $ranges = array_merge($ranges, $this->getRanges($rdfRest, $propertyConfig, $config));
                 }
             }
 
