@@ -52,7 +52,7 @@ final class GenerateCommand extends Command
     protected function configure(): void
     {
         if (file_exists('composer.json') && is_file('composer.json') && is_readable('composer.json')) {
-            $composer = json_decode(file_get_contents('composer.json'), true, 512, JSON_THROW_ON_ERROR);
+            $composer = json_decode(file_get_contents('composer.json'), true, 512, \JSON_THROW_ON_ERROR);
             foreach ($composer['autoload']['psr-4'] ?? [] as $prefix => $output) {
                 if ('' === $prefix) {
                     continue;
@@ -123,7 +123,7 @@ final class GenerateCommand extends Command
             unset($parser);
         } else {
             $helper = $this->getHelper('question');
-            $question = new ConfirmationQuestion('Your project has no config file. The entire vocabulary will be imported.'.PHP_EOL.'Continue? [yN]', false);
+            $question = new ConfirmationQuestion('Your project has no config file. The entire vocabulary will be imported.'.\PHP_EOL.'Continue? [yN]', false);
 
             if (!$helper->ask($input, $output, $question)) {
                 return 0;

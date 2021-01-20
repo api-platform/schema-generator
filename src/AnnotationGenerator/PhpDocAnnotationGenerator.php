@@ -179,7 +179,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             }
         }
 
-        return$doc;
+        return $doc;
     }
 
     /**

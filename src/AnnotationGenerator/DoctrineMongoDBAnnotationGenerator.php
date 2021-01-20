@@ -61,7 +61,7 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
             $type = 'collection';
         } elseif (null !== $phpType = $this->phpTypeConverter->getPhpType($field, $this->config, [])) {
             switch ($field['range']->getUri()) {
-                case  'http://www.w3.org/2001/XMLSchema#time':
+                case 'http://www.w3.org/2001/XMLSchema#time':
                 case 'http://schema.org/Time':
                     $type = 'time';
                     break;

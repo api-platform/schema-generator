@@ -110,7 +110,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         } elseif (null !== $phpType = $this->phpTypeConverter->getPhpType($field, $this->config, [])) {
             switch ($field['range']->getUri()) {
                 // TODO: use more precise types for int (smallint, bigint...)
-                case  'http://www.w3.org/2001/XMLSchema#time':
+                case 'http://www.w3.org/2001/XMLSchema#time':
                 case 'http://schema.org/Time':
                     $type = 'time';
                     break;

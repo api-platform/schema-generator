@@ -514,7 +514,7 @@ class TypesGenerator
     /**
      * Gets the parent classes of the current one and add them to $parentClasses array.
      *
-     * @return Resource[]
+     * @return resource[]
      */
     private function getParentClasses(Resource $resource, array $parentClasses = []): array
     {
@@ -658,7 +658,7 @@ class TypesGenerator
         $ranges = [];
         foreach (self::$rangeProperties as $rangePropertyType) {
             /**
-             * @var Resource $range
+             * @var resource $range
              */
             foreach ($property->all($rangePropertyType, 'resource') as $range) {
                 $ranges[] = $this->getRanges($range, $propertyConfig);

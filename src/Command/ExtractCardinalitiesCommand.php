@@ -52,7 +52,7 @@ final class ExtractCardinalitiesCommand extends Command
         $relations = [];
         $graph = new Graph();
 
-        $format = pathinfo($vocabFile, PATHINFO_EXTENSION) ?: 'guess';
+        $format = pathinfo($vocabFile, \PATHINFO_EXTENSION) ?: 'guess';
         if (0 === strpos($vocabFile, 'http://') || 0 === strpos($vocabFile, 'https://')) {
             $graph->load($input->getOption('vocabulary-file'), $format);
         } else {
@@ -67,7 +67,7 @@ final class ExtractCardinalitiesCommand extends Command
         $cardinalitiesExtractor = new CardinalitiesExtractor($relations, $goodRelationsBridge);
         $result = $cardinalitiesExtractor->extract();
 
-        $output->writeln(json_encode($result, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
+        $output->writeln(json_encode($result, \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT));
 
         return 0;
     }
