@@ -24,7 +24,7 @@ trim_trailing_whitespace = false
 [*.yml]
 trim_trailing_whitespace = false
 
-[.travis.yml]
+[.github/workflows/*.yml]
 indent_size = 2
 
 [composer.json]

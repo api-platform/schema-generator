@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  - push
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    env:
+      extensions: json
+      composer_version: 2
+    strategy:
+      matrix:
+        php_version:
+          - '7.4'
+          - '8.0'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+      
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Setup PHP with extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php_version }}
+          extensions: ${{ env.extensions }}
+          ini-values: memory_limit=-1
+          coverage: pcov
+          tools: composer:v2, cs2pr, php-cs-fixer
+
+      - name: Install prerequisites
+        run: |
+          export PATH="$PATH:$HOME/.composer/vendor/bin"
+          mkdir -p build/logs
+          wget https://github.com/satooshi/php-coveralls/releases/download/v2.4.3/php-coveralls.phar
+          wget -O box.phar https://github.com/humbug/box/releases/download/3.11.1/box.phar
+          export BOX_BIN=$(pwd)/box.phar
+          sudo chown -R $(whoami):$(whoami) .
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Run phpunit
+        run: vendor/bin/simple-phpunit
+
+      - name: Run php-cs-fixer
+        run: php-cs-fixer fix --dry-run --format=checkstyle | cs2pr
+
+      - name: Run phpstan
+        run: |
+          vendor/bin/phpstan analyse
+
+      - name: Run e2e tests
+        run: |
+          php bin/compile
