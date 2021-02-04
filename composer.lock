@@ -5593,12 +5593,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "be0164887ad0a2fcd86b24b2e932ff218c1c5651"
+                "reference": "2cdb300175d6eeaef3c7bdf5cfe502a5ebcdea88"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/be0164887ad0a2fcd86b24b2e932ff218c1c5651",
-                "reference": "be0164887ad0a2fcd86b24b2e932ff218c1c5651",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/2cdb300175d6eeaef3c7bdf5cfe502a5ebcdea88",
+                "reference": "2cdb300175d6eeaef3c7bdf5cfe502a5ebcdea88",
                 "shasum": ""
             },
             "require": {
@@ -5655,7 +5655,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-28T15:56:06+00:00"
+            "time": "2021-02-03T04:42:38+00:00"
         },
         {
             "name": "symfony/http-kernel",
@@ -6187,16 +6187,16 @@
         },
         {
             "name": "symfony/validator",
-            "version": "v5.2.2",
+            "version": "v5.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "c2c234d80dad3925247b0a3fbbcecfe676e2b551"
+                "reference": "d83d2a9f060ce42636feef6af6facc39793354cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/c2c234d80dad3925247b0a3fbbcecfe676e2b551",
-                "reference": "c2c234d80dad3925247b0a3fbbcecfe676e2b551",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/d83d2a9f060ce42636feef6af6facc39793354cf",
+                "reference": "d83d2a9f060ce42636feef6af6facc39793354cf",
                 "shasum": ""
             },
             "require": {
@@ -6291,7 +6291,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-27T12:56:27+00:00"
+            "time": "2021-01-28T22:06:19+00:00"
         },
         {
             "name": "symfony/var-dumper",
