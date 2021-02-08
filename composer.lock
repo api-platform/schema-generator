@@ -2414,16 +2414,16 @@
     "packages-dev": [
         {
             "name": "api-platform/core",
-            "version": "v2.6.1",
+            "version": "v2.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/api-platform/core.git",
-                "reference": "4b293b0c004597bcf5f6b653d7d464fa71e9d064"
+                "reference": "2edb3bf1fffe57f1d5e6833e25e7b0b54dd7a583"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/api-platform/core/zipball/4b293b0c004597bcf5f6b653d7d464fa71e9d064",
-                "reference": "4b293b0c004597bcf5f6b653d7d464fa71e9d064",
+                "url": "https://api.github.com/repos/api-platform/core/zipball/2edb3bf1fffe57f1d5e6833e25e7b0b54dd7a583",
+                "reference": "2edb3bf1fffe57f1d5e6833e25e7b0b54dd7a583",
                 "shasum": ""
             },
             "require": {
@@ -2523,7 +2523,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.6.x-dev"
+                    "dev-main": "2.7.x-dev"
                 },
                 "symfony": {
                     "require": "^3.4 || ^4.4 || ^5.1"
@@ -2564,7 +2564,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-24T21:00:50+00:00"
+            "time": "2021-02-07T14:18:49+00:00"
         },
         {
             "name": "composer/package-versions-deprecated",
@@ -3309,16 +3309,16 @@
         },
         {
             "name": "fig/link-util",
-            "version": "1.1.1",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/link-util.git",
-                "reference": "c038ee75ca13663ddc2d1f185fe6f7533c00832a"
+                "reference": "5d7b8d04ed3393b4b59968ca1e906fb7186d81e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/link-util/zipball/c038ee75ca13663ddc2d1f185fe6f7533c00832a",
-                "reference": "c038ee75ca13663ddc2d1f185fe6f7533c00832a",
+                "url": "https://api.github.com/repos/php-fig/link-util/zipball/5d7b8d04ed3393b4b59968ca1e906fb7186d81e8",
+                "reference": "5d7b8d04ed3393b4b59968ca1e906fb7186d81e8",
                 "shasum": ""
             },
             "require": {
@@ -3350,7 +3350,7 @@
             "authors": [
                 {
                     "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
+                    "homepage": "https://www.php-fig.org/"
                 }
             ],
             "description": "Common utility implementations for HTTP links",
@@ -3362,7 +3362,7 @@
                 "psr-13",
                 "rest"
             ],
-            "time": "2020-04-27T06:40:36+00:00"
+            "time": "2021-02-03T23:36:04+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -4341,16 +4341,16 @@
         },
         {
             "name": "psr/cache",
-            "version": "dev-master",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/cache.git",
-                "reference": "b7f3937cd92526ccc1cc8bd1af67cb0a9ee1c766"
+                "reference": "d11b50ad223250cf17b86e38383413f5a6764bf8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/cache/zipball/b7f3937cd92526ccc1cc8bd1af67cb0a9ee1c766",
-                "reference": "b7f3937cd92526ccc1cc8bd1af67cb0a9ee1c766",
+                "url": "https://api.github.com/repos/php-fig/cache/zipball/d11b50ad223250cf17b86e38383413f5a6764bf8",
+                "reference": "d11b50ad223250cf17b86e38383413f5a6764bf8",
                 "shasum": ""
             },
             "require": {
@@ -4374,7 +4374,7 @@
             "authors": [
                 {
                     "name": "PHP-FIG",
-                    "homepage": "https://www.php-fig.org/"
+                    "homepage": "http://www.php-fig.org/"
                 }
             ],
             "description": "Common interface for caching libraries",
@@ -4383,20 +4383,20 @@
                 "psr",
                 "psr-6"
             ],
-            "time": "2020-12-14T17:31:09+00:00"
+            "time": "2016-08-06T20:24:11+00:00"
         },
         {
             "name": "psr/link",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/link.git",
-                "reference": "131b5c337db3599ef922e9d6c22889ad237b80b9"
+                "reference": "eea8e8662d5cd3ae4517c9b864493f59fca95562"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/link/zipball/131b5c337db3599ef922e9d6c22889ad237b80b9",
-                "reference": "131b5c337db3599ef922e9d6c22889ad237b80b9",
+                "url": "https://api.github.com/repos/php-fig/link/zipball/eea8e8662d5cd3ae4517c9b864493f59fca95562",
+                "reference": "eea8e8662d5cd3ae4517c9b864493f59fca95562",
                 "shasum": ""
             },
             "require": {
@@ -4424,7 +4424,6 @@
                 }
             ],
             "description": "Common interfaces for HTTP links",
-            "homepage": "https://github.com/php-fig/link",
             "keywords": [
                 "http",
                 "http-link",
@@ -4433,7 +4432,7 @@
                 "psr-13",
                 "rest"
             ],
-            "time": "2016-11-17T00:27:01+00:00"
+            "time": "2016-10-28T16:06:13+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -5452,12 +5451,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/error-handler.git",
-                "reference": "3c4a608822fd8f0009a1c5d9ae1bef722c45336c"
+                "reference": "b2aa0980229d4f7fa094ee903aa42f2cd1a8ef0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/error-handler/zipball/3c4a608822fd8f0009a1c5d9ae1bef722c45336c",
-                "reference": "3c4a608822fd8f0009a1c5d9ae1bef722c45336c",
+                "url": "https://api.github.com/repos/symfony/error-handler/zipball/b2aa0980229d4f7fa094ee903aa42f2cd1a8ef0a",
+                "reference": "b2aa0980229d4f7fa094ee903aa42f2cd1a8ef0a",
                 "shasum": ""
             },
             "require": {
@@ -5510,7 +5509,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-28T22:08:00+00:00"
+            "time": "2021-02-04T12:03:58+00:00"
         },
         {
             "name": "symfony/http-client-contracts",
@@ -5593,12 +5592,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "be0164887ad0a2fcd86b24b2e932ff218c1c5651"
+                "reference": "f8474ef5c7a3fe2635fe38792aac7383ec8c3efc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/be0164887ad0a2fcd86b24b2e932ff218c1c5651",
-                "reference": "be0164887ad0a2fcd86b24b2e932ff218c1c5651",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/f8474ef5c7a3fe2635fe38792aac7383ec8c3efc",
+                "reference": "f8474ef5c7a3fe2635fe38792aac7383ec8c3efc",
                 "shasum": ""
             },
             "require": {
@@ -5655,7 +5654,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-28T15:56:06+00:00"
+            "time": "2021-02-06T10:28:18+00:00"
         },
         {
             "name": "symfony/http-kernel",
@@ -5663,12 +5662,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-kernel.git",
-                "reference": "0346aa19405ab0a8532efdbdc0dda3d689c3dc13"
+                "reference": "a111eed4e73125be6deb8a7eccb94d5de02aea6b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/0346aa19405ab0a8532efdbdc0dda3d689c3dc13",
-                "reference": "0346aa19405ab0a8532efdbdc0dda3d689c3dc13",
+                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/a111eed4e73125be6deb8a7eccb94d5de02aea6b",
+                "reference": "a111eed4e73125be6deb8a7eccb94d5de02aea6b",
                 "shasum": ""
             },
             "require": {
@@ -5703,7 +5702,7 @@
                 "psr/log-implementation": "1.0"
             },
             "require-dev": {
-                "psr/cache": "~1.0",
+                "psr/cache": "^1.0|^2.0|^3.0",
                 "symfony/browser-kit": "^4.4|^5.0",
                 "symfony/config": "^5.0",
                 "symfony/console": "^4.4|^5.0",
@@ -5764,7 +5763,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-28T22:08:00+00:00"
+            "time": "2021-02-05T17:04:25+00:00"
         },
         {
             "name": "symfony/phpunit-bridge",
