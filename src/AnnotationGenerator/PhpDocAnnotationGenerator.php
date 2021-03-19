@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
+use ApiPlatform\SchemaGenerator\Model\Class_;
+use ApiPlatform\SchemaGenerator\Model\Constant;
+use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
 use Doctrine\Inflector\Inflector;
 use League\HTMLToMarkdown\HtmlConverter;
@@ -42,27 +45,25 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations(string $className): array
+    public function generateClassAnnotations(Class_ $class): array
     {
-        return $this->generateDoc($className);
+        return $this->generateDoc($class);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generateInterfaceAnnotations(string $className): array
+    public function generateInterfaceAnnotations(Class_ $class): array
     {
-        return $this->generateDoc($className, true);
+        return $this->generateDoc($class, true);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generateConstantAnnotations(string $className, string $constantName): array
+    public function generateConstantAnnotations(Constant $constant): array
     {
-        $resource = $this->classes[$className]['constants'][$constantName]['resource'];
-
-        $annotations = $this->formatDoc((string) $resource->get('rdfs:comment'), true);
+        $annotations = $this->formatDoc($constant->comment(), true);
         $annotations[0] = sprintf('@var string %s', $this->escapePhpDoc($annotations[0]));
 
         return $annotations;
@@ -71,24 +72,22 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations(string $className, string $fieldName): array
+    public function generatePropertyAnnotations(Property $property, string $className): array
     {
-        $field = $this->classes[$className]['fields'][$fieldName];
-        $comment = $field['resource'] ? $field['resource']->get('rdfs:comment') : '';
+        $comment = $property->resource ? $property->resource->get('rdfs:comment') : '';
 
         $description = $this->formatDoc((string) $comment, true);
 
         $annotations = [];
-        $tags = false;
-        if ($this->isDocUseful($className, $fieldName)) {
-            $annotations[] = sprintf('@var %s %s', $this->toPhpDocType($field), $this->escapePhpDoc($description[0]));
+        if ($this->isDocUseful($property)) {
+            $annotations[] = sprintf('@var %s %s', $this->toPhpDocType($property), $this->escapePhpDoc($description[0]));
         } else {
             $annotations = $description;
             $annotations[] = '';
         }
 
-        if (isset($this->classes[$className]['fields'][$fieldName]['resource'])) {
-            $annotations[] = sprintf('@see %s', $this->classes[$className]['fields'][$fieldName]['resource']->getUri());
+        if ($property->resource !== null) {
+            $annotations[] = sprintf('@see %s', $property->resourceUri());
         }
 
         $annotations[] = '';
@@ -99,56 +98,54 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateGetterAnnotations(string $className, string $fieldName): array
+    public function generateGetterAnnotations(Property $property): array
     {
-        if (!$this->isDocUseful($className, $fieldName)) {
+        if (!$this->isDocUseful($property)) {
             return [];
         }
 
-        return [sprintf('@return %s', $this->toPhpDocType($this->classes[$className]['fields'][$fieldName]))];
+        return [sprintf('@return %s', $this->toPhpDocType($property))];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generateSetterAnnotations(string $className, string $fieldName): array
+    public function generateSetterAnnotations(Property $property): array
     {
-        if (!$this->isDocUseful($className, $fieldName)) {
+        if (!$this->isDocUseful($property)) {
             return [];
         }
 
-        $field = $this->classes[$className]['fields'][$fieldName];
-
-        return [sprintf('@param %s $%s', $this->toPhpDocType($this->classes[$className]['fields'][$fieldName]), $field['name'])];
+        return [sprintf('@param %s $%s', $this->toPhpDocType($property), $property->name)];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generateAdderAnnotations(string $className, string $fieldName): array
+    public function generateAdderAnnotations(Property $property): array
     {
-        if (!$this->isDocUseful($className, $fieldName, true)) {
+        if (!$this->isDocUseful($property, true)) {
             return [];
         }
 
-        return [sprintf('@param %s $%s', $this->toPhpDocType($this->classes[$className]['fields'][$fieldName], true), $this->inflector->singularize($fieldName))];
+        return [sprintf('@param %s $%s', $this->toPhpDocType($property, true), $this->inflector->singularize($property->name()))];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generateRemoverAnnotations(string $className, string $fieldName): array
+    public function generateRemoverAnnotations(Property $property): array
     {
-        if (!$this->isDocUseful($className, $fieldName, true)) {
+        if (!$this->isDocUseful($property, true)) {
             return [];
         }
 
-        return [sprintf('@param %s $%s', $this->toPhpDocType($this->classes[$className]['fields'][$fieldName], true), $this->inflector->singularize($fieldName))];
+        return [sprintf('@param %s $%s', $this->toPhpDocType($property, true), $this->inflector->singularize($property->name()))];
     }
 
-    private function isDocUseful(string $className, string $fieldName, $adderOrRemover = false): bool
+    private function isDocUseful(Property $property, $adderOrRemover = false): bool
     {
-        $typeHint = $this->classes[$className]['fields'][$fieldName][$adderOrRemover ? 'adderRemoverTypeHint' : 'typeHint'] ?? false;
+        $typeHint = $adderOrRemover ? $property->adderRemoverTypeHint ?? false : $property->typeHint ?? false;
 
         return false === $typeHint || 'array' === $typeHint;
     }
@@ -156,18 +153,17 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * Generates class or interface PHPDoc.
      */
-    private function generateDoc(string $className, bool $interface = false): array
+    private function generateDoc(Class_ $class, bool $interface = false): array
     {
-        $resource = $this->classes[$className]['resource'];
         $annotations = [];
 
-        if (!$interface && isset($this->classes[$className]['interfaceName'])) {
+        if (!$interface && $class->interfaceName() !== null) {
             $annotations[] = '{@inheritdoc}';
             $annotations[] = '';
         } else {
-            $annotations = $this->formatDoc((string) $resource->get('rdfs:comment'));
+            $annotations = $this->formatDoc((string) $class->resource()->get('rdfs:comment'));
             $annotations[] = '';
-            $annotations[] = sprintf('@see %s', $resource->getUri());
+            $annotations[] = sprintf('@see %s', $class->resource());
         }
 
         if ($this->config['author']) {
@@ -197,28 +193,31 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * Converts a RDF range to a PHPDoc type.
      */
-    protected function toPhpDocType(array $field, bool $adderOrRemover = false): ?string
+    protected function toPhpDocType(Property $property, bool $adderOrRemover = false): ?string
     {
-        $suffix = $field['isNullable'] ? '|null' : '';
-        if ($field['isEnum']) {
-            if ($field['isArray']) {
+        $suffix = $property->isNullable ? '|null' : '';
+        if ($property->isEnum) {
+            if ($property->isArray) {
                 return 'string[]'.$suffix;
             }
 
             return 'string'.$suffix;
         }
 
-        if (null !== $phpDocType = $this->phpTypeConverter->getPhpType(['isArray' => false] + $field)) {
-            return ($field['isArray'] ? sprintf('%s[]', $phpDocType) : $phpDocType).$suffix;
+        $enforcedNonArrayProperty = clone $property;
+        $enforcedNonArrayProperty->isArray = false;
+
+        if (null !== $phpDocType = $this->phpTypeConverter->getPhpType($enforcedNonArrayProperty)) {
+            return ($property->isArray ? sprintf('%s[]', $phpDocType) : $phpDocType).$suffix;
         }
 
-        if (!isset($field['range'])) {
+        if ($property->range === null) {
             return null;
         }
 
-        $rangeName = $field['rangeName'];
-        $phpDocType = $this->classes[$rangeName]['interfaceName'] ?? $rangeName;
-        if (!$field['isArray'] || $adderOrRemover) {
+        $phpDocType = isset($this->classes[$property->rangeName]) && $this->classes[$property->rangeName]->interfaceName() ?
+            $this->classes[$property->rangeName]->interfaceName() : $property->rangeName;
+        if (!$property->isArray || $adderOrRemover) {
             return $phpDocType.$suffix;
         }
 
