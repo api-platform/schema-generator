@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator;
 
-use ApiPlatform\SchemaGenerator\AnnotationGenerator\AnnotationGeneratorInterface;
 use ApiPlatform\SchemaGenerator\ClassMutator\AnnotationsAppender;
 use ApiPlatform\SchemaGenerator\ClassMutator\ClassIdAppender;
 use ApiPlatform\SchemaGenerator\ClassMutator\ClassInterfaceMutator;
@@ -22,7 +21,6 @@ use ApiPlatform\SchemaGenerator\ClassMutator\ClassPropertiesAppender;
 use ApiPlatform\SchemaGenerator\ClassMutator\ClassPropertiesTypehintMutator;
 use ApiPlatform\SchemaGenerator\ClassMutator\EnumClassMutator;
 use ApiPlatform\SchemaGenerator\Model\Class_;
-use ApiPlatform\SchemaGenerator\PropertyGenerator\IdPropertyGenerator;
 use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGenerator;
 use Doctrine\Inflector\Inflector;
 use EasyRdf\Graph;
