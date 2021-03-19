@@ -14,7 +14,8 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
-use ApiPlatform\SchemaGenerator\TypesGenerator;
+use ApiPlatform\SchemaGenerator\Model\Class_;
+use ApiPlatform\SchemaGenerator\Model\Property;
 
 /**
  * Doctrine MongoDB annotation generator.
@@ -26,41 +27,38 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations(string $className): array
+    public function generateClassAnnotations(Class_ $class): array
     {
-        $class = $this->classes[$className];
-        if ($class['isEnum']) {
+        if ($class->isEnum()) {
             return [];
         }
 
         return [
             '',
-            $this->config['types'][$class['name']]['doctrine']['inheritanceMapping'] ?? ($class['abstract'] ? '@MongoDB\MappedSuperclass' : '@MongoDB\Document'),
+            $this->config['types'][$class->name()]['doctrine']['inheritanceMapping'] ?? ($class->isAbstract() ? '@MongoDB\MappedSuperclass' : '@MongoDB\Document'),
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations(string $className, string $fieldName): array
+    public function generatePropertyAnnotations(Property $property, string $className): array
     {
-        $field = $this->classes[$className]['fields'][$fieldName];
-        if (null === $field['range']) {
+        if (null === $property->range) {
             return [];
         }
 
-        $field = $this->classes[$className]['fields'][$fieldName];
-        if ($field['isId']) {
+        if ($property->isId) {
             return $this->generateIdAnnotations();
         }
 
         $type = null;
-        if ($field['isEnum']) {
-            $type = $field['isArray'] ? 'simple_array' : 'string';
-        } elseif ($field['isArray'] ?? false) {
+        if ($property->isEnum) {
+            $type = $property->isArray ? 'simple_array' : 'string';
+        } elseif ($property->isArray ?? false) {
             $type = 'collection';
-        } elseif (null !== $phpType = $this->phpTypeConverter->getPhpType($field, $this->config, [])) {
-            switch ($field['range']->getUri()) {
+        } elseif (null !== $phpType = $this->phpTypeConverter->getPhpType($property, $this->config, [])) {
+            switch ($property->range->getUri()) {
                 case 'http://www.w3.org/2001/XMLSchema#time':
                 case 'http://schema.org/Time':
                     $type = 'time';
@@ -93,17 +91,17 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
             return [sprintf('@MongoDB\Field(type="%s")', $type)];
         }
 
-        if (CardinalitiesExtractor::CARDINALITY_0_1 === $field['cardinality']
-                || CardinalitiesExtractor::CARDINALITY_1_1 === $field['cardinality']
-                || CardinalitiesExtractor::CARDINALITY_N_0 === $field['cardinality']
-                || CardinalitiesExtractor::CARDINALITY_N_1 === $field['cardinality']) {
-            return [sprintf('@MongoDB\ReferenceOne(targetDocument="%s", simple=true))', $this->getRelationName($field['rangeName']))];
+        if (CardinalitiesExtractor::CARDINALITY_0_1 === $property->cardinality
+                || CardinalitiesExtractor::CARDINALITY_1_1 === $property->cardinality
+                || CardinalitiesExtractor::CARDINALITY_N_0 === $property->cardinality
+                || CardinalitiesExtractor::CARDINALITY_N_1 === $property->cardinality) {
+            return [sprintf('@MongoDB\ReferenceOne(targetDocument="%s", simple=true))', $this->getRelationName($property->rangeName))];
         }
 
-        if (CardinalitiesExtractor::CARDINALITY_0_N === $field['cardinality']
-                || CardinalitiesExtractor::CARDINALITY_1_N === $field['cardinality']
-                || CardinalitiesExtractor::CARDINALITY_N_N === $field['cardinality']) {
-            return [sprintf('@MongoDB\ReferenceMany(targetDocument="%s", simple=true)', $this->getRelationName($field['rangeName']))];
+        if (CardinalitiesExtractor::CARDINALITY_0_N === $property->cardinality
+                || CardinalitiesExtractor::CARDINALITY_1_N === $property->cardinality
+                || CardinalitiesExtractor::CARDINALITY_N_N === $property->cardinality) {
+            return [sprintf('@MongoDB\ReferenceMany(targetDocument="%s", simple=true)', $this->getRelationName($property->rangeName))];
         }
 
         return [];
@@ -112,14 +110,9 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
     /**
      * {@inheritdoc}
      */
-    public function generateUses(string $className): array
+    public function generateUses(Class_ $class): array
     {
-        $resource = $this->classes[$className]['resource'];
-
-        $subClassOf = $resource->get('rdfs:subClassOf');
-        $typeIsEnum = $subClassOf && TypesGenerator::SCHEMA_ORG_ENUMERATION === $subClassOf->getUri();
-
-        return $typeIsEnum ? [] : ['Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB'];
+        return $class->isEnum() ? [] : ['Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB'];
     }
 
     /**
@@ -127,7 +120,8 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
      */
     private function getRelationName(string $rangeName): string
     {
-        return $this->classes[$rangeName]['interfaceName'] ?? $rangeName;
+        return isset($this->classes[$rangeName]) && $this->classes[$rangeName]->interfaceName()
+            ? $this->classes[$rangeName]->interfaceName() : $rangeName;
     }
 
     private function generateIdAnnotations(): array
