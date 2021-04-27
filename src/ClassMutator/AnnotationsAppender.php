@@ -68,7 +68,6 @@ final class AnnotationsAppender implements ClassMutatorInterface
         return $class;
     }
 
-
     private function generateClassAnnotations(Class_ $class): Class_
     {
         foreach ($this->annotationGenerators as $generator) {

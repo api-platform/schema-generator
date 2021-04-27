@@ -10,16 +10,21 @@ final class ClassParentMutator implements ClassMutatorInterface
 {
     private PhpTypeConverterInterface $phpTypeConverter;
     private LoggerInterface $logger;
+    private array $config;
 
-    public function __construct(PhpTypeConverterInterface $phpTypeConverter, LoggerInterface $logger)
+    public function __construct(array $config, PhpTypeConverterInterface $phpTypeConverter, LoggerInterface $logger)
     {
         $this->phpTypeConverter = $phpTypeConverter;
         $this->logger = $logger;
+        $this->config = $config;
     }
 
     public function __invoke(Class_ $class): Class_
     {
-        if ($class->hasParent() && $subclassOf = $class->getSubClassOf()) {
+        $typeConfig = $this->config['types'][$class->name()];
+        $class->withParent($typeConfig['parent'] ?? null);
+
+        if (null === $class->parent() && $subclassOf = $class->getSubClassOf()) {
             if (\count($subclassOf) > 1) {
                 $this->logger->warning(sprintf('The type "%s" has several supertypes. Using the first one.', $class->resourceUri()));
             }

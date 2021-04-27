@@ -37,7 +37,7 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
     public function generateClassAnnotations(Class_ $class): array
     {
         $arguments = [];
-        if ($class->name() !== $localName = $class->resource()->localName()) {
+        if ($class->name() !== $localName = $class->resourceLocalName()) {
             $arguments[] = sprintf('shortName="%s"', $localName);
         }
         $arguments[] = sprintf('iri="%s"', $class->resourceUri());

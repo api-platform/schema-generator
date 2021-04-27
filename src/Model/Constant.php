@@ -3,11 +3,14 @@
 namespace ApiPlatform\SchemaGenerator\Model;
 
 use EasyRdf\Resource as RdfResource;
+use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\Constant as NetteConstant;
 
 final class Constant
 {
     private string $name;
     private RdfResource $resource;
+    /** @var array<string> */
     private array $annotations = [];
 
     public function __construct(string $name, RdfResource $resource)
@@ -19,11 +22,6 @@ final class Constant
     public function name(): string
     {
         return $this->name;
-    }
-
-    public function resourceUri(): string
-    {
-        return $this->resource->getUri();
     }
 
     public function comment(): string
@@ -40,13 +38,16 @@ final class Constant
         return $this;
     }
 
-    public function toArray(): array
+    public function toNetteConstant(): NetteConstant
     {
-        return [
-            'name' => $this->name,
-            'resource' => $this->resource,
-            'value' => $this->resourceUri(),
-            'annotations' => [...$this->annotations],
-        ];
+        $netteConstant = (new NetteConstant($this->name))
+            ->setValue($this->resource->getUri())
+            ->setVisibility(ClassType::VISIBILITY_PUBLIC);
+
+        foreach ($this->annotations as $annotation) {
+            $netteConstant->addComment($annotation);
+        }
+
+        return $netteConstant;
     }
 }

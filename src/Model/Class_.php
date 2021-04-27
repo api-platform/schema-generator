@@ -2,8 +2,12 @@
 
 namespace ApiPlatform\SchemaGenerator\Model;
 
+use Doctrine\Inflector\Inflector;
 use EasyRdf\Resource as RdfResource;
 use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\Helpers;
+use Nette\PhpGenerator\Method;
+use Nette\PhpGenerator\PhpFile;
 
 final class Class_
 {
@@ -13,6 +17,7 @@ final class Class_
     private array $uses = [];
     /** @var Property[] */
     private array $properties = [];
+    /** @var array|Constant[] */
     private array $constants = [];
     private array $annotations = [];
     private array $operations = [];
@@ -21,6 +26,7 @@ final class Class_
     private bool $isAbstract = false;
     private bool $hasChild = false;
     private bool $embeddable = false;
+    /** @var bool|string|null */
     private $parent;
     private RdfResource $resource;
 
@@ -48,9 +54,13 @@ final class Class_
         return $this->interface ? $this->interface->namespace() : null;
     }
 
-    public function interfaceAnnotations(): array
+    public function interfaceToNetteFile(string $fileHeader = null): PhpFile
     {
-        return $this->interface ? $this->interface->annotations() : [];
+        if (!$this->interface) {
+            throw new \LogicException(sprintf("'%s' has no interface attached.", $this->name));
+        }
+
+        return $this->interface->toNetteFile($fileHeader);
     }
 
     public function withNamespace(string $namespace): self
@@ -60,7 +70,7 @@ final class Class_
         return $this;
     }
 
-    public function withParent(string $parent): self
+    public function withParent($parent): self
     {
         $this->parent = $parent;
 
@@ -105,11 +115,6 @@ final class Class_
         }
 
         return $this;
-    }
-
-    public function doesUse(string $class): bool
-    {
-        return \in_array($class, $this->uses, true);
     }
 
     public function addAnnotation(string $annotation): self
@@ -165,6 +170,16 @@ final class Class_
         return $this->resource->getUri();
     }
 
+    public function resourceComment(): ?string
+    {
+        return $this->resource->get('rdfs:comment');
+    }
+
+    public function resourceLocalName(): string
+    {
+        return $this->resource->localName();
+    }
+
     public function parent(): ?string
     {
         return $this->parent;
@@ -177,7 +192,7 @@ final class Class_
 
     public function hasParent(): bool
     {
-        return $this->parent() !== '';
+        return $this->parent !== '' && $this->parent !== null && $this->parent !== false;
     }
 
     public function markWithConstructor(): self
@@ -221,29 +236,6 @@ final class Class_
         return $this->namespace;
     }
 
-    public function asTwigParameters(): array
-    {
-        return [
-            'name' => $this->name,
-            'parent' => $this->parent,
-            'namespace' => $this->namespace,
-            'resource' => $this->resource,
-            'isEnum' => $this->isEnum(),
-            'constants' => array_map(static fn (Constant $constant) => $constant->toArray(), $this->constants),
-            'fields' => $this->propertiesToArray(),
-            'uses' => [...$this->uses],
-            'hasConstructor' => $this->hasConstructor,
-            'parentHasConstructor' => $this->parentHasConstructor,
-            'hasChild' => $this->hasChild,
-            'abstract' => $this->isAbstract,
-            'embeddable' => $this->embeddable,
-            'annotations' => [...$this->annotations],
-            'interfaceName' => $this->interfaceName(),
-            'interfaceNamespace' => $this->interfaceNamespace(),
-            'interfaceAnnotations' => $this->interfaceAnnotations(),
-        ];
-    }
-
     /** @return Property[] */
     public function properties(): array
     {
@@ -262,23 +254,79 @@ final class Class_
         return \array_map(static fn (Property $property) => $property->name, $this->uniqueProperties());
     }
 
-    /**
-     * @return array
-     */
-    private function propertiesToArray(): array
+    public function toNetteFile(array $config, Inflector $inflector): PhpFile
     {
-        // TODO-WRLSS cleaner way to start with Id first
-        $asArrays = [];
-        foreach ($this->properties as $key => $property) {
-            $asArrays[$key] = $property->asTwigParameters();
+        $useDoctrineCollections = $config['doctrine']['useCollection'] ?? true;
+        $useAccessors = $config['accessorMethods'] ?? true;
+        $useFluentMutators = $config['fluentMutatorMethods'] ?? false;
+        $fileHeader = $config['header'] ?? null;
+        $fieldVisibility = $config['fieldVisibility'] ?? ($this->isAbstract() ?  ClassType::VISIBILITY_PROTECTED : ClassType::VISIBILITY_PRIVATE);
+
+        $file = new PhpFile();
+        if ($fileHeader !== null) {
+            // avoid nested doc-block for configurations that already have * as delimiter
+            $file->setComment(Helpers::unformatDocComment($fileHeader));
         }
 
-        return isset($asArrays['id']) ? ['id' => $asArrays['id']] + $asArrays : $asArrays;
-    }
+        $namespace = $file->addNamespace($this->namespace);
+        foreach ($this->uses as $use) {
+            $namespace->addUse($use);
+        }
 
-    public function toNetteClassType(): ClassType
-    {
-        // TODO-WRLSS convert to Nette model
+        $class = $namespace->addClass($this->name);
+
+        foreach ($this->annotations as $annotation) {
+            $class->addComment($annotation);
+        }
+
+        $class->setAbstract($this->isAbstract);
+
+        if ($this->interface !== null) {
+            $class->setImplements([$this->interfaceName()]);
+        }
+
+        if ($this->hasParent()) {
+            $class->setExtends($this->parent());
+        }
+
+        $sortedProperties = isset($this->properties['id']) ? ['id' => $this->properties['id']] + $this->properties : $this->properties;
+
+        $class->setConstants(\array_map(static fn (Constant $constant) => $constant->toNetteConstant(), $this->constants));
+        $class->setProperties(\array_map(
+            static function (Property $property) use ($useDoctrineCollections, $fieldVisibility) {
+                return $property->toNetteProperty($fieldVisibility, $useDoctrineCollections);
+            },
+            $sortedProperties
+        ));
+
+        if ($useDoctrineCollections && $this->hasConstructor) {
+            $constructor = new Method('__construct');
+            if ($this->parentHasConstructor) {
+                $constructor->addBody("parent::__construct();");
+            }
+
+            foreach ($sortedProperties as $property) {
+                if ($property->isArray && $property->typeHint !== 'array' && !$property->isEnum) {
+                    $constructor->addBody('$this->? = new ArrayCollection();', [$property->name()]);
+                }
+            }
+
+            if ($constructor->getBody() !== "") {
+                $class->addMember($constructor);
+            }
+        }
+
+        if ($useAccessors) {
+            foreach ($sortedProperties as $property) {
+                foreach ($property->generateNetteMethods(static function ($string) use ($inflector) {
+                    return $inflector->singularize($string);
+                }, $useDoctrineCollections, $useFluentMutators) as $method) {
+                    $class->addMember($method);
+                }
+            }
+        }
+
+        return $file;
     }
 
     public function isEmbeddable(): bool
