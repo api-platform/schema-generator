@@ -161,7 +161,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             $annotations[] = '{@inheritdoc}';
             $annotations[] = '';
         } else {
-            $annotations = $this->formatDoc((string) $class->resource()->get('rdfs:comment'));
+            $annotations = $this->formatDoc((string) $class->resourceComment());
             $annotations[] = '';
             $annotations[] = sprintf('@see %s', $class->resource());
         }

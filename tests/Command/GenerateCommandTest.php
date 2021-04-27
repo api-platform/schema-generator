@@ -64,6 +64,7 @@ class GenerateCommandTest extends TestCase
         $person = file_get_contents("$outputDir/AddressBook/Entity/Person.php");
         $this->assertStringContainsString('use Doctrine\Common\Collections\ArrayCollection;', $person);
         $this->assertStringContainsString('use Doctrine\Common\Collections\Collection;', $person);
+        $this->assertStringNotContainsString('extends', $person);
 
         $this->assertStringContainsString(<<<'PHP'
     public function getFriends(): Collection
@@ -122,6 +123,7 @@ PHP
         $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
 
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
+        $this->assertStringContainsString('public ?string $name', $person);
         $this->assertStringNotContainsString('function get', $person);
         $this->assertStringNotContainsString('function set', $person);
         $this->assertStringNotContainsString('function add', $person);
@@ -140,7 +142,7 @@ PHP
 
         $creativeWork = file_get_contents("$outputDir/App/Entity/CreativeWork.php");
         $this->assertStringContainsString('class CreativeWork extends Thing', $creativeWork);
-        $this->assertStringContainsString('private ?string $copyrightYear = null;', $creativeWork);
+        $this->assertStringContainsString('protected ?string $copyrightYear = null;', $creativeWork);
         $this->assertStringContainsString('public function getCopyrightYear(): ?string', $creativeWork);
         $this->assertStringContainsString('public function setCopyrightYear(?string $copyrightYear): void', $creativeWork);
         $this->assertStringNotContainsString('$name;', $creativeWork);
@@ -395,9 +397,7 @@ PHP
         $gender = file_get_contents("$outputDir/App/Enum/GenderType.php");
 
         $this->assertStringContainsString(<<<'PHP'
-    /**
-     * @var string the female gender
-     */
+    /** @var string The female gender. */
     public const FEMALE = 'http://schema.org/Female';
 PHP
             , $gender);

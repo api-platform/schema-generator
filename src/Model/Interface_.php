@@ -2,10 +2,13 @@
 
 namespace ApiPlatform\SchemaGenerator\Model;
 
+use Nette\PhpGenerator\Helpers;
+use Nette\PhpGenerator\PhpFile;
+
 final class Interface_
 {
     private string $name;
-    private ?string $namespace;
+    private string $namespace;
     private array $annotations = [];
 
     public function __construct(string $name, string $namespace)
@@ -19,7 +22,7 @@ final class Interface_
         return $this->name;
     }
 
-    public function namespace(): ?string
+    public function namespace(): string
     {
         return $this->namespace;
     }
@@ -33,17 +36,15 @@ final class Interface_
         return $this;
     }
 
-    public function annotations(): array
+    public function toNetteFile(string $fileHeader = null): PhpFile
     {
-        return $this->annotations;
-    }
+        $file = (new PhpFile())
+            ->setStrictTypes(true)
+            ->setComment(Helpers::unformatDocComment($fileHeader));
 
-    public function toArray(): array
-    {
-        return [
-            'name' => $this->name,
-            'namespace' => $this->namespace,
-            'annotations' => $this->annotations,
-        ];
+        $namespace = $file->addNamespace($this->namespace);
+        $namespace->addInterface($this->name);
+
+        return $file;
     }
 }

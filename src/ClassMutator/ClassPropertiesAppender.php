@@ -22,7 +22,6 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
     ];
     private array $graphs;
 
-
     public function __construct(PropertyGenerator $propertyGenerator, LoggerInterface $logger, array $config, array $propertiesMap, array $graphs)
     {
         $this->propertiesMap = $propertiesMap;
@@ -61,7 +60,7 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
             foreach ($this->propertiesMap[$class->resourceUri()] as $property) {
                 unset($remainingProperties[$property->localName()]);
                 if ($property->hasProperty(self::SCHEMA_ORG_SUPERSEDED_BY)) {
-                    $supersededBy = $property->get('schema:supersededBy');
+                    $supersededBy = $property->get(self::SCHEMA_ORG_SUPERSEDED_BY);
                     $this->logger->warning(sprintf('The property "%s" is superseded by "%s". Using the superseding property.', $property->getUri(), $supersededBy->getUri()));
                 } else {
                     $class = $this->generateField($this->config, $class, $class->resource(), $typeConfig, $property);

@@ -16,12 +16,12 @@ namespace ApiPlatform\SchemaGenerator\Tests;
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
 use ApiPlatform\SchemaGenerator\PhpTypeConverter;
+use ApiPlatform\SchemaGenerator\Printer;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
 use Doctrine\Inflector\InflectorFactory;
 use EasyRdf\Graph;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\NullLogger;
 use Twig\Environment;
@@ -36,10 +36,6 @@ class TypesGeneratorTest extends TestCase
     public function testGenerate(): void
     {
         $twigProphecy = $this->prophesize(Environment::class);
-        foreach ($this->getClasses() as $class) {
-            $twigProphecy->render('class.php.twig', Argument::that($this->getContextMatcher($class)))->willReturn('')->shouldBeCalled();
-        }
-        $twigProphecy->render('class.php.twig', Argument::type('array'))->willReturn('');
         $twig = $twigProphecy->reveal();
 
         $cardinalitiesExtractorProphecy = $this->prophesize(CardinalitiesExtractor::class);
@@ -50,9 +46,80 @@ class TypesGeneratorTest extends TestCase
         $goodRelationsBridgeProphecy = $this->prophesize(GoodRelationsBridge::class);
         $goodRelationsBridge = $goodRelationsBridgeProphecy->reveal();
 
-        $typesGenerator = new TypesGenerator(InflectorFactory::create()->build(), $twig, new NullLogger(), $this->getGraphs(), new PhpTypeConverter(), $cardinalitiesExtractor, $goodRelationsBridge);
+        $typesGenerator = new TypesGenerator(
+            InflectorFactory::create()->build(),
+            $twig,
+            new NullLogger(),
+            $this->getGraphs(),
+            new PhpTypeConverter(),
+            $cardinalitiesExtractor,
+            $goodRelationsBridge,
+            new Printer()
+        );
 
-        $typesGenerator->generate($this->getConfig());
+        $outputDir = "build/type-generator-test";
+        $typesGenerator->generate($this->getConfig($outputDir));
+
+        $article = file_get_contents("$outputDir/App/Entity/Article.php");
+        $this->assertStringContainsString('abstract class Article extends CreativeWork', $article);
+        $this->assertStringContainsString('protected ?string $articleBody = null;', $article);
+        $this->assertStringContainsString('protected array $articleSection = [];', $article);
+        $this->assertStringContainsString('public function setArticleBody(?string $articleBody): void', $article);
+        $this->assertStringContainsString('public function getArticleBody(): ?string', $article);
+        $this->assertStringContainsString('public function addArticleSection(string $articleSection): void', $article);
+        $this->assertStringContainsString('public function removeArticleSection(string $articleSection): void', $article);
+
+        $creativeWork = file_get_contents("$outputDir/App/Entity/CreativeWork.php");
+        $this->assertStringContainsString('abstract class CreativeWork extends Thing', $creativeWork);
+        $this->assertStringContainsString('protected ?Person $author = null;', $creativeWork);
+        $this->assertStringContainsString('protected ?\DateTimeInterface $datePublished = null;', $creativeWork);
+        $this->assertStringContainsString('protected ?string $headline = null;', $creativeWork);
+        $this->assertStringContainsString('protected ?bool $isFamilyFriendly = null;', $creativeWork);
+
+        $blogPosting = file_get_contents("$outputDir/App/Entity/BlogPosting.php");
+        $this->assertStringContainsString('class BlogPosting extends SocialMediaPosting', $blogPosting);
+        $this->assertStringContainsString('private ?int $id = null;', $blogPosting);
+        $this->assertStringContainsString('public function getId(): ?int', $blogPosting);
+
+        $socialMediaPosting = file_get_contents("$outputDir/App/Entity/SocialMediaPosting.php");
+        $this->assertStringContainsString('abstract class SocialMediaPosting extends Article', $socialMediaPosting);
+        $this->assertStringContainsString('protected ?CreativeWork $sharedContent = null;', $socialMediaPosting);
+        $this->assertStringContainsString(<<<'PHP'
+    public function setSharedContent(?CreativeWork $sharedContent): void
+    {
+        $this->sharedContent = $sharedContent;
+    }
+PHP, $socialMediaPosting);
+
+        $this->assertStringContainsString(<<<'PHP'
+    public function getSharedContent(): ?CreativeWork
+    {
+        return $this->sharedContent;
+    }
+PHP, $socialMediaPosting);
+
+        $person = file_get_contents("$outputDir/App/Entity/Person.php");
+        $this->assertStringContainsString('class Person extends Thing', $person);
+        $this->assertStringContainsString('private ?int $id = null;', $person);
+        $this->assertStringContainsString('public function getId(): ?int', $person);
+
+        $thing = file_get_contents("$outputDir/App/Entity/Thing.php");
+        $this->assertStringContainsString(<<<'PHP'
+abstract class Thing
+{
+    protected ?string $name = null;
+
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+}
+PHP, $thing);
     }
 
     private function getGraphs(): array
@@ -114,18 +181,18 @@ class TypesGeneratorTest extends TestCase
     private function getCardinalities(): array
     {
         return [
-            'articleBody' => CardinalitiesExtractor::CARDINALITY_0_1,
-            'articleSection' => CardinalitiesExtractor::CARDINALITY_0_N,
-            'author' => CardinalitiesExtractor::CARDINALITY_0_1,
-            'datePublished' => CardinalitiesExtractor::CARDINALITY_UNKNOWN,
-            'headline' => CardinalitiesExtractor::CARDINALITY_UNKNOWN,
-            'isFamilyFriendly' => CardinalitiesExtractor::CARDINALITY_0_1,
-            'name' => CardinalitiesExtractor::CARDINALITY_0_1,
-            'sharedContent' => CardinalitiesExtractor::CARDINALITY_UNKNOWN,
+            'http://schema.org/articleBody' => CardinalitiesExtractor::CARDINALITY_0_1,
+            'http://schema.org/articleSection' => CardinalitiesExtractor::CARDINALITY_0_N,
+            'http://schema.org/author' => CardinalitiesExtractor::CARDINALITY_0_1,
+            'http://schema.org/datePublished' => CardinalitiesExtractor::CARDINALITY_UNKNOWN,
+            'http://schema.org/headline' => CardinalitiesExtractor::CARDINALITY_UNKNOWN,
+            'http://schema.org/isFamilyFriendly' => CardinalitiesExtractor::CARDINALITY_0_1,
+            'http://schema.org/name' => CardinalitiesExtractor::CARDINALITY_0_1,
+            'http://schema.org/sharedContent' => CardinalitiesExtractor::CARDINALITY_UNKNOWN,
         ];
     }
 
-    private function getConfig(): array
+    private function getConfig(string $outputDir): array
     {
         return [
             'annotationGenerators' => [
@@ -134,7 +201,7 @@ class TypesGeneratorTest extends TestCase
             'namespaces' => [
                 'entity' => 'App\Entity',
             ],
-            'output' => 'build/type-generator-test',
+            'output' => $outputDir,
             'allTypes' => false,
             'types' => [
                 'Article' => [
@@ -189,236 +256,5 @@ class TypesGeneratorTest extends TestCase
                 'resolveTargetEntityConfigPath' => null,
             ],
         ];
-    }
-
-    private function getClasses(): array
-    {
-        return [
-            'Article' => [
-                'abstract' => true,
-                'embeddable' => false,
-                'fields' => [
-                    'articleBody' => [
-                        'cardinality' => CardinalitiesExtractor::CARDINALITY_0_1,
-                        'isArray' => false,
-                        'isCustom' => false,
-                        'isEnum' => false,
-                        'isId' => false,
-                        'isReadable' => true,
-                        'isWritable' => true,
-                        'isNullable' => true,
-                        'isUnique' => false,
-                        'name' => 'articleBody',
-                        'range' => 'Text',
-                    ],
-                    'articleSection' => [
-                        'cardinality' => CardinalitiesExtractor::CARDINALITY_0_N,
-                        'isArray' => false,
-                        'isCustom' => false,
-                        'isEnum' => false,
-                        'isId' => false,
-                        'isReadable' => true,
-                        'isWritable' => true,
-                        'isNullable' => true,
-                        'isUnique' => false,
-                        'name' => 'articleSection',
-                        'range' => 'Text',
-                    ],
-                ],
-                'hasChild' => true,
-                'isEnum' => false,
-                'name' => 'Article',
-                'namespace' => 'App\Entity',
-                'parent' => 'CreativeWork',
-            ],
-            'BlogPosting' => [
-                'abstract' => false,
-                'embeddable' => false,
-                'fields' => [
-                    'id' => [
-                        'cardinality' => CardinalitiesExtractor::CARDINALITY_1_1,
-                        'isArray' => false,
-                        'isCustom' => true,
-                        'isEnum' => false,
-                        'isId' => true,
-                        'isReadable' => true,
-                        'isWritable' => true,
-                        'isNullable' => false,
-                        'isUnique' => false,
-                        'name' => 'id',
-                        'range' => 'Integer',
-                    ],
-                ],
-                'hasChild' => false,
-                'isEnum' => false,
-                'name' => 'BlogPosting',
-                'namespace' => 'App\Entity',
-                'parent' => 'SocialMediaPosting',
-            ],
-            'CreativeWork' => [
-                'abstract' => true,
-                'embeddable' => false,
-                'fields' => [
-                    'author' => [
-                        'cardinality' => CardinalitiesExtractor::CARDINALITY_N_0,
-                        'isArray' => false,
-                        'isCustom' => false,
-                        'isEnum' => false,
-                        'isId' => false,
-                        'isReadable' => true,
-                        'isWritable' => true,
-                        'isNullable' => true,
-                        'isUnique' => false,
-                        'name' => 'author',
-                        'range' => 'Person',
-                    ],
-                    'datePublished' => [
-                        'cardinality' => CardinalitiesExtractor::CARDINALITY_UNKNOWN,
-                        'isArray' => false,
-                        'isCustom' => false,
-                        'isEnum' => false,
-                        'isId' => false,
-                        'isReadable' => true,
-                        'isWritable' => true,
-                        'isNullable' => true,
-                        'isUnique' => false,
-                        'name' => 'datePublished',
-                        'range' => 'Date',
-                    ],
-                    'headline' => [
-                        'cardinality' => CardinalitiesExtractor::CARDINALITY_UNKNOWN,
-                        'isArray' => false,
-                        'isCustom' => false,
-                        'isEnum' => false,
-                        'isId' => false,
-                        'isReadable' => true,
-                        'isWritable' => true,
-                        'isNullable' => true,
-                        'isUnique' => false,
-                        'name' => 'headline',
-                        'range' => 'Text',
-                    ],
-                    'isFamilyFriendly' => [
-                        'cardinality' => CardinalitiesExtractor::CARDINALITY_0_1,
-                        'isArray' => false,
-                        'isCustom' => false,
-                        'isEnum' => false,
-                        'isId' => false,
-                        'isReadable' => true,
-                        'isWritable' => true,
-                        'isNullable' => true,
-                        'isUnique' => false,
-                        'name' => 'isFamilyFriendly',
-                        'range' => 'Boolean',
-                    ],
-                ],
-                'hasChild' => true,
-                'isEnum' => false,
-                'name' => 'CreativeWork',
-                'namespace' => 'App\Entity',
-                'parent' => 'Thing',
-            ],
-            'Person' => [
-                'abstract' => false,
-                'embeddable' => false,
-                'fields' => [
-                    'id' => [
-                        'cardinality' => CardinalitiesExtractor::CARDINALITY_1_1,
-                        'isArray' => false,
-                        'isCustom' => true,
-                        'isEnum' => false,
-                        'isId' => true,
-                        'isReadable' => true,
-                        'isWritable' => true,
-                        'isNullable' => false,
-                        'isUnique' => false,
-                        'name' => 'id',
-                        'range' => 'Integer',
-                    ],
-                ],
-                'hasChild' => false,
-                'isEnum' => false,
-                'name' => 'Person',
-                'namespace' => 'App\Entity',
-                'parent' => 'Thing',
-            ],
-            'SocialMediaPosting' => [
-                'abstract' => true,
-                'embeddable' => false,
-                'fields' => [
-                    'sharedContent' => [
-                        'cardinality' => CardinalitiesExtractor::CARDINALITY_UNKNOWN,
-                        'isArray' => false,
-                        'isCustom' => false,
-                        'isEnum' => false,
-                        'isId' => false,
-                        'isReadable' => true,
-                        'isWritable' => true,
-                        'isNullable' => true,
-                        'isUnique' => false,
-                        'name' => 'sharedContent',
-                        'range' => 'CreativeWork',
-                    ],
-                ],
-                'hasChild' => true,
-                'isEnum' => false,
-                'name' => 'SocialMediaPosting',
-                'namespace' => 'App\Entity',
-                'parent' => 'Article',
-            ],
-            'Thing' => [
-                'abstract' => true,
-                'embeddable' => false,
-                'fields' => [
-                    'name' => [
-                        'cardinality' => CardinalitiesExtractor::CARDINALITY_0_1,
-                        'isArray' => false,
-                        'isCustom' => false,
-                        'isEnum' => false,
-                        'isId' => false,
-                        'isReadable' => true,
-                        'isWritable' => true,
-                        'isNullable' => true,
-                        'isUnique' => false,
-                        'name' => 'name',
-                        'range' => 'Text',
-                    ],
-                ],
-                'hasChild' => true,
-                'isEnum' => false,
-                'name' => 'Thing',
-                'namespace' => 'App\Entity',
-                'parent' => false,
-            ],
-        ];
-    }
-
-    private function getContextMatcher(array $class): \Closure
-    {
-        $config = $this->getConfig();
-
-        return function ($context) use ($config, $class) {
-            if (!isset($context['config']) || $config !== $context['config']) {
-                return false;
-            }
-
-            $baseClass = $class;
-            unset($baseClass['fields']);
-
-            if (!isset($context['class']) || !\is_array($context['class']) || $this->arrayEqual($baseClass, array_intersect_key($context['class'], $baseClass))) {
-                return false;
-            }
-
-            if (array_keys($class['fields']) === array_keys($context['class']['fields'])) {
-                return false;
-            }
-
-            return true;
-        };
-    }
-
-    private function arrayEqual(array $a, array $b): bool
-    {
-        return \count($a) === \count($b) && !array_diff($a, $b);
     }
 }

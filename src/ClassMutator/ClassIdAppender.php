@@ -25,6 +25,6 @@ final class ClassIdAppender implements ClassMutatorInterface
             return $class;
         }
 
-        return $class->addProperty((new IdPropertyGenerator)($this->config['id']['generationStrategy'], $this->config['id']['writable']));
+        return $class->addProperty((new IdPropertyGenerator)($this->config['id']['generationStrategy'], $this->config['id']['writable'] ?? false));
     }
 }

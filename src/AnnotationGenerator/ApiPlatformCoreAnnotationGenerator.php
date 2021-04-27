@@ -39,7 +39,7 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
         }
 
         $arguments = [];
-        if ($class->name() !== $localName = $class->resource()->localName()) {
+        if ($class->name() !== $localName = $class->resourceLocalName()) {
             $arguments[] = sprintf('shortName="%s"', $localName);
         }
         $arguments[] = sprintf('iri="%s"', $class->resourceUri());

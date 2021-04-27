@@ -88,11 +88,12 @@ class TypesGenerator
     private Inflector $inflector;
     private Filesystem $filesystem;
     private PropertyGenerator $propertyGenerator;
+    private Printer $printer;
 
     /**
      * @param Graph[] $graphs
      */
-    public function __construct(Inflector $inflector, Environment $twig, LoggerInterface $logger, array $graphs, PhpTypeConverterInterface $phpTypeConverter, CardinalitiesExtractor $cardinalitiesExtractor, GoodRelationsBridge $goodRelationsBridge)
+    public function __construct(Inflector $inflector, Environment $twig, LoggerInterface $logger, array $graphs, PhpTypeConverterInterface $phpTypeConverter, CardinalitiesExtractor $cardinalitiesExtractor, GoodRelationsBridge $goodRelationsBridge, Printer $printer)
     {
         if (!$graphs) {
             throw new \InvalidArgumentException('At least one graph must be injected.');
@@ -107,6 +108,7 @@ class TypesGenerator
         $this->filesystem = new Filesystem();
         $this->cardinalities = $cardinalitiesExtractor->extract();
         $this->propertyGenerator = new PropertyGenerator($this->goodRelationsBridge, $this->phpTypeConverter, $this->cardinalities, $this->logger);
+        $this->printer = $printer;
     }
 
     /**
@@ -153,7 +155,7 @@ class TypesGenerator
                     $class = (new ClassInterfaceMutator($interfaceNamespace))($class);
                 }
 
-                $class = (new ClassParentMutator($this->phpTypeConverter, $this->logger))($class);
+                $class = (new ClassParentMutator($config, $this->phpTypeConverter, $this->logger))($class);
             }
 
             $class = (new ClassPropertiesAppender($this->propertyGenerator, $this->logger, $config, $propertiesMap, $this->graphs))($class);
@@ -236,13 +238,7 @@ class TypesGenerator
             $path = sprintf('%s%s.php', $classDir, $className);
             $generatedFiles[] = $path;
 
-            file_put_contents(
-                $path,
-                $this->twig->render('class.php.twig', [
-                    'config' => $config,
-                    'class' => $class->asTwigParameters(),
-                ])
-            );
+            file_put_contents($path, $this->printer->printFile($class->toNetteFile($config, $this->inflector)));
 
             if ($class->interfaceNamespace() !== null) {
                 $interfaceDir = $this->namespaceToDir($config, $class->interfaceNamespace());
@@ -250,13 +246,7 @@ class TypesGenerator
 
                 $path = sprintf('%s%s.php', $interfaceDir, $class->interfaceName());
                 $generatedFiles[] = $path;
-                file_put_contents(
-                    $path,
-                    $this->twig->render('interface.php.twig', [
-                        'config' => $config,
-                        'class' => $class->asTwigParameters(),
-                    ])
-                );
+                file_put_contents($path, $this->printer->printFile($class->interfaceToNetteFile($config['header'] ?? null)));
 
                 if ($config['doctrine']['resolveTargetEntityConfigPath'] && !$class->isAbstract()) {
                     $interfaceMappings[$class->interfaceNamespace().'\\'.$class->interfaceName()] = $class->namespace().'\\'.$className;
