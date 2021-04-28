@@ -1,0 +1,49 @@
+version: 2
+updates:
+- package-ecosystem: composer
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: symfony/console
+    versions:
+    - 5.2.3
+    - 5.2.4
+    - 5.2.5
+  - dependency-name: symfony/doctrine-bridge
+    versions:
+    - 5.2.3
+    - 5.2.4
+    - 5.2.5
+  - dependency-name: symfony/validator
+    versions:
+    - 5.2.3
+    - 5.2.4
+    - 5.2.5
+  - dependency-name: api-platform/core
+    versions:
+    - 2.6.2
+    - 2.6.3
+  - dependency-name: symfony/yaml
+    versions:
+    - 5.2.3
+    - 5.2.4
+  - dependency-name: symfony/filesystem
+    versions:
+    - 5.2.3
+    - 5.2.4
+  - dependency-name: symfony/phpunit-bridge
+    versions:
+    - 5.2.3
+    - 5.2.4
+  - dependency-name: symfony/config
+    versions:
+    - 5.2.3
+  - dependency-name: symfony/serializer
+    versions:
+    - 5.2.3
+  - dependency-name: phpstan/phpstan
+    versions:
+    - 0.12.70
