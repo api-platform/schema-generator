@@ -29,7 +29,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 final class TypesGeneratorConfiguration implements ConfigurationInterface
 {
     public const SCHEMA_ORG_URI = 'https://schema.org/version/latest/schemaorg-current-http.rdf';
-    public const GOOD_RELATIONS_URI = 'https://purl.org/goodrelations/v1.owl';
+    public const GOOD_RELATIONS_URI = 'https://archive.org/services/purl/goodrelations/v1.owl';
     public const SCHEMA_ORG_NAMESPACE = 'http://schema.org/';
 
     private ?string $defaultPrefix;
@@ -75,7 +75,7 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                 ->scalarNode('vocabularyNamespace')->defaultValue(self::SCHEMA_ORG_NAMESPACE)->info('Namespace of the vocabulary to import')->example('http://www.w3.org/ns/activitystreams#')->end()
                 ->arrayNode('relations')
                     ->info('OWL relation files containing cardinality information in the GoodRelations format')
-                    ->example('https://purl.org/goodrelations/v1.owl')
+                    ->example(self::GOOD_RELATIONS_URI)
                     ->defaultValue([self::GOOD_RELATIONS_URI])
                     ->prototype('scalar')->end()
                 ->end()
