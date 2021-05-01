@@ -40,21 +40,21 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
         $asserts = [];
         if (!$field['isArray'] && $field['range']) {
             switch ($field['range']->getUri()) {
-                case 'http://schema.org/URL':
+                case 'https://schema.org/URL':
                     $asserts[] = '@Assert\Url';
                     break;
-                case 'http://schema.org/Date':
+                case 'https://schema.org/Date':
                     $asserts[] = '@Assert\Date';
                     break;
-                case 'http://schema.org/DateTime':
+                case 'https://schema.org/DateTime':
                     $asserts[] = '@Assert\DateTime';
                     break;
-                case 'http://schema.org/Time':
+                case 'https://schema.org/Time':
                     $asserts[] = '@Assert\Time';
                     break;
             }
 
-            if (isset($field['resource']) && 'http://schema.org/email' === $field['resource']->getUri()) {
+            if (isset($field['resource']) && 'https://schema.org/email' === $field['resource']->getUri()) {
                 $asserts[] = '@Assert\Email';
             }
 

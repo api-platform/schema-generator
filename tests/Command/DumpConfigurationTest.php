@@ -42,7 +42,7 @@ config:
             format:               null # Example: rdfxml
 
     # Namespace of the vocabulary to import
-    vocabularyNamespace:  'http://schema.org/' # Example: 'http://www.w3.org/ns/activitystreams#'
+    vocabularyNamespace:  'https://schema.org/' # Example: 'http://www.w3.org/ns/activitystreams#'
 
     # OWL relation files containing cardinality information in the GoodRelations format
     relations:            # Example: 'https://archive.org/services/purl/goodrelations/v1.owl'

@@ -2,7 +2,7 @@
 
 
 <!DOCTYPE rdf:RDF [
-    <!ENTITY schema "http://schema.org/" >
+    <!ENTITY schema "https://schema.org/" >
     <!ENTITY net "http://purl.org/net/" >
     <!ENTITY terms "http://purl.org/dc/terms/" >
     <!ENTITY foaf "http://xmlns.com/foaf/0.1/" >
@@ -30,7 +30,7 @@
      xmlns:vann="http://purl.org/vocab/vann/"
      xmlns:net="http://purl.org/net/"
      xmlns:ontology="http://dbpedia.org/ontology/"
-     xmlns:schema="http://schema.org/"
+     xmlns:schema="https://schema.org/"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
@@ -52,10 +52,10 @@
         <dc:title xml:lang="en">The Video Game Ontology</dc:title>
         <dc:description xml:lang="en">The Video Game Ontology is an ontology designed for describing video games and all the resources related to their game plays.</dc:description>
     </owl:Ontology>
-    
 
 
-    <!-- 
+
+    <!--
     ///////////////////////////////////////////////////////////////////////////////////////
     //
     // Annotation properties
@@ -65,10 +65,10 @@
 
     <owl:AnnotationProperty rdf:about="&dc;creator"/>
     <owl:AnnotationProperty rdf:about="&dc;contributor"/>
-    
 
 
-    <!-- 
+
+    <!--
     ///////////////////////////////////////////////////////////////////////////////////////
     //
     // Datatypes
@@ -76,10 +76,10 @@
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
-    
 
 
-    <!-- 
+
+    <!--
     ///////////////////////////////////////////////////////////////////////////////////////
     //
     // Object Properties
@@ -87,7 +87,7 @@
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
-    
+
 
 
     <!-- http://purl.org/dc/terms/creator -->
@@ -96,7 +96,7 @@
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Game"/>
         <rdfs:range rdf:resource="&foaf;Agent"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#hasAchievement -->
@@ -108,7 +108,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Game"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#hasCharacter -->
@@ -120,7 +120,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Character"/>
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Game"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#hasFeature -->
@@ -131,7 +131,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Feature"/>
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Item"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#hasGameGenre -->
@@ -142,7 +142,7 @@
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Game"/>
         <rdfs:range rdf:resource="&net;VideoGameOntology#Genre"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#hasItem -->
@@ -154,7 +154,7 @@
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Game"/>
         <rdfs:range rdf:resource="&net;VideoGameOntology#Item"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#hasLeaderboard -->
@@ -166,7 +166,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Leaderboard"/>
         <owl:inverseOf rdf:resource="&net;VideoGameOntology#isLeaderboardInGame"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#hasPlayingArea -->
@@ -177,7 +177,7 @@
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Game"/>
         <rdfs:range rdf:resource="&net;VideoGameOntology#PlayingArea"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#involvesAchievement -->
@@ -189,7 +189,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Session"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#involvesCharacter -->
@@ -201,7 +201,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Character"/>
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Session"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#involvesPlayer -->
@@ -213,7 +213,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Player"/>
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Session"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#isAchievedInSession -->
@@ -225,7 +225,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Session"/>
         <owl:inverseOf rdf:resource="&net;VideoGameOntology#involvesAchievement"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#isAchievementInGame -->
@@ -237,7 +237,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Game"/>
         <owl:inverseOf rdf:resource="&net;VideoGameOntology#hasAchievement"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#isCharacterInGame -->
@@ -249,7 +249,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Game"/>
         <owl:inverseOf rdf:resource="&net;VideoGameOntology#hasCharacter"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#isCharacterInSession -->
@@ -261,7 +261,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Session"/>
         <owl:inverseOf rdf:resource="&net;VideoGameOntology#involvesCharacter"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#isEventAssociatedToPlayer -->
@@ -272,7 +272,7 @@
         <rdfs:domain rdf:resource="&net;VideoGameOntology#InstantaneousEvent"/>
         <rdfs:range rdf:resource="&net;VideoGameOntology#Player"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#isEventInGame -->
@@ -283,7 +283,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Game"/>
         <rdfs:domain rdf:resource="&net;VideoGameOntology#InstantaneousEvent"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#isEventInSession -->
@@ -294,7 +294,7 @@
         <rdfs:domain rdf:resource="&net;VideoGameOntology#InstantaneousEvent"/>
         <rdfs:range rdf:resource="&net;VideoGameOntology#Session"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#isEventRelatedToItem -->
@@ -305,7 +305,7 @@
         <rdfs:domain rdf:resource="&net;VideoGameOntology#InstantaneousEvent"/>
         <rdfs:range rdf:resource="&net;VideoGameOntology#Item"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#isEventTriggeredByCharacter -->
@@ -316,7 +316,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Character"/>
         <rdfs:domain rdf:resource="&net;VideoGameOntology#InstantaneousEvent"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#isFriendWithPlayer -->
@@ -329,7 +329,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Player"/>
         <rdfs:subPropertyOf rdf:resource="&foaf;knows"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#isItemInGame -->
@@ -341,7 +341,7 @@
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Item"/>
         <owl:inverseOf rdf:resource="&net;VideoGameOntology#hasItem"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#isLeaderboardInGame -->
@@ -353,7 +353,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Game"/>
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Leaderboard"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#isPlayerInSession -->
@@ -365,7 +365,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Session"/>
         <owl:inverseOf rdf:resource="&net;VideoGameOntology#involvesPlayer"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#isSessionInGame -->
@@ -376,7 +376,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Game"/>
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Session"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#livesIn -->
@@ -387,7 +387,7 @@
         <rdfs:range rdf:resource="&ontology;PopulatedPlace"/>
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Player"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#ownsAchievement -->
@@ -398,7 +398,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Player"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#ownsCharacter -->
@@ -409,7 +409,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Character"/>
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Player"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#ownsItem -->
@@ -420,7 +420,7 @@
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Character"/>
         <rdfs:range rdf:resource="&net;VideoGameOntology#Item"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#playsGame -->
@@ -431,7 +431,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Game"/>
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Player"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#purchasesGameOffering -->
@@ -442,7 +442,7 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#GameProduct"/>
         <rdfs:domain rdf:resource="&net;VideoGameOntology#InAppPurchaseEvent"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#unlocksAchievement -->
@@ -453,16 +453,16 @@
         <rdfs:range rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:domain rdf:resource="&net;VideoGameOntology#InstantaneousEvent"/>
     </owl:ObjectProperty>
-    
+
 
 
     <!-- http://xmlns.com/foaf/0.1/knows -->
 
     <owl:ObjectProperty rdf:about="&foaf;knows"/>
-    
 
 
-    <!-- 
+
+    <!--
     ///////////////////////////////////////////////////////////////////////////////////////
     //
     // Data properties
@@ -470,7 +470,7 @@
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#endTime -->
@@ -481,7 +481,7 @@
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Session"/>
         <rdfs:range rdf:resource="&xsd;dateTime"/>
     </owl:DatatypeProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#eventName -->
@@ -492,7 +492,7 @@
         <rdfs:domain rdf:resource="&net;VideoGameOntology#InstantaneousEvent"/>
         <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#eventTime -->
@@ -503,7 +503,7 @@
         <rdfs:domain rdf:resource="&net;VideoGameOntology#InstantaneousEvent"/>
         <rdfs:range rdf:resource="&xsd;dateTime"/>
     </owl:DatatypeProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#releaseDate -->
@@ -514,7 +514,7 @@
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Game"/>
         <rdfs:range rdf:resource="&xsd;dateTime"/>
     </owl:DatatypeProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#startTime -->
@@ -525,7 +525,7 @@
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Session"/>
         <rdfs:range rdf:resource="&xsd;dateTime"/>
     </owl:DatatypeProperty>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#username -->
@@ -536,10 +536,10 @@
         <rdfs:domain rdf:resource="&net;VideoGameOntology#Player"/>
         <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
-    
 
 
-    <!-- 
+
+    <!--
     ///////////////////////////////////////////////////////////////////////////////////////
     //
     // Classes
@@ -547,29 +547,29 @@
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
-    
+
 
 
     <!-- http://dbpedia.org/ontology/PopulatedPlace -->
 
     <owl:Class rdf:about="&ontology;PopulatedPlace"/>
-    
+
 
 
     <!-- http://purl.org/goodrelations/v1#ProductOrService -->
 
     <owl:Class rdf:about="&v1;ProductOrService"/>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Achievement -->
 
     <owl:Class rdf:about="&net;VideoGameOntology#Achievement">
         <rdfs:label xml:lang="en">Achievement</rdfs:label>
-        <rdfs:comment xml:lang="en">The vgo:Achievement is a reward gained in a game due to some event accomplished in the game. Achievements are commonly used in game industry to reward players for having accomplished tasks in the game. 
+        <rdfs:comment xml:lang="en">The vgo:Achievement is a reward gained in a game due to some event accomplished in the game. Achievements are commonly used in game industry to reward players for having accomplished tasks in the game.
 This ontology defines various subclasses of vgo:Achievement, which are all based on the classification presented by Markus Montola et al. [Markus Montola, Timo Nummenmaa, Andrés Lucero, Marion Boberg, and Hannu Korhonen, 2009, “Applying game achievement systems to enhance user experience in a photo sharing service”, In Proceedings of the 13th International MindTrek Conference: Everyday Life in the Ubiquitous Era (MindTrek &#39;09)] http://dl.acm.org/citation.cfm?id=1621859</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Character -->
@@ -578,7 +578,7 @@ This ontology defines various subclasses of vgo:Achievement, which are all based
         <rdfs:label xml:lang="en">Character</rdfs:label>
         <rdfs:comment xml:lang="en">A vgo:Character is any actor that can exists in a game. A character  can be a human-like creature as seen traditionally in video games. However, a character could also be a car, a paddle in game of Pong or spaceship of a space shooter game. This is often contextually related to the gameplay of a certain game. A character can be either controller by a player or by a computer.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Collection -->
@@ -588,7 +588,7 @@ This ontology defines various subclasses of vgo:Achievement, which are all based
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:comment xml:lang="en">The vgo:Collection type of achievement is typically rewarded from collecting an amount of certain items in a game. An example of vgo:Collection would be obtaining a full set of christmas clothes for a character to wear or collecting every possible flower in the game.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Completion -->
@@ -598,7 +598,7 @@ This ontology defines various subclasses of vgo:Achievement, which are all based
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:comment xml:lang="en">The vgo:Completion type of achievement is usually rewarded from successfully completing a certain goal or subgoal in a game. An example of vgo:Completion would be to save a princess from a burning tower or completing all side-quests in a game.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Curiosity -->
@@ -608,7 +608,7 @@ This ontology defines various subclasses of vgo:Achievement, which are all based
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:comment xml:lang="en">The vgo:Curiosity describes funny random things that can happen or be found in the game. An example could be jumping from the Eiffel tower without dying or following a comupter controlled character’s activities for one hour.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Fandom -->
@@ -618,7 +618,7 @@ This ontology defines various subclasses of vgo:Achievement, which are all based
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:comment xml:lang="en">The vgo:Fandom achievement is related to doing some true fan activities. An example of vgo:Fandom could be purchasing a collectors edition of the game or attending a fan gathering.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Feature -->
@@ -627,7 +627,7 @@ This ontology defines various subclasses of vgo:Achievement, which are all based
         <rdfs:label xml:lang="en">Feature</rdfs:label>
         <rdfs:comment xml:lang="en">vgo:Feature describes an ability or characteristic. For example, a sword could have “damage dealing” ability and a bottle of water could be “potable”.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#GainEvent -->
@@ -637,7 +637,7 @@ This ontology defines various subclasses of vgo:Achievement, which are all based
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#GameEvent"/>
         <rdfs:comment xml:lang="en">The vgo:GainEvent describes an event that is related to character/player gaining something in a game. This is a subclass of vgo:GameEvent as gaining something is related to a specific game. For example, a player can gain a new character, achievement or item.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Game -->
@@ -647,7 +647,7 @@ This ontology defines various subclasses of vgo:Achievement, which are all based
         <rdfs:comment xml:lang="en">The vgo:Game class describes a game product that can be played by a player.
 Examples of games are Pong, Grand Theft Auto, Pokemon and Need for Speed.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#GameEvent -->
@@ -657,7 +657,7 @@ Examples of games are Pong, Grand Theft Auto, Pokemon and Need for Speed.</rdfs:
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#InstantaneousEvent"/>
         <rdfs:comment xml:lang="en">The vgo:GameEvent describes an event that takes place in a game without straight player interaction. GameEvents are often very specific for each game. Examples of vgo:GameEvent could be an enemy dying, connecting to a multiplayer server, loading a new level or playing an animation.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#GameProduct -->
@@ -680,7 +680,7 @@ Examples of games are Pong, Grand Theft Auto, Pokemon and Need for Speed.</rdfs:
         <rdfs:comment xml:lang="en">A vgo:GameProduct is anything that is for sale inside a game. These can be either normal game items purchased with in-game currency or with real world money. An example of vgo:GameProduct could be a consumable health potion bought with real money, a better weapon or some visual improvement (e.g. Hats in Steam). Basically a game product can be anything, a character, an item or an achievement.
 GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Product. Since vgo:GameProduct is a type of buyable product, it reuses the properties available in the schema and Good Relations, such as currency price, validity of the offer and so on.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Genre -->
@@ -689,7 +689,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:label xml:lang="en">Genre</rdfs:label>
         <rdfs:comment xml:lang="en">The vgo:Genre class describes the genre a game belongs to. All of the games have at least one genre. Examples of this are RPG, Simulator and Adventure</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#HardMode -->
@@ -699,7 +699,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:comment xml:lang="en">The vgo:HardMode achievement describes succeeding in a game on a high difficulty level. An example could be completing the “Doom” game on Nightmare difficulty level.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#InAppPurchaseEvent -->
@@ -709,7 +709,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#InstantaneousEvent"/>
         <rdfs:comment xml:lang="en">The vgo:InAppPurchaseEvent describes an event that is related to making a purchase with real money inside a game. This is a subclass of InstantaneousEvent because it happens at certain moment in time. An example of vgo:InAppPurchaseEvent would be unlocking secret levels with real money or purchasing better equipment with real money.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#InstantaneousEvent -->
@@ -718,7 +718,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:label xml:lang="en">instantaneous event</rdfs:label>
         <rdfs:comment xml:lang="en">The vgo:InstantaneousEvent class describes an event that happens during the gameplay at a certain moment in time. This can be a player gaining an achievement, killing an enemy or making an in-app purchase.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Item -->
@@ -727,7 +727,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:label xml:lang="en">Item</rdfs:label>
         <rdfs:comment xml:lang="en">A vgo:Item portrays any item that exists in a game. The item can either be just visual part of the game or a concrete usable item. As an example an item could be a drinkable potion, a magical sword or just a flower pot.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Leaderboard -->
@@ -737,7 +737,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:subClassOf rdf:resource="&owl;Thing"/>
         <rdfs:comment xml:lang="en">The vgo:Leaderboard class describes a ranking system of the players. There can be multiple rankings in a game, for example, the kill-count ranking of Modern Warfare or the best time listing of Formula 1 game.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#LoseEvent -->
@@ -747,7 +747,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#GameEvent"/>
         <rdfs:comment xml:lang="en">vgo:LoseEvent describes an event that is related to character/player losing something in a game. This is a subclass of GameEvent as gaining something is related to a specific game. For example, a player can lose a character due to trade with another player. Another example would be a character losing item due to consuming it.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Loyalty -->
@@ -757,7 +757,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:comment xml:lang="en">The vgo:Loyalty achievement is used to give recognition to loyal players. For example, this could be an achievement received after subscribing to the game for a year.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Luck -->
@@ -767,7 +767,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:comment xml:lang="en">The vgo:Lucky describes an achievement that is awarded to the player in a lucky situation. An example of vgo:Lucky achievement would be winning in a lottery or throwing “Yahtzee” without re-rolling the dice.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#MenuEvent -->
@@ -777,7 +777,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#InstantaneousEvent"/>
         <rdfs:comment xml:lang="en">The vgo:MenuEvent describes an event that is related to interacting with the ingame menu. An example of menu event is muting sounds, changing graphic settings, changing gameplay difficulty or remapping game controls.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Minigame -->
@@ -787,7 +787,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:comment xml:lang="en">The vgo:Minigame achievement describes success in mini-games that have been included in a certain game but are not vital for completing the game. An example could be to complete all the Pizza deliveries in GTA minigame or gaining over 100 dollars while playing poker in Red Dead Redemption.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Multiplayer -->
@@ -797,7 +797,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:comment xml:lang="en">The vgo:Multiplayer achievement describes anything that can be awarded to one or multiple players due to their gameplay in multiplayer. For example, this could be winning 10 Team Fortress matches in a row with the same team or getting killed ten times in a row in Counter-Strike.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Paragon -->
@@ -807,7 +807,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:comment xml:lang="en">The vgo:Paragon is a rare achievement that is given only to limited number of players. An example of vgo:Paragon achievement could be the first player to finish a game under 10 hours or the first ten players to complete the game 100% through.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Player -->
@@ -817,7 +817,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:subClassOf rdf:resource="&foaf;Agent"/>
         <rdfs:comment xml:lang="en">The vgo:Player describes the entity playing the game. This can be either a human or a computer. vgo:Player class is used to keep a profile of a certain playing entity and to connect all the games, achievements and characters he/she has. The vgo:Player is a subclass of foaf:Person as it contains all relative information of a certain person.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#PlayerEvent -->
@@ -827,7 +827,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#InstantaneousEvent"/>
         <rdfs:comment xml:lang="en">The vgo:PlayerEvent describes a vgo:InstantaneousEvent that is caused by the player. For example jumping in the game, throwing an item or pressing a joystick button.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#PlayingArea -->
@@ -836,7 +836,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:label xml:lang="en">playing area</rdfs:label>
         <rdfs:comment xml:lang="en">The vgo:PlayingArea is the description of a place where the gameplay takes place. All of the games have some kind of area where they are played in. An example of playing areas could be football field in soccer game, a race track from a racing game or a star system of EVE Online.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Session -->
@@ -846,7 +846,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:subClassOf rdf:resource="&owl;Thing"/>
         <rdfs:comment xml:lang="en">The vgo:Session class describes a session of gameplay. A session can be a single round of chess, a round of Counter-Strike, one half-time of soccer or one race of Formula 1. vgo:Session class can be used to store gameplay information, especially for analytical reasons.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#SpecialPlayStyle -->
@@ -856,7 +856,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:comment xml:lang="en">The vgo:SpecialPlayStyle achievement is awarded to players after playing a game in special fashion. Often this is something harder than the regular play and requires more player experience to excel in it. An example of vgo:SpecialPlayStyle could be to complete a game without any violence or against a timer.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Tutorial -->
@@ -866,7 +866,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:comment xml:lang="en">The vgo:Tutorial achievement is  awarded to a player for trying out various features of the game. This is often related to learning how to play the game, how the controls work and how the game logic works. An example of vgo:Tutorial could be testing out newly gained special equipment or just playing through the in-game tutorial in the beginning.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Veteran -->
@@ -876,7 +876,7 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:comment xml:lang="en">The vgo:Veteran achievement is an award that is given for accumulating a lot of play hours or game actions. For example, vgo:Veteran could be playing thousand hours of World of Tanks or making 100 goals in ice hockey game.</rdfs:comment>
     </owl:Class>
-    
+
 
 
     <!-- http://purl.org/net/VideoGameOntology#Virtuosity -->
@@ -886,19 +886,19 @@ GameProduct is a subclass of Good Relations: ProductOrService &amp; schema:Produ
         <rdfs:subClassOf rdf:resource="&net;VideoGameOntology#Achievement"/>
         <rdfs:comment xml:lang="en">The vgo:Virtuosity describes an achievement that is awarded for playing masterfully in the game. Examples of virtuous play could be finishing the game without saving at all, dying zero times or preventing an opposing team from scoring any goals in a soccer game.</rdfs:comment>
     </owl:Class>
-    
 
 
-    <!-- http://schema.org/Product -->
+
+    <!-- https://schema.org/Product -->
 
     <owl:Class rdf:about="&schema;Product"/>
-    
+
 
 
     <!-- http://www.w3.org/2002/07/owl#Thing -->
 
     <owl:Class rdf:about="&owl;Thing"/>
-    
+
 
 
     <!-- http://xmlns.com/foaf/0.1/Agent -->
