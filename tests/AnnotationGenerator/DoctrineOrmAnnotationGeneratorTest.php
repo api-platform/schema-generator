@@ -35,7 +35,7 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
     protected function setUp(): void
     {
         $graph = new Graph();
-        $myEnum = new Resource('http://schema.org/MyEnum', $graph);
+        $myEnum = new Resource('https://schema.org/MyEnum', $graph);
         $myEnum->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);
         $this->generator = new DoctrineOrmAnnotationGenerator(
             new PhpTypeConverter(),
@@ -48,7 +48,7 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
                 'Product' => [
                     'name' => 'Product',
                     'isEnum' => false,
-                    'resource' => new Resource('http://schema.org/Product', $graph),
+                    'resource' => new Resource('https://schema.org/Product', $graph),
                     'abstract' => true,
                     'embeddable' => false,
                 ],
@@ -57,14 +57,14 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
                     'isEnum' => false,
                     'abstract' => false,
                     'embeddable' => false,
-                    'resource' => new Resource('http://schema.org/Vehicle', $graph),
+                    'resource' => new Resource('https://schema.org/Vehicle', $graph),
                     'fields' => [
                         'weight' => [
                             'isEnum' => false,
                             'isId' => false,
                             'isEmbedded' => true,
                             'rangeName' => 'QuantitativeValue',
-                            'range' => new Resource('http://schema.org/QuantitativeValue'),
+                            'range' => new Resource('https://schema.org/QuantitativeValue'),
                             'columnPrefix' => false,
                         ],
                         'prefixedWeight' => [
@@ -72,7 +72,7 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
                             'isId' => false,
                             'isEmbedded' => true,
                             'rangeName' => 'QuantitativeValue',
-                            'range' => new Resource('http://schema.org/QuantitativeValue'),
+                            'range' => new Resource('https://schema.org/QuantitativeValue'),
                             'columnPrefix' => 'weight_',
                         ],
                     ],
@@ -81,7 +81,7 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
                     'isEnum' => false,
                     'abstract' => false,
                     'name' => 'QuantitativeValue',
-                    'resource' => new Resource('http://schema.org/QuantitativeValue', $graph),
+                    'resource' => new Resource('https://schema.org/QuantitativeValue', $graph),
                     'embeddable' => true,
                 ],
                 'MyEnum' => [

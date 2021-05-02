@@ -43,7 +43,7 @@ class TypesGenerator
      *
      * @internal
      */
-    public const SCHEMA_ORG_ENUMERATION = 'http://schema.org/Enumeration';
+    public const SCHEMA_ORG_ENUMERATION = 'https://schema.org/Enumeration';
 
     /**
      * @var string
@@ -358,25 +358,25 @@ class TypesGenerator
 
                 switch ($config['id']['generationStrategy']) {
                     case 'auto':
-                        $uri = 'http://schema.org/Integer';
+                        $uri = 'https://schema.org/Integer';
                         $typeHint = 'int';
                         $writable = false;
                         $nullable = true;
                         break;
                     case 'uuid':
-                        $uri = 'http://schema.org/Text';
+                        $uri = 'https://schema.org/Text';
                         $typeHint = 'string';
                         $writable = $config['id']['writable'];
                         $nullable = !$writable;
                         break;
                     case 'mongoid':
-                        $uri = 'http://schema.org/Text';
+                        $uri = 'https://schema.org/Text';
                         $typeHint = 'string';
                         $writable = false;
                         $nullable = true;
                         break;
                     default:
-                        $uri = 'http://schema.org/Text';
+                        $uri = 'https://schema.org/Text';
                         $typeHint = 'string';
                         $writable = true;
                         $nullable = false;

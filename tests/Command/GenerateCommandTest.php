@@ -398,7 +398,7 @@ PHP
     /**
      * @var string the female gender
      */
-    public const FEMALE = 'http://schema.org/Female';
+    public const FEMALE = 'https://schema.org/Female';
 PHP
             , $gender);
 
@@ -421,10 +421,10 @@ PHP
     /**
      * An award won by or for this item.
      *
-     * @see http://schema.org/award
+     * @see https://schema.org/award
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/award")
+     * @ApiProperty(iri="https://schema.org/award")
      */
     private ?string $award = null;
 PHP

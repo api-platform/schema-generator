@@ -99,7 +99,7 @@ class CardinalitiesExtractor
             return self::CARDINALITY_0_N;
         }
 
-        if (0 !== strpos($property->getUri(), 'http://schema.org')) {
+        if (0 !== strpos($property->getUri(), 'https://schema.org')) {
             return self::CARDINALITY_UNKNOWN;
         }
 
@@ -115,10 +115,10 @@ class CardinalitiesExtractor
         $comment = $rdfsComment->getValue();
 
         if (
-            // http://schema.org/acceptedOffer, http://schema.org/acceptedPaymentMethod, http://schema.org/exerciseType
+            // https://schema.org/acceptedOffer, https://schema.org/acceptedPaymentMethod, https://schema.org/exerciseType
             preg_match('/\(s\)/', $comment)
             ||
-            // http://schema.org/follows
+            // https://schema.org/follows
             preg_match('/^The most generic uni-directional social relation./', $comment)
             ||
             preg_match('/one or more/i', $comment)
