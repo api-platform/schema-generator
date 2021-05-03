@@ -142,7 +142,7 @@ PHP
 
         $creativeWork = file_get_contents("$outputDir/App/Entity/CreativeWork.php");
         $this->assertStringContainsString('class CreativeWork extends Thing', $creativeWork);
-        $this->assertStringContainsString('protected ?string $copyrightYear = null;', $creativeWork);
+        $this->assertStringContainsString('private ?string $copyrightYear = null;', $creativeWork);
         $this->assertStringContainsString('public function getCopyrightYear(): ?string', $creativeWork);
         $this->assertStringContainsString('public function setCopyrightYear(?string $copyrightYear): void', $creativeWork);
         $this->assertStringNotContainsString('$name;', $creativeWork);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiPlatform\SchemaGenerator\Model;
 
 use Nette\PhpGenerator\Helpers;
@@ -40,7 +42,7 @@ final class Interface_
     {
         $file = (new PhpFile())
             ->setStrictTypes(true)
-            ->setComment(Helpers::unformatDocComment($fileHeader));
+            ->setComment(Helpers::unformatDocComment((string) $fileHeader));
 
         $namespace = $file->addNamespace($this->namespace);
         $namespace->addInterface($this->name);
