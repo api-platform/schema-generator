@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiPlatform\SchemaGenerator\Model;
 
 use EasyRdf\Resource as RdfResource;

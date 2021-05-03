@@ -62,8 +62,8 @@ class TypesGeneratorTest extends TestCase
 
         $article = file_get_contents("$outputDir/App/Entity/Article.php");
         $this->assertStringContainsString('abstract class Article extends CreativeWork', $article);
-        $this->assertStringContainsString('protected ?string $articleBody = null;', $article);
-        $this->assertStringContainsString('protected array $articleSection = [];', $article);
+        $this->assertStringContainsString('private ?string $articleBody = null;', $article);
+        $this->assertStringContainsString('private array $articleSection = [];', $article);
         $this->assertStringContainsString('public function setArticleBody(?string $articleBody): void', $article);
         $this->assertStringContainsString('public function getArticleBody(): ?string', $article);
         $this->assertStringContainsString('public function addArticleSection(string $articleSection): void', $article);
@@ -71,10 +71,10 @@ class TypesGeneratorTest extends TestCase
 
         $creativeWork = file_get_contents("$outputDir/App/Entity/CreativeWork.php");
         $this->assertStringContainsString('abstract class CreativeWork extends Thing', $creativeWork);
-        $this->assertStringContainsString('protected ?Person $author = null;', $creativeWork);
-        $this->assertStringContainsString('protected ?\DateTimeInterface $datePublished = null;', $creativeWork);
-        $this->assertStringContainsString('protected ?string $headline = null;', $creativeWork);
-        $this->assertStringContainsString('protected ?bool $isFamilyFriendly = null;', $creativeWork);
+        $this->assertStringContainsString('private ?Person $author = null;', $creativeWork);
+        $this->assertStringContainsString('private ?\DateTimeInterface $datePublished = null;', $creativeWork);
+        $this->assertStringContainsString('private ?string $headline = null;', $creativeWork);
+        $this->assertStringContainsString('private ?bool $isFamilyFriendly = null;', $creativeWork);
 
         $blogPosting = file_get_contents("$outputDir/App/Entity/BlogPosting.php");
         $this->assertStringContainsString('class BlogPosting extends SocialMediaPosting', $blogPosting);
@@ -83,7 +83,7 @@ class TypesGeneratorTest extends TestCase
 
         $socialMediaPosting = file_get_contents("$outputDir/App/Entity/SocialMediaPosting.php");
         $this->assertStringContainsString('abstract class SocialMediaPosting extends Article', $socialMediaPosting);
-        $this->assertStringContainsString('protected ?CreativeWork $sharedContent = null;', $socialMediaPosting);
+        $this->assertStringContainsString('private ?CreativeWork $sharedContent = null;', $socialMediaPosting);
         $this->assertStringContainsString(<<<'PHP'
     public function setSharedContent(?CreativeWork $sharedContent): void
     {
@@ -107,7 +107,7 @@ PHP, $socialMediaPosting);
         $this->assertStringContainsString(<<<'PHP'
 abstract class Thing
 {
-    protected ?string $name = null;
+    private ?string $name = null;
 
     public function setName(?string $name): void
     {

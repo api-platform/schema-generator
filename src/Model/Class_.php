@@ -260,7 +260,7 @@ final class Class_
         $useAccessors = $config['accessorMethods'] ?? true;
         $useFluentMutators = $config['fluentMutatorMethods'] ?? false;
         $fileHeader = $config['header'] ?? null;
-        $fieldVisibility = $config['fieldVisibility'] ?? ($this->isAbstract() ?  ClassType::VISIBILITY_PROTECTED : ClassType::VISIBILITY_PRIVATE);
+        $fieldVisibility = $config['fieldVisibility'] ?? ClassType::VISIBILITY_PRIVATE;
 
         $file = new PhpFile();
         if ($fileHeader !== null) {
