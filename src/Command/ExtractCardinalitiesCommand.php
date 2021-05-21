@@ -37,7 +37,7 @@ final class ExtractCardinalitiesCommand extends Command
         $this
             ->setName('extract-cardinalities')
             ->setDescription('Extract properties\' cardinality')
-            ->addOption('vocabulary-file', 'v', InputOption::VALUE_REQUIRED, 'The path or URL of the vocabulary RDF file to use.', TypesGeneratorConfiguration::SCHEMA_ORG_URI)
+            ->addOption('vocabulary-file', 's', InputOption::VALUE_REQUIRED, 'The path or URL of the vocabulary RDF file to use.', TypesGeneratorConfiguration::SCHEMA_ORG_URI)
             ->addOption('cardinality-file', 'g', InputOption::VALUE_REQUIRED, 'The path or URL of the OWL file containing the cardinality definitions.', TypesGeneratorConfiguration::GOOD_RELATIONS_URI)
         ;
     }
