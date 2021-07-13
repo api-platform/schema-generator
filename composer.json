@@ -29,7 +29,8 @@
         "symfony/console": "^5.2",
         "symfony/yaml": "^5.2",
         "symfony/filesystem": "^5.2",
-        "twig/twig": "^3.0"
+        "twig/twig": "^3.0",
+        "nette/php-generator": "v3.5.x-dev"
     },
     "require-dev": {
         "api-platform/core": "^2.5",

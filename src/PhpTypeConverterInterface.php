@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator;
 
+use ApiPlatform\SchemaGenerator\Model\Property;
 use EasyRdf\Resource;
 
 interface PhpTypeConverterInterface
@@ -96,7 +97,7 @@ interface PhpTypeConverterInterface
     /**
      * Gets the PHP type of this field.
      */
-    public function getPhpType(array $field, array $config = [], array $classes = []): ?string;
+    public function getPhpType(Property $property, array $config = [], array $classes = []): ?string;
 
     /**
      * Escapes an identifier.

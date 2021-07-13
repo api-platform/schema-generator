@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
+use ApiPlatform\SchemaGenerator\Model\Class_;
+use ApiPlatform\SchemaGenerator\Model\Property;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -28,14 +30,14 @@ final class SerializerGroupsAnnotationGenerator extends AbstractAnnotationGenera
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations(string $className, string $fieldName): array
+    public function generatePropertyAnnotations(Property $property, string $className): array
     {
-        if (null === $field = $this->config['types'][$className]['properties'] ?? null) {
+        if ($this->config['types'][$className]['properties'] ?? null) {
             return [];
         }
 
-        if (false === $this->classes[$className]['fields'][$fieldName]['isId'] && $groups = $field[$fieldName]['groups'] ?? false) {
-            return [sprintf('@Groups({"%s"})', implode('", "', $groups))];
+        if (false === $property->isId && $property->groups() ?? false) {
+            return [sprintf('@Groups({"%s"})', implode('", "', $property->groups()))];
         }
 
         return [];
@@ -44,7 +46,7 @@ final class SerializerGroupsAnnotationGenerator extends AbstractAnnotationGenera
     /**
      * {@inheritdoc}
      */
-    public function generateUses(string $className): array
+    public function generateUses(Class_ $class): array
     {
         return [Groups::class];
     }

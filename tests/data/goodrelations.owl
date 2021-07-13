@@ -49,7 +49,7 @@ Note: There is another property gr:availableAtOrFrom, which is used to indicate 
         <rdfs:comment xml:lang="en">The GoodRelations ontology provides the vocabulary for annotating e-commerce offerings (1) to sell, lease, repair, dispose, or maintain commodity products and (2) to provide commodity services.
 
 GoodRelations allows describing the relationship between (1) Web resources, (2) offerings made by those Web resources, (3) legal entities, (4) prices, (5) terms and conditions, and the aforementioned ontologies for products and services (6).
- 
+
 For more information, see http://purl.org/goodrelations/
 
 Note: The base URI of GoodRelations is http://purl.org/goodrelations/v1. Please make sure you are only using element identifiers in this namespace, e.g. http://purl.org/goodrelations/v1#BusinessEntity. There may be copies of the ontology file on the Web which can be retrieved from other locations, BUT THOSE LOCATIONS MUST NOT BE USED AS THE BASIS OF IDENTIFIERS.
@@ -231,7 +231,7 @@ Note: While NAICS codes are sometimes misused for classifying products or servic
     </rdfs:domain>
     <rdfs:comment xml:lang="en">The Manufacturer Part Number or MPN is a unique identifier for a product, service, or bundle from the perspective of a particular manufacturer. MPNs can be assigned to products or product datasheets, or bundles. Accordingly, the domain of this property is the union of gr:ProductOrService (the common superclass of goods and datasheets), and gr:Offering.
 
-Important: Be careful when assuming two products or services instances or offering instances to be identical based on the MPN. Since MPNs are unique only for the same gr:BusinessEntity, this holds only when the two MPN values refer to the same gr:BusinessEntity. Such can be done by taking into account the provenance of the data. 
+Important: Be careful when assuming two products or services instances or offering instances to be identical based on the MPN. Since MPNs are unique only for the same gr:BusinessEntity, this holds only when the two MPN values refer to the same gr:BusinessEntity. Such can be done by taking into account the provenance of the data.
 
 Usually, the properties gr:hasEAN_UCC-13 and gr:hasGTIN-14 are much more reliable identifiers, because they are globally unique.
 
@@ -282,7 +282,7 @@ See also http://en.wikipedia.org/wiki/Part_number</rdfs:comment>
       </owl:Class>
     </rdfs:domain>
     <rdfs:comment xml:lang="en">The name of a category to which this gr:ProductOrService, gr:Offering, gr:BusinessEntity, or gr:Location belongs.
-	
+
 Note 1: For products, it is better to add an rdf:type statement referring to a GoodRelations-compliant ontology for vertical industries instead, but if you just have a short text label, gr:category is simpler.
 Note 2: You can use greater signs or slashes to informally indicate a category hierarchy, e.g. "restaurants/asian_restaurants" or "cables &gt; usb_cables"
 </rdfs:comment>
@@ -431,7 +431,7 @@ or
 Note 1: If multiple contradicting instances of a gr:Offering, gr:PriceSpecification, or gr:OpeningHoursSpecification exist, it is a good heuristics to assume that
 1. Information with validity information for the respective period of time ranks higher than information without validity information.
 2. Among conflicting nodes both having validity information, the one with the shorter validity span ranks higher.
-Note 2: For Google, attaching a gr:validThrough statement to a gr:UnitPriceSpecification is mandatory. 
+Note 2: For Google, attaching a gr:validThrough statement to a gr:UnitPriceSpecification is mandatory.
 </rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:DatatypeProperty>
@@ -600,7 +600,7 @@ foo:Red_Ford_T_Model gr:isVariantOf foo:Ford_T_Model</rdfs:comment>
   </owl:DatatypeProperty>
   <gr:WarrantyScope rdf:about="http://purl.org/goodrelations/v1#PartsAndLabor-PickUp">
     <rdfs:comment xml:lang="en">In case of a defect or malfunction, the buying party has the right to request from the selling gr:Business Entity to pick-up the good from its current location to a suitable service location, where the functionality of the good will be restored. All transportation, labor, parts, and materials needed to fix the problem will be covered by the selling business entity or one of its partnering business entities.
-  
+
 Note: This is just a rough classification for filtering offers. It is up to the buying party to check the exact scope and terms and conditions of the gr:WarrantyPromise.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
     <rdfs:label xml:lang="en">Parts and labor / pick up (warranty scope)</rdfs:label>
@@ -743,7 +743,7 @@ Typical unit code(s): CMT for centimeters, INH for inches</rdfs:comment>
             </owl:unionOf>
           </owl:Class>
         </rdfs:domain>
-        <rdfs:comment xml:lang="en">A short textual description of the resource. 
+        <rdfs:comment xml:lang="en">A short textual description of the resource.
 
 This property is semantically equivalent to rdfs:comment and just meant as a handy shortcut for marking up data.</rdfs:comment>
         <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
@@ -769,10 +769,10 @@ This property is semantically equivalent to rdfs:comment and just meant as a han
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
     <rdfs:label xml:lang="en">billing increment (0..1)</rdfs:label>
     <rdfs:domain rdf:resource="http://purl.org/goodrelations/v1#UnitPriceSpecification"/>
-    <rdfs:comment xml:lang="en">This property specifies the minimal quantity and rounding increment that will be the basis for the billing. 
+    <rdfs:comment xml:lang="en">This property specifies the minimal quantity and rounding increment that will be the basis for the billing.
 The unit of measurement is specified by the UN/CEFACT code attached to the gr:UnitPriceSpecification via the gr:hasUnitOfMeasurement property.
 
-Examples: 
+Examples:
 - The price for gasoline is 4 USD per gallon at the pump, but you will be charged in units of 0.1 gallons.
 - The price for legal consulting is 100 USD per hour, but you will be charged in units of 15 minutes.
 
@@ -891,11 +891,11 @@ The duration is specified by attaching an instance of gr:QuantitativeValueIntege
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
-    <rdfs:comment xml:lang="en">The Stock Keeping Unit, or SKU is a unique identifier for a product, service, or bundle from the perspective of a particular supplier, i.e. SKUs are mostly assigned and serialized at the merchant level. 
+    <rdfs:comment xml:lang="en">The Stock Keeping Unit, or SKU is a unique identifier for a product, service, or bundle from the perspective of a particular supplier, i.e. SKUs are mostly assigned and serialized at the merchant level.
 Examples of SKUs are the ordering or parts numbers used by a particular Web shop or catalog.
 
-Consequently, the domain of gr:hasStockKeepingUnit is the union of the classes gr:Offering and gr:ProductOrService. 
-If attached to a gr:Offering, the SKU will usually reflect a merchant-specific identifier, i.e. one valid only for that particular retailer or shop. 
+Consequently, the domain of gr:hasStockKeepingUnit is the union of the classes gr:Offering and gr:ProductOrService.
+If attached to a gr:Offering, the SKU will usually reflect a merchant-specific identifier, i.e. one valid only for that particular retailer or shop.
 If attached to a gr:ProductOrServiceModel, the SKU can reflect either the identifier used by the merchant or the part number used by the official manufacturer of that part. For the latter, gr:hasMPN is a better choice.
 
 Important: Be careful when assuming two products or services instances or offering instances to be identical based on the SKU. Since SKUs are unique only for the same gr:BusinessEntity, this can be assumed only when you are sure that the two SKU values refer to the same business entity. Such can be done by taking into account the provenance of the data. As long as instances of gr:Offering are concerned, you can also check that the offerings are being offered by the same gr:Business Entity.
@@ -952,11 +952,11 @@ See also http://en.wikipedia.org/wiki/Stock_Keeping_Unit.</rdfs:comment>
     <rdfs:range rdf:resource="http://purl.org/goodrelations/v1#ProductOrService"/>
     <rdfs:label xml:lang="en">includes (0..1)</rdfs:label>
     <rdfs:domain rdf:resource="http://purl.org/goodrelations/v1#Offering"/>
-    <rdfs:comment xml:lang="en">This object property is a shortcut for the original gr:includesObject property for the common case of having exactly one single gr:ProductOrService instance included in an Offering. 
+    <rdfs:comment xml:lang="en">This object property is a shortcut for the original gr:includesObject property for the common case of having exactly one single gr:ProductOrService instance included in an Offering.
 
 When linking to an instance of gr:SomeItems or gr:Individual, it is equivalent to using a gr:TypeAndQuantityNode with gr:hasUnitOfMeasurement="C62"^^xsd:string and gr:amountOfThisGood="1.0"^^xsd:float for that good.
 
-When linking to a gr:ProductOrServiceModel, it is equivalent to 
+When linking to a gr:ProductOrServiceModel, it is equivalent to
 1. defining an blank node for a gr:SomeItems
 2. linking that blank node via gr:hasMakeAndModel to the gr:ProductOrServiceModel, and
 3. linking from the gr:Offering to that blank node using another blank node of type gr:TypeAndQuantityNode with gr:hasUnitOfMeasurement="C62"^^xsd:string and gr:amountOfThisGood="1.0"^^xsd:float for that good.</rdfs:comment>
@@ -1233,7 +1233,7 @@ This property is semantically equivalent to dcterms:title and rdfs:label and jus
 
 For a gr:UnitPriceSpecification, this is the price for one unit or bundle (as specified in the unit of measurement of the unit price specification) of the respective gr:ProductOrService. For a gr:DeliveryChargeSpecification or a gr:PaymentChargeSpecification, it is the price per delivery or payment.
 
-GoodRelations also supports giving price information as intervals only. If this is needed, use gr:hasMaxCurrencyValue for the upper bound and gr:hasMinCurrencyValue for the lower bound. 
+GoodRelations also supports giving price information as intervals only. If this is needed, use gr:hasMaxCurrencyValue for the upper bound and gr:hasMinCurrencyValue for the lower bound.
 
 Using gr:hasCurrencyValue sets the upper and lower bounds to the same given value, i.e., x gr:hasCurrencyValue y implies x gr:hasMinCurrencyValue y, x gr:hasMaxCurrencyValue y.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
@@ -1354,7 +1354,7 @@ Note: This is a simple representation which may not properly reflect all details
       </owl:Class>
     </rdfs:domain>
     <rdfs:comment xml:lang="en">This specifies the business function of the gr:Offering, i.e. whether the gr:BusinessEntity is offering to sell, to lease, or to repair the particular type of product. In the case of bundles, it is also possible to attach individual business functions to each gr:TypeAndQuantityNode. The business function of the main gr:Offering determines the business function for all included objects or services, unless a business function attached to a gr:TypeAndQuantityNode overrides it.
-	
+
 Note: While it is possible that an entity is offering multiple types of business functions for the same set of objects (e.g. rental and sales), this should usually not be stated by attaching multiple business functions to the same gr:Offering, since the gr:UnitPriceSpecification for the varying business functions will typically be very different.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:ObjectProperty>
@@ -1664,7 +1664,7 @@ This property can also be safely applied to foaf:Agent instances.</rdfs:comment>
   <owl:AnnotationProperty rdf:about="http://purl.org/dc/elements/1.1/contributor"/>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#License">
     <rdfs:comment xml:lang="en">A license is the specification of a bundle of rights that determines the type of activity or access offered by the gr:BusinessEntity on the gr:ProductOrService through the gr:Offering.
-	
+
 Licenses can be standardized (e.g. LPGL, Creative Commons, ...), vendor-specific, or individually defined for a single offer or product. Whether there is a fee for obtaining the license is specified using the gr:UnitPriceSpecification attached to the gr:Offering. Use foaf:page for linking to a document containing the license, e.g. in PDF or HTML.</rdfs:comment>
     <rdfs:subClassOf rdf:resource="http://purl.org/goodrelations/v1#BusinessFunction"/>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
@@ -1697,7 +1697,7 @@ Licenses can be standardized (e.g. LPGL, Creative Commons, ...), vendor-specific
     <gr:displayPosition rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</gr:displayPosition>
   </gr:DayOfWeek>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#BusinessEntityType">
-    <rdfs:comment xml:lang="en">A business entity type is a conceptual entity representing the legal form, the size, the main line of business, the position in the value chain, or any combination thereof, of a gr:BusinessEntity. From the ontological point of view, business entity types are mostly roles that a business entity has in the market. Business entity types are important for specifying eligible customers, since a gr:Offering is often valid only for business entities of a certain size, legal structure, or role in the value chain. 
+    <rdfs:comment xml:lang="en">A business entity type is a conceptual entity representing the legal form, the size, the main line of business, the position in the value chain, or any combination thereof, of a gr:BusinessEntity. From the ontological point of view, business entity types are mostly roles that a business entity has in the market. Business entity types are important for specifying eligible customers, since a gr:Offering is often valid only for business entities of a certain size, legal structure, or role in the value chain.
 
 Examples: Consumers, Retailers, Wholesalers, or Public Institutions</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
@@ -1755,11 +1755,11 @@ Examples: Consumers, Retailers, Wholesalers, or Public Institutions</rdfs:commen
     <owl:equivalentClass rdf:resource="http://purl.org/goodrelations/v1#LocationOfSalesOrServiceProvisioning"/>
     <rdfs:label xml:lang="en">Location</rdfs:label>
     <rdfs:comment xml:lang="en">A location is a point or area of interest from which a particular product or service is available, e.g. a store, a bus stop, a gas station, or a ticket booth. The difference to gr:BusinessEntity is that the gr:BusinessEntity is the legal entity (e.g. a person or corporation) making the offer, while gr:Location is the store, office, or place. A chain restaurant will e.g. have one legal entity but multiple restaurant locations. Locations are characterized by an address or geographical position and a set of opening hour specifications for various days of the week.
-		
+
 Example: A rental car company may offer the Business Function Lease Out of cars from two locations, one in Fort Myers, Florida, and one in Boston, Massachusetts. Both stations are open 7:00 - 23:00 Mondays through Saturdays.
 
 Note: Typical address standards (vcard) and location data (geo, WGC84) should be attached to a gr:Location node. Since there already exist established vocabularies for this, the GoodRelations ontology does not provide respective attributes. Instead, the use of respective vocabularies is recommended. However, the gr:hasGlobalLocationNumber property is  provided for linking to public identifiers for business locations.
-		
+
 Compatibility with schema.org: This class is equivalent to http://schema.org/Place.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:Class>
@@ -1863,10 +1863,10 @@ Important: When querying for the price, always use gr:hasMaxCurrencyValue and gr
     </owl:equivalentClass>
     <rdfs:label xml:lang="en">Business entity</rdfs:label>
     <rdfs:comment xml:lang="en">An instance of this class represents the legal agent making (or seeking) a particular offering. This can be a legal body or a person. A business entity has at least a primary mailing address and contact details. For this, typical address standards (vCard) and location data (geo, WGS84) can be attached. Note that the location of the business entity is not necessarily the location from which the product or service is being available (e.g. the branch or store). Use gr:Location for stores and branches.
-		
+
 Example: Siemens Austria AG, Volkswagen Ltd., Peter Miller's Cell phone Shop LLC
 
-Compatibility with schema.org: This class is equivalent to the union of http://schema.org/Person and http://schema.org/Organization.		
+Compatibility with schema.org: This class is equivalent to the union of http://schema.org/Person and http://schema.org/Organization.
 </rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:Class>
@@ -1877,12 +1877,12 @@ Compatibility with schema.org: This class is equivalent to the union of http://s
     <rdfs:subClassOf rdf:resource="http://purl.org/goodrelations/v1#QuantitativeValue"/>
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#QuantitativeValueFloat"/>
     <rdfs:label xml:lang="en">Quantitative value integer</rdfs:label>
-    <rdfs:comment xml:lang="en">An instance of this class is an actual integer value for a quantitative property of a product. This instance is usually characterized by a minimal value, a maximal value, and a unit of measurement. 
+    <rdfs:comment xml:lang="en">An instance of this class is an actual integer value for a quantitative property of a product. This instance is usually characterized by a minimal value, a maximal value, and a unit of measurement.
 
 Example: A seating capacity between 1 and 8 persons.
 
 Note: Users must keep in mind that ranges in here mean that ALL possible values in this interval are covered. (Sometimes, the actual commitment may be less than that: "We sell cars from 2 - 12 seats" does often not really mean that they have cars with 2,3,4,...12 seats.). Someone renting out two types of rowing boats, one that fits for 1 or 2 people, and another that must be operated by 4 people cannot claim to rent boats with a seating capacity between 1 and 4 people. He or she is offering two boat types for 1-2 and 4 persons.
-		
+
 Compatibility with schema.org: This class is a subclass of http://schema.org/Quantity.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:Class>
@@ -2003,7 +2003,7 @@ This relation is transitive.</rdfs:comment>
 Examples: Ford T, Volkswagen Golf, Sony Ericsson W123 cell phone
 
 Note: An actual product or service (gr:Individual) by default shares the features of its model (e.g. the weight). However, this requires non-standard reasoning. See http://wiki.goodrelations-vocabulary.org/Axioms for respective rule sets.
-	
+
 Compatibility with schema.org: This class is (approximately) a subclass of http://schema.org/Product.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:Class>
@@ -2029,23 +2029,23 @@ Important: When querying for the price, always use gr:hasMaxCurrencyValue and gr
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#PaymentChargeSpecification"/>
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#DeliveryChargeSpecification"/>
     <rdfs:label xml:lang="en">Unit price specification</rdfs:label>
-    <rdfs:comment xml:lang="en">A unit price specification is a conceptual entity that specifies the price asked for a given gr:Offering by the respective gr:Business Entity. An offering may be linked to multiple unit price specifications that specify alternative prices for non-overlapping sets of conditions (e.g. quantities or sales regions) or with differing validity periods. 
+    <rdfs:comment xml:lang="en">A unit price specification is a conceptual entity that specifies the price asked for a given gr:Offering by the respective gr:Business Entity. An offering may be linked to multiple unit price specifications that specify alternative prices for non-overlapping sets of conditions (e.g. quantities or sales regions) or with differing validity periods.
 
 A unit price specification is characterized by (1) the lower and upper limits and the unit of measurement of the eligible quantity, (2) by a monetary amount per unit of the product or service, and (3)  whether this prices includes local sales taxes, namely VAT.
-	
+
 Example: The price, including VAT, for 1 kg of a given material is 5 Euros per kg for 0 - 5 kg and 4 Euros for quantities above 5 kg.
 
 The eligible quantity interval for a given price is specified using the object property gr:hasEligibleQuantity, which points to an instance of gr:QuantitativeValue. The currency is specified using the gr:hasCurrency property, which points to an ISO 4217 currency code. The unit of measurement for the eligible quantity is specified using the gr:hasUnitOfMeasurement datatype property, which points to an UN/CEFACT Common Code (3 characters).
-	
+
 In most cases, the appropriate unit of measurement is the UN/CEFACT Common Code "C62" for "Unit or piece", since a gr:Offering is defined by the quantity and unit of measurement of all items included (e.g. "1 kg of bananas plus a 2 kg of apples"). As long at the offering consists of only one item, it is also possible to use an unit of measurement of choice for specifying the price per unit. For bundles, however, only  "C62" for "Unit or piece" is a valid unit of measurement.
 
 You can assume that the price is given per unit or piece if there is no gr:hasUnitOfMeasurement property attached to the price.
-	
+
 Whether VAT and sales taxes are included in this price is specified using the property gr:valueAddedTaxIncluded (xsd:boolean).
-	
+
 The price per unit of measurement is specified as a float value of the gr:hasCurrencyValue property. The currency is specified via the gr:hasCurrency datatype property. Whether the price includes VAT or not is indicated by the gr:valueAddedTaxIncluded datatype property.
 
-The property priceType can be used to indicate that the price is a retail price recommendation only (i.e. a list price). 
+The property priceType can be used to indicate that the price is a retail price recommendation only (i.e. a list price).
 
 If the price can only be given as a range, use gr:hasMaxCurrencyValue and gr:hasMinCurrencyValue for the upper and lower bounds.
 
@@ -2053,7 +2053,7 @@ Important: When querying for the price, always use gr:hasMaxCurrencyValue and gr
 
 Note 1: Due to the complexity of pricing scenarios in various industries, it may be necessary to create extensions of this fundamental model of price specifications. Such can be done easily by importing and refining the GoodRelations ontology.
 
-Note 2: For Google, attaching a gr:validThrough statement to a gr:UnitPriceSpecification is mandatory. 
+Note 2: For Google, attaching a gr:validThrough statement to a gr:UnitPriceSpecification is mandatory.
 </rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:Class>
@@ -2086,7 +2086,7 @@ Since days of the week are a cycle, this property is not transitive.</rdfs:comme
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:ObjectProperty>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#WarrantyScope">
-    <rdfs:comment xml:lang="en">The warranty scope represents types of services that will be provided free of charge by the vendor or manufacturer in the case of a defect (e.g. labor and parts, just parts), as part of the warranty included in an gr:Offering. The actual services may be provided by the gr:BusinessEntity making the offering, by the manufacturer of the product, or by a third party. 
+    <rdfs:comment xml:lang="en">The warranty scope represents types of services that will be provided free of charge by the vendor or manufacturer in the case of a defect (e.g. labor and parts, just parts), as part of the warranty included in an gr:Offering. The actual services may be provided by the gr:BusinessEntity making the offering, by the manufacturer of the product, or by a third party.
 
 Examples: Parts and Labor, Parts</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
@@ -2201,7 +2201,7 @@ Compatibility with schema.org: This class is a subclass of http://schema.org/Qua
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:Class>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#Brand">
-    <rdfs:comment xml:lang="en">A brand is the identity of a specific product, service, or business. Use foaf:logo for attaching a brand logo and gr:name or rdfs:label for attaching the brand name.	
+    <rdfs:comment xml:lang="en">A brand is the identity of a specific product, service, or business. Use foaf:logo for attaching a brand logo and gr:name or rdfs:label for attaching the brand name.
 
 (Source: Wikipedia, the free encyclopedia, see http://en.wikipedia.org/wiki/Brand)</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
@@ -2223,10 +2223,10 @@ Compatibility with schema.org: This class is a subclass of http://schema.org/Qua
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#TypeAndQuantityNode"/>
   </owl:Class>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#QualitativeValue">
-    <rdfs:comment xml:lang="en">A qualitative value is a predefined value for a product characteristic. 
-	
+    <rdfs:comment xml:lang="en">A qualitative value is a predefined value for a product characteristic.
+
 Examples: the color "green" or the power cord plug type "US"; the garment sizes "S", "M", "L", and "XL".
-	
+
 Note: Value sets are supported by creating subclasses of this class. Ordinal relations between values (gr:greater, gr:lesser, ...) are provided directly by GoodRelations.
 
 Compatibility with schema.org: This class is equivalent to http://schema.org/Enumeration.</rdfs:comment>
@@ -2315,7 +2315,7 @@ Example: An offering may include of 100g of Butter and 1 kg of potatoes, or 1 ce
   </gr:DayOfWeek>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#QuantitativeValue">
     <rdfs:comment xml:lang="en">A quantitative value is a numerical interval that represents the range of a certain gr:quantitativeProductOrServiceProperty in terms of the lower and upper bounds for a particular gr:ProductOrService. It is to be interpreted in combination with the respective unit of measurement. Most quantitative values are intervals even if they are in practice often treated as a single point value.
-	
+
 Example: a weight between 10 and 25 kilogramms, a length between 10 and 15 millimeters.
 
 Compatibility with schema.org: This class is equivalent to http://schema.org/Quantity.</rdfs:comment>
@@ -2341,11 +2341,11 @@ Compatibility with schema.org: This class is equivalent to http://schema.org/Qua
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#ProductOrService">
     <rdfs:comment xml:lang="en">The superclass of all classes describing products or services types, either by nature or purpose. Examples for such subclasses are "TV set", "vacuum cleaner", etc. An instance of this class can be either an actual product or service (gr:Individual), a placeholder instance for unknown instances of a mass-produced commodity (gr:SomeItems), or a model / prototype specification (gr:ProductOrServiceModel). When in doubt, use gr:SomeItems.
 
-Examples: 
+Examples:
 a) MyCellphone123, i.e. my personal, tangible cell phone (gr:Individual)
 b) Siemens1234, i.e. the Siemens cell phone make and model 1234 (gr:ProductOrServiceModel)
 c) dummyCellPhone123 as a placeholder for actual instances of a certain kind of cell phones (gr:SomeItems)
-	
+
 Note: Your first choice for specializations of gr:ProductOrService should be http://www.productontology.org.
 
 Compatibility with schema.org: This class is (approximately) equivalent to http://schema.org/Product.</rdfs:comment>
@@ -2365,10 +2365,10 @@ Compatibility with schema.org: This class is (approximately) equivalent to http:
     <owl:disjointWith rdf:resource="http://purl.org/goodrelations/v1#TypeAndQuantityNode"/>
   </owl:Class>
   <owl:Class rdf:about="http://purl.org/goodrelations/v1#Offering">
-    <rdfs:comment xml:lang="en">An offering represents the public, not necessarily binding, not necessarily exclusive, announcement by a gr:BusinessEntity to provide (or seek) a certain gr:BusinessFunction for a certain gr:ProductOrService to a specified target audience. An offering is specified by the type of product or service or bundle it refers to, what business function is being offered (sales, rental, ...), and a set of commercial properties. It can either refer to 
+    <rdfs:comment xml:lang="en">An offering represents the public, not necessarily binding, not necessarily exclusive, announcement by a gr:BusinessEntity to provide (or seek) a certain gr:BusinessFunction for a certain gr:ProductOrService to a specified target audience. An offering is specified by the type of product or service or bundle it refers to, what business function is being offered (sales, rental, ...), and a set of commercial properties. It can either refer to
 (1) a clearly specified instance (gr:Individual),
 (2) to a set of anonymous instances of a given type (gr:SomeItems),
-(3) a product model specification (gr:ProductOrServiceModel), see also section 3.3.3 of the GoodRelations Technical Report. 
+(3) a product model specification (gr:ProductOrServiceModel), see also section 3.3.3 of the GoodRelations Technical Report.
 
 An offering may be constrained in terms of the eligible type of business partner, countries, quantities, and other commercial properties. The definition of the commercial properties, the type of product offered, and the business function are explained in other parts of this vocabulary in more detail.
 
@@ -2406,7 +2406,7 @@ Compatibility with schema.org: This class is a superclass to http://schema.org/O
 Example: An instance of this class can represent an anonymous set of green Siemens1234 phones. It is different from the gr:ProductOrServiceModel Siemens1234, since this refers to the make and model, and it is different from a particular instance of this make and model (e.g. my individual phone) since the latter can be sold only once.
 
 Note: This class is the new, shorter form of the former gr:ProductOrServicesSomeInstancesPlaceholder.
-		
+
 Compatibility with schema.org: This class is (approximately) a subclass of http://schema.org/Product.</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource="http://purl.org/goodrelations/v1"/>
   </owl:Class>

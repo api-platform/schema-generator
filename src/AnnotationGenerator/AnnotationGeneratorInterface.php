@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
+use ApiPlatform\SchemaGenerator\Model\Class_;
+use ApiPlatform\SchemaGenerator\Model\Constant;
+use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
 use Doctrine\Inflector\Inflector;
 use Psr\Log\LoggerInterface;
@@ -29,45 +32,45 @@ interface AnnotationGeneratorInterface
     /**
      * Generates class's annotations.
      */
-    public function generateClassAnnotations(string $className): array;
+    public function generateClassAnnotations(Class_ $class): array;
 
     /**
      * Generates interface's annotations.
      */
-    public function generateInterfaceAnnotations(string $className): array;
+    public function generateInterfaceAnnotations(Class_ $class): array;
 
     /**
      * Generates constant's annotations.
      */
-    public function generateConstantAnnotations(string $className, string $constantName): array;
+    public function generateConstantAnnotations(Constant $constant): array;
 
     /**
      * Generates field's annotation.
      */
-    public function generateFieldAnnotations(string $className, string $fieldName): array;
+    public function generatePropertyAnnotations(Property $property, string $className): array;
 
     /**
      * Generates getter's annotation.
      */
-    public function generateGetterAnnotations(string $className, string $fieldName): array;
+    public function generateGetterAnnotations(Property $property): array;
 
     /**
      * Generates setter's annotation.
      */
-    public function generateSetterAnnotations(string $className, string $fieldName): array;
+    public function generateSetterAnnotations(Property $property): array;
 
     /**
      * Generates adder's annotation.
      */
-    public function generateAdderAnnotations(string $className, string $fieldName): array;
+    public function generateAdderAnnotations(Property $property): array;
 
     /**
      * Generates remover's annotation.
      */
-    public function generateRemoverAnnotations(string $className, string $fieldName): array;
+    public function generateRemoverAnnotations(Property $property): array;
 
     /**
      * Generates uses.
      */
-    public function generateUses(string $className): array;
+    public function generateUses(Class_ $class): array;
 }
