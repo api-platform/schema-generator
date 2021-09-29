@@ -25,7 +25,6 @@ use PhpCsFixer\Differ\NullDiffer;
 use PhpCsFixer\Error\ErrorsManager;
 use PhpCsFixer\FixerFactory;
 use PhpCsFixer\Linter\Linter;
-use PhpCsFixer\RuleSet;
 use PhpCsFixer\Runner\Runner;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -952,9 +951,12 @@ class TypesGenerator
             $fileInfos[] = new \SplFileInfo($file);
         }
 
+        // to keep compatibility with both versions of php-cs-fixer: 2.x and 3.x
+        // ruleset object must be created depending on which class is available
+        $rulesetClass = class_exists('PhpCsFixer\RuleSet') ? 'PhpCsFixer\RuleSet' : 'PhpCsFixer\RuleSet\Ruleset';
         $fixers = (new FixerFactory())
             ->registerBuiltInFixers()
-            ->useRuleSet(new RuleSet([
+            ->useRuleSet(new $rulesetClass([
                 '@Symfony' => true,
                 'array_syntax' => ['syntax' => 'short'],
                 'phpdoc_order' => true,
