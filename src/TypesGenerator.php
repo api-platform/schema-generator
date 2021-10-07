@@ -256,6 +256,9 @@ class TypesGenerator
                     }
 
                     foreach ($this->getParentClasses($type) as $typeInHierarchy) {
+                        if (!isset($propertiesMap[$typeInHierarchy->getUri()])) {
+                    		continue;
+                    	}
                         foreach ($propertiesMap[$typeInHierarchy->getUri()] as $property) {
                             if ($key !== $property->localName()) {
                                 continue;
