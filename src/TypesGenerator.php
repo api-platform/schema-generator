@@ -296,7 +296,7 @@ class TypesGenerator
 
         // Second pass
         foreach ($classes as &$class) {
-            if ($class['parent']) {
+            if ($class['parent'] && $class['parent'] !== 'Enum') {
                 if (isset($classes[$class['parent']])) {
                     $classes[$class['parent']]['hasChild'] = true;
                     $class['parentHasConstructor'] = $classes[$class['parent']]['hasConstructor'];
