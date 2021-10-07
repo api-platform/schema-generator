@@ -16,7 +16,6 @@ namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
-use ApiPlatform\SchemaGenerator\TypesGenerator;
 
 /**
  * Doctrine annotation generator.
@@ -284,11 +283,11 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
 
         if (null !== $class->interfaceName()) {
             if (isset($this->config['types'][$rangeName]['namespaces']['interface'])) {
-                return sprintf('%s\\%s', $this->config['types'][$class['name']]['namespaces']['interface'], $class['interfaceName']);
+                return sprintf('%s\\%s', $this->config['types'][$class->name()]['namespaces']['interface'], $class->interfaceName());
             }
 
             if (isset($this->config['namespaces']['interface'])) {
-                return sprintf('%s\\%s', $this->config['namespaces']['interface'], $class['interfaceName']);
+                return sprintf('%s\\%s', $this->config['namespaces']['interface'], $class->interfaceName());
             }
 
             return $class->interfaceName();
