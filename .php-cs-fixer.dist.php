@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of the API Platform project.
+ *
+ * (c) Kévin Dunglas <dunglas@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
 $header = <<<'HEADER'
 This file is part of the API Platform project.
 
@@ -13,10 +24,11 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__)
     ->exclude('tests/Fixtures/app/cache')
     ->exclude('build')
-    ->exclude('tests/e2e')
-;
+    ->exclude('tests/e2e');
 
-return PhpCsFixer\Config::create()
+$config = new PhpCsFixer\Config();
+
+return $config
     ->setRiskyAllowed(true)
     ->setRules([
         '@Symfony' => true,
@@ -34,16 +46,18 @@ return PhpCsFixer\Config::create()
         ],
         'modernize_types_casting' => true,
         // 'native_function_invocation' => true,
-        'no_extra_consecutive_blank_lines' => [
-            'break',
-            'continue',
-            'curly_brace_block',
-            'extra',
-            'parenthesis_brace_block',
-            'return',
-            'square_brace_block',
-            'throw',
-            'use',
+        'no_extra_blank_lines' => [
+            'tokens' => [
+                'break',
+                'continue',
+                'curly_brace_block',
+                'extra',
+                'parenthesis_brace_block',
+                'return',
+                'square_brace_block',
+                'throw',
+                'use',
+            ],
         ],
         'no_unreachable_default_argument_value' => true,
         'no_useless_else' => true,
@@ -53,11 +67,10 @@ return PhpCsFixer\Config::create()
         //     'only_untyped' => false,
         // ],
         'phpdoc_order' => true,
-        'psr4' => true,
+        'psr_autoloading' => true,
         'semicolon_after_instruction' => true,
         'strict_comparison' => true,
         'strict_param' => true,
         'ternary_to_null_coalescing' => true,
     ])
-    ->setFinder($finder)
-;
+    ->setFinder($finder);
