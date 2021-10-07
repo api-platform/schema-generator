@@ -35,7 +35,7 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
     public function generateClassAnnotations(string $className): array
     {
         $class = $this->classes[$className];
-        if (\array_key_exists('abstract', $class)) {
+        if ($class['abstract'] ?? false) {
             return [];
         }
         $resource = $class['resource'];
