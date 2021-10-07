@@ -955,10 +955,10 @@ class TypesGenerator
 
         // to keep compatibility with both versions of php-cs-fixer: 2.x and 3.x
         // ruleset object must be created depending on which class is available
-        $rulesetClass = class_exists(RuleSet::class) ? Ruleset::class : LegacyRuleSet::class;
+        $rulesetClass = class_exists(LegacyRuleSet::class) ? LegacyRuleSet::class : Ruleset::class;
         $fixers = (new FixerFactory())
             ->registerBuiltInFixers()
-            ->useRuleSet(new $rulesetClass([
+            ->useRuleSet(new $rulesetClass([ // @phpstan-ignore-line
                 '@Symfony' => true,
                 'array_syntax' => ['syntax' => 'short'],
                 'phpdoc_order' => true,
