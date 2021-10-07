@@ -25,6 +25,8 @@ use PhpCsFixer\Differ\NullDiffer;
 use PhpCsFixer\Error\ErrorsManager;
 use PhpCsFixer\FixerFactory;
 use PhpCsFixer\Linter\Linter;
+use PhpCsFixer\RuleSet as LegacyRuleSet;
+use PhpCsFixer\RuleSet\RuleSet;
 use PhpCsFixer\Runner\Runner;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -953,7 +955,7 @@ class TypesGenerator
 
         // to keep compatibility with both versions of php-cs-fixer: 2.x and 3.x
         // ruleset object must be created depending on which class is available
-        $rulesetClass = class_exists('PhpCsFixer\RuleSet') ? 'PhpCsFixer\RuleSet' : 'PhpCsFixer\RuleSet\Ruleset';
+        $rulesetClass = class_exists('PhpCsFixer\RuleSet\RuleSet') ? Ruleset::class : LegacyRuleSet::class;
         $fixers = (new FixerFactory())
             ->registerBuiltInFixers()
             ->useRuleSet(new $rulesetClass([
