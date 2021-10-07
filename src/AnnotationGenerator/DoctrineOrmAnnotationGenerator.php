@@ -290,12 +290,12 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
 
         if (isset($class['interfaceName'])) {
             if (isset($this->config['types'][$rangeName]['namespaces']['interface'])) {
-	            return sprintf('%s\\%s', $this->config['types'][$class['name']]['namespaces']['interface'], $class['interfaceName']);
-	        }
+                return sprintf('%s\\%s', $this->config['types'][$class['name']]['namespaces']['interface'], $class['interfaceName']);
+            }
 
-	        if (isset($this->config['namespaces']['interface'])) {
-	            return sprintf('%s\\%s', $this->config['namespaces']['interface'], $class['interfaceName']);
-	        }
+            if (isset($this->config['namespaces']['interface'])) {
+                return sprintf('%s\\%s', $this->config['namespaces']['interface'], $class['interfaceName']);
+            }
 
             return $class['interfaceName'];
         }
