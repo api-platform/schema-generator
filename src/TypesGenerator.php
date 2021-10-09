@@ -25,7 +25,8 @@ use PhpCsFixer\Differ\NullDiffer;
 use PhpCsFixer\Error\ErrorsManager;
 use PhpCsFixer\FixerFactory;
 use PhpCsFixer\Linter\Linter;
-use PhpCsFixer\RuleSet;
+use PhpCsFixer\RuleSet as LegacyRuleSet;
+use PhpCsFixer\RuleSet\RuleSet;
 use PhpCsFixer\Runner\Runner;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -257,7 +258,7 @@ class TypesGenerator
                     }
 
                     foreach ($this->getParentClasses($type) as $typeInHierarchy) {
-                        foreach ($propertiesMap[$typeInHierarchy->getUri()] as $property) {
+                        foreach ($propertiesMap[$typeInHierarchy->getUri()] ?? [] as $property) {
                             if ($key !== $property->localName()) {
                                 continue;
                             }
@@ -295,7 +296,7 @@ class TypesGenerator
 
         // Second pass
         foreach ($classes as &$class) {
-            if ($class['parent']) {
+            if ($class['parent'] && 'Enum' !== $class['parent']) {
                 if (isset($classes[$class['parent']])) {
                     $classes[$class['parent']]['hasChild'] = true;
                     $class['parentHasConstructor'] = $classes[$class['parent']]['hasConstructor'];
@@ -952,9 +953,12 @@ class TypesGenerator
             $fileInfos[] = new \SplFileInfo($file);
         }
 
+        // to keep compatibility with both versions of php-cs-fixer: 2.x and 3.x
+        // ruleset object must be created depending on which class is available
+        $rulesetClass = class_exists(LegacyRuleSet::class) ? LegacyRuleSet::class : Ruleset::class;
         $fixers = (new FixerFactory())
             ->registerBuiltInFixers()
-            ->useRuleSet(new RuleSet([
+            ->useRuleSet(new $rulesetClass([ // @phpstan-ignore-line
                 '@Symfony' => true,
                 'array_syntax' => ['syntax' => 'short'],
                 'phpdoc_order' => true,

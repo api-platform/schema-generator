@@ -44,13 +44,9 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
                     $asserts[] = '@Assert\Url';
                     break;
                 case 'https://schema.org/Date':
-                    $asserts[] = '@Assert\Date';
-                    break;
                 case 'https://schema.org/DateTime':
-                    $asserts[] = '@Assert\DateTime';
-                    break;
                 case 'https://schema.org/Time':
-                    $asserts[] = '@Assert\Time';
+                    $asserts[] = '@Assert\Type("\DateTimeInterface")';
                     break;
             }
 
