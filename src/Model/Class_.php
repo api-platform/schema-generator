@@ -226,6 +226,15 @@ final class Class_
         return $subClassOf && self::SCHEMA_ORG_ENUMERATION === $subClassOf->getUri();
     }
 
+    public function isParentEnum(): bool
+    {
+        if (!$this->hasParent()) {
+            return false;
+        }
+
+        return 'Enum' === $this->parent;
+    }
+
     public function isInNamespace(string $namespace): bool
     {
         return $this->namespace === $namespace;
