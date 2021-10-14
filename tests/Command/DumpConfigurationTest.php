@@ -101,6 +101,9 @@ config:
         # The Resolve Target Entity Listener config file path
         resolveTargetEntityConfigPath: null
 
+        # The Resolve Target Entity Listener config file type
+        resolveTargetEntityConfigType: XML # One of "XML"; "yaml"
+
         # Doctrine inheritance attributes (if set, no other attributes are generated)
         inheritanceAttributes: []
 

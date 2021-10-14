@@ -49,7 +49,7 @@ parameters:
                  checkIsGoodRelations: boolean,
                  header: ?string,
                  namespaces: array{prefix: ?string, entity: string, enum: string, interface: string},
-                 doctrine: array{useCollection: boolean, resolveTargetEntityConfigPath: ?string, inheritanceAttributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]>},
+                 doctrine: array{useCollection: boolean, resolveTargetEntityConfigPath: ?string, resolveTargetEntityConfigType: 'XML'|'yaml', inheritanceAttributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]>},
                  validator: array{assertType: boolean},
                  author: false|string,
                  fieldVisibility: string,
