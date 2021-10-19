@@ -24,7 +24,6 @@ use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGenerator;
 use Doctrine\Inflector\Inflector;
 use EasyRdf\Graph;
-use EasyRdf\Resource;
 use EasyRdf\Resource as RdfResource;
 use PhpCsFixer\Cache\NullCacheManager;
 use PhpCsFixer\Differ\NullDiffer;
