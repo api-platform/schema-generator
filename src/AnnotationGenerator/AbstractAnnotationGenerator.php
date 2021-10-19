@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
+use ApiPlatform\SchemaGenerator\Model\Class_;
+use ApiPlatform\SchemaGenerator\Model\Constant;
+use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
 use Doctrine\Inflector\Inflector;
 use EasyRdf\Graph;
@@ -34,6 +37,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     protected array $graphs;
     protected array $cardinalities;
     protected array $config;
+    /** @var Class_[] */
     protected array $classes;
 
     public function __construct(PhpTypeConverterInterface $phpTypeConverter, LoggerInterface $logger, Inflector $inflector, array $graphs, array $cardinalities, array $config, array $classes)
@@ -50,7 +54,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations(string $className): array
+    public function generateClassAnnotations(Class_ $class): array
     {
         return [];
     }
@@ -58,7 +62,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateInterfaceAnnotations(string $className): array
+    public function generateInterfaceAnnotations(Class_ $class): array
     {
         return [];
     }
@@ -66,7 +70,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateConstantAnnotations(string $className, string $constantName): array
+    public function generateConstantAnnotations(Constant $constant): array
     {
         return [];
     }
@@ -74,7 +78,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations(string $className, string $fieldName): array
+    public function generatePropertyAnnotations(Property $property, string $className): array
     {
         return [];
     }
@@ -82,7 +86,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateGetterAnnotations(string $className, string $fieldName): array
+    public function generateGetterAnnotations(Property $property): array
     {
         return [];
     }
@@ -90,7 +94,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateSetterAnnotations(string $className, string $fieldName): array
+    public function generateSetterAnnotations(Property $property): array
     {
         return [];
     }
@@ -98,7 +102,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateAdderAnnotations(string $className, string $fieldName): array
+    public function generateAdderAnnotations(Property $property): array
     {
         return [];
     }
@@ -106,7 +110,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateRemoverAnnotations(string $className, string $fieldName): array
+    public function generateRemoverAnnotations(Property $property): array
     {
         return [];
     }
@@ -114,7 +118,7 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     /**
      * {@inheritdoc}
      */
-    public function generateUses(string $className): array
+    public function generateUses(Class_ $class): array
     {
         return [];
     }

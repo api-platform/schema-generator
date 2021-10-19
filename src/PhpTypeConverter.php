@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator;
 
+use ApiPlatform\SchemaGenerator\Model\Property;
 use EasyRdf\Resource;
 
 final class PhpTypeConverter implements PhpTypeConverterInterface
@@ -25,13 +26,13 @@ final class PhpTypeConverter implements PhpTypeConverterInterface
         return isset(PhpTypeConverterInterface::BASE_MAPPING[$this->getUri($range)]) || $this->isLangString($range);
     }
 
-    public function getPhpType(array $field, array $config = [], array $classes = []): ?string
+    public function getPhpType(Property $property, array $config = [], array $classes = []): ?string
     {
-        if ($field['isArray'] ?? false) {
-            return ($config['doctrine']['useCollection'] ?? false) && !$this->isDatatype($field['range']) ? 'Collection' : 'array';
+        if ($property->isArray) {
+            return ($config['doctrine']['useCollection'] ?? false) && !$this->isDatatype($property->range) ? 'Collection' : 'array';
         }
 
-        return $this->getNonArrayType($field, $classes);
+        return $this->getNonArrayType($property, $classes);
     }
 
     public function escapeIdentifier(string $identifier): string
@@ -45,27 +46,27 @@ final class PhpTypeConverter implements PhpTypeConverterInterface
         return $identifier;
     }
 
-    private function getNonArrayType(array $field, array $classes): ?string
+    private function getNonArrayType(Property $property, array $classes): ?string
     {
-        if ($field['isEnum']) {
+        if ($property->isEnum) {
             return 'string';
         }
 
-        if (null === $field['range']) {
+        if (null === $property->range) {
             return null;
         }
 
-        $rangeUri = $this->getUri($field['range']);
+        $rangeUri = $this->getUri($property->range);
         if (isset(PhpTypeConverterInterface::BASE_MAPPING[$rangeUri])) {
             return PhpTypeConverterInterface::BASE_MAPPING[$rangeUri];
         }
 
-        $typeName = $field['rangeName'];
-        if ($type = $classes[$typeName]['interfaceName'] ?? $classes[$typeName]['name'] ?? null) {
+        $typeName = $property->rangeName;
+        if ($type = (isset($classes[$typeName]) ? $classes[$typeName]->interfaceName() ?? $classes[$typeName]->name() : null)) {
             return $type;
         }
 
-        if ($this->isLangString($field['range'])) {
+        if ($this->isLangString($property->range)) {
             return 'string';
         }
 

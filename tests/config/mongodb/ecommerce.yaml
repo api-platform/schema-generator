@@ -49,7 +49,7 @@ types:
       width: { range: 'http://schema.org/Text' }
       seller: { range: 'http://schema.org/Seller' }
   Brand:
-    parent: 'http://schema.org/Thing'
+    parent: Thing
     properties:
       logo: { range: 'http://schema.org/ImageObject' }
   Seller:

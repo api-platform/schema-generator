@@ -2,7 +2,15 @@
     "name": "api-platform/schema-generator",
     "type": "library",
     "description": "Various tools to generate a data model based on Schema.org vocables",
-    "keywords": ["schema.org", "semantic", "model", "doctrine", "symfony", "entity", "enum"],
+    "keywords": [
+        "schema.org",
+        "semantic",
+        "model",
+        "doctrine",
+        "symfony",
+        "entity",
+        "enum"
+    ],
     "homepage": "https://api-platform.com/docs/schema-generator/",
     "license": "MIT",
     "authors": [
@@ -12,10 +20,14 @@
         }
     ],
     "autoload": {
-        "psr-4": { "ApiPlatform\\SchemaGenerator\\": "src/" }
+        "psr-4": {
+            "ApiPlatform\\SchemaGenerator\\": "src/"
+        }
     },
     "autoload-dev": {
-        "psr-4": { "ApiPlatform\\SchemaGenerator\\Tests\\": "tests/" }
+        "psr-4": {
+            "ApiPlatform\\SchemaGenerator\\Tests\\": "tests/"
+        }
     },
     "require": {
         "php": ">=7.4",
@@ -29,7 +41,8 @@
         "symfony/console": "^5.2",
         "symfony/yaml": "^5.2",
         "symfony/filesystem": "^5.2",
-        "twig/twig": "^3.0"
+        "twig/twig": "^3.0",
+        "nette/php-generator": "3.6"
     },
     "require-dev": {
         "api-platform/core": "^2.5",
@@ -42,6 +55,8 @@
         "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "^0.12"
     },
-    "bin": ["bin/schema"],
+    "bin": [
+        "bin/schema"
+    ],
     "minimum-stability": "dev"
 }

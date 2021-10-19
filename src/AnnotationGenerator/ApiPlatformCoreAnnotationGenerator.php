@@ -15,7 +15,8 @@ namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\SchemaGenerator\TypesGenerator;
+use ApiPlatform\SchemaGenerator\Model\Class_;
+use ApiPlatform\SchemaGenerator\Model\Property;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -32,22 +33,20 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations(string $className): array
+    public function generateClassAnnotations(Class_ $class): array
     {
-        $class = $this->classes[$className];
-        if ($class['abstract'] ?? false) {
+        if ($class->isAbstract()) {
             return [];
         }
-        $resource = $class['resource'];
 
         $arguments = [];
-        if ($className !== $localName = $resource->localName()) {
+        if ($class->name() !== $localName = $class->resourceLocalName()) {
             $arguments[] = sprintf('shortName="%s"', $localName);
         }
-        $arguments[] = sprintf('iri="%s"', $resource->getUri());
+        $arguments[] = sprintf('iri="%s"', $class->resourceUri());
 
-        if (isset($class['operations'])) {
-            $operations = $this->validateClassOperations((array) $class['operations']);
+        if ([] !== $class->operations()) {
+            $operations = $this->validateClassOperations($class->operations());
             foreach ($operations as $operationTarget => $targetOperations) {
                 $targetArguments = [];
                 foreach ($targetOperations as $method => $methodConfig) {
@@ -105,12 +104,12 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations(string $className, string $fieldName): array
+    public function generatePropertyAnnotations(Property $property, string $className): array
     {
-        return $this->classes[$className]['fields'][$fieldName]['isCustom'] ? [] : [
+        return $property->isCustom ? [] : [
             sprintf(
                 '@ApiProperty(iri="%s")',
-                $this->classes[$className]['fields'][$fieldName]['resource']->getUri(),
+                $property->resourceUri()
             ),
         ];
     }
@@ -118,13 +117,8 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
     /**
      * {@inheritdoc}
      */
-    public function generateUses(string $className): array
+    public function generateUses(Class_ $class): array
     {
-        $resource = $this->classes[$className]['resource'];
-
-        $subClassOf = $resource->get('rdfs:subClassOf');
-        $typeIsEnum = $subClassOf && TypesGenerator::SCHEMA_ORG_ENUMERATION === $subClassOf->getUri();
-
-        return $typeIsEnum ? [] : [ApiResource::class, ApiProperty::class];
+        return !$class->isEnum() ? [ApiResource::class, ApiProperty::class] : [];
     }
 }
