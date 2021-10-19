@@ -43,8 +43,8 @@ final class ClassParentMutator implements ClassMutatorInterface
             $class->setParent($this->phpTypeConverter->escapeIdentifier($subclassOf[0]->localName()));
         }
 
-        if ($class->hasParent() && isset($config['types'][$class->parent()]['namespaces']['class'])) {
-            $parentNamespace = $config['types'][$class->parent()]['namespaces']['class'];
+        if ($class->hasParent() && isset($this->config['types'][$class->parent()]['namespaces']['class'])) {
+            $parentNamespace = $this->config['types'][$class->parent()]['namespaces']['class'];
 
             if ($class->isInNamespace($parentNamespace)) {
                 $class->addUse($parentNamespace.'\\'.$class->parent());

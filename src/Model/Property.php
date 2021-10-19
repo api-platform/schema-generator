@@ -221,11 +221,12 @@ final class Property
             if ($this->typeHint) {
                 $parameter->setType($this->adderRemoverTypeHint);
             }
-            if ($useDoctrineCollections && $this->isArray && $this->typeHint && 'array' !== $this->typeHint && !$this->isEnum) {
+
+            if ($useDoctrineCollections && $this->typeHint && 'array' !== $this->typeHint && !$this->isEnum) {
                 $remover->addBody(sprintf(
                     '$this->%s->removeElement(%s);',
                     $this->name(),
-                    $this->isEnum ? "(string) $$singularProperty" : "$$singularProperty"
+                    "$$singularProperty"
                 ));
             } else {
                 $remover->addBody(sprintf(<<<'PHP'

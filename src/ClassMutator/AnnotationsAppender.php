@@ -48,9 +48,6 @@ final class AnnotationsAppender implements ClassMutatorInterface
         return $class;
     }
 
-    /**
-     * @param AnnotationGeneratorInterface[] $this->annotationGenerators
-     */
     private function generateClassUses(Class_ $class): Class_
     {
         $interfaceNamespace = isset($this->classes[$class->name()]) ? $this->classes[$class->name()]->interfaceNamespace() : null;
@@ -88,9 +85,6 @@ final class AnnotationsAppender implements ClassMutatorInterface
         return $class;
     }
 
-    /**
-     * @param AnnotationGeneratorInterface[] $this->annotationGenerators
-     */
     private function generateConstantAnnotations(Class_ $class): Class_
     {
         foreach ($class->constants() as $name => &$constant) {
