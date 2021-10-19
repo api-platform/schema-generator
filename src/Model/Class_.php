@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of the API Platform project.
+ *
+ * (c) Kévin Dunglas <dunglas@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
 namespace ApiPlatform\SchemaGenerator\Model;
 
 use Doctrine\Inflector\Inflector;
@@ -119,7 +130,7 @@ final class Class_
 
     public function addAnnotation(string $annotation): self
     {
-        if ($annotation === '' || !\in_array($annotation, $this->annotations, true)) {
+        if ('' === $annotation || !\in_array($annotation, $this->annotations, true)) {
             $this->annotations[] = $annotation;
         }
 
@@ -128,7 +139,7 @@ final class Class_
 
     public function addInterfaceAnnotation(string $annotation): self
     {
-        if ($this->interface !== null) {
+        if (null !== $this->interface) {
             $this->interface->addAnnotation($annotation);
         }
 
@@ -192,7 +203,7 @@ final class Class_
 
     public function hasParent(): bool
     {
-        return $this->parent !== '' && $this->parent !== null && $this->parent !== false;
+        return '' !== $this->parent && null !== $this->parent && false !== $this->parent;
     }
 
     public function markWithConstructor(): self
@@ -254,13 +265,13 @@ final class Class_
     /** @return Property[] */
     public function uniqueProperties(): array
     {
-        return \array_filter($this->properties, static fn (Property $property) => $property->isUnique);
+        return array_filter($this->properties, static fn (Property $property) => $property->isUnique);
     }
 
     /** @return string[] */
     public function uniquePropertyNames(): array
     {
-        return \array_map(static fn (Property $property) => $property->name, $this->uniqueProperties());
+        return array_map(static fn (Property $property) => $property->name, $this->uniqueProperties());
     }
 
     public function toNetteFile(array $config, Inflector $inflector): PhpFile
@@ -272,7 +283,7 @@ final class Class_
         $fieldVisibility = $config['fieldVisibility'] ?? ClassType::VISIBILITY_PRIVATE;
 
         $file = new PhpFile();
-        if ($fileHeader !== null) {
+        if (null !== $fileHeader) {
             // avoid nested doc-block for configurations that already have * as delimiter
             $file->setComment(Helpers::unformatDocComment($fileHeader));
         }
@@ -290,7 +301,7 @@ final class Class_
 
         $class->setAbstract($this->isAbstract);
 
-        if ($this->interface !== null) {
+        if (null !== $this->interface) {
             $class->setImplements([$this->interfaceName()]);
         }
 
@@ -300,8 +311,8 @@ final class Class_
 
         $sortedProperties = isset($this->properties['id']) ? ['id' => $this->properties['id']] + $this->properties : $this->properties;
 
-        $class->setConstants(\array_map(static fn (Constant $constant) => $constant->toNetteConstant(), $this->constants));
-        $class->setProperties(\array_map(
+        $class->setConstants(array_map(static fn (Constant $constant) => $constant->toNetteConstant(), $this->constants));
+        $class->setProperties(array_map(
             static function (Property $property) use ($useDoctrineCollections, $fieldVisibility) {
                 return $property->toNetteProperty($fieldVisibility, $useDoctrineCollections);
             },
@@ -311,16 +322,16 @@ final class Class_
         if ($useDoctrineCollections && $this->hasConstructor) {
             $constructor = new Method('__construct');
             if ($this->parentHasConstructor) {
-                $constructor->addBody("parent::__construct();");
+                $constructor->addBody('parent::__construct();');
             }
 
             foreach ($sortedProperties as $property) {
-                if ($property->isArray && $property->typeHint !== 'array' && !$property->isEnum) {
+                if ($property->isArray && 'array' !== $property->typeHint && !$property->isEnum) {
                     $constructor->addBody('$this->? = new ArrayCollection();', [$property->name()]);
                 }
             }
 
-            if ($constructor->getBody() !== "") {
+            if ('' !== $constructor->getBody()) {
                 $class->addMember($constructor);
             }
         }

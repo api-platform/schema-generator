@@ -86,7 +86,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             $annotations[] = '';
         }
 
-        if ($property->resource !== null) {
+        if (null !== $property->resource) {
             $annotations[] = sprintf('@see %s', $property->resourceUri());
         }
 
@@ -157,7 +157,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
     {
         $annotations = [];
 
-        if (!$interface && $class->interfaceName() !== null) {
+        if (!$interface && null !== $class->interfaceName()) {
             $annotations[] = '{@inheritdoc}';
             $annotations[] = '';
         } else {
@@ -211,7 +211,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             return ($property->isArray ? sprintf('%s[]', $phpDocType) : $phpDocType).$suffix;
         }
 
-        if ($property->range === null) {
+        if (null === $property->range) {
             return null;
         }
 

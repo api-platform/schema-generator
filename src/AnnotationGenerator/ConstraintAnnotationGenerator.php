@@ -50,7 +50,7 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
                     break;
             }
 
-            if ($property->resource !== null && 'http://schema.org/email' === $property->resourceUri()) {
+            if (null !== $property->resource && 'http://schema.org/email' === $property->resourceUri()) {
                 $asserts[] = '@Assert\Email';
             }
 

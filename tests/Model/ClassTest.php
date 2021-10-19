@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of the API Platform project.
+ *
+ * (c) Kévin Dunglas <dunglas@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
 namespace ApiPlatform\SchemaGenerator\Tests\Model;
 
 use ApiPlatform\SchemaGenerator\Model\Class_;
@@ -16,9 +27,9 @@ class ClassTest extends TestCase
     {
         $inflector = InflectorFactory::create()->build();
 
-        $property = new Property("author");
+        $property = new Property('author');
         $property->typeHint = "App\Entity\Author";
-        $property->addAnnotation("@see https://schema.org/Author");
+        $property->addAnnotation('@see https://schema.org/Author');
         $class = new Class_('Book', new Resource('http//schema.org/Book', new Graph()));
         $class->withNamespace("App\Entity");
         $class->withInterface(new Interface_('Printable', 'OtherApp\Interfaces'));
@@ -47,10 +58,10 @@ class ClassTest extends TestCase
         $this->assertFalse($class->isEnum());
         $this->assertFalse($class->isAbstract());
         $this->assertTrue($class->isInNamespace('App\Entity'));
-        $this->assertEquals("Book", $class->resourceLocalName());
-        $this->assertEquals("http//schema.org/Book", $class->resourceUri());
+        $this->assertEquals('Book', $class->resourceLocalName());
+        $this->assertEquals('http//schema.org/Book', $class->resourceUri());
         $this->assertEquals([], $class->constants());
-        $this->assertEquals("Book", $class->name());
+        $this->assertEquals('Book', $class->name());
         $this->assertTrue($class->hasProperty('author'));
     }
 }

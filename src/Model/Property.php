@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the API Platform project.
+ *
+ * (c) Kévin Dunglas <dunglas@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\Model;
@@ -51,7 +60,7 @@ final class Property
 
     public function addAnnotation(string $annotation): self
     {
-        if ($annotation === '' || !in_array($annotation, $this->annotations, true)) {
+        if ('' === $annotation || !\in_array($annotation, $this->annotations, true)) {
             $this->annotations[] = $annotation;
         }
 
@@ -60,7 +69,7 @@ final class Property
 
     public function addGetterAnnotation(string $annotation): self
     {
-        if ($annotation === '' || !in_array($annotation, $this->getterAnnotations, true)) {
+        if ('' === $annotation || !\in_array($annotation, $this->getterAnnotations, true)) {
             $this->getterAnnotations[] = $annotation;
         }
 
@@ -69,7 +78,7 @@ final class Property
 
     public function addSetterAnnotation(string $annotation): self
     {
-        if ($annotation === '' || !in_array($annotation, $this->setterAnnotations, true)) {
+        if ('' === $annotation || !\in_array($annotation, $this->setterAnnotations, true)) {
             $this->setterAnnotations[] = $annotation;
         }
 
@@ -78,7 +87,7 @@ final class Property
 
     public function addAdderAnnotation(string $annotation): self
     {
-        if ($annotation === '' || !in_array($annotation, $this->adderAnnotations, true)) {
+        if ('' === $annotation || !\in_array($annotation, $this->adderAnnotations, true)) {
             $this->adderAnnotations[] = $annotation;
         }
 
@@ -92,7 +101,7 @@ final class Property
 
     public function addRemoverAnnotation(string $annotation): self
     {
-        if ($annotation === '' || !in_array($annotation, $this->removerAnnotations, true)) {
+        if ('' === $annotation || !\in_array($annotation, $this->removerAnnotations, true)) {
             $this->removerAnnotations[] = $annotation;
         }
 
@@ -157,7 +166,7 @@ final class Property
             throw new \LogicException(sprintf("Property '%s' is not readable.", $this->name));
         }
 
-        $getter = (new Method("get" . ucfirst($this->name)))->setVisibility(ClassType::VISIBILITY_PUBLIC);
+        $getter = (new Method('get'.ucfirst($this->name)))->setVisibility(ClassType::VISIBILITY_PUBLIC);
         foreach ($this->getterAnnotations as $annotation) {
             $getter->addComment($annotation);
         }
@@ -185,8 +194,8 @@ final class Property
         if ($this->isArray) {
             $singularProperty = $singularize($this->name());
 
-            $adder = (new Method("add" . ucfirst($singularProperty)))->setVisibility(ClassType::VISIBILITY_PUBLIC);
-            $adder->setReturnType($useFluentMutators ? "self" : "void");
+            $adder = (new Method('add'.ucfirst($singularProperty)))->setVisibility(ClassType::VISIBILITY_PUBLIC);
+            $adder->setReturnType($useFluentMutators ? 'self' : 'void');
             foreach ($this->adderAnnotations() as $annotation) {
                 $adder->addComment($annotation);
             }
@@ -195,16 +204,16 @@ final class Property
                 $parameter->setType($this->adderRemoverTypeHint);
             }
             $adder->addBody(
-                sprintf('$this->%s[] = %s;', $this->name(), ($this->isEnum ? "(string) " : "") . "$$singularProperty")
+                sprintf('$this->%s[] = %s;', $this->name(), ($this->isEnum ? '(string) ' : '')."$$singularProperty")
             );
             if ($useFluentMutators) {
-                $adder->addBody("");
+                $adder->addBody('');
                 $adder->addBody('return $this;');
             }
             $mutators[] = $adder;
 
-            $remover = (new Method("remove" . ucfirst($singularProperty)))->setVisibility(ClassType::VISIBILITY_PUBLIC);
-            $remover->setReturnType($useFluentMutators ? "self" : "void");
+            $remover = (new Method('remove'.ucfirst($singularProperty)))->setVisibility(ClassType::VISIBILITY_PUBLIC);
+            $remover->setReturnType($useFluentMutators ? 'self' : 'void');
             foreach ($this->removerAnnotations as $annotation) {
                 $adder->addComment($annotation);
             }
@@ -212,7 +221,7 @@ final class Property
             if ($this->typeHint) {
                 $parameter->setType($this->adderRemoverTypeHint);
             }
-            if ($useDoctrineCollections && $this->isArray && $this->typeHint && $this->typeHint !== 'array' && !$this->isEnum) {
+            if ($useDoctrineCollections && $this->isArray && $this->typeHint && 'array' !== $this->typeHint && !$this->isEnum) {
                 $remover->addBody(sprintf(
                     '$this->%s->removeElement(%s);',
                     $this->name(),
@@ -224,18 +233,18 @@ if (false !== $key = array_search(%s, %s, true)) {
     unset($this->%s[$key]);
 }
 PHP,
-                    ($this->isEnum ? "(string)" : "") . "$".$singularProperty, '$this->'.$this->name() . ($this->isNullable ? " ?? []" : ""), $this->name()));
+                    ($this->isEnum ? '(string)' : '').'$'.$singularProperty, '$this->'.$this->name().($this->isNullable ? ' ?? []' : ''), $this->name()));
             }
 
             if ($useFluentMutators) {
-                $remover->addBody("");
+                $remover->addBody('');
                 $remover->addBody('return $this;');
             }
 
             $mutators[] = $remover;
         } else {
-            $setter = (new Method("set" . ucfirst($this->name())))->setVisibility(ClassType::VISIBILITY_PUBLIC);
-            $setter->setReturnType($useFluentMutators ? "self" : "void");
+            $setter = (new Method('set'.ucfirst($this->name())))->setVisibility(ClassType::VISIBILITY_PUBLIC);
+            $setter->setReturnType($useFluentMutators ? 'self' : 'void');
             foreach ($this->setterAnnotations as $annotation) {
                 $setter->addComment($annotation);
             }
@@ -245,7 +254,7 @@ PHP,
 
             $setter->addBody('$this->? = $?;', [$this->name(), $this->name()]);
             if ($useFluentMutators) {
-                $setter->addBody("");
+                $setter->addBody('');
                 $setter->addBody('return $this;');
             }
             $mutators[] = $setter;
@@ -256,7 +265,7 @@ PHP,
 
     private function guessDefaultGeneratedValue(bool $useDoctrineCollections = true)
     {
-        if ($this->isArray && !$this->isTypehintedAsCollection() && ($this->isEnum || !$this->typeHint || $this->typeHint === 'array' || !$useDoctrineCollections)) {
+        if ($this->isArray && !$this->isTypehintedAsCollection() && ($this->isEnum || !$this->typeHint || 'array' === $this->typeHint || !$useDoctrineCollections)) {
             return [];
         }
 
@@ -269,6 +278,6 @@ PHP,
 
     private function isTypehintedAsCollection(): bool
     {
-        return $this->typeHint === 'Collection';
+        return 'Collection' === $this->typeHint;
     }
 }

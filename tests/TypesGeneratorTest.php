@@ -57,7 +57,7 @@ class TypesGeneratorTest extends TestCase
             new Printer()
         );
 
-        $outputDir = "build/type-generator-test";
+        $outputDir = 'build/type-generator-test';
         $typesGenerator->generate($this->getConfig($outputDir));
 
         $article = file_get_contents("$outputDir/App/Entity/Article.php");

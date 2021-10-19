@@ -25,7 +25,7 @@ use EasyRdf\Graph;
 use EasyRdf\Resource;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
-;
+
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
@@ -48,7 +48,7 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
 
     public function testGenerateClassAnnotations(): void
     {
-        $this->assertSame(['@ApiResource(iri="http://schema.org/Res")'], $this->generator->generateClassAnnotations(new Class_('Res', new Resource("http://schema.org/Res"))));
+        $this->assertSame(['@ApiResource(iri="http://schema.org/Res")'], $this->generator->generateClassAnnotations(new Class_('Res', new Resource('http://schema.org/Res'))));
     }
 
     public function testGenerateClassAnnotationsWithOperations(): void
@@ -68,11 +68,10 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
     public function testGeneratePropertyAnnotations(): void
     {
         $property = new Property('prop');
-        $property->resource = new Resource("http://schema.org/prop");
+        $property->resource = new Resource('http://schema.org/prop');
 
         $this->assertSame(['@ApiProperty(iri="http://schema.org/prop")'], $this->generator->generatePropertyAnnotations($property, 'Res'));
     }
-
 
     public function testGenerateCustomPropertyAnnotations(): void
     {
@@ -81,7 +80,7 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
 
     public function testGenerateUses(): void
     {
-        $this->assertSame([ApiResource::class, ApiProperty::class], $this->generator->generateUses(new Class_('Res', new Resource("http://schema.org/Res", new Graph()))));
+        $this->assertSame([ApiResource::class, ApiProperty::class], $this->generator->generateUses(new Class_('Res', new Resource('http://schema.org/Res', new Graph()))));
     }
 
     public function testGenerateNoUsesForEnum(): void

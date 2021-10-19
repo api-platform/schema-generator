@@ -86,7 +86,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         }
 
         $annotation = '@ORM\Column';
-        if ($property->ormColumn !== null) {
+        if (null !== $property->ormColumn) {
             $annotation = sprintf('@ORM\Column(%s)', $property->ormColumn);
 
             return [$annotation];
@@ -195,14 +195,14 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                 break;
             case CardinalitiesExtractor::CARDINALITY_UNKNOWN:
             case CardinalitiesExtractor::CARDINALITY_N_0:
-                if ($property->inversedBy !== null) {
+                if (null !== $property->inversedBy) {
                     $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s", inversedBy="%s")', $relationName, $property->inversedBy);
                 } else {
                     $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $relationName);
                 }
                 break;
             case CardinalitiesExtractor::CARDINALITY_N_1:
-                if ($property->inversedBy !== null) {
+                if (null !== $property->inversedBy) {
                     $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s", inversedBy="%s")', $relationName, $property->inversedBy);
                 } else {
                     $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $relationName);
@@ -210,7 +210,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                 $annotations[] = '@ORM\JoinColumn(nullable=false)';
                 break;
             case CardinalitiesExtractor::CARDINALITY_0_N:
-                if ($property->mappedBy !== null) {
+                if (null !== $property->mappedBy) {
                     $annotations[] = sprintf('@ORM\OneToMany(targetEntity="%s", mappedBy="%s")', $relationName, $property->mappedBy);
                 } else {
                     $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s")', $relationName);
@@ -219,7 +219,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                 $annotations[] = '@ORM\JoinTable('.$name.'inverseJoinColumns={@ORM\JoinColumn(unique=true)})';
                 break;
             case CardinalitiesExtractor::CARDINALITY_1_N:
-                if ($property->mappedBy !== null) {
+                if (null !== $property->mappedBy) {
                     $annotations[] = sprintf('@ORM\OneToMany(targetEntity="%s", mappedBy="%s")', $relationName, $property->mappedBy);
                 } else {
                     $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s")', $relationName);

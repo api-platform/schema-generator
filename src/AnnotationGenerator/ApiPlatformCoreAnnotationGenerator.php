@@ -45,7 +45,7 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
         }
         $arguments[] = sprintf('iri="%s"', $class->resourceUri());
 
-        if ($class->operations() !== []) {
+        if ([] !== $class->operations()) {
             $operations = $this->validateClassOperations($class->operations());
             foreach ($operations as $operationTarget => $targetOperations) {
                 $targetArguments = [];

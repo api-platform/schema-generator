@@ -182,7 +182,7 @@ class TypesGenerator
 
         // Third pass
         foreach ($classes as &$class) {
-            /** @var $class Class_ */
+            /* @var $class Class_ */
             $class->setIsAbstract($config['types'][$class->name()]['abstract'] ?? $class->hasChild());
 
             // When including all properties, ignore properties already set on parent
@@ -240,7 +240,7 @@ class TypesGenerator
 
             file_put_contents($path, $this->printer->printFile($class->toNetteFile($config, $this->inflector)));
 
-            if ($class->interfaceNamespace() !== null) {
+            if (null !== $class->interfaceNamespace()) {
                 $interfaceDir = $this->namespaceToDir($config, $class->interfaceNamespace());
                 $this->filesystem->mkdir($interfaceDir);
 

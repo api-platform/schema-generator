@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the API Platform project.
+ *
+ * (c) Kévin Dunglas <dunglas@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\ClassMutator;
@@ -16,7 +25,6 @@ final class AnnotationsAppender implements ClassMutatorInterface
     private array $typesToGenerate;
 
     /**
-     * @param array $classes
      * @param AnnotationGeneratorInterface[] $annotationGenerators
      */
     public function __construct(array $classes, array $annotationGenerators, array $typesToGenerate)
@@ -63,9 +71,8 @@ final class AnnotationsAppender implements ClassMutatorInterface
         foreach ($this->annotationGenerators as $generator) {
             foreach ($generator->generateUses($class) as $use) {
                 $class->addUse($use);
-            };
+            }
         }
-
 
         return $class;
     }
@@ -75,7 +82,7 @@ final class AnnotationsAppender implements ClassMutatorInterface
         foreach ($this->annotationGenerators as $generator) {
             foreach ($generator->generateClassAnnotations($class) as $annotation) {
                 $class->addAnnotation($annotation);
-            };
+            }
         }
 
         return $class;
@@ -97,11 +104,10 @@ final class AnnotationsAppender implements ClassMutatorInterface
         return $class;
     }
 
-
     private function generateInterfaceAnnotations(Class_ $class): Class_
     {
         foreach ($this->annotationGenerators as $generator) {
-            foreach($generator->generateInterfaceAnnotations($class) as $interfaceAnnotation) {
+            foreach ($generator->generateInterfaceAnnotations($class) as $interfaceAnnotation) {
                 $class->addInterfaceAnnotation($interfaceAnnotation);
             }
         }
