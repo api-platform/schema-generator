@@ -183,7 +183,7 @@ final class Class_
 
     public function resourceComment(): ?string
     {
-        return $this->resource->get('rdfs:comment');
+        return (string) $this->resource->get('rdfs:comment');
     }
 
     public function resourceLocalName(): string
@@ -193,6 +193,10 @@ final class Class_
 
     public function parent(): ?string
     {
+        if (false === $this->parent) {
+            return '';
+        }
+
         return $this->parent;
     }
 
@@ -283,7 +287,7 @@ final class Class_
         $fieldVisibility = $config['fieldVisibility'] ?? ClassType::VISIBILITY_PRIVATE;
 
         $file = new PhpFile();
-        if (null !== $fileHeader) {
+        if (null !== $fileHeader && false !== $fileHeader) {
             // avoid nested doc-block for configurations that already have * as delimiter
             $file->setComment(Helpers::unformatDocComment($fileHeader));
         }
