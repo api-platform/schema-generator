@@ -181,14 +181,14 @@ PHP, $thing);
     private function getCardinalities(): array
     {
         return [
-            'http://schema.org/articleBody' => CardinalitiesExtractor::CARDINALITY_0_1,
-            'http://schema.org/articleSection' => CardinalitiesExtractor::CARDINALITY_0_N,
-            'http://schema.org/author' => CardinalitiesExtractor::CARDINALITY_0_1,
-            'http://schema.org/datePublished' => CardinalitiesExtractor::CARDINALITY_UNKNOWN,
-            'http://schema.org/headline' => CardinalitiesExtractor::CARDINALITY_UNKNOWN,
-            'http://schema.org/isFamilyFriendly' => CardinalitiesExtractor::CARDINALITY_0_1,
-            'http://schema.org/name' => CardinalitiesExtractor::CARDINALITY_0_1,
-            'http://schema.org/sharedContent' => CardinalitiesExtractor::CARDINALITY_UNKNOWN,
+            'https://schema.org/articleBody' => CardinalitiesExtractor::CARDINALITY_0_1,
+            'https://schema.org/articleSection' => CardinalitiesExtractor::CARDINALITY_0_N,
+            'https://schema.org/author' => CardinalitiesExtractor::CARDINALITY_0_1,
+            'https://schema.org/datePublished' => CardinalitiesExtractor::CARDINALITY_UNKNOWN,
+            'https://schema.org/headline' => CardinalitiesExtractor::CARDINALITY_UNKNOWN,
+            'https://schema.org/isFamilyFriendly' => CardinalitiesExtractor::CARDINALITY_0_1,
+            'https://schema.org/name' => CardinalitiesExtractor::CARDINALITY_0_1,
+            'https://schema.org/sharedContent' => CardinalitiesExtractor::CARDINALITY_UNKNOWN,
         ];
     }
 
