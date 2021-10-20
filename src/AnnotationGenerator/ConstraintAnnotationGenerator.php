@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 
+use ApiPlatform\SchemaGenerator\Model\Class_;
+use ApiPlatform\SchemaGenerator\Model\Property;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -25,11 +27,9 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateFieldAnnotations(string $className, string $fieldName): array
+    public function generatePropertyAnnotations(Property $property, string $className): array
     {
-        $field = $this->classes[$className]['fields'][$fieldName];
-
-        if ($field['isId']) {
+        if ($property->isId) {
             if ('uuid' === $this->config['id']['generationStrategy']) {
                 return ['@Assert\Uuid'];
             }
@@ -38,8 +38,9 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
         }
 
         $asserts = [];
-        if (!$field['isArray'] && $field['range']) {
-            switch ($field['range']->getUri()) {
+
+        if (!$property->isArray && $property->range) {
+            switch ($property->range->getUri()) {
                 case 'https://schema.org/URL':
                     $asserts[] = '@Assert\Url';
                     break;
@@ -50,26 +51,26 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
                     break;
             }
 
-            if (isset($field['resource']) && 'https://schema.org/email' === $field['resource']->getUri()) {
+            if (null !== $property->resource && 'https://schema.org/email' === $property->resourceUri()) {
                 $asserts[] = '@Assert\Email';
             }
 
             if (!$asserts && $this->config['validator']['assertType']) {
-                $phpType = $this->phpTypeConverter->getPhpType($field, $this->config, []);
+                $phpType = $this->phpTypeConverter->getPhpType($property, $this->config, []);
                 if (\in_array($phpType, ['bool', 'float', 'int', 'string'], true)) {
                     $asserts[] = sprintf('@Assert\Type(type="%s")', $phpType);
                 }
             }
         }
 
-        if (!$field['isNullable']) {
+        if (!$property->isNullable) {
             $asserts[] = '@Assert\NotNull';
         }
 
-        if ($field['isEnum'] && $field['range']) {
-            $assert = sprintf('@Assert\Choice(callback={"%s", "toArray"}', $field['rangeName']);
+        if ($property->isEnum && $property->range) {
+            $assert = sprintf('@Assert\Choice(callback={"%s", "toArray"}', $property->rangeName);
 
-            if ($field['isArray']) {
+            if ($property->isArray) {
                 $assert .= ', multiple=true';
             }
 
@@ -84,9 +85,9 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateUses(string $className): array
+    public function generateUses(Class_ $class): array
     {
-        if ($this->classes[$className]['isEnum']) {
+        if ($class->isEnum()) {
             return [];
         }
 
@@ -94,11 +95,11 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
         $uses[] = 'Symfony\Component\Validator\Constraints as Assert';
         $uses[] = UniqueEntity::class;
 
-        foreach ($this->classes[$className]['fields'] as $field) {
-            if ($field['isEnum'] && $field['range']) {
-                $rangeName = $field['rangeName'];
+        foreach ($class->properties() as $property) {
+            if ($property->isEnum && $property->range) {
+                $rangeName = $property->rangeName;
                 $enumClass = $this->classes[$rangeName];
-                $enumNamespace = isset($enumClass['namespaces']['class']) && $enumClass['namespaces']['class'] ? $enumClass['namespaces']['class'] : $this->config['namespaces']['enum'];
+                $enumNamespace = $enumClass->namespace() ?? $this->config['namespaces']['enum'];
                 $use = sprintf('%s\%s', $enumNamespace, $rangeName);
 
                 if (!\in_array($use, $uses, true)) {
@@ -113,31 +114,23 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations(string $className): array
+    public function generateClassAnnotations(Class_ $class): array
     {
-        if ($this->classes[$className]['isEnum']) {
+        if ($class->isEnum()) {
             return [];
         }
 
         $annotation = [];
-        $uniqueFields = [];
 
-        foreach ($this->classes[$className]['fields'] as $field) {
-            if (false === $field['isUnique']) {
-                continue;
-            }
-
-            $uniqueFields[] = $field['name'];
-        }
-
-        if (!$uniqueFields) {
+        $uniqueProperties = $class->uniquePropertyNames();
+        if (!$uniqueProperties) {
             return [];
         }
 
-        if (1 === \count($uniqueFields)) {
-            $annotation[] = sprintf('@UniqueEntity("%s")', $uniqueFields[0]);
+        if (1 === \count($uniqueProperties)) {
+            $annotation[] = sprintf('@UniqueEntity("%s")', $uniqueProperties[0]);
         } else {
-            $annotation[] = sprintf('@UniqueEntity(fields={"%s"})', implode('","', $uniqueFields));
+            $annotation[] = sprintf('@UniqueEntity(fields={"%s"})', implode('","', $uniqueProperties));
         }
 
         return $annotation;

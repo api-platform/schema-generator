@@ -16,6 +16,8 @@ namespace ApiPlatform\SchemaGenerator\Tests\AnnotationGenerator;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\ApiPlatformCoreAnnotationGenerator;
+use ApiPlatform\SchemaGenerator\Model\Class_;
+use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\PhpTypeConverter;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use Doctrine\Inflector\InflectorFactory;
@@ -33,10 +35,6 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
 
     protected function setUp(): void
     {
-        $graph = new Graph();
-        $myEnum = new Resource('https://schema.org/MyEnum', $graph);
-        $myEnum->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);
-
         $this->generator = new ApiPlatformCoreAnnotationGenerator(
             new PhpTypeConverter(),
             new NullLogger(),
@@ -44,51 +42,52 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
             [],
             [],
             [],
-            [
-                'Res' => [
-                    'resource' => new Resource('https://schema.org/Res', $graph),
-                    'fields' => [
-                        'prop' => [
-                            'isCustom' => false,
-                            'resource' => new Resource('https://schema.org/prop'),
-                        ],
-                        'customProp' => [
-                            'isCustom' => true,
-                            'resource' => new Resource('https://schema.org/customProp'),
-                        ],
-                    ],
-                ],
-                'MyEnum' => ['resource' => $myEnum],
-                'WithOperations' => [
-                    'resource' => new Resource('https://schema.org/WithOperations', $graph),
-                    'operations' => [
-                        'item' => ['get' => ['route_name' => 'api_about_get']],
-                        'collection' => [],
-                    ],
-                ],
-            ]
+            [],
         );
     }
 
     public function testGenerateClassAnnotations(): void
     {
-        $this->assertSame(['@ApiResource(iri="https://schema.org/Res")'], $this->generator->generateClassAnnotations('Res'));
+        $this->assertSame(['@ApiResource(iri="https://schema.org/Res")'], $this->generator->generateClassAnnotations(new Class_('Res', new Resource('http://schema.org/Res'))));
     }
 
     public function testGenerateClassAnnotationsWithOperations(): void
     {
-        $this->assertSame(['@ApiResource(iri="https://schema.org/WithOperations", itemOperations={"get"={"route_name"="api_about_get"}}, collectionOperations={})'], $this->generator->generateClassAnnotations('WithOperations'));
+        $class = new Class_('WithOperations', new Resource('https://schema.org/WithOperations'));
+        $class->setOperations([
+            'item' => ['get' => ['route_name' => 'api_about_get']],
+            'collection' => [],
+        ]);
+
+        $this->assertSame(
+            ['@ApiResource(iri="https://schema.org/WithOperations", itemOperations={"get"={"route_name"="api_about_get"}}, collectionOperations={})'],
+            $this->generator->generateClassAnnotations($class)
+        );
     }
 
-    public function testGenerateFieldAnnotations(): void
+    public function testGeneratePropertyAnnotations(): void
     {
-        $this->assertSame(['@ApiProperty(iri="https://schema.org/prop")'], $this->generator->generateFieldAnnotations('Res', 'prop'));
-        $this->assertSame([], $this->generator->generateFieldAnnotations('Res', 'customProp'));
+        $property = new Property('prop');
+        $property->resource = new Resource('https://schema.org/prop');
+
+        $this->assertSame(['@ApiProperty(iri="http://schema.org/prop")'], $this->generator->generatePropertyAnnotations($property, 'Res'));
+    }
+
+    public function testGenerateCustomPropertyAnnotations(): void
+    {
+        $this->assertSame([], $this->generator->generatePropertyAnnotations((new Property('customProp'))->markAsCustom(), 'Res'));
     }
 
     public function testGenerateUses(): void
     {
-        $this->assertSame([ApiResource::class, ApiProperty::class], $this->generator->generateUses('Res'));
-        $this->assertSame([], $this->generator->generateUses('MyEnum'));
+        $this->assertSame([ApiResource::class, ApiProperty::class], $this->generator->generateUses(new Class_('Res', new Resource('http://schema.org/Res', new Graph()))));
+    }
+
+    public function testGenerateNoUsesForEnum(): void
+    {
+        $graph = new Graph();
+        $myEnum = new Resource('http://schema.org/MyEnum', $graph);
+        $myEnum->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);
+        $this->assertSame([], $this->generator->generateUses(new Class_('MyEnum', $myEnum)));
     }
 }

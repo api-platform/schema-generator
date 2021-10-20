@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\Tests\AnnotationGenerator;
 
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator;
+use ApiPlatform\SchemaGenerator\Model\Class_;
+use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\PhpTypeConverter;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use Doctrine\Inflector\InflectorFactory;
@@ -32,11 +34,39 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
      */
     private $generator;
 
+    private array $classMap = [];
+
     protected function setUp(): void
     {
         $graph = new Graph();
+
+        $product = new Class_('Product', new Resource('https://schema.org/Product', $graph));
+        $product->setIsAbstract(true);
+        $this->classMap[$product->name()] = $product;
+
+        $vehicle = new Class_('Vehicle', new Resource('htts://schema.org/Vehicle', $graph));
+        $weightProperty = new Property('weight');
+        $weightProperty->isEmbedded = true;
+        $weightProperty->rangeName = 'QuantitativeValue';
+        $weightProperty->range = new Resource('https://schema.org/QuantitativeValue');
+        $vehicle->addProperty($weightProperty);
+        $prefixedWeightProperty = new Property('prefixedWeight');
+        $prefixedWeightProperty->columnPrefix = 'weight_';
+        $prefixedWeightProperty->isEmbedded = true;
+        $prefixedWeightProperty->rangeName = 'QuantitativeValue';
+        $prefixedWeightProperty->range = new Resource('https://schema.org/QuantitativeValue');
+        $vehicle->addProperty($prefixedWeightProperty);
+        $this->classMap[$vehicle->name()] = $vehicle;
+
+        $quantitativeValue = new Class_('QuantitativeValue', new Resource('https://schema.org/QuantitativeValue', $graph));
+        $quantitativeValue->setEmbeddable(true);
+        $this->classMap[$quantitativeValue->name()] = $quantitativeValue;
+
         $myEnum = new Resource('https://schema.org/MyEnum', $graph);
         $myEnum->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);
+        $myEnumClass = new Class_('MyEnum', $myEnum);
+        $this->classMap[$myEnumClass->name()] = $myEnumClass;
+
         $this->generator = new DoctrineOrmAnnotationGenerator(
             new PhpTypeConverter(),
             new NullLogger(),
@@ -44,72 +74,27 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
             [],
             [],
             [],
-            [
-                'Product' => [
-                    'name' => 'Product',
-                    'isEnum' => false,
-                    'resource' => new Resource('https://schema.org/Product', $graph),
-                    'abstract' => true,
-                    'embeddable' => false,
-                ],
-                'Vehicle' => [
-                    'name' => 'Vehicle',
-                    'isEnum' => false,
-                    'abstract' => false,
-                    'embeddable' => false,
-                    'resource' => new Resource('https://schema.org/Vehicle', $graph),
-                    'fields' => [
-                        'weight' => [
-                            'isEnum' => false,
-                            'isId' => false,
-                            'isEmbedded' => true,
-                            'rangeName' => 'QuantitativeValue',
-                            'range' => new Resource('https://schema.org/QuantitativeValue'),
-                            'columnPrefix' => false,
-                        ],
-                        'prefixedWeight' => [
-                            'isEnum' => false,
-                            'isId' => false,
-                            'isEmbedded' => true,
-                            'rangeName' => 'QuantitativeValue',
-                            'range' => new Resource('https://schema.org/QuantitativeValue'),
-                            'columnPrefix' => 'weight_',
-                        ],
-                    ],
-                ],
-                'QuantitativeValue' => [
-                    'isEnum' => false,
-                    'abstract' => false,
-                    'name' => 'QuantitativeValue',
-                    'resource' => new Resource('https://schema.org/QuantitativeValue', $graph),
-                    'embeddable' => true,
-                ],
-                'MyEnum' => [
-                    'name' => 'MyEnum',
-                    'isEnum' => true,
-                    'resource' => $myEnum,
-                ],
-            ]
+            $this->classMap
         );
     }
 
     public function testGenerateClassAnnotations(): void
     {
-        $this->assertSame([], $this->generator->generateClassAnnotations('MyEnum'));
-        $this->assertSame(['', '@ORM\MappedSuperclass'], $this->generator->generateClassAnnotations('Product'));
-        $this->assertSame(['', '@ORM\Entity'], $this->generator->generateClassAnnotations('Vehicle'));
-        $this->assertSame(['', '@ORM\Embeddable'], $this->generator->generateClassAnnotations('QuantitativeValue'));
+        $this->assertSame([], $this->generator->generateClassAnnotations($this->classMap['MyEnum']));
+        $this->assertSame(['', '@ORM\MappedSuperclass'], $this->generator->generateClassAnnotations($this->classMap['Product']));
+        $this->assertSame(['', '@ORM\Entity'], $this->generator->generateClassAnnotations($this->classMap['Vehicle']));
+        $this->assertSame(['', '@ORM\Embeddable'], $this->generator->generateClassAnnotations($this->classMap['QuantitativeValue']));
     }
 
     public function testGenerateFieldAnnotations(): void
     {
         $this->assertSame(
             ['@ORM\Embedded(class="QuantitativeValue", columnPrefix=false)'],
-            $this->generator->generateFieldAnnotations('Vehicle', 'weight')
+            $this->generator->generatePropertyAnnotations($this->classMap['Vehicle']->getPropertyByName('weight'), 'Vehicle')
         );
         $this->assertSame(
             ['@ORM\Embedded(class="QuantitativeValue", columnPrefix="weight_")'],
-            $this->generator->generateFieldAnnotations('Vehicle', 'prefixedWeight')
+            $this->generator->generatePropertyAnnotations($this->classMap['Vehicle']->getPropertyByName('prefixedWeight'), 'Vehicle')
         );
     }
 }

@@ -16,6 +16,7 @@ namespace ApiPlatform\SchemaGenerator\Command;
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
 use ApiPlatform\SchemaGenerator\PhpTypeConverter;
+use ApiPlatform\SchemaGenerator\Printer;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
 use Doctrine\Inflector\InflectorFactory;
@@ -32,7 +33,6 @@ use Symfony\Component\Yaml\Parser;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
-use Twig\TwigFilter;
 
 /**
  * Generate entities command.
@@ -167,9 +167,6 @@ final class GenerateCommand extends Command
 
         $loader = new FilesystemLoader($templatePaths);
         $twig = new Environment($loader, ['autoescape' => false, 'debug' => $processedConfiguration['debug']]);
-        $twig->addFilter(new TwigFilter('ucfirst', 'ucfirst'));
-        $twig->addFilter(new TwigFilter('pluralize', [$inflector, 'pluralize']));
-        $twig->addFilter(new TwigFilter('singularize', [$inflector, 'singularize']));
 
         if ($processedConfiguration['debug']) {
             $twig->addExtension(new DebugExtension());
@@ -177,7 +174,17 @@ final class GenerateCommand extends Command
 
         $logger = new ConsoleLogger($output);
 
-        $entitiesGenerator = new TypesGenerator($inflector, $twig, $logger, $graphs, new PhpTypeConverter(), $cardinalitiesExtractor, $goodRelationsBridge);
+        $entitiesGenerator = new TypesGenerator(
+            $inflector,
+            $twig,
+            $logger,
+            $graphs,
+            new PhpTypeConverter(),
+            $cardinalitiesExtractor,
+            $goodRelationsBridge,
+            new Printer()
+        );
+
         $entitiesGenerator->generate($processedConfiguration);
 
         return 0;
