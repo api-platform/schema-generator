@@ -24,6 +24,7 @@ use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGenerator;
 use Doctrine\Inflector\Inflector;
 use EasyRdf\Graph;
+use EasyRdf\RdfNamespace;
 use EasyRdf\Resource as RdfResource;
 use PhpCsFixer\Cache\NullCacheManager;
 use PhpCsFixer\Differ\NullDiffer;
@@ -109,6 +110,8 @@ class TypesGenerator
         $this->cardinalities = $cardinalitiesExtractor->extract();
         $this->propertyGenerator = new PropertyGenerator($this->goodRelationsBridge, $this->phpTypeConverter, $this->cardinalities, $this->logger);
         $this->printer = $printer;
+
+        RdfNamespace::set('schema', 'https://schema.org/');
     }
 
     /**
