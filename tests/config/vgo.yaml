@@ -1,7 +1,7 @@
 vocabularies:
     - tests/data/vgo.rdf
-    - uri: tests/data/schema.rdfa
-      format: rdfa
+    - uri: tests/data/schema.rdf
+      format: rdf
 
 annotationGenerators:
   - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
