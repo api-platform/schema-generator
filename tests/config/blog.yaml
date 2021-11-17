@@ -1,7 +1,8 @@
 annotationGenerators: # Generators we want to use
   - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
-  - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator
-  - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
+attributeGenerators: # Generators we want to use
+  - ApiPlatform\SchemaGenerator\AttributeGenerator\DoctrineOrmAttributeGenerator
+  - ApiPlatform\SchemaGenerator\AttributeGenerator\ConstraintAttributeGenerator
 namespaces:
   entity: App\Entity # The default namespace for entities, following API Platform and Symfony best practices
 types: # The list of type to generated (a PHP entity class by type will be generated)

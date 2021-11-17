@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
+namespace ApiPlatform\SchemaGenerator\AttributeGenerator;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -22,18 +22,18 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Generates API Platform core annotations.
+ * Generates API Platform core attributes.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  *
  * @see    https://github.com/api-platform/core
  */
-final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerator
+final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
 {
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations(Class_ $class): array
+    public function generateClassAttributes(Class_ $class): array
     {
         if ($class->isAbstract()) {
             return [];
@@ -41,9 +41,9 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
 
         $arguments = [];
         if ($class->name() !== $localName = $class->resourceLocalName()) {
-            $arguments[] = sprintf('shortName="%s"', $localName);
+            $arguments['shortName'] = $localName;
         }
-        $arguments[] = sprintf('iri="%s"', $class->resourceUri());
+        $arguments['iri'] = $class->resourceUri();
 
         if ([] !== $class->operations()) {
             $operations = $this->validateClassOperations($class->operations());
@@ -53,15 +53,15 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
                     $methodConfig = $this->validateClassOperationMethodConfig($methodConfig);
                     $methodArguments = [];
                     foreach ($methodConfig as $key => $value) {
-                        $methodArguments[] = sprintf('"%s"="%s"', $key, $value);
+                        $methodArguments[$key] = $value;
                     }
-                    $targetArguments[] = sprintf('"%s"={%s}', $method, implode(', ', $methodArguments));
+                    $targetArguments[$method] = $methodArguments;
                 }
-                $arguments[] = sprintf('%sOperations={%s}', $operationTarget, implode(', ', $targetArguments));
+                $arguments[sprintf('%sOperations', $operationTarget)] = $targetArguments;
             }
         }
 
-        return [sprintf('@ApiResource(%s)', implode(', ', $arguments))];
+        return [['ApiResource' => $arguments]];
     }
 
     /**
@@ -78,7 +78,7 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
     }
 
     /**
-     * Validates the individual method config for an item/collection operation annotation.
+     * Validates the individual method config for an item/collection operation attribute.
      */
     private function validateClassOperationMethodConfig(array $methodConfig): array
     {
@@ -104,14 +104,9 @@ final class ApiPlatformCoreAnnotationGenerator extends AbstractAnnotationGenerat
     /**
      * {@inheritdoc}
      */
-    public function generatePropertyAnnotations(Property $property, string $className): array
+    public function generatePropertyAttributes(Property $property, string $className): array
     {
-        return $property->isCustom ? [] : [
-            sprintf(
-                '@ApiProperty(iri="%s")',
-                $property->resourceUri()
-            ),
-        ];
+        return $property->isCustom ? [] : [['ApiProperty' => ['iri' => $property->resourceUri()]]];
     }
 
     /**

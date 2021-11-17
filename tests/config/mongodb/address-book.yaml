@@ -3,8 +3,9 @@ namespaces:
   entity: 'AddressBook\Document'
 annotationGenerators:
   - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
-  - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
-  - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineMongoDBAnnotationGenerator
+attributeGenerators:
+  - ApiPlatform\SchemaGenerator\AttributeGenerator\ConstraintAttributeGenerator
+  - ApiPlatform\SchemaGenerator\AttributeGenerator\DoctrineMongoDBAttributeGenerator
 id:
   generationStrategy: uuid
 # The list of types and properties we want to use

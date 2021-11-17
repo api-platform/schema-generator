@@ -30,6 +30,8 @@ final class Class_
     private array $properties = [];
     /** @var array|Constant[] */
     private array $constants = [];
+    /** @var array<string, array>[] */
+    private array $attributes = [];
     private array $annotations = [];
     private array $operations = [];
     private bool $hasConstructor = false;
@@ -123,6 +125,18 @@ final class Class_
     {
         if (!\in_array($use, $this->uses, true)) {
             $this->uses[] = $use;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array<string, array> $attribute
+     */
+    public function addAttribute(array $attribute): self
+    {
+        if (!\in_array($attribute, $this->attributes, true)) {
+            $this->attributes[] = $attribute;
         }
 
         return $this;
@@ -260,13 +274,13 @@ final class Class_
         return $this->namespace;
     }
 
-    /** @return Property[] */
+    /** @return array<string, Property> */
     public function properties(): array
     {
         return $this->properties;
     }
 
-    /** @return Property[] */
+    /** @return array<string, Property> */
     public function uniqueProperties(): array
     {
         return array_filter($this->properties, static fn (Property $property) => $property->isUnique);
@@ -275,7 +289,7 @@ final class Class_
     /** @return string[] */
     public function uniquePropertyNames(): array
     {
-        return array_map(static fn (Property $property) => $property->name, $this->uniqueProperties());
+        return array_map(static fn (Property $property) => $property->name, array_values($this->uniqueProperties()));
     }
 
     public function toNetteFile(array $config, Inflector $inflector): PhpFile
@@ -298,6 +312,12 @@ final class Class_
         }
 
         $class = $namespace->addClass($this->name);
+
+        foreach ($this->attributes as $attribute) {
+            foreach ($attribute as $attributeName => $attributeArgs) {
+                $class->addAttribute($attributeName, $attributeArgs);
+            }
+        }
 
         foreach ($this->annotations as $annotation) {
             $class->addComment($annotation);

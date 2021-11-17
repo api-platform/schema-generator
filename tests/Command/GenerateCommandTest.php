@@ -198,11 +198,9 @@ PHP
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
 
         $this->assertStringContainsString(<<<'PHP'
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 PHP
             , $person);
@@ -231,10 +229,8 @@ PHP
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
 
         $this->assertStringContainsString(<<<'PHP'
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'string')]
     private string $id;
 PHP
             , $person);
@@ -269,12 +265,10 @@ PHP
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
 
         $this->assertStringContainsString(<<<'PHP'
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(type="guid")
-     * @Assert\Uuid
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'UUID')]
+    #[ORM\Column(type: 'guid')]
+    #[Assert\Uuid]
     private ?string $id = null;
 PHP
             , $person);
@@ -303,11 +297,9 @@ PHP
         $person = file_get_contents("$outputDir/App/Entity/Person.php");
 
         $this->assertStringContainsString(<<<'PHP'
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="guid")
-     * @Assert\Uuid
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'guid')]
+    #[Assert\Uuid]
     private string $id;
 PHP
             , $person);
@@ -422,10 +414,9 @@ PHP
      * An award won by or for this item.
      *
      * @see https://schema.org/award
-     *
-     * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="https://schema.org/award")
      */
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[ApiProperty(iri: 'https://schema.org/award')]
     private ?string $award = null;
 PHP
             , $creativeWork);

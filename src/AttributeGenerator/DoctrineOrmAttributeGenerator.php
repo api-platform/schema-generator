@@ -11,18 +11,18 @@
 
 declare(strict_types=1);
 
-namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
+namespace ApiPlatform\SchemaGenerator\AttributeGenerator;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
 
 /**
- * Doctrine annotation generator.
+ * Doctrine attribute generator.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
+final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
 {
     private const RESERVED_KEYWORDS = [
         'add',
@@ -38,10 +38,10 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations(Class_ $class): array
+    public function generateClassAttributes(Class_ $class): array
     {
-        if ($this->config['types'][$class->name()]['doctrine']['annotations'] ?? false) {
-            return array_merge([''], $this->config['types'][$class->name()]['doctrine']['annotations']);
+        if ($doctrineAttributes = ($this->config['types'][$class->name()]['doctrine']['attributes'] ?? false)) {
+            return $doctrineAttributes;
         }
 
         if ($class->isEnum()) {
@@ -49,18 +49,18 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         }
 
         if ($class->isEmbeddable()) {
-            return ['', '@ORM\Embeddable'];
+            return [['ORM\Embeddable' => []]];
         }
 
-        $annotations = [''];
+        $attributes = [];
         if ($class->isAbstract()) {
-            if ($this->config['doctrine']['inheritanceAnnotations'] ?? []) {
-                return array_merge($annotations, $this->config['doctrine']['inheritanceAnnotations']);
+            if ($inheritanceAttributes = ($this->config['doctrine']['inheritanceAttributes'] ?? [])) {
+                return $inheritanceAttributes;
             }
 
-            $annotations[] = '@ORM\MappedSuperclass';
+            $attributes[] = ['ORM\MappedSuperclass' => []];
         } else {
-            $annotations[] = '@ORM\Entity';
+            $attributes[] = ['ORM\Entity' => []];
         }
 
         foreach (self::RESERVED_KEYWORDS as $keyword) {
@@ -68,32 +68,29 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
                 continue;
             }
 
-            $annotations[] = sprintf('@ORM\Table(name="`%s`")', strtolower($class->name()));
+            $attributes[] = ['ORM\Table' => ['name' => strtolower($class->name())]];
 
-            return $annotations;
+            return $attributes;
         }
 
-        return $annotations;
+        return $attributes;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generatePropertyAnnotations(Property $property, string $className): array
+    public function generatePropertyAttributes(Property $property, string $className): array
     {
         if (null === $property->rangeName) {
             return [];
         }
 
-        $annotation = '@ORM\Column';
-        if (null !== $property->ormColumn) {
-            $annotation = sprintf('@ORM\Column(%s)', $property->ormColumn);
-
-            return [$annotation];
+        if ($property->ormColumn) {
+            return [['ORM\Column' => $property->ormColumn]];
         }
 
         if ($property->isId) {
-            return $this->generateIdAnnotations();
+            return $this->generateIdAttributes();
         }
 
         if (isset($this->config['types'][$className]['properties'][$property->name()])) {
@@ -140,31 +137,27 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         }
 
         if (null !== $type) {
-            $annotArr = [];
+            $args = [];
             if ('string' !== $type) {
-                $annotArr[] = sprintf('type="%s"', $type);
+                $args['type'] = $type;
             }
 
             if ($property->isNullable) {
-                $annotArr[] = 'nullable=true';
+                $args['nullable'] = true;
             }
 
             if ($property->isUnique) {
-                $annotArr[] = 'unique=true';
+                $args['unique'] = true;
             }
 
             foreach (self::RESERVED_KEYWORDS as $keyword) {
                 if (0 === strcasecmp($keyword, $property->name())) {
-                    $annotArr[] = sprintf('name="`%s`"', $property->name());
+                    $args['name'] = sprintf('`%s`', $property->name());
                     break;
                 }
             }
 
-            if ($annotArr) {
-                $annotation .= sprintf('(%s)', implode(', ', $annotArr));
-            }
-
-            return [$annotation];
+            return [['ORM\Column' => $args]];
         }
 
         if (null === $relationName = $this->getRelationName($property->rangeName)) {
@@ -174,68 +167,65 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         }
 
         if ($property->isEmbedded) {
-            $columnPrefix = ', columnPrefix=';
-            if (\is_bool($property->columnPrefix)) {
-                $columnPrefix .= $property->columnPrefix ? 'true' : 'false';
-            } else {
-                $columnPrefix .= sprintf('"%s"', $property->columnPrefix);
-            }
-
-            return [sprintf('@ORM\Embedded(class="%s"%s)', $relationName, $columnPrefix)];
+            return [['ORM\Embedded' => ['class' => $relationName, 'columnPrefix' => $property->columnPrefix]]];
         }
 
-        $annotations = [];
+        $attributes = [];
         switch ($property->cardinality) {
             case CardinalitiesExtractor::CARDINALITY_0_1:
-                    $annotations[] = sprintf('@ORM\OneToOne(targetEntity="%s")', $relationName);
+                $attributes[] = ['ORM\OneToOne' => ['targetEntity' => $relationName]];
                 break;
             case CardinalitiesExtractor::CARDINALITY_1_1:
-                    $annotations[] = sprintf('@ORM\OneToOne(targetEntity="%s")', $relationName);
-                    $annotations[] = '@ORM\JoinColumn(nullable=false)';
+                $attributes[] = ['ORM\OneToOne' => ['targetEntity' => $relationName]];
+                $attributes[] = ['ORM\JoinColumn' => ['nullable' => false]];
                 break;
             case CardinalitiesExtractor::CARDINALITY_UNKNOWN:
             case CardinalitiesExtractor::CARDINALITY_N_0:
                 if (null !== $property->inversedBy) {
-                    $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s", inversedBy="%s")', $relationName, $property->inversedBy);
+                    $attributes[] = ['ORM\ManyToOne' => ['targetEntity' => $relationName, 'inversedBy' => $property->inversedBy]];
                 } else {
-                    $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $relationName);
+                    $attributes[] = ['ORM\ManyToOne' => ['targetEntity' => $relationName]];
                 }
                 break;
             case CardinalitiesExtractor::CARDINALITY_N_1:
                 if (null !== $property->inversedBy) {
-                    $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s", inversedBy="%s")', $relationName, $property->inversedBy);
+                    $attributes[] = ['ORM\ManyToOne' => ['targetEntity' => $relationName, 'inversedBy' => $property->inversedBy]];
                 } else {
-                    $annotations[] = sprintf('@ORM\ManyToOne(targetEntity="%s")', $relationName);
+                    $attributes[] = ['ORM\ManyToOne' => ['targetEntity' => $relationName]];
                 }
-                $annotations[] = '@ORM\JoinColumn(nullable=false)';
+                $attributes[] = ['ORM\JoinColumn' => ['nullable' => false]];
                 break;
             case CardinalitiesExtractor::CARDINALITY_0_N:
                 if (null !== $property->mappedBy) {
-                    $annotations[] = sprintf('@ORM\OneToMany(targetEntity="%s", mappedBy="%s")', $relationName, $property->mappedBy);
+                    $attributes[] = ['ORM\OneToMany' => ['targetEntity' => $relationName, 'mappedBy' => $property->mappedBy]];
                 } else {
-                    $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s")', $relationName);
+                    $attributes[] = ['ORM\ManyToMany' => ['targetEntity' => $relationName]];
                 }
-                $name = $property->relationTableName ? sprintf('name="%s", ', $property->relationTableName) : '';
-                $annotations[] = '@ORM\JoinTable('.$name.'inverseJoinColumns={@ORM\JoinColumn(unique=true)})';
+                if ($property->relationTableName) {
+                    $attributes[] = ['ORM\JoinTable' => ['name' => $property->relationTableName]];
+                }
+                $attributes[] = ['ORM\InverseJoinColumn' => ['unique' => true]];
                 break;
             case CardinalitiesExtractor::CARDINALITY_1_N:
                 if (null !== $property->mappedBy) {
-                    $annotations[] = sprintf('@ORM\OneToMany(targetEntity="%s", mappedBy="%s")', $relationName, $property->mappedBy);
+                    $attributes[] = ['ORM\OneToMany' => ['targetEntity' => $relationName, 'mappedBy' => $property->mappedBy]];
                 } else {
-                    $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s")', $relationName);
+                    $attributes[] = ['ORM\ManyToMany' => ['targetEntity' => $relationName]];
                 }
-                $name = $property->relationTableName ? sprintf('name="%s", ', $property->relationTableName) : '';
-                $annotations[] = '@ORM\JoinTable('.$name.'inverseJoinColumns={@ORM\JoinColumn(nullable=false, unique=true)})';
+                if ($property->relationTableName) {
+                    $attributes[] = ['ORM\JoinTable' => ['name' => $property->relationTableName]];
+                }
+                $attributes[] = ['ORM\InverseJoinColumn' => ['nullable' => false, 'unique' => true]];
                 break;
             case CardinalitiesExtractor::CARDINALITY_N_N:
-                $annotations[] = sprintf('@ORM\ManyToMany(targetEntity="%s")', $relationName);
+                $attributes[] = ['ORM\ManyToMany' => ['targetEntity' => $relationName]];
                 if ($property->relationTableName) {
-                    $annotations[] = sprintf('@ORM\JoinTable(name="%s")', $property->relationTableName);
+                    $attributes[] = ['ORM\JoinTable' => ['name' => $property->relationTableName]];
                 }
                 break;
         }
 
-        return $annotations;
+        return $attributes;
     }
 
     /**
@@ -246,11 +236,11 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
         return $class->isEnum() ? [] : ['Doctrine\ORM\Mapping as ORM'];
     }
 
-    private function generateIdAnnotations(): array
+    private function generateIdAttributes(): array
     {
-        $annotations = ['@ORM\Id'];
+        $attributes = [['ORM\Id' => []]];
         if ('none' !== $this->config['id']['generationStrategy'] && !$this->config['id']['writable']) {
-            $annotations[] = sprintf('@ORM\GeneratedValue(strategy="%s")', strtoupper($this->config['id']['generationStrategy']));
+            $attributes[] = ['ORM\GeneratedValue' => ['strategy' => strtoupper($this->config['id']['generationStrategy'])]];
         }
 
         switch ($this->config['id']['generationStrategy']) {
@@ -265,9 +255,9 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
             break;
         }
 
-        $annotations[] = sprintf('@ORM\Column(type="%s")', $type);
+        $attributes[] = ['ORM\Column' => ['type' => $type]];
 
-        return $annotations;
+        return $attributes;
     }
 
     /**

@@ -10,12 +10,13 @@ types:
         properties:
             familyName: ~
             givenName: ~
-            additionalName: ~
+            additionalName: { groups: ['extra'] }
             address: { range: https://schema.org/PostalAddress }
             birthDate: ~
             telephone: ~
-            email: ~
+            email: { unique: true }
             url: ~
+            customColumn: { ormColumn: {type: "decimal", precision: 5, scale: 1, options: {comment: "my comment"}} }
     PostalAddress:
         # Disable the generation of the class hierarchy for this type
         parent: false

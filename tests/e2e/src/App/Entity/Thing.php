@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the API Platform project.
- *
- * (c) Kévin Dunglas <dunglas@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 declare(strict_types=1);
 
 namespace App\Entity;
@@ -21,27 +12,23 @@ use Doctrine\ORM\Mapping as ORM;
  * The most generic type of item.
  *
  * @see https://schema.org/Thing
- *
- * @ORM\Entity
- * @ApiResource(iri="https://schema.org/Thing")
  */
+#[ORM\Entity]
+#[ApiResource(iri: 'https://schema.org/Thing')]
 class Thing
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
     /**
      * The name of the item.
      *
      * @see https://schema.org/name
-     *
-     * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="https://schema.org/name")
      */
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[ApiProperty(iri: 'https://schema.org/name')]
     private ?string $name = null;
 
     public function getId(): ?int

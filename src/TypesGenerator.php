@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator;
 
 use ApiPlatform\SchemaGenerator\ClassMutator\AnnotationsAppender;
+use ApiPlatform\SchemaGenerator\ClassMutator\AttributeAppender;
 use ApiPlatform\SchemaGenerator\ClassMutator\ClassIdAppender;
 use ApiPlatform\SchemaGenerator\ClassMutator\ClassInterfaceMutator;
 use ApiPlatform\SchemaGenerator\ClassMutator\ClassParentMutator;
@@ -229,11 +230,20 @@ class TypesGenerator
             $annotationGenerators[] = $generator;
         }
 
+        // Initialize attribute generators
+        $attributeGenerators = [];
+        foreach ($config['attributeGenerators'] as $attributeGenerator) {
+            $generator = new $attributeGenerator($this->phpTypeConverter, $this->logger, $this->inflector, $this->graphs, $this->cardinalities, $config, $classes);
+
+            $attributeGenerators[] = $generator;
+        }
+
         $interfaceMappings = [];
         $generatedFiles = [];
 
         foreach ($classes as $className => &$class) {
             $class = (new AnnotationsAppender($classes, $annotationGenerators, $typesToGenerate))($class);
+            $class = (new AttributeAppender($classes, $attributeGenerators))($class);
 
             $classDir = $this->namespaceToDir($config, $class->namespace());
             $this->filesystem->mkdir($classDir);
