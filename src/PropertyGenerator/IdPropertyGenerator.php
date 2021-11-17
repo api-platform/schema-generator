@@ -23,25 +23,25 @@ final class IdPropertyGenerator
     {
         switch ($generationStrategy) {
             case 'auto':
-                $uri = 'http://schema.org/Integer';
+                $uri = 'https://schema.org/Integer';
                 $typeHint = 'int';
                 $writable = false;
                 $nullable = true;
                 break;
             case 'uuid':
-                $uri = 'http://schema.org/Text';
+                $uri = 'https://schema.org/Text';
                 $typeHint = 'string';
                 $writable = $supportsWritableId;
                 $nullable = !$writable;
                 break;
             case 'mongoid':
-                $uri = 'http://schema.org/Text';
+                $uri = 'https://schema.org/Text';
                 $typeHint = 'string';
                 $writable = false;
                 $nullable = true;
                 break;
             default:
-                $uri = 'http://schema.org/Text';
+                $uri = 'https://schema.org/Text';
                 $typeHint = 'string';
                 $writable = true;
                 $nullable = false;

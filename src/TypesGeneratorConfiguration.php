@@ -28,9 +28,9 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 final class TypesGeneratorConfiguration implements ConfigurationInterface
 {
-    public const SCHEMA_ORG_URI = 'https://schema.org/version/latest/schemaorg-current-http.rdf';
+    public const SCHEMA_ORG_URI = 'https://schema.org/version/latest/schemaorg-current-https.rdf';
     public const GOOD_RELATIONS_URI = 'https://archive.org/services/purl/goodrelations/v1.owl';
-    public const SCHEMA_ORG_NAMESPACE = 'http://schema.org/';
+    public const SCHEMA_ORG_NAMESPACE = 'https://schema.org/';
 
     private ?string $defaultPrefix;
 
@@ -67,7 +67,7 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->end()
                     ->arrayPrototype()
                         ->children()
-                            ->scalarNode('uri')->defaultValue(self::SCHEMA_ORG_URI)->info('RDF vocabulary to use')->example('https://schema.org/version/latest/schemaorg-current-http.rdf')->end()
+                            ->scalarNode('uri')->defaultValue(self::SCHEMA_ORG_URI)->info('RDF vocabulary to use')->example('https://schema.org/version/latest/schemaorg-current-https.rdf')->end()
                             ->scalarNode('format')->defaultNull()->info('RDF vocabulary format')->example('rdfxml')->end()
                         ->end()
                     ->end()

@@ -109,11 +109,11 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
             switch ($property->range->getUri()) {
                 // TODO: use more precise types for int (smallint, bigint...)
                 case 'http://www.w3.org/2001/XMLSchema#time':
-                case 'http://schema.org/Time':
+                case 'https://schema.org/Time':
                     $type = 'time';
                     break;
                 case 'http://www.w3.org/2001/XMLSchema#dateTime':
-                case 'http://schema.org/DateTime':
+                case 'https://schema.org/DateTime':
                     $type = 'date';
                     break;
                 default:

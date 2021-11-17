@@ -21,10 +21,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * A person (alive, dead, undead, or fictional).
  *
- * @see http://schema.org/Person
+ * @see https://schema.org/Person
  *
  * @ORM\Entity
- * @ApiResource(iri="http://schema.org/Person")
+ * @ApiResource(iri="https://schema.org/Person")
  */
 class Person
 {
@@ -38,50 +38,50 @@ class Person
     /**
      * Family name. In the U.S., the last name of a Person.
      *
-     * @see http://schema.org/familyName
+     * @see https://schema.org/familyName
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/familyName")
+     * @ApiProperty(iri="https://schema.org/familyName")
      */
     private ?string $familyName = null;
 
     /**
      * Given name. In the U.S., the first name of a Person.
      *
-     * @see http://schema.org/givenName
+     * @see https://schema.org/givenName
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/givenName")
+     * @ApiProperty(iri="https://schema.org/givenName")
      */
     private ?string $givenName = null;
 
     /**
      * An additional name for a Person, can be used for a middle name.
      *
-     * @see http://schema.org/additionalName
+     * @see https://schema.org/additionalName
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/additionalName")
+     * @ApiProperty(iri="https://schema.org/additionalName")
      */
     private ?string $additionalName = null;
 
     /**
      * Physical address of the item.
      *
-     * @see http://schema.org/address
+     * @see https://schema.org/address
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\PostalAddress")
-     * @ApiProperty(iri="http://schema.org/address")
+     * @ApiProperty(iri="https://schema.org/address")
      */
     private ?PostalAddress $address = null;
 
     /**
      * Date of birth.
      *
-     * @see http://schema.org/birthDate
+     * @see https://schema.org/birthDate
      *
      * @ORM\Column(type="date", nullable=true)
-     * @ApiProperty(iri="http://schema.org/birthDate")
+     * @ApiProperty(iri="https://schema.org/birthDate")
      * @Assert\Date
      */
     private ?\DateTimeInterface $birthDate = null;
@@ -89,20 +89,20 @@ class Person
     /**
      * The telephone number.
      *
-     * @see http://schema.org/telephone
+     * @see https://schema.org/telephone
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/telephone")
+     * @ApiProperty(iri="https://schema.org/telephone")
      */
     private ?string $telephone = null;
 
     /**
      * Email address.
      *
-     * @see http://schema.org/email
+     * @see https://schema.org/email
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/email")
+     * @ApiProperty(iri="https://schema.org/email")
      * @Assert\Email
      */
     private ?string $email = null;
@@ -110,10 +110,10 @@ class Person
     /**
      * URL of the item.
      *
-     * @see http://schema.org/url
+     * @see https://schema.org/url
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/url")
+     * @ApiProperty(iri="https://schema.org/url")
      * @Assert\Url
      */
     private ?string $url = null;

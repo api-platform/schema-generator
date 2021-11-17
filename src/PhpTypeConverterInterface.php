@@ -21,13 +21,13 @@ interface PhpTypeConverterInterface
     public const BASE_MAPPING = [
         // bool
         'http://www.w3.org/2001/XMLSchema#boolean' => 'bool',
-        'http://schema.org/Boolean' => 'bool',
+        'https://schema.org/Boolean' => 'bool',
         // float
         'http://www.w3.org/2001/XMLSchema#float' => 'float',
         'http://www.w3.org/2001/XMLSchema#double' => 'float',
-        'http://schema.org/Float' => 'float',
+        'https://schema.org/Float' => 'float',
         // int
-        'http://schema.org/Integer' => 'int',
+        'https://schema.org/Integer' => 'int',
         'http://www.w3.org/2001/XMLSchema#integer' => 'int',
         'http://www.w3.org/2001/XMLSchema#nonPositiveInteger' => 'int',
         'http://www.w3.org/2001/XMLSchema#nonNegativeInteger' => 'int',
@@ -60,9 +60,9 @@ interface PhpTypeConverterInterface
         'http://www.w3.org/2001/XMLSchema#IDREFS' => 'string',
         'http://www.w3.org/2001/XMLSchema#ENTITY' => 'string',
         'http://www.w3.org/2001/XMLSchema#ENTITIES' => 'string',
-        'http://schema.org/Text' => 'string',
-        'http://schema.org/URL' => 'string',
-        'http://schema.org/Number' => 'string',
+        'https://schema.org/Text' => 'string',
+        'https://schema.org/URL' => 'string',
+        'https://schema.org/Number' => 'string',
         // DateTimeInterface
         'http://www.w3.org/2001/XMLSchema#dateTime' => '\\'.\DateTimeInterface::class,
         'http://www.w3.org/2001/XMLSchema#time' => '\\'.\DateTimeInterface::class,
@@ -72,13 +72,13 @@ interface PhpTypeConverterInterface
         'http://www.w3.org/2001/XMLSchema#gMonthDay' => '\\'.\DateTimeInterface::class,
         'http://www.w3.org/2001/XMLSchema#gDay' => '\\'.\DateTimeInterface::class,
         'http://www.w3.org/2001/XMLSchema#gMonth' => '\\'.\DateTimeInterface::class,
-        'http://schema.org/Date' => '\\'.\DateTimeInterface::class,
-        'http://schema.org/DateTime' => '\\'.\DateTimeInterface::class,
-        'http://schema.org/Time' => '\\'.\DateTimeInterface::class,
+        'https://schema.org/Date' => '\\'.\DateTimeInterface::class,
+        'https://schema.org/DateTime' => '\\'.\DateTimeInterface::class,
+        'https://schema.org/Time' => '\\'.\DateTimeInterface::class,
         // DateInterval
         'http://www.w3.org/2001/XMLSchema#duration' => '\\'.\DateInterval::class,
         // mixed
-        'http://schema.org/DataType' => null,
+        'https://schema.org/DataType' => null,
     ];
 
     /**

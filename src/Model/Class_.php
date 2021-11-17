@@ -41,7 +41,7 @@ final class Class_
     private $parent;
     private RdfResource $resource;
 
-    private const SCHEMA_ORG_ENUMERATION = 'http://schema.org/Enumeration';
+    private const SCHEMA_ORG_ENUMERATION = 'https://schema.org/Enumeration';
 
     public function __construct(string $name, RdfResource $resource, $parent = null)
     {

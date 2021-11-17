@@ -20,10 +20,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * The mailing address.
  *
- * @see http://schema.org/PostalAddress
+ * @see https://schema.org/PostalAddress
  *
  * @ORM\Entity
- * @ApiResource(iri="http://schema.org/PostalAddress")
+ * @ApiResource(iri="https://schema.org/PostalAddress")
  */
 class PostalAddress
 {
@@ -37,60 +37,60 @@ class PostalAddress
     /**
      * The country. For example, USA. You can also provide the two-letter \[ISO 3166-1 alpha-2 country code\](http://en.wikipedia.org/wiki/ISO\_3166-1).
      *
-     * @see http://schema.org/addressCountry
+     * @see https://schema.org/addressCountry
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/addressCountry")
+     * @ApiProperty(iri="https://schema.org/addressCountry")
      */
     private ?string $addressCountry = null;
 
     /**
      * The locality in which the street address is, and which is in the region. For example, Mountain View.
      *
-     * @see http://schema.org/addressLocality
+     * @see https://schema.org/addressLocality
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/addressLocality")
+     * @ApiProperty(iri="https://schema.org/addressLocality")
      */
     private ?string $addressLocality = null;
 
     /**
      * The region in which the locality is, and which is in the country. For example, California or another appropriate first-level \[Administrative division\](https://en.wikipedia.org/wiki/List\_of\_administrative\_divisions\_by\_country).
      *
-     * @see http://schema.org/addressRegion
+     * @see https://schema.org/addressRegion
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/addressRegion")
+     * @ApiProperty(iri="https://schema.org/addressRegion")
      */
     private ?string $addressRegion = null;
 
     /**
      * The post office box number for PO box addresses.
      *
-     * @see http://schema.org/postOfficeBoxNumber
+     * @see https://schema.org/postOfficeBoxNumber
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/postOfficeBoxNumber")
+     * @ApiProperty(iri="https://schema.org/postOfficeBoxNumber")
      */
     private ?string $postOfficeBoxNumber = null;
 
     /**
      * The postal code. For example, 94043.
      *
-     * @see http://schema.org/postalCode
+     * @see https://schema.org/postalCode
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/postalCode")
+     * @ApiProperty(iri="https://schema.org/postalCode")
      */
     private ?string $postalCode = null;
 
     /**
      * The street address. For example, 1600 Amphitheatre Pkwy.
      *
-     * @see http://schema.org/streetAddress
+     * @see https://schema.org/streetAddress
      *
      * @ORM\Column(type="text", nullable=true)
-     * @ApiProperty(iri="http://schema.org/streetAddress")
+     * @ApiProperty(iri="https://schema.org/streetAddress")
      */
     private ?string $streetAddress = null;
 

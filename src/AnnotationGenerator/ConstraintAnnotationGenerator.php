@@ -38,19 +38,20 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
         }
 
         $asserts = [];
+
         if (!$property->isArray && $property->range) {
             switch ($property->range->getUri()) {
-                case 'http://schema.org/URL':
+                case 'https://schema.org/URL':
                     $asserts[] = '@Assert\Url';
                     break;
-                case 'http://schema.org/Date':
-                case 'http://schema.org/DateTime':
-                case 'http://schema.org/Time':
+                case 'https://schema.org/Date':
+                case 'https://schema.org/DateTime':
+                case 'https://schema.org/Time':
                     $asserts[] = '@Assert\Type("\DateTimeInterface")';
                     break;
             }
 
-            if (null !== $property->resource && 'http://schema.org/email' === $property->resourceUri()) {
+            if (null !== $property->resource && 'https://schema.org/email' === $property->resourceUri()) {
                 $asserts[] = '@Assert\Email';
             }
 

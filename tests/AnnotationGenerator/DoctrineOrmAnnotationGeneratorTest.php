@@ -40,29 +40,29 @@ class DoctrineOrmAnnotationGeneratorTest extends TestCase
     {
         $graph = new Graph();
 
-        $product = new Class_('Product', new Resource('http://schema.org/Product', $graph));
+        $product = new Class_('Product', new Resource('https://schema.org/Product', $graph));
         $product->setIsAbstract(true);
         $this->classMap[$product->name()] = $product;
 
-        $vehicle = new Class_('Vehicle', new Resource('http://schema.org/Vehicle', $graph));
+        $vehicle = new Class_('Vehicle', new Resource('htts://schema.org/Vehicle', $graph));
         $weightProperty = new Property('weight');
         $weightProperty->isEmbedded = true;
         $weightProperty->rangeName = 'QuantitativeValue';
-        $weightProperty->range = new Resource('http://schema.org/QuantitativeValue');
+        $weightProperty->range = new Resource('https://schema.org/QuantitativeValue');
         $vehicle->addProperty($weightProperty);
         $prefixedWeightProperty = new Property('prefixedWeight');
         $prefixedWeightProperty->columnPrefix = 'weight_';
         $prefixedWeightProperty->isEmbedded = true;
         $prefixedWeightProperty->rangeName = 'QuantitativeValue';
-        $prefixedWeightProperty->range = new Resource('http://schema.org/QuantitativeValue');
+        $prefixedWeightProperty->range = new Resource('https://schema.org/QuantitativeValue');
         $vehicle->addProperty($prefixedWeightProperty);
         $this->classMap[$vehicle->name()] = $vehicle;
 
-        $quantitativeValue = new Class_('QuantitativeValue', new Resource('http://schema.org/QuantitativeValue', $graph));
+        $quantitativeValue = new Class_('QuantitativeValue', new Resource('https://schema.org/QuantitativeValue', $graph));
         $quantitativeValue->setEmbeddable(true);
         $this->classMap[$quantitativeValue->name()] = $quantitativeValue;
 
-        $myEnum = new Resource('http://schema.org/MyEnum', $graph);
+        $myEnum = new Resource('https://schema.org/MyEnum', $graph);
         $myEnum->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);
         $myEnumClass = new Class_('MyEnum', $myEnum);
         $this->classMap[$myEnumClass->name()] = $myEnumClass;
