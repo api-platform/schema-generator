@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!-- http://phpunit.de/manual/4.1/en/appendixes.configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/4.6/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          backupGlobals="false"
          colors="true">
@@ -12,15 +10,15 @@
         <server name="SYMFONY_DEPRECATIONS_HELPER" value="max[direct]=0" />
     </php>
 
-    <testsuites>
+    <coverage>
+        <include>
+            <directory>src</directory>
+        </include>
+    </coverage>
+
+     <testsuites>
         <testsuite name="Project Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory>src</directory>
-        </whitelist>
-    </filter>
 </phpunit>
