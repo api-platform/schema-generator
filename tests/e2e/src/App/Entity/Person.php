@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @see https://schema.org/Person
  */
 #[ORM\Entity]
-#[ApiResource(iri: 'https://schema.org/Person')]
+#[ApiResource(iri: 'https://schema.org/Person', security: 'is_granted(\'ROLE_USER\')')]
 #[UniqueEntity('email')]
 class Person
 {
@@ -88,7 +88,7 @@ class Person
      * @see https://schema.org/email
      */
     #[ORM\Column(type: 'text', nullable: true, unique: true)]
-    #[ApiProperty(iri: 'https://schema.org/email')]
+    #[ApiProperty(iri: 'https://schema.org/email', security: 'is_granted(\'ROLE_ADMIN\')')]
     #[Assert\Email]
     private ?string $email = null;
 

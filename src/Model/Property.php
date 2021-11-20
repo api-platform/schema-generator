@@ -42,6 +42,7 @@ final class Property
     public bool $isEnum = false;
     public ?string $adderRemoverTypeHint = null;
     public array $groups = [];
+    public ?string $security = null;
     /** @var array<string, array>[] */
     private array $attributes = [];
     private array $annotations = [];

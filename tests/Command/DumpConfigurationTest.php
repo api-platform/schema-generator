@@ -166,6 +166,9 @@ config:
             # If declaring a custom class, this will be the class from which properties type will be guessed
             guessFrom:            Thing
 
+            # Security directive for the class
+            security:             null
+
             # Import all existing properties
             allProperties:        false
 
@@ -187,6 +190,9 @@ config:
 
                     # The doctrine column attribute content
                     ormColumn:            [] # Example: '{type: "decimal", precision: 5, scale: 1, options: {comment: "my comment"}}'
+
+                    # Security directive for the property
+                    security:             null
 
                     # Symfony Serialization Groups
                     groups:               []

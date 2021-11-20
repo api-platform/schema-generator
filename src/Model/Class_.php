@@ -42,6 +42,7 @@ final class Class_
     /** @var bool|string|null */
     private $parent;
     private RdfResource $resource;
+    public ?string $security = null;
 
     private const SCHEMA_ORG_ENUMERATION = 'https://schema.org/Enumeration';
 
