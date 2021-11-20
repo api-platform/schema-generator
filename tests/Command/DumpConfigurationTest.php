@@ -166,6 +166,9 @@ config:
             # If declaring a custom class, this will be the class from which properties type will be guessed
             guessFrom:            Thing
 
+            # Operations for the class
+            operations:           []
+
             # Security directive for the class
             security:             null
 

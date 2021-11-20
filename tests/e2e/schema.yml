@@ -7,6 +7,16 @@ types:
         properties:
             name: ~
     Person:
+        operations:
+            item:
+                get:
+                    method: GET
+                delete:
+                    method: DELETE
+                    security: "is_granted('ROLE_ADMIN')"
+            collection:
+                get:
+                    route_name: get_person_collection
         security: "is_granted('ROLE_USER')"
         properties:
             familyName: ~
