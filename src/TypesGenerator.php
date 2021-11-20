@@ -143,6 +143,7 @@ class TypesGenerator
             $typeConfig = $config['types'][$typeName] ?? null;
             $parent = $typeConfig['parent'] ?? null;
             $class = new Class_($typeName, $type, $parent);
+            $class->operations = $typeConfig['operations'] ?? [];
             $class->security = $typeConfig['security'] ?? null;
 
             if ($class->isEnum()) {

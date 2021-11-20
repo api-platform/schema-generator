@@ -33,7 +33,6 @@ final class Class_
     /** @var array<string, array>[] */
     private array $attributes = [];
     private array $annotations = [];
-    private array $operations = [];
     private bool $hasConstructor = false;
     private bool $parentHasConstructor = false;
     private bool $isAbstract = false;
@@ -43,6 +42,7 @@ final class Class_
     private $parent;
     private RdfResource $resource;
     public ?string $security = null;
+    public array $operations = [];
 
     private const SCHEMA_ORG_ENUMERATION = 'https://schema.org/Enumeration';
 
@@ -172,18 +172,6 @@ final class Class_
     public function constants(): array
     {
         return $this->constants;
-    }
-
-    public function operations(): array
-    {
-        return $this->operations;
-    }
-
-    public function setOperations(array $operations): self
-    {
-        $this->operations = $operations;
-
-        return $this;
     }
 
     public function resource(): RdfResource

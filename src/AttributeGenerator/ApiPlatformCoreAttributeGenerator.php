@@ -17,8 +17,6 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
-use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -48,12 +46,11 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
             $arguments['security'] = $class->security;
         }
 
-        if ([] !== $class->operations()) {
-            $operations = $this->validateClassOperations($class->operations());
+        if ($class->operations) {
+            $operations = $this->validateClassOperations($class->operations);
             foreach ($operations as $operationTarget => $targetOperations) {
                 $targetArguments = [];
                 foreach ($targetOperations as $method => $methodConfig) {
-                    $methodConfig = $this->validateClassOperationMethodConfig($methodConfig);
                     $methodArguments = [];
                     foreach ($methodConfig as $key => $value) {
                         $methodArguments[$key] = $value;
@@ -78,30 +75,6 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
         $resolver->setAllowedTypes('collection', 'array');
 
         return $resolver->resolve($operations);
-    }
-
-    /**
-     * Validates the individual method config for an item/collection operation attribute.
-     */
-    private function validateClassOperationMethodConfig(array $methodConfig): array
-    {
-        $resolver = new OptionsResolver();
-
-        $resolver->setDefined(['method', 'route_name']);
-        $resolver->setAllowedTypes('method', 'string');
-        $resolver->setAllowedTypes('route_name', 'string');
-        $resolver->setNormalizer(
-            'route_name',
-            function (Options $options, $value) {
-                if (isset($options['method'])) {
-                    throw new InvalidOptionsException('You must provide only \'method\' or \'route_name\', but not both');
-                }
-
-                return $value;
-            }
-        );
-
-        return $resolver->resolve($methodConfig);
     }
 
     /**

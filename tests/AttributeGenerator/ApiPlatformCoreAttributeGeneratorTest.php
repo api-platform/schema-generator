@@ -59,10 +59,10 @@ class ApiPlatformCoreAttributeGeneratorTest extends TestCase
         yield 'classical' => [new Class_('Res', new Resource('https://schema.org/Res')), [['ApiResource' => ['iri' => 'https://schema.org/Res']]]];
 
         $class = new Class_('WithOperations', new Resource('https://schema.org/WithOperations'));
-        $class->setOperations([
+        $class->operations = [
             'item' => ['get' => ['route_name' => 'api_about_get']],
             'collection' => [],
-        ]);
+        ];
         yield 'with operations' => [$class, [['ApiResource' => ['iri' => 'https://schema.org/WithOperations', 'itemOperations' => ['get' => ['route_name' => 'api_about_get']], 'collectionOperations' => []]]]];
 
         yield 'abstract' => [(new Class_('Abstract', new Resource('https://schema.org/Abstract')))->setIsAbstract(true), []];
