@@ -11,27 +11,28 @@
 
 declare(strict_types=1);
 
-namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
+namespace ApiPlatform\SchemaGenerator\AttributeGenerator;
 
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
+use Nette\PhpGenerator\Literal;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * Constraint annotation generator.
+ * Constraint attribute generator.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
+final class ConstraintAttributeGenerator extends AbstractAttributeGenerator
 {
     /**
      * {@inheritdoc}
      */
-    public function generatePropertyAnnotations(Property $property, string $className): array
+    public function generatePropertyAttributes(Property $property, string $className): array
     {
         if ($property->isId) {
             if ('uuid' === $this->config['id']['generationStrategy']) {
-                return ['@Assert\Uuid'];
+                return [['Assert\Uuid' => []]];
             }
 
             return [];
@@ -42,41 +43,39 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
         if (!$property->isArray && $property->range) {
             switch ($property->range->getUri()) {
                 case 'https://schema.org/URL':
-                    $asserts[] = '@Assert\Url';
+                    $asserts[] = ['Assert\Url' => []];
                     break;
                 case 'https://schema.org/Date':
                 case 'https://schema.org/DateTime':
                 case 'https://schema.org/Time':
-                    $asserts[] = '@Assert\Type("\DateTimeInterface")';
+                    $asserts[] = ['Assert\Type' => [new Literal('\DateTimeInterface::class')]];
                     break;
             }
 
             if (null !== $property->resource && 'https://schema.org/email' === $property->resourceUri()) {
-                $asserts[] = '@Assert\Email';
+                $asserts[] = ['Assert\Email' => []];
             }
 
             if (!$asserts && $this->config['validator']['assertType']) {
                 $phpType = $this->phpTypeConverter->getPhpType($property, $this->config, []);
                 if (\in_array($phpType, ['bool', 'float', 'int', 'string'], true)) {
-                    $asserts[] = sprintf('@Assert\Type(type="%s")', $phpType);
+                    $asserts[] = ['Assert\Type' => [$phpType]];
                 }
             }
         }
 
         if (!$property->isNullable) {
-            $asserts[] = '@Assert\NotNull';
+            $asserts[] = ['Assert\NotNull' => []];
         }
 
         if ($property->isEnum && $property->range) {
-            $assert = sprintf('@Assert\Choice(callback={"%s", "toArray"}', $property->rangeName);
+            $args = ['callback' => [$property->rangeName, 'toArray']];
 
             if ($property->isArray) {
-                $assert .= ', multiple=true';
+                $args['multiple'] = true;
             }
 
-            $assert .= ')';
-
-            $asserts[] = $assert;
+            $asserts[] = ['Assert\Choice' => $args];
         }
 
         return $asserts;
@@ -114,13 +113,13 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations(Class_ $class): array
+    public function generateClassAttributes(Class_ $class): array
     {
         if ($class->isEnum()) {
             return [];
         }
 
-        $annotation = [];
+        $attributes = [];
 
         $uniqueProperties = $class->uniquePropertyNames();
         if (!$uniqueProperties) {
@@ -128,11 +127,11 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
         }
 
         if (1 === \count($uniqueProperties)) {
-            $annotation[] = sprintf('@UniqueEntity("%s")', $uniqueProperties[0]);
+            $attributes[] = ['UniqueEntity' => [$uniqueProperties[0]]];
         } else {
-            $annotation[] = sprintf('@UniqueEntity(fields={"%s"})', implode('","', $uniqueProperties));
+            $attributes[] = ['UniqueEntity' => ['fields' => $uniqueProperties]];
         }
 
-        return $annotation;
+        return $attributes;
     }
 }

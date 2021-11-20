@@ -197,6 +197,8 @@ PHP, $thing);
         return [
             'annotationGenerators' => [
             ],
+            'attributeGenerators' => [
+            ],
             'checkIsGoodRelations' => false,
             'namespaces' => [
                 'entity' => 'App\Entity',

@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
-namespace ApiPlatform\SchemaGenerator\Tests\AnnotationGenerator;
+namespace ApiPlatform\SchemaGenerator\Tests\AttributeGenerator;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\SchemaGenerator\AnnotationGenerator\ApiPlatformCoreAnnotationGenerator;
+use ApiPlatform\SchemaGenerator\AttributeGenerator\ApiPlatformCoreAttributeGenerator;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\PhpTypeConverter;
@@ -29,13 +29,13 @@ use Psr\Log\NullLogger;
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
+class ApiPlatformCoreAttributeGeneratorTest extends TestCase
 {
-    private ApiPlatformCoreAnnotationGenerator $generator;
+    private ApiPlatformCoreAttributeGenerator $generator;
 
     protected function setUp(): void
     {
-        $this->generator = new ApiPlatformCoreAnnotationGenerator(
+        $this->generator = new ApiPlatformCoreAttributeGenerator(
             new PhpTypeConverter(),
             new NullLogger(),
             InflectorFactory::create()->build(),
@@ -46,36 +46,41 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
         );
     }
 
-    public function testGenerateClassAnnotations(): void
+    /**
+     * @dataProvider provideGenerateClassAttributesCases
+     */
+    public function testGenerateClassAttributes(Class_ $class, array $attributes): void
     {
-        $this->assertSame(['@ApiResource(iri="https://schema.org/Res")'], $this->generator->generateClassAnnotations(new Class_('Res', new Resource('https://schema.org/Res'))));
+        $this->assertSame($attributes, $this->generator->generateClassAttributes($class));
     }
 
-    public function testGenerateClassAnnotationsWithOperations(): void
+    public function provideGenerateClassAttributesCases(): \Generator
     {
+        yield 'classical' => [new Class_('Res', new Resource('https://schema.org/Res')), [['ApiResource' => ['iri' => 'https://schema.org/Res']]]];
+
         $class = new Class_('WithOperations', new Resource('https://schema.org/WithOperations'));
         $class->setOperations([
             'item' => ['get' => ['route_name' => 'api_about_get']],
             'collection' => [],
         ]);
+        yield 'with operations' => [$class, [['ApiResource' => ['iri' => 'https://schema.org/WithOperations', 'itemOperations' => ['get' => ['route_name' => 'api_about_get']], 'collectionOperations' => []]]]];
 
-        $this->assertSame(
-            ['@ApiResource(iri="https://schema.org/WithOperations", itemOperations={"get"={"route_name"="api_about_get"}}, collectionOperations={})'],
-            $this->generator->generateClassAnnotations($class)
-        );
+        yield 'abstract' => [(new Class_('Abstract', new Resource('https://schema.org/Abstract')))->setIsAbstract(true), []];
+
+        yield 'with short name' => [(new Class_('WithShortName', new Resource('https://schema.org/DifferentLocalName'))), [['ApiResource' => ['shortName' => 'DifferentLocalName', 'iri' => 'https://schema.org/DifferentLocalName']]]];
     }
 
-    public function testGeneratePropertyAnnotations(): void
+    public function testGeneratePropertyAttributes(): void
     {
         $property = new Property('prop');
         $property->resource = new Resource('https://schema.org/prop');
 
-        $this->assertSame(['@ApiProperty(iri="https://schema.org/prop")'], $this->generator->generatePropertyAnnotations($property, 'Res'));
+        $this->assertSame([['ApiProperty' => ['iri' => 'https://schema.org/prop']]], $this->generator->generatePropertyAttributes($property, 'Res'));
     }
 
-    public function testGenerateCustomPropertyAnnotations(): void
+    public function testGenerateCustomPropertyAttributes(): void
     {
-        $this->assertSame([], $this->generator->generatePropertyAnnotations((new Property('customProp'))->markAsCustom(), 'Res'));
+        $this->assertSame([], $this->generator->generatePropertyAttributes((new Property('customProp'))->markAsCustom(), 'Res'));
     }
 
     public function testGenerateUses(): void

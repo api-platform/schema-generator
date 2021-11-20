@@ -13,8 +13,9 @@ namespaces:
   interface: 'Dunglas\EcommerceBundle\Model'
 annotationGenerators:
   - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
-  - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
-  - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineMongoDBAnnotationGenerator
+attributeGenerators:
+  - ApiPlatform\SchemaGenerator\AttributeGenerator\ConstraintAttributeGenerator
+  - ApiPlatform\SchemaGenerator\AttributeGenerator\DoctrineMongoDBAttributeGenerator
 author: 'Kévin Dunglas <dunglas@gmail.com>'
 debug: true
 useInterface: true

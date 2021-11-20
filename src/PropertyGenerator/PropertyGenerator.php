@@ -144,6 +144,7 @@ final class PropertyGenerator
         $schemaGeneratorProperty->columnPrefix = $columnPrefix;
         $schemaGeneratorProperty->mappedBy = $propertyConfig['mappedBy'] ?? null;
         $schemaGeneratorProperty->inversedBy = $propertyConfig['inversedBy'] ?? null;
+        $schemaGeneratorProperty->groups = $propertyConfig['groups'] ?? [];
         $schemaGeneratorProperty->isId = false;
         $class->addProperty($schemaGeneratorProperty);
 

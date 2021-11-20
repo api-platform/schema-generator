@@ -11,33 +11,29 @@
 
 declare(strict_types=1);
 
-namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
+namespace ApiPlatform\SchemaGenerator\AttributeGenerator;
 
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * Symfony Serializer Groups annotation generator.
+ * Symfony Serializer Groups attribute generator.
  *
  * @author Youssef El Montaser <youssef@elmontaser.com>
  * @author Kévin Dunglas <dunglas@gmail.com>
  *
  * @see https://symfony.com/doc/master/components/serializer.html
  */
-final class SerializerGroupsAnnotationGenerator extends AbstractAnnotationGenerator
+final class SerializerGroupsAttributeGenerator extends AbstractAttributeGenerator
 {
     /**
      * {@inheritdoc}
      */
-    public function generatePropertyAnnotations(Property $property, string $className): array
+    public function generatePropertyAttributes(Property $property, string $className): array
     {
-        if ($this->config['types'][$className]['properties'] ?? null) {
-            return [];
-        }
-
-        if (false === $property->isId && $property->groups() ?? false) {
-            return [sprintf('@Groups({"%s"})', implode('", "', $property->groups()))];
+        if (false === $property->isId && $property->groups()) {
+            return [['Groups' => [$property->groups()]]];
         }
 
         return [];

@@ -101,8 +101,8 @@ config:
         # The Resolve Target Entity Listener config file pass
         resolveTargetEntityConfigPath: null
 
-        # Doctrine inheritance annotations (if set, no other annotations are generated)
-        inheritanceAnnotations: []
+        # Doctrine inheritance attributes (if set, no other attributes are generated)
+        inheritanceAttributes: []
 
     # Symfony Validator Component
     validator:
@@ -157,8 +157,8 @@ config:
                 interface:            null
             doctrine:
 
-                # Doctrine annotations (if set, no other annotations are generated)
-                annotations:          []
+                # Doctrine attributes (if set, no other attributes are generated)
+                attributes:           []
 
             # The parent class, set to false for a top level class
             parent:               false
@@ -185,8 +185,8 @@ config:
                     relationTableName:    null # Example: organization_member
                     cardinality:          unknown # One of "(0..1)"; "(0..*)"; "(1..1)"; "(1..*)"; "(*..0)"; "(*..1)"; "(*..*)"; "unknown"
 
-                    # The doctrine column annotation content
-                    ormColumn:            null # Example: 'type="decimal", precision=5, scale=1, options={"comment" = "my comment"}'
+                    # The doctrine column attribute content
+                    ormColumn:            [] # Example: '{type: "decimal", precision: 5, scale: 1, options: {comment: "my comment"}}'
 
                     # Symfony Serialization Groups
                     groups:               []
@@ -218,12 +218,17 @@ config:
     # Annotation generators to use
     annotationGenerators:
 
-        # Defaults:
+        # Default:
         - ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator
-        - ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator
-        - ApiPlatform\SchemaGenerator\AnnotationGenerator\ApiPlatformCoreAnnotationGenerator
-        - ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator
-        - ApiPlatform\SchemaGenerator\AnnotationGenerator\SerializerGroupsAnnotationGenerator
+
+    # Attribute generators to use
+    attributeGenerators:
+
+        # Defaults:
+        - ApiPlatform\SchemaGenerator\AttributeGenerator\DoctrineOrmAttributeGenerator
+        - ApiPlatform\SchemaGenerator\AttributeGenerator\ApiPlatformCoreAttributeGenerator
+        - ApiPlatform\SchemaGenerator\AttributeGenerator\ConstraintAttributeGenerator
+        - ApiPlatform\SchemaGenerator\AttributeGenerator\SerializerGroupsAttributeGenerator
 
     # Directories for custom generator twig templates
     generatorTemplates:   []

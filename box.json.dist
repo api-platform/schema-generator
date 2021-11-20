@@ -12,11 +12,7 @@
     "templates/"
   ],
   "files": [
-    "vendor/friendsofphp/php-cs-fixer/tests/TestCase.php",
     "vendor/twig/twig/src/TwigTest.php"
-  ],
-  "directories": [
-    "vendor/friendsofphp/php-cs-fixer/tests/Test"
   ],
   "force-autodiscovery": true,
 

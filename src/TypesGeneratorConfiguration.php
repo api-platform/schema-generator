@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator;
 
-use ApiPlatform\SchemaGenerator\AnnotationGenerator\ApiPlatformCoreAnnotationGenerator;
-use ApiPlatform\SchemaGenerator\AnnotationGenerator\ConstraintAnnotationGenerator;
-use ApiPlatform\SchemaGenerator\AnnotationGenerator\DoctrineOrmAnnotationGenerator;
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator;
-use ApiPlatform\SchemaGenerator\AnnotationGenerator\SerializerGroupsAnnotationGenerator;
+use ApiPlatform\SchemaGenerator\AttributeGenerator\ApiPlatformCoreAttributeGenerator;
+use ApiPlatform\SchemaGenerator\AttributeGenerator\ConstraintAttributeGenerator;
+use ApiPlatform\SchemaGenerator\AttributeGenerator\DoctrineOrmAttributeGenerator;
+use ApiPlatform\SchemaGenerator\AttributeGenerator\SerializerGroupsAttributeGenerator;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -109,9 +109,9 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->children()
                         ->booleanNode('useCollection')->defaultTrue()->info('Use Doctrine\'s ArrayCollection instead of standard arrays')->end()
                         ->scalarNode('resolveTargetEntityConfigPath')->defaultNull()->info('The Resolve Target Entity Listener config file pass')->end()
-                        ->arrayNode('inheritanceAnnotations')
-                            ->info('Doctrine inheritance annotations (if set, no other annotations are generated)')
-                            ->prototype('scalar')->end()
+                        ->arrayNode('inheritanceAttributes')
+                            ->info('Doctrine inheritance attributes (if set, no other attributes are generated)')
+                            ->prototype('variable')->end()
                         ->end()
                     ->end()
                 ->end()
@@ -161,9 +161,9 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                             ->arrayNode('doctrine')
                                 ->addDefaultsIfNotSet()
                                 ->children()
-                                    ->arrayNode('annotations')
-                                        ->info('Doctrine annotations (if set, no other annotations are generated)')
-                                        ->prototype('scalar')->end()
+                                    ->arrayNode('attributes')
+                                        ->info('Doctrine attributes (if set, no other attributes are generated)')
+                                        ->prototype('variable')->end()
                                     ->end()
                                 ->end()
                             ->end()
@@ -189,7 +189,11 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                                             CardinalitiesExtractor::CARDINALITY_N_N,
                                             CardinalitiesExtractor::CARDINALITY_UNKNOWN,
                                         ])->end()
-                                        ->scalarNode('ormColumn')->defaultNull()->info('The doctrine column annotation content')->example('type="decimal", precision=5, scale=1, options={"comment" = "my comment"}')->end()
+                                        ->arrayNode('ormColumn')
+                                            ->info('The doctrine column attribute content')
+                                            ->example('{type: "decimal", precision: 5, scale: 1, options: {comment: "my comment"}}')
+                                            ->prototype('variable')->end()
+                                        ->end()
                                         ->arrayNode('groups')
                                             ->info('Symfony Serialization Groups')
                                             ->prototype('scalar')->end()
@@ -212,10 +216,16 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                     ->info('Annotation generators to use')
                     ->defaultValue([
                         PhpDocAnnotationGenerator::class,
-                        DoctrineOrmAnnotationGenerator::class,
-                        ApiPlatformCoreAnnotationGenerator::class,
-                        ConstraintAnnotationGenerator::class,
-                        SerializerGroupsAnnotationGenerator::class,
+                    ])
+                    ->prototype('scalar')->end()
+                ->end()
+                ->arrayNode('attributeGenerators')
+                    ->info('Attribute generators to use')
+                    ->defaultValue([
+                        DoctrineOrmAttributeGenerator::class,
+                        ApiPlatformCoreAttributeGenerator::class,
+                        ConstraintAttributeGenerator::class,
+                        SerializerGroupsAttributeGenerator::class,
                     ])
                     ->prototype('scalar')->end()
                 ->end()

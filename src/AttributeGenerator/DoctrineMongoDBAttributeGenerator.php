@@ -11,45 +11,57 @@
 
 declare(strict_types=1);
 
-namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
+namespace ApiPlatform\SchemaGenerator\AttributeGenerator;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
 
 /**
- * Doctrine MongoDB annotation generator.
+ * Doctrine MongoDB attribute generator.
  *
  * @author Andrew Meshchanchuk <andrew.meshchanchuk@gmail.com>>
  */
-final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerator
+final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
 {
     /**
      * {@inheritdoc}
      */
-    public function generateClassAnnotations(Class_ $class): array
+    public function generateClassAttributes(Class_ $class): array
     {
+        if ($doctrineAttributes = ($this->config['types'][$class->name()]['doctrine']['attributes'] ?? false)) {
+            return $doctrineAttributes;
+        }
+
         if ($class->isEnum()) {
             return [];
         }
 
-        return [
-            '',
-            $this->config['types'][$class->name()]['doctrine']['inheritanceMapping'] ?? ($class->isAbstract() ? '@MongoDB\MappedSuperclass' : '@MongoDB\Document'),
-        ];
+        $attributes = [];
+        if ($class->isAbstract()) {
+            if ($inheritanceAttributes = ($this->config['doctrine']['inheritanceAttributes'] ?? [])) {
+                return $inheritanceAttributes;
+            }
+
+            $attributes[] = ['MongoDB\MappedSuperclass' => []];
+        } else {
+            $attributes[] = ['MongoDB\Document' => []];
+        }
+
+        return $attributes;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generatePropertyAnnotations(Property $property, string $className): array
+    public function generatePropertyAttributes(Property $property, string $className): array
     {
         if (null === $property->range) {
             return [];
         }
 
         if ($property->isId) {
-            return $this->generateIdAnnotations();
+            return $this->generateIdAttributes();
         }
 
         $type = null;
@@ -88,20 +100,20 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
         }
 
         if (null !== $type) {
-            return [sprintf('@MongoDB\Field(type="%s")', $type)];
+            return [['MongoDB\Field' => ['type' => $type]]];
         }
 
         if (CardinalitiesExtractor::CARDINALITY_0_1 === $property->cardinality
                 || CardinalitiesExtractor::CARDINALITY_1_1 === $property->cardinality
                 || CardinalitiesExtractor::CARDINALITY_N_0 === $property->cardinality
                 || CardinalitiesExtractor::CARDINALITY_N_1 === $property->cardinality) {
-            return [sprintf('@MongoDB\ReferenceOne(targetDocument="%s", simple=true))', $this->getRelationName($property->rangeName))];
+            return [['MongoDB\ReferenceOne' => ['targetDocument' => $this->getRelationName($property->rangeName), 'simple' => true]]];
         }
 
         if (CardinalitiesExtractor::CARDINALITY_0_N === $property->cardinality
                 || CardinalitiesExtractor::CARDINALITY_1_N === $property->cardinality
                 || CardinalitiesExtractor::CARDINALITY_N_N === $property->cardinality) {
-            return [sprintf('@MongoDB\ReferenceMany(targetDocument="%s", simple=true)', $this->getRelationName($property->rangeName))];
+            return [['MongoDB\ReferenceMany' => ['targetDocument' => $this->getRelationName($property->rangeName), 'simple' => true]]];
         }
 
         return [];
@@ -124,21 +136,21 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
             ? $this->classes[$rangeName]->interfaceName() : $rangeName;
     }
 
-    private function generateIdAnnotations(): array
+    private function generateIdAttributes(): array
     {
         switch ($this->config['id']['generationStrategy']) {
             case 'uuid':
                 if ($this->config['id']['writable']) {
-                    return ['@MongoDB\Id(strategy="NONE", type="bin_uuid")'];
+                    return [['MongoDB\Id' => ['strategy' => 'NONE', 'type' => 'bin_uuid']]];
                 }
 
-                return ['@MongoDB\Id(strategy="UUID")'];
+                return [['MongoDB\Id' => ['strategy' => 'UUID']]];
             case 'auto':
-                return ['@MongoDB\Id(strategy="INCREMENT")'];
+                return [['MongoDB\Id' => ['strategy' => 'INCREMENT']]];
             case 'mongoid':
-                return ['@MongoDB\Id'];
+                return [['MongoDB\Id' => []]];
             default:
-                return ['@MongoDB\Id(strategy="NONE", type="string")'];
+                return [['MongoDB\Id' => ['strategy' => 'NONE', 'type' => 'string']]];
         }
     }
 }

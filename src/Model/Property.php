@@ -25,7 +25,7 @@ final class Property
     public string $cardinality;
     public $range;
     public $rangeName;
-    public ?string $ormColumn = null;
+    public ?array $ormColumn = null;
     public bool $isArray = false;
     public bool $isReadable = true;
     public bool $isWritable = true;
@@ -41,12 +41,14 @@ final class Property
     public ?string $relationTableName = null;
     public bool $isEnum = false;
     public ?string $adderRemoverTypeHint = null;
+    public array $groups = [];
+    /** @var array<string, array>[] */
+    private array $attributes = [];
     private array $annotations = [];
     private array $getterAnnotations = [];
     private array $setterAnnotations = [];
     private array $adderAnnotations = [];
     private array $removerAnnotations = [];
-    private array $groups = [];
 
     public function __construct(string $name)
     {
@@ -56,6 +58,18 @@ final class Property
     public function name(): string
     {
         return $this->name;
+    }
+
+    /**
+     * @param array<string, array> $attribute
+     */
+    public function addAttribute(array $attribute): self
+    {
+        if (!\in_array($attribute, $this->attributes, true)) {
+            $this->attributes[] = $attribute;
+        }
+
+        return $this;
     }
 
     public function addAnnotation(string $annotation): self
@@ -142,6 +156,11 @@ final class Property
             $netteProperty->setValue($default);
         }
 
+        foreach ($this->attributes as $attribute) {
+            foreach ($attribute as $attributeName => $attributeArgs) {
+                $netteProperty->addAttribute($attributeName, $attributeArgs);
+            }
+        }
         foreach ($this->annotations as $annotation) {
             $netteProperty->addComment($annotation);
         }
