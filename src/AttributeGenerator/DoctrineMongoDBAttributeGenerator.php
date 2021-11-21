@@ -14,8 +14,10 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\AttributeGenerator;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
+use ApiPlatform\SchemaGenerator\Model\Attribute;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
+use ApiPlatform\SchemaGenerator\Model\Use_;
 
 /**
  * Doctrine MongoDB attribute generator.
@@ -29,8 +31,13 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generateClassAttributes(Class_ $class): array
     {
-        if ($doctrineAttributes = ($this->config['types'][$class->name()]['doctrine']['attributes'] ?? false)) {
-            return $doctrineAttributes;
+        if ($doctrineAttributes = $this->config['types'][$class->name()]['doctrine']['attributes']) {
+            $attributes = [];
+            foreach ($doctrineAttributes as $attributeName => $attributeArgs) {
+                $attributes[] = new Attribute($attributeName, $attributeArgs);
+            }
+
+            return $attributes;
         }
 
         if ($class->isEnum()) {
@@ -38,14 +45,19 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
         }
 
         $attributes = [];
-        if ($class->isAbstract()) {
-            if ($inheritanceAttributes = ($this->config['doctrine']['inheritanceAttributes'] ?? [])) {
-                return $inheritanceAttributes;
+        if ($class->isAbstract) {
+            if ($inheritanceAttributes = ($this->config['doctrine']['inheritanceAttributes'])) {
+                $attributes = [];
+                foreach ($inheritanceAttributes as $attributeName => $attributeArgs) {
+                    $attributes[] = new Attribute($attributeName, $attributeArgs);
+                }
+
+                return $attributes;
             }
 
-            $attributes[] = ['MongoDB\MappedSuperclass' => []];
+            $attributes[] = new Attribute('MongoDB\MappedSuperclass');
         } else {
-            $attributes[] = ['MongoDB\Document' => []];
+            $attributes[] = new Attribute('MongoDB\Document');
         }
 
         return $attributes;
@@ -100,20 +112,20 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
         }
 
         if (null !== $type) {
-            return [['MongoDB\Field' => ['type' => $type]]];
+            return [new Attribute('MongoDB\Field', ['type' => $type])];
         }
 
-        if (CardinalitiesExtractor::CARDINALITY_0_1 === $property->cardinality
+        if ((CardinalitiesExtractor::CARDINALITY_0_1 === $property->cardinality
                 || CardinalitiesExtractor::CARDINALITY_1_1 === $property->cardinality
                 || CardinalitiesExtractor::CARDINALITY_N_0 === $property->cardinality
-                || CardinalitiesExtractor::CARDINALITY_N_1 === $property->cardinality) {
-            return [['MongoDB\ReferenceOne' => ['targetDocument' => $this->getRelationName($property->rangeName), 'simple' => true]]];
+                || CardinalitiesExtractor::CARDINALITY_N_1 === $property->cardinality) && $property->rangeName) {
+            return [new Attribute('MongoDB\ReferenceOne', ['targetDocument' => $this->getRelationName($property->rangeName), 'simple' => true])];
         }
 
-        if (CardinalitiesExtractor::CARDINALITY_0_N === $property->cardinality
+        if ((CardinalitiesExtractor::CARDINALITY_0_N === $property->cardinality
                 || CardinalitiesExtractor::CARDINALITY_1_N === $property->cardinality
-                || CardinalitiesExtractor::CARDINALITY_N_N === $property->cardinality) {
-            return [['MongoDB\ReferenceMany' => ['targetDocument' => $this->getRelationName($property->rangeName), 'simple' => true]]];
+                || CardinalitiesExtractor::CARDINALITY_N_N === $property->cardinality) && $property->rangeName) {
+            return [new Attribute('MongoDB\ReferenceMany', ['targetDocument' => $this->getRelationName($property->rangeName), 'simple' => true])];
         }
 
         return [];
@@ -124,7 +136,7 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generateUses(Class_ $class): array
     {
-        return $class->isEnum() ? [] : ['Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB'];
+        return $class->isEnum() ? [] : [new Use_('Doctrine\ODM\MongoDB\Mapping\Annotations', 'MongoDB')];
     }
 
     /**
@@ -136,21 +148,24 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
             ? $this->classes[$rangeName]->interfaceName() : $rangeName;
     }
 
+    /**
+     * @return Attribute[]
+     */
     private function generateIdAttributes(): array
     {
         switch ($this->config['id']['generationStrategy']) {
             case 'uuid':
                 if ($this->config['id']['writable']) {
-                    return [['MongoDB\Id' => ['strategy' => 'NONE', 'type' => 'bin_uuid']]];
+                    return [new Attribute('MongoDB\Id', ['strategy' => 'NONE', 'type' => 'bin_uuid'])];
                 }
 
-                return [['MongoDB\Id' => ['strategy' => 'UUID']]];
+                return [new Attribute('MongoDB\Id', ['strategy' => 'UUID'])];
             case 'auto':
-                return [['MongoDB\Id' => ['strategy' => 'INCREMENT']]];
+                return [new Attribute('MongoDB\Id', ['strategy' => 'INCREMENT'])];
             case 'mongoid':
-                return [['MongoDB\Id' => []]];
+                return [new Attribute('MongoDB\Id')];
             default:
-                return [['MongoDB\Id' => ['strategy' => 'NONE', 'type' => 'string']]];
+                return [new Attribute('MongoDB\Id', ['strategy' => 'NONE', 'type' => 'string'])];
         }
     }
 }

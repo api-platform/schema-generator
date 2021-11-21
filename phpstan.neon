@@ -1,7 +1,69 @@
 parameters:
-    level: 5
+    level: 8
     paths:
         - src
+    typeAliases:
+        PropertyConfiguration: '''
+            array{
+                exclude: boolean,
+                range: ?string,
+                relationTableName: ?string,
+                cardinality: string,
+                ormColumn: array<string, string|string[]>,
+                security: ?string,
+                groups: string[],
+                mappedBy: ?string,
+                inversedBy: ?string,
+                readable: boolean,
+                writable: boolean,
+                nullable: boolean,
+                unique: boolean,
+                embedded: boolean,
+                columnPrefix: false|string
+            }
+        '''
+        TypeConfiguration: '''
+            array{
+                exclude: boolean,
+                vocabularyNamespace: ?string,
+                abstract: ?boolean,
+                embeddable: boolean,
+                namespaces: array{class: ?string, interface: ?string},
+                doctrine: array{attributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]>},
+                parent: false|string,
+                guessFrom: string,
+                operations: array<string, array<string, string[]>>,
+                security: ?string,
+                allProperties: boolean,
+                properties: array<string, PropertyConfiguration>
+            }
+        '''
+        Configuration: '''
+            array{
+                 vocabularies: array{uri: string, format: string}[],
+                 vocabularyNamespace: string,
+                 relations: string[],
+                 debug: boolean,
+                 id: array{generate: boolean, generationStrategy: string, writable: boolean, onClass: string},
+                 useInterface: boolean,
+                 checkIsGoodRelations: boolean,
+                 header: ?string,
+                 namespaces: array{prefix: ?string, entity: string, enum: string, interface: string},
+                 doctrine: array{useCollection: boolean, resolveTargetEntityConfigPath: ?string, inheritanceAttributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]>},
+                 validator: array{assertType: boolean},
+                 author: false|string,
+                 fieldVisibility: string,
+                 accessorMethods: boolean,
+                 fluentMutatorMethods: boolean,
+                 rangeMapping: array<string, string>,
+                 allTypes: boolean,
+                 types: array<string, TypeConfiguration>,
+                 annotationGenerators: class-string<ApiPlatform\SchemaGenerator\AnnotationGenerator\AnnotationGeneratorInterface>[],
+                 attributeGenerators: class-string<ApiPlatform\SchemaGenerator\AttributeGenerator\AttributeGeneratorInterface>[],
+                 generatorTemplates: string[],
+                 output: string
+            }
+        '''
     inferPrivatePropertyTypeFromConstructor: true
     ignoreErrors:
     # False positive

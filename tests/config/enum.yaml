@@ -5,5 +5,4 @@ types:
     properties:
       gender: { range: GenderType }
   GenderType:
-    parent: false
     guessFrom: GenderType

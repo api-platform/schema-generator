@@ -18,7 +18,7 @@ use ApiPlatform\SchemaGenerator\Model\Constant;
 use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
 use Doctrine\Inflector\Inflector;
-use EasyRdf\Graph;
+use EasyRdf\Graph as RdfGraph;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -31,15 +31,21 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
     protected PhpTypeConverterInterface $phpTypeConverter;
     protected Inflector $inflector;
     protected LoggerInterface $logger;
-    /**
-     * @var Graph[]
-     */
+    /** @var RdfGraph[] */
     protected array $graphs;
+    /** @var array<string, string> */
     protected array $cardinalities;
+    /** @var Configuration */
     protected array $config;
     /** @var Class_[] */
     protected array $classes;
 
+    /**
+     * @param RdfGraph[]            $graphs
+     * @param array<string, string> $cardinalities
+     * @param Configuration         $config
+     * @param Class_[]              $classes
+     */
     public function __construct(PhpTypeConverterInterface $phpTypeConverter, LoggerInterface $logger, Inflector $inflector, array $graphs, array $cardinalities, array $config, array $classes)
     {
         $this->phpTypeConverter = $phpTypeConverter;

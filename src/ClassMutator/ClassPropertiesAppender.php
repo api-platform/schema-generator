@@ -15,7 +15,7 @@ namespace ApiPlatform\SchemaGenerator\ClassMutator;
 
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGenerator;
-use EasyRdf\Graph;
+use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
 use Psr\Log\LoggerInterface;
 
@@ -23,16 +23,25 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
 {
     private PropertyGenerator $propertyGenerator;
     private LoggerInterface $logger;
+    /** @var array<string, RdfResource[]> */
     private array $propertiesMap;
+    /** @var Configuration */
     private array $config;
 
     private const SCHEMA_ORG_SUPERSEDED_BY = 'schema:supersededBy';
+    /** @var string[] */
     private static array $classTypes = [
         'rdfs:Class',
         'owl:Class',
     ];
+    /** @var RdfGraph[] */
     private array $graphs;
 
+    /**
+     * @param Configuration                $config
+     * @param array<string, RdfResource[]> $propertiesMap
+     * @param RdfGraph[]                   $graphs
+     */
     public function __construct(PropertyGenerator $propertyGenerator, LoggerInterface $logger, array $config, array $propertiesMap, array $graphs)
     {
         $this->propertiesMap = $propertiesMap;
@@ -46,9 +55,9 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
     {
         $typeConfig = $this->config['types'][$class->name()];
 
-        if (!($typeConfig['allProperties'] ?? false) && \is_array($typeConfig['properties'] ?? null)) {
+        if (!$typeConfig['allProperties']) {
             foreach ($typeConfig['properties'] as $key => $value) {
-                if ($value['exclude'] ?? false) {
+                if ($value['exclude']) {
                     continue;
                 }
 
@@ -66,7 +75,7 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
                 $class = $this->generateCustomField($key, $class->resource(), $typeConfig, $class, $this->config);
             }
         } else {
-            $remainingProperties = $typeConfig['properties'] ?? [];
+            $remainingProperties = $typeConfig['properties'];
             // All properties
             foreach ($this->propertiesMap[$class->resourceUri()] as $property) {
                 unset($remainingProperties[$property->localName()]);
@@ -79,7 +88,7 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
             }
 
             foreach ($remainingProperties as $key => $remainingProperty) {
-                if ($remainingProperty['exclude'] ?? false) {
+                if ($remainingProperty['exclude']) {
                     continue;
                 }
                 $class = $this->generateCustomField($key, $class->resource(), $typeConfig, $class, $this->config);
@@ -91,11 +100,14 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
 
     /**
      * Add custom fields (not defined in the vocabulary).
+     *
+     * @param TypeConfiguration $typeConfig
+     * @param Configuration     $config
      */
     private function generateCustomField(string $propertyName, RdfResource $type, array $typeConfig, Class_ $class, array $config): Class_
     {
         $this->logger->info(sprintf('The property "%s" (type "%s") is a custom property.', $propertyName, $type->getUri()));
-        $customResource = new RdfResource('_:'.$propertyName, new Graph());
+        $customResource = new RdfResource('_:'.$propertyName, new RdfGraph());
         $customResource->add('rdfs:range', $type);
 
         return $this->generateField($config, $class, $type, $typeConfig, $customResource, true);
@@ -103,6 +115,9 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
 
     /**
      * Updates generated $class with given field config.
+     *
+     * @param Configuration     $config
+     * @param TypeConfiguration $typeConfig
      */
     private function generateField(array $config, Class_ $class, RdfResource $type, array $typeConfig, RdfResource $property, bool $isCustom = false): Class_
     {
@@ -111,6 +126,8 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
 
     /**
      * Gets the parent classes of the current one and add them to $parentClasses array.
+     *
+     * @param RdfResource[] $parentClasses
      *
      * @return RdfResource[]
      */

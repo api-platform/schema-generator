@@ -15,17 +15,22 @@ namespace ApiPlatform\SchemaGenerator\ClassMutator;
 
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\AnnotationGeneratorInterface;
 use ApiPlatform\SchemaGenerator\Model\Class_;
+use ApiPlatform\SchemaGenerator\Model\Use_;
+use EasyRdf\Resource as RdfResource;
 
 final class AnnotationsAppender implements ClassMutatorInterface
 {
-    /** @var AnnotationGeneratorInterface[] */
-    private array $annotationGenerators;
     /** @var Class_[] */
     private array $classes;
+    /** @var AnnotationGeneratorInterface[] */
+    private array $annotationGenerators;
+    /** @var RdfResource[] */
     private array $typesToGenerate;
 
     /**
+     * @param Class_[]                       $classes
      * @param AnnotationGeneratorInterface[] $annotationGenerators
+     * @param RdfResource[]                  $typesToGenerate
      */
     public function __construct(array $classes, array $annotationGenerators, array $typesToGenerate)
     {
@@ -51,17 +56,17 @@ final class AnnotationsAppender implements ClassMutatorInterface
     private function generateClassUses(Class_ $class): Class_
     {
         $interfaceNamespace = isset($this->classes[$class->name()]) ? $this->classes[$class->name()]->interfaceNamespace() : null;
-        if ($interfaceNamespace && $class->interfaceNamespace() !== $class->namespace()) {
-            $class->addUse(sprintf('%s\\%s', $class->interfaceNamespace(), $class->interfaceName()));
+        if ($interfaceNamespace && $class->interfaceNamespace() !== $class->namespace) {
+            $class->addUse(new Use_(sprintf('%s\\%s', $class->interfaceNamespace(), $class->interfaceName())));
         }
 
         foreach ($class->properties() as $property) {
             if (isset($this->classes[$property->rangeName]) && $this->classes[$property->rangeName]->interfaceName()) {
-                $class->addUse(sprintf(
+                $class->addUse(new Use_(sprintf(
                     '%s\\%s',
                     $this->classes[$property->rangeName]->interfaceNamespace(),
                     $this->classes[$property->rangeName]->interfaceName()
-                ));
+                )));
             }
         }
 
@@ -87,7 +92,7 @@ final class AnnotationsAppender implements ClassMutatorInterface
 
     private function generateConstantAnnotations(Class_ $class): Class_
     {
-        foreach ($class->constants() as $name => &$constant) {
+        foreach ($class->constants() as $constant) {
             foreach ($this->annotationGenerators as $generator) {
                 foreach ($generator->generateConstantAnnotations($constant) as $constantAnnotation) {
                     $constant->addAnnotation($constantAnnotation);

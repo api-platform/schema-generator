@@ -20,7 +20,7 @@ use ApiPlatform\SchemaGenerator\Printer;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
 use Doctrine\Inflector\InflectorFactory;
-use EasyRdf\Graph;
+use EasyRdf\Graph as RdfGraph;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -51,8 +51,22 @@ final class GenerateCommand extends Command
      */
     protected function configure(): void
     {
+        $this->readComposer();
+
+        $this
+            ->setName('generate')
+            ->setDescription('Generate the PHP code')
+            ->addArgument('output', $this->defaultOutput ? InputArgument::OPTIONAL : InputArgument::REQUIRED, 'The output directory', $this->defaultOutput)
+            ->addArgument('config', InputArgument::OPTIONAL, 'The config file to use (default to "schema.yaml" in the current directory, will generate all types if no config file exists)');
+    }
+
+    private function readComposer(): void
+    {
         if (file_exists('composer.json') && is_file('composer.json') && is_readable('composer.json')) {
-            $composer = json_decode(file_get_contents('composer.json'), true, 512, \JSON_THROW_ON_ERROR);
+            if (false === ($composerContent = file_get_contents('composer.json'))) {
+                throw new \RuntimeException('Cannot read composer.json content.');
+            }
+            $composer = json_decode($composerContent, true, 512, \JSON_THROW_ON_ERROR);
             foreach ($composer['autoload']['psr-4'] ?? [] as $prefix => $output) {
                 if ('' === $prefix) {
                     continue;
@@ -64,12 +78,6 @@ final class GenerateCommand extends Command
                 break;
             }
         }
-
-        $this
-            ->setName('generate')
-            ->setDescription('Generate the PHP code')
-            ->addArgument('output', $this->defaultOutput ? InputArgument::OPTIONAL : InputArgument::REQUIRED, 'The output directory', $this->defaultOutput)
-            ->addArgument('config', InputArgument::OPTIONAL, 'The config file to use (default to "schema.yaml" in the current directory, will generate all types if no config file exists)');
     }
 
     /**
@@ -81,9 +89,9 @@ final class GenerateCommand extends Command
         $outputDir = $input->getArgument('output');
         $configArgument = $input->getArgument('config');
 
-        if ($dir = realpath($input->getArgument('output'))) {
+        if ($dir = realpath($outputDir)) {
             if (!is_dir($dir)) {
-                if (!$this->defaultOutput) {
+                if (!$defaultOutput) {
                     throw new \InvalidArgumentException(sprintf('The file "%s" is not a directory.', $dir));
                 }
 
@@ -114,12 +122,20 @@ final class GenerateCommand extends Command
                 throw new \InvalidArgumentException(sprintf('The file "%s" isn\'t readable.', $configArgument));
             }
 
+            if (false === ($configContent = file_get_contents($configArgument))) {
+                throw new \RuntimeException(sprintf('Cannot read "%s" content.', $configArgument));
+            }
+
             $parser = new Parser();
-            $config = $parser->parse(file_get_contents($configArgument));
+            $config = $parser->parse($configContent);
             unset($parser);
         } elseif (is_readable(self::DEFAULT_CONFIG_FILE)) {
+            if (false === ($defaultConfigContent = file_get_contents(self::DEFAULT_CONFIG_FILE))) {
+                throw new \RuntimeException(sprintf('Cannot read "%s" content.', self::DEFAULT_CONFIG_FILE));
+            }
+
             $parser = new Parser();
-            $config = $parser->parse(file_get_contents(self::DEFAULT_CONFIG_FILE));
+            $config = $parser->parse($defaultConfigContent);
             unset($parser);
         } else {
             $helper = $this->getHelper('question');
@@ -134,6 +150,7 @@ final class GenerateCommand extends Command
 
         $processor = new Processor();
         $configuration = new TypesGeneratorConfiguration($dir === $defaultOutput ? $this->namespacePrefix : null);
+        /** @var Configuration */
         $processedConfiguration = $processor->processConfiguration($configuration, [$config]);
         $processedConfiguration['output'] = $outputDir;
         if (!$processedConfiguration['output']) {
@@ -142,7 +159,7 @@ final class GenerateCommand extends Command
 
         $graphs = [];
         foreach ($processedConfiguration['vocabularies'] as $vocab) {
-            $graph = new Graph();
+            $graph = new RdfGraph();
             if (0 === strpos($vocab['uri'], 'http://') || 0 === strpos($vocab['uri'], 'https://')) {
                 $graph->load($vocab['uri'], $vocab['format']);
             } else {

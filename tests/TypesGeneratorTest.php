@@ -20,10 +20,12 @@ use ApiPlatform\SchemaGenerator\Printer;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
 use Doctrine\Inflector\InflectorFactory;
-use EasyRdf\Graph;
+use EasyRdf\Graph as RdfGraph;
+use EasyRdf\RdfNamespace;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\NullLogger;
+use Symfony\Component\Config\Definition\Processor;
 use Twig\Environment;
 
 /**
@@ -32,6 +34,11 @@ use Twig\Environment;
 class TypesGeneratorTest extends TestCase
 {
     use ProphecyTrait;
+
+    protected function setUp(): void
+    {
+        RdfNamespace::set('schema', 'https://schema.org/');
+    }
 
     public function testGenerate(): void
     {
@@ -58,7 +65,11 @@ class TypesGeneratorTest extends TestCase
         );
 
         $outputDir = 'build/type-generator-test';
-        $typesGenerator->generate($this->getConfig($outputDir));
+        $configuration = new TypesGeneratorConfiguration();
+        /** @var Configuration $processedConfiguration */
+        $processedConfiguration = (new Processor())->processConfiguration($configuration, [$this->getConfig()]);
+        $processedConfiguration['output'] = $outputDir;
+        $typesGenerator->generate($processedConfiguration);
 
         $article = file_get_contents("$outputDir/App/Entity/Article.php");
         $this->assertStringContainsString('abstract class Article extends CreativeWork', $article);
@@ -122,9 +133,12 @@ abstract class Thing
 PHP, $thing);
     }
 
+    /**
+     * @return RdfGraph[]
+     */
     private function getGraphs(): array
     {
-        $graph = new Graph();
+        $graph = new RdfGraph();
 
         $graph->addResource('https://schema.org/Article', 'rdf:type', 'rdfs:Class');
         $graph->addResource('https://schema.org/Article', 'rdfs:subClassOf', 'https://schema.org/CreativeWork');
@@ -178,6 +192,9 @@ PHP, $thing);
         return [$graph];
     }
 
+    /**
+     * @return array<string, string>
+     */
     private function getCardinalities(): array
     {
         return [
@@ -192,30 +209,36 @@ PHP, $thing);
         ];
     }
 
-    private function getConfig(string $outputDir): array
+    /**
+     * @return array{
+     *     annotationGenerators: string[],
+     *     attributeGenerators: string[],
+     *     types: array<string, array{
+     *         allProperties?: boolean,
+     *         properties?: ?array<string, array{
+     *             cardinality: string,
+     *             range: string
+     *         }>
+     *     }>
+     * }
+     */
+    private function getConfig(): array
     {
         return [
             'annotationGenerators' => [
             ],
             'attributeGenerators' => [
             ],
-            'checkIsGoodRelations' => false,
-            'namespaces' => [
-                'entity' => 'App\Entity',
-            ],
-            'output' => $outputDir,
-            'allTypes' => false,
             'types' => [
                 'Article' => [
-                    'allProperties' => false,
+                    'parent' => null,
                     'properties' => [
                         'articleBody' => null,
                         'articleSection' => null,
                     ],
-                    'vocabularyNamespace' => TypesGeneratorConfiguration::SCHEMA_ORG_NAMESPACE,
                 ],
                 'CreativeWork' => [
-                    'allProperties' => false,
+                    'parent' => null,
                     'properties' => [
                         'author' => [
                             'cardinality' => CardinalitiesExtractor::CARDINALITY_N_0,
@@ -225,37 +248,24 @@ PHP, $thing);
                         'headline' => null,
                         'isFamilyFriendly' => null,
                     ],
-                    'vocabularyNamespace' => TypesGeneratorConfiguration::SCHEMA_ORG_NAMESPACE,
                 ],
                 'BlogPosting' => [
+                    'parent' => null,
                     'allProperties' => true,
                     'properties' => null,
-                    'vocabularyNamespace' => TypesGeneratorConfiguration::SCHEMA_ORG_NAMESPACE,
                 ],
                 'Person' => [
-                    'allProperties' => false,
+                    'parent' => null,
                     'properties' => [],
-                    'vocabularyNamespace' => TypesGeneratorConfiguration::SCHEMA_ORG_NAMESPACE,
                 ],
                 'SocialMediaPosting' => [
+                    'parent' => null,
                     'allProperties' => true,
-                    'vocabularyNamespace' => TypesGeneratorConfiguration::SCHEMA_ORG_NAMESPACE,
                 ],
                 'Thing' => [
+                    'parent' => null,
                     'allProperties' => true,
-                    'vocabularyNamespace' => TypesGeneratorConfiguration::SCHEMA_ORG_NAMESPACE,
                 ],
-            ],
-            'id' => [
-                'generate' => true,
-                'generationStrategy' => 'auto',
-                'writable' => false,
-                'onClass' => 'child',
-            ],
-            'useInterface' => false,
-            'doctrine' => [
-                'useCollection' => true,
-                'resolveTargetEntityConfigPath' => null,
             ],
         ];
     }

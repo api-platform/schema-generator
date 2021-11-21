@@ -17,6 +17,7 @@ use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
+use ApiPlatform\SchemaGenerator\Model\Use_;
 use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -25,6 +26,7 @@ use Psr\Log\LoggerInterface;
 
 final class PropertyGenerator
 {
+    /** @var string[] */
     private static array $rangeProperties = [
         'schema:rangeIncludes',
         'rdfs:range',
@@ -33,8 +35,12 @@ final class PropertyGenerator
     private GoodRelationsBridge $goodRelationsBridge;
     private LoggerInterface $logger;
     private PhpTypeConverterInterface $phpTypeConverter;
+    /** @var array<string, string> */
     private array $cardinalities;
 
+    /**
+     * @param array<string, string> $cardinalities
+     */
     public function __construct(GoodRelationsBridge $goodRelationsBridge, PhpTypeConverterInterface $phpTypeConverter, $cardinalities, LoggerInterface $logger)
     {
         $this->goodRelationsBridge = $goodRelationsBridge;
@@ -43,6 +49,10 @@ final class PropertyGenerator
         $this->logger = $logger;
     }
 
+    /**
+     * @param Configuration     $config
+     * @param TypeConfiguration $typeConfig
+     */
     public function __invoke(array $config, Class_ $class, RdfResource $type, array $typeConfig, RdfResource $property, bool $isCustom = false): Class_
     {
         $typeUri = $type->getUri();
@@ -54,24 +64,16 @@ final class PropertyGenerator
             $this->logger->warning(sprintf('The property "%s" (type "%s") is not part of GoodRelations.', $propertyUri, $typeUri));
         }
 
-        // Ignore or warn when properties are legacy
-        if (null !== $property && preg_match('/legacy spelling/', (string) $property->get('rdfs:comment'))) {
-            if (isset($typeConfig['properties'])) {
-                $this->logger->warning(sprintf('The property "%s" (type "%s") is legacy.', $propertyUri, $typeUri));
-            } else {
-                $this->logger->debug(sprintf('The property "%s" (type "%s") is legacy. Ignoring.', $propertyUri, $typeUri));
-
-                return $class;
-            }
+        // Warn when properties are legacy
+        if (preg_match('/legacy spelling/', (string) $property->get('rdfs:comment'))) {
+            $this->logger->warning(sprintf('The property "%s" (type "%s") is legacy.', $propertyUri, $typeUri));
         }
 
         $propertyConfig = $typeConfig['properties'][$propertyName] ?? [];
 
         $ranges = [];
         foreach (self::$rangeProperties as $rangePropertyType) {
-            /**
-             * @var RdfResource $range
-             */
+            /** @var RdfResource $range */
             foreach ($property->all($rangePropertyType, 'resource') as $range) {
                 $ranges[] = $this->getRanges($range, $propertyConfig, $config);
             }
@@ -150,17 +152,23 @@ final class PropertyGenerator
         $class->addProperty($schemaGeneratorProperty);
 
         if ($isArray) {
-            $class->markWithConstructor();
+            $class->hasConstructor = true;
 
             if ($config['doctrine']['useCollection']) {
-                $class->addUse(ArrayCollection::class);
-                $class->addUse(Collection::class);
+                $class->addUse(new Use_(ArrayCollection::class));
+                $class->addUse(new Use_(Collection::class));
             }
         }
 
         return $class;
     }
 
+    /**
+     * @param PropertyConfiguration|array{} $propertyConfig
+     * @param Configuration $config
+     *
+     * @return RdfResource[]
+     */
     private function getRanges(RdfResource $range, array $propertyConfig, array $config): array
     {
         $localName = $range->localName();

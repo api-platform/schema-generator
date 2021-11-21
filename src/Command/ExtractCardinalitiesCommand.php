@@ -16,7 +16,7 @@ namespace ApiPlatform\SchemaGenerator\Command;
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
 use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
-use EasyRdf\Graph;
+use EasyRdf\Graph as RdfGraph;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -50,7 +50,7 @@ final class ExtractCardinalitiesCommand extends Command
         $vocabFile = $input->getOption('vocabulary-file');
 
         $relations = [];
-        $graph = new Graph();
+        $graph = new RdfGraph();
 
         $format = pathinfo($vocabFile, \PATHINFO_EXTENSION) ?: 'guess';
         if (0 === strpos($vocabFile, 'http://') || 0 === strpos($vocabFile, 'https://')) {

@@ -15,8 +15,10 @@ namespace ApiPlatform\SchemaGenerator\AttributeGenerator;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\SchemaGenerator\Model\Attribute;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
+use ApiPlatform\SchemaGenerator\Model\Use_;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -33,7 +35,7 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generateClassAttributes(Class_ $class): array
     {
-        if ($class->isAbstract()) {
+        if ($class->isAbstract) {
             return [];
         }
 
@@ -61,11 +63,17 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
             }
         }
 
-        return [['ApiResource' => $arguments]];
+        return [new Attribute('ApiResource', $arguments)];
     }
 
     /**
      * Verifies that the operations config is valid.
+     *
+     * @template T of array
+     *
+     * @param T $operations
+     *
+     * @return T
      */
     private function validateClassOperations(array $operations): array
     {
@@ -88,7 +96,7 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
             $arguments['security'] = $property->security;
         }
 
-        return $property->isCustom ? [] : [['ApiProperty' => $arguments]];
+        return $property->isCustom ? [] : [new Attribute('ApiProperty', $arguments)];
     }
 
     /**
@@ -96,6 +104,6 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generateUses(Class_ $class): array
     {
-        return !$class->isEnum() ? [ApiResource::class, ApiProperty::class] : [];
+        return !$class->isEnum() ? [new Use_(ApiResource::class), new Use_(ApiProperty::class)] : [];
     }
 }

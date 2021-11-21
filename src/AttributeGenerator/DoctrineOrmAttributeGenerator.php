@@ -14,8 +14,10 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\AttributeGenerator;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
+use ApiPlatform\SchemaGenerator\Model\Attribute;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
+use ApiPlatform\SchemaGenerator\Model\Use_;
 
 /**
  * Doctrine attribute generator.
@@ -40,27 +42,37 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generateClassAttributes(Class_ $class): array
     {
-        if ($doctrineAttributes = ($this->config['types'][$class->name()]['doctrine']['attributes'] ?? false)) {
-            return $doctrineAttributes;
+        if ($doctrineAttributes = $this->config['types'][$class->name()]['doctrine']['attributes']) {
+            $attributes = [];
+            foreach ($doctrineAttributes as $attributeName => $attributeArgs) {
+                $attributes[] = new Attribute($attributeName, $attributeArgs);
+            }
+
+            return $attributes;
         }
 
         if ($class->isEnum()) {
             return [];
         }
 
-        if ($class->isEmbeddable()) {
-            return [['ORM\Embeddable' => []]];
+        if ($class->isEmbeddable) {
+            return [new Attribute('ORM\Embeddable')];
         }
 
         $attributes = [];
-        if ($class->isAbstract()) {
-            if ($inheritanceAttributes = ($this->config['doctrine']['inheritanceAttributes'] ?? [])) {
-                return $inheritanceAttributes;
+        if ($class->isAbstract) {
+            if ($inheritanceAttributes = $this->config['doctrine']['inheritanceAttributes']) {
+                $attributes = [];
+                foreach ($inheritanceAttributes as $attributeName => $attributeArgs) {
+                    $attributes[] = new Attribute($attributeName, $attributeArgs);
+                }
+
+                return $attributes;
             }
 
-            $attributes[] = ['ORM\MappedSuperclass' => []];
+            $attributes[] = new Attribute('ORM\MappedSuperclass');
         } else {
-            $attributes[] = ['ORM\Entity' => []];
+            $attributes[] = new Attribute('ORM\Entity');
         }
 
         foreach (self::RESERVED_KEYWORDS as $keyword) {
@@ -68,7 +80,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                 continue;
             }
 
-            $attributes[] = ['ORM\Table' => ['name' => strtolower($class->name())]];
+            $attributes[] = new Attribute('ORM\Table', ['name' => strtolower($class->name())]);
 
             return $attributes;
         }
@@ -86,7 +98,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
         }
 
         if ($property->ormColumn) {
-            return [['ORM\Column' => $property->ormColumn]];
+            return [new Attribute('ORM\Column', $property->ormColumn)];
         }
 
         if ($property->isId) {
@@ -102,7 +114,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
             $type = $property->isArray ? 'simple_array' : 'string';
         } elseif ($property->isArray) {
             $type = 'json';
-        } elseif (null !== $phpType = $this->phpTypeConverter->getPhpType($property, $this->config, [])) {
+        } elseif ($property->range && null !== ($phpType = $this->phpTypeConverter->getPhpType($property, $this->config, []))) {
             switch ($property->range->getUri()) {
                 // TODO: use more precise types for int (smallint, bigint...)
                 case 'http://www.w3.org/2001/XMLSchema#time':
@@ -157,70 +169,70 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                 }
             }
 
-            return [['ORM\Column' => $args]];
+            return [new Attribute('ORM\Column', $args)];
         }
 
         if (null === $relationName = $this->getRelationName($property->rangeName)) {
-            $this->logger->error('The type "{type}" of the property "{property}" from the class "{class}" doesn\'t exist', ['type' => $property->range->getUri(), 'property' => $property->name(), 'class' => $className]);
+            $this->logger->error('The type "{type}" of the property "{property}" from the class "{class}" doesn\'t exist', ['type' => $property->range ? $property->range->getUri() : $property->rangeName, 'property' => $property->name(), 'class' => $className]);
 
             return [];
         }
 
         if ($property->isEmbedded) {
-            return [['ORM\Embedded' => ['class' => $relationName, 'columnPrefix' => $property->columnPrefix]]];
+            return [new Attribute('ORM\Embedded', ['class' => $relationName, 'columnPrefix' => $property->columnPrefix])];
         }
 
         $attributes = [];
         switch ($property->cardinality) {
             case CardinalitiesExtractor::CARDINALITY_0_1:
-                $attributes[] = ['ORM\OneToOne' => ['targetEntity' => $relationName]];
+                $attributes[] = new Attribute('ORM\OneToOne', ['targetEntity' => $relationName]);
                 break;
             case CardinalitiesExtractor::CARDINALITY_1_1:
-                $attributes[] = ['ORM\OneToOne' => ['targetEntity' => $relationName]];
-                $attributes[] = ['ORM\JoinColumn' => ['nullable' => false]];
+                $attributes[] = new Attribute('ORM\OneToOne', ['targetEntity' => $relationName]);
+                $attributes[] = new Attribute('ORM\JoinColumn', ['nullable' => false]);
                 break;
             case CardinalitiesExtractor::CARDINALITY_UNKNOWN:
             case CardinalitiesExtractor::CARDINALITY_N_0:
                 if (null !== $property->inversedBy) {
-                    $attributes[] = ['ORM\ManyToOne' => ['targetEntity' => $relationName, 'inversedBy' => $property->inversedBy]];
+                    $attributes[] = new Attribute('ORM\ManyToOne', ['targetEntity' => $relationName, 'inversedBy' => $property->inversedBy]);
                 } else {
-                    $attributes[] = ['ORM\ManyToOne' => ['targetEntity' => $relationName]];
+                    $attributes[] = new Attribute('ORM\ManyToOne', ['targetEntity' => $relationName]);
                 }
                 break;
             case CardinalitiesExtractor::CARDINALITY_N_1:
                 if (null !== $property->inversedBy) {
-                    $attributes[] = ['ORM\ManyToOne' => ['targetEntity' => $relationName, 'inversedBy' => $property->inversedBy]];
+                    $attributes[] = new Attribute('ORM\ManyToOne', ['targetEntity' => $relationName, 'inversedBy' => $property->inversedBy]);
                 } else {
-                    $attributes[] = ['ORM\ManyToOne' => ['targetEntity' => $relationName]];
+                    $attributes[] = new Attribute('ORM\ManyToOne', ['targetEntity' => $relationName]);
                 }
-                $attributes[] = ['ORM\JoinColumn' => ['nullable' => false]];
+                $attributes[] = new Attribute('ORM\JoinColumn', ['nullable' => false]);
                 break;
             case CardinalitiesExtractor::CARDINALITY_0_N:
                 if (null !== $property->mappedBy) {
-                    $attributes[] = ['ORM\OneToMany' => ['targetEntity' => $relationName, 'mappedBy' => $property->mappedBy]];
+                    $attributes[] = new Attribute('ORM\OneToMany', ['targetEntity' => $relationName, 'mappedBy' => $property->mappedBy]);
                 } else {
-                    $attributes[] = ['ORM\ManyToMany' => ['targetEntity' => $relationName]];
+                    $attributes[] = new Attribute('ORM\ManyToMany', ['targetEntity' => $relationName]);
                 }
                 if ($property->relationTableName) {
-                    $attributes[] = ['ORM\JoinTable' => ['name' => $property->relationTableName]];
+                    $attributes[] = new Attribute('ORM\JoinTable', ['name' => $property->relationTableName]);
                 }
-                $attributes[] = ['ORM\InverseJoinColumn' => ['unique' => true]];
+                $attributes[] = new Attribute('ORM\InverseJoinColumn', ['unique' => true]);
                 break;
             case CardinalitiesExtractor::CARDINALITY_1_N:
                 if (null !== $property->mappedBy) {
-                    $attributes[] = ['ORM\OneToMany' => ['targetEntity' => $relationName, 'mappedBy' => $property->mappedBy]];
+                    $attributes[] = new Attribute('ORM\OneToMany', ['targetEntity' => $relationName, 'mappedBy' => $property->mappedBy]);
                 } else {
-                    $attributes[] = ['ORM\ManyToMany' => ['targetEntity' => $relationName]];
+                    $attributes[] = new Attribute('ORM\ManyToMany', ['targetEntity' => $relationName]);
                 }
                 if ($property->relationTableName) {
-                    $attributes[] = ['ORM\JoinTable' => ['name' => $property->relationTableName]];
+                    $attributes[] = new Attribute('ORM\JoinTable', ['name' => $property->relationTableName]);
                 }
-                $attributes[] = ['ORM\InverseJoinColumn' => ['nullable' => false, 'unique' => true]];
+                $attributes[] = new Attribute('ORM\InverseJoinColumn', ['nullable' => false, 'unique' => true]);
                 break;
             case CardinalitiesExtractor::CARDINALITY_N_N:
-                $attributes[] = ['ORM\ManyToMany' => ['targetEntity' => $relationName]];
+                $attributes[] = new Attribute('ORM\ManyToMany', ['targetEntity' => $relationName]);
                 if ($property->relationTableName) {
-                    $attributes[] = ['ORM\JoinTable' => ['name' => $property->relationTableName]];
+                    $attributes[] = new Attribute('ORM\JoinTable', ['name' => $property->relationTableName]);
                 }
                 break;
         }
@@ -233,14 +245,17 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generateUses(Class_ $class): array
     {
-        return $class->isEnum() ? [] : ['Doctrine\ORM\Mapping as ORM'];
+        return $class->isEnum() ? [] : [new Use_('Doctrine\ORM\Mapping', 'ORM')];
     }
 
+    /**
+     * @return Attribute[]
+     */
     private function generateIdAttributes(): array
     {
-        $attributes = [['ORM\Id' => []]];
+        $attributes = [new Attribute('ORM\Id')];
         if ('none' !== $this->config['id']['generationStrategy'] && !$this->config['id']['writable']) {
-            $attributes[] = ['ORM\GeneratedValue' => ['strategy' => strtoupper($this->config['id']['generationStrategy'])]];
+            $attributes[] = new Attribute('ORM\GeneratedValue', ['strategy' => strtoupper($this->config['id']['generationStrategy'])]);
         }
 
         switch ($this->config['id']['generationStrategy']) {
@@ -255,7 +270,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
             break;
         }
 
-        $attributes[] = ['ORM\Column' => ['type' => $type]];
+        $attributes[] = new Attribute('ORM\Column', ['type' => $type]);
 
         return $attributes;
     }
@@ -276,21 +291,13 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                 return sprintf('%s\\%s', $this->config['types'][$class->name()]['namespaces']['interface'], $class->interfaceName());
             }
 
-            if (isset($this->config['namespaces']['interface'])) {
-                return sprintf('%s\\%s', $this->config['namespaces']['interface'], $class->interfaceName());
-            }
-
-            return $class->interfaceName();
+            return sprintf('%s\\%s', $this->config['namespaces']['interface'], $class->interfaceName());
         }
 
         if (isset($this->config['types'][$rangeName]['namespaces']['class'])) {
             return sprintf('%s\\%s', $this->config['types'][$class->name()]['namespaces']['class'], $class->name());
         }
 
-        if (isset($this->config['namespaces']['entity'])) {
-            return sprintf('%s\\%s', $this->config['namespaces']['entity'], $rangeName);
-        }
-
-        return $rangeName;
+        return sprintf('%s\\%s', $this->config['namespaces']['entity'], $rangeName);
     }
 }

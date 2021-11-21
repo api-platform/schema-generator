@@ -18,8 +18,12 @@ use ApiPlatform\SchemaGenerator\PropertyGenerator\IdPropertyGenerator;
 
 final class ClassIdAppender implements ClassMutatorInterface
 {
+    /** @var Configuration */
     private array $config;
 
+    /**
+     * @param Configuration $config
+     */
     public function __construct(array $config)
     {
         $this->config = $config;
@@ -29,13 +33,13 @@ final class ClassIdAppender implements ClassMutatorInterface
     {
         if (
             $class->isEnum()
-            || $class->isEmbeddable()
+            || $class->isEmbeddable
             || ($class->hasParent() && 'parent' === $this->config['id']['onClass'])
-            || ($class->hasChild() && 'child' === $this->config['id']['onClass'])
+            || ($class->hasChild && 'child' === $this->config['id']['onClass'])
         ) {
             return $class;
         }
 
-        return $class->addProperty((new IdPropertyGenerator())($this->config['id']['generationStrategy'], $this->config['id']['writable'] ?? false));
+        return $class->addProperty((new IdPropertyGenerator())($this->config['id']['generationStrategy'], $this->config['id']['writable']));
     }
 }

@@ -22,7 +22,6 @@ types:
       url: ~
       friends: { range: "Person", cardinality: (0..*) }
   PostalAddress:
-    # Disable the generation of the class hierarchy for this type
     properties:
       # Force the type of the addressCountry property to text
       addressCountry: { range: "Text" }

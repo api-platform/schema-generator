@@ -13,22 +13,23 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator;
 
+use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
-use EasyRdf\Resource;
+use EasyRdf\Resource as RdfResource;
 
 final class PhpTypeConverter implements PhpTypeConverterInterface
 {
     /**
      * Is this type a datatype?
      */
-    public function isDatatype(Resource $range): bool
+    public function isDatatype(RdfResource $range): bool
     {
         return isset(PhpTypeConverterInterface::BASE_MAPPING[$this->getUri($range)]) || $this->isLangString($range);
     }
 
     public function getPhpType(Property $property, array $config = [], array $classes = []): ?string
     {
-        if ($property->isArray) {
+        if ($property->isArray && $property->range) {
             return ($config['doctrine']['useCollection'] ?? false) && !$this->isDatatype($property->range) ? 'Collection' : 'array';
         }
 
@@ -46,6 +47,9 @@ final class PhpTypeConverter implements PhpTypeConverterInterface
         return $identifier;
     }
 
+    /**
+     * @param Class_[] $classes
+     */
     private function getNonArrayType(Property $property, array $classes): ?string
     {
         if ($property->isEnum) {
@@ -78,7 +82,7 @@ final class PhpTypeConverter implements PhpTypeConverterInterface
      *
      * @todo find something smarter to detect this kind of strings
      */
-    private function isLangString(Resource $range): bool
+    private function isLangString(RdfResource $range): bool
     {
         return $range->isBNode() &&
             null !== ($unionOf = $range->get('owl:unionOf')) &&
@@ -86,7 +90,7 @@ final class PhpTypeConverter implements PhpTypeConverterInterface
             'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString' === $rdfFirst->getUri();
     }
 
-    private function getUri(Resource $range): string
+    private function getUri(RdfResource $range): string
     {
         if ($range->isBNode() && $onDatatype = $range->get('owl:onDatatype')) {
             return $onDatatype->getUri();

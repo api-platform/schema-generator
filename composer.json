@@ -35,14 +35,14 @@
         "doctrine/inflector": "^1.4.3 || ^2.0",
         "easyrdf/easyrdf": "^1.1",
         "friendsofphp/php-cs-fixer": "^2.15 || ^3.0",
-        "league/html-to-markdown": "^4.9",
+        "league/html-to-markdown": "^5.0",
         "psr/log": "^1.0",
         "symfony/config": "^5.2",
         "symfony/console": "^5.2",
         "symfony/yaml": "^5.2",
         "symfony/filesystem": "^5.2",
         "twig/twig": "^3.0",
-        "nette/php-generator": "3.6"
+        "nette/php-generator": "^3.6"
     },
     "require-dev": {
         "api-platform/core": "^2.5",
@@ -53,10 +53,9 @@
         "symfony/serializer": "^5.2",
         "symfony/validator": "^5.2",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpstan/phpstan": "^0.12"
+        "phpstan/phpstan": "^1.2.0"
     },
     "bin": [
         "bin/schema"
-    ],
-    "minimum-stability": "dev"
+    ]
 }

@@ -16,9 +16,7 @@ namespace ApiPlatform\SchemaGenerator\AnnotationGenerator;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Constant;
 use ApiPlatform\SchemaGenerator\Model\Property;
-use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
-use Doctrine\Inflector\Inflector;
-use Psr\Log\LoggerInterface;
+use ApiPlatform\SchemaGenerator\Model\Use_;
 
 /**
  * Annotation Generator Interface.
@@ -27,50 +25,66 @@ use Psr\Log\LoggerInterface;
  */
 interface AnnotationGeneratorInterface
 {
-    public function __construct(PhpTypeConverterInterface $phpTypeConverter, LoggerInterface $logger, Inflector $inflector, array $graphs, array $cardinalities, array $config, array $classes);
-
     /**
      * Generates class's annotations.
+     *
+     * @return string[]
      */
     public function generateClassAnnotations(Class_ $class): array;
 
     /**
      * Generates interface's annotations.
+     *
+     * @return string[]
      */
     public function generateInterfaceAnnotations(Class_ $class): array;
 
     /**
      * Generates constant's annotations.
+     *
+     * @return string[]
      */
     public function generateConstantAnnotations(Constant $constant): array;
 
     /**
      * Generates field's annotation.
+     *
+     * @return string[]
      */
     public function generatePropertyAnnotations(Property $property, string $className): array;
 
     /**
      * Generates getter's annotation.
+     *
+     * @return string[]
      */
     public function generateGetterAnnotations(Property $property): array;
 
     /**
      * Generates setter's annotation.
+     *
+     * @return string[]
      */
     public function generateSetterAnnotations(Property $property): array;
 
     /**
      * Generates adder's annotation.
+     *
+     * @return string[]
      */
     public function generateAdderAnnotations(Property $property): array;
 
     /**
      * Generates remover's annotation.
+     *
+     * @return string[]
      */
     public function generateRemoverAnnotations(Property $property): array;
 
     /**
      * Generates uses.
+     *
+     * @return Use_[]
      */
     public function generateUses(Class_ $class): array;
 }

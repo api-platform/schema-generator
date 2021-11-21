@@ -13,8 +13,9 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator;
 
+use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
-use EasyRdf\Resource;
+use EasyRdf\Resource as RdfResource;
 
 interface PhpTypeConverterInterface
 {
@@ -92,10 +93,13 @@ interface PhpTypeConverterInterface
     /**
      * Is this type a datatype?
      */
-    public function isDatatype(Resource $range): bool;
+    public function isDatatype(RdfResource $range): bool;
 
     /**
      * Gets the PHP type of this field.
+     *
+     * @param Configuration|array{} $config
+     * @param Class_[] $classes
      */
     public function getPhpType(Property $property, array $config = [], array $classes = []): ?string;
 

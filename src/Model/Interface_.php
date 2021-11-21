@@ -20,6 +20,7 @@ final class Interface_
 {
     private string $name;
     private string $namespace;
+    /** @var string[] */
     private array $annotations = [];
 
     public function __construct(string $name, string $namespace)

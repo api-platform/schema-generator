@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator;
 
-use EasyRdf\Graph;
-use EasyRdf\Resource;
+use EasyRdf\Graph as RdfGraph;
+use EasyRdf\Resource as RdfResource;
 
 /**
  * Extracts cardinalities from the OWL definition, from GoodRelations or from Schema.org's comments.
@@ -33,13 +33,13 @@ class CardinalitiesExtractor
     public const CARDINALITY_UNKNOWN = 'unknown';
 
     /**
-     * @var Graph[]
+     * @var RdfGraph[]
      */
     private array $graphs;
     private GoodRelationsBridge $goodRelationsBridge;
 
     /**
-     * @param Graph[] $graphs
+     * @param RdfGraph[] $graphs
      */
     public function __construct(array $graphs, GoodRelationsBridge $goodRelationsBridge)
     {
@@ -49,6 +49,8 @@ class CardinalitiesExtractor
 
     /**
      * Extracts cardinality of properties.
+     *
+     * @return array<string, string>
      */
     public function extract(): array
     {
@@ -56,6 +58,7 @@ class CardinalitiesExtractor
 
         foreach ($this->graphs as $graph) {
             foreach (TypesGenerator::$propertyTypes as $propertyType) {
+                /** @var RdfResource $property */
                 foreach ($graph->allOfType($propertyType) as $property) {
                     if ($property->isBNode()) {
                         continue;
@@ -76,7 +79,7 @@ class CardinalitiesExtractor
      *
      * @return string The cardinality
      */
-    private function extractForProperty(Resource $property): string
+    private function extractForProperty(RdfResource $property): string
     {
         $minCardinality = $property->get('owl:minCardinality');
         $maxCardinality = $property->get('owl:maxCardinality');
