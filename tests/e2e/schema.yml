@@ -29,8 +29,6 @@ types:
             url: ~
             customColumn: { ormColumn: {type: "decimal", precision: 5, scale: 1, options: {comment: "my comment"}} }
     PostalAddress:
-        # Disable the generation of the class hierarchy for this type
-        parent: false
         properties:
             addressCountry: { range: https://schema.org/Text }
             addressLocality: ~

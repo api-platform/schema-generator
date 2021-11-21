@@ -18,13 +18,15 @@ use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
 
 final class ClassPropertiesTypehintMutator implements ClassMutatorInterface
 {
-    /** @var Class_[]|array */
+    /** @var Class_[] */
     private array $classes;
     private PhpTypeConverterInterface $phpTypeConverter;
+    /** @var Configuration */
     private array $config;
 
     /**
-     * @param Class_[]|array $classes
+     * @param Configuration $config
+     * @param Class_[]      $classes
      */
     public function __construct(PhpTypeConverterInterface $phpTypeConverter, array $config, array $classes)
     {
@@ -36,7 +38,7 @@ final class ClassPropertiesTypehintMutator implements ClassMutatorInterface
     public function __invoke(Class_ $class): Class_
     {
         foreach ($class->properties() as $property) {
-            $property->isEnum = isset($this->classes[$property->rangeName]) ? ($this->classes[$property->rangeName])->isEnum() : false;
+            $property->isEnum = isset($this->classes[$property->rangeName]) && ($this->classes[$property->rangeName])->isEnum();
             $property->typeHint = $this->phpTypeConverter->getPhpType(
                 $property,
                 $this->config,

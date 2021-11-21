@@ -47,7 +47,6 @@ types:
     properties:
       logo: { range: 'ImageObject' }
   Seller:
-    parent: false
     guessFrom: Person
     properties:
       name: ~
@@ -75,10 +74,10 @@ types:
       priceCurrency: ~
       validFrom: ~
       validThrough: ~
-  DeliveryChargeSpecification: { parent: false }
-  PaymentChargeSpecification: { parent: false }
+  DeliveryChargeSpecification: ~
+  PaymentChargeSpecification: ~
   OfferItemCondition: ~
   PaymentMethod: ~
   ItemAvailability: ~
   DeliveryMethod: ~
-  QuantitativeValue: { parent: false }
+  QuantitativeValue: ~

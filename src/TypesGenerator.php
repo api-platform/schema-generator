@@ -24,7 +24,7 @@ use ApiPlatform\SchemaGenerator\ClassMutator\EnumClassMutator;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGenerator;
 use Doctrine\Inflector\Inflector;
-use EasyRdf\Graph;
+use EasyRdf\Graph as RdfGraph;
 use EasyRdf\RdfNamespace;
 use EasyRdf\Resource as RdfResource;
 use PhpCsFixer\Cache\NullCacheManager;
@@ -80,12 +80,11 @@ class TypesGenerator
 
     private Environment $twig;
     private LoggerInterface $logger;
-    /**
-     * @var Graph[]
-     */
+    /** @var RdfGraph[] */
     private array $graphs;
     private PhpTypeConverterInterface $phpTypeConverter;
     private GoodRelationsBridge $goodRelationsBridge;
+    /** @var array<string, string> */
     private array $cardinalities;
     private Inflector $inflector;
     private Filesystem $filesystem;
@@ -93,7 +92,7 @@ class TypesGenerator
     private Printer $printer;
 
     /**
-     * @param Graph[] $graphs
+     * @param RdfGraph[] $graphs
      */
     public function __construct(Inflector $inflector, Environment $twig, LoggerInterface $logger, array $graphs, PhpTypeConverterInterface $phpTypeConverter, CardinalitiesExtractor $cardinalitiesExtractor, GoodRelationsBridge $goodRelationsBridge, Printer $printer)
     {
@@ -117,6 +116,8 @@ class TypesGenerator
 
     /**
      * Generates files.
+     *
+     * @param Configuration $config
      */
     public function generate(array $config): void
     {
@@ -150,10 +151,10 @@ class TypesGenerator
                 $class = (new EnumClassMutator(
                     $this->phpTypeConverter,
                     $this->graphs,
-                    $typeConfig['namespace'] ?? $config['namespaces']['enum']
+                    $config['namespaces']['enum']
                 ))($class);
             } else {
-                $class->withNamespace($typeConfig['namespaces']['class'] ?? $config['namespaces']['entity']);
+                $class->namespace = $typeConfig['namespaces']['class'] ?? $config['namespaces']['entity'];
 
                 // Interfaces
                 if ($config['useInterface']) {
@@ -165,7 +166,7 @@ class TypesGenerator
             }
 
             $class = (new ClassPropertiesAppender($this->propertyGenerator, $this->logger, $config, $propertiesMap, $this->graphs))($class);
-            $class->setEmbeddable($typeConfig['embeddable'] ?? false);
+            $class->isEmbeddable = $typeConfig['embeddable'] ?? false;
 
             $classes[$typeName] = $class;
         }
@@ -176,8 +177,8 @@ class TypesGenerator
             if ($class->hasParent() && !$class->isParentEnum()) {
                 $parentClass = $classes[$class->parent()] ?? null;
                 if (isset($parentClass)) {
-                    $parentClass->markAsHasChild();
-                    $class->setParentHasConstructor($parentClass->hasConstructor());
+                    $parentClass->hasChild = true;
+                    $class->parentHasConstructor = $parentClass->hasConstructor;
                 } else {
                     $this->logger->error(sprintf('The type "%s" (parent of "%s") doesn\'t exist', $class->parent(), $class->resourceUri()));
                 }
@@ -189,7 +190,7 @@ class TypesGenerator
         // Third pass
         foreach ($classes as &$class) {
             /* @var $class Class_ */
-            $class->setIsAbstract($config['types'][$class->name()]['abstract'] ?? $class->hasChild());
+            $class->isAbstract = $config['types'][$class->name()]['abstract'] ?? $class->hasChild;
 
             // When including all properties, ignore properties already set on parent
             if (($config['types'][$class->name()]['allProperties'] ?? true) && isset($classes[$class->parent()])) {
@@ -247,7 +248,7 @@ class TypesGenerator
             $class = (new AnnotationsAppender($classes, $annotationGenerators, $typesToGenerate))($class);
             $class = (new AttributeAppender($classes, $attributeGenerators))($class);
 
-            $classDir = $this->namespaceToDir($config, $class->namespace());
+            $classDir = $this->namespaceToDir($config, $class->namespace);
             $this->filesystem->mkdir($classDir);
 
             $path = sprintf('%s%s.php', $classDir, $className);
@@ -263,8 +264,8 @@ class TypesGenerator
                 $generatedFiles[] = $path;
                 file_put_contents($path, $this->printer->printFile($class->interfaceToNetteFile($config['header'] ?? null)));
 
-                if ($config['doctrine']['resolveTargetEntityConfigPath'] && !$class->isAbstract()) {
-                    $interfaceMappings[$class->interfaceNamespace().'\\'.$class->interfaceName()] = $class->namespace().'\\'.$className;
+                if ($config['doctrine']['resolveTargetEntityConfigPath'] && !$class->isAbstract) {
+                    $interfaceMappings[$class->interfaceNamespace().'\\'.$class->interfaceName()] = $class->namespace.'\\'.$className;
                 }
             }
         }
@@ -287,6 +288,8 @@ class TypesGenerator
 
     /**
      * Gets the parent classes of the current one and add them to $parentClasses array.
+     *
+     * @param RdfResource[] $parentClasses
      *
      * @return RdfResource[]
      */
@@ -319,6 +322,11 @@ class TypesGenerator
 
     /**
      * Creates a map between classes and properties.
+     *
+     * @param RdfResource[] $types
+     * @param Configuration $config
+     *
+     * @return array<string, RdfResource[]>
      */
     private function createPropertiesMap(array $types, array $config): array
     {
@@ -337,6 +345,7 @@ class TypesGenerator
 
         foreach ($this->graphs as $graph) {
             foreach (self::$propertyTypes as $propertyType) {
+                /** @var RdfResource $property */
                 foreach ($graph->allOfType($propertyType) as $property) {
                     if ($property->isBNode()) {
                         continue;
@@ -354,6 +363,11 @@ class TypesGenerator
         return $map;
     }
 
+    /**
+     * @param array{resources: RdfResource[], uris: string[], names: string[]}[] $typesResources
+     * @param Configuration                $config
+     * @param array<string, RdfResource[]> $map
+     */
     private function addPropertyToMap(RdfResource $property, RdfResource $domain, array $typesResources, array $config, array &$map): void
     {
         $propertyName = $property->localName();
@@ -401,6 +415,11 @@ class TypesGenerator
         }
     }
 
+    /**
+     * @param Configuration $config
+     *
+     * @return RdfResource[]
+     */
     private function defineTypesToGenerate(array $config): array
     {
         $typesToGenerate = [];
@@ -446,6 +465,8 @@ class TypesGenerator
 
     /**
      * Converts a namespace to a directory path according to PSR-4.
+     *
+     * @param Configuration $config
      */
     private function namespaceToDir(array $config, string $namespace): string
     {
@@ -458,6 +479,8 @@ class TypesGenerator
 
     /**
      * Uses PHP CS Fixer to make generated files following PSR and Symfony Coding Standards.
+     *
+     * @param string[] $files
      */
     private function fixCs(array $files): void
     {

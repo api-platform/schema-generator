@@ -75,7 +75,7 @@ config:
     checkIsGoodRelations: false
 
     # A license or any text to use as header of generated files
-    header:               false # Example: '// (c) Kévin Dunglas <dunglas@gmail.com>'
+    header:               null # Example: '// (c) Kévin Dunglas <dunglas@gmail.com>'
 
     # PHP namespaces
     namespaces:
@@ -98,7 +98,7 @@ config:
         # Use Doctrine's ArrayCollection instead of standard arrays
         useCollection:        true
 
-        # The Resolve Target Entity Listener config file pass
+        # The Resolve Target Entity Listener config file path
         resolveTargetEntityConfigPath: null
 
         # Doctrine inheritance attributes (if set, no other attributes are generated)

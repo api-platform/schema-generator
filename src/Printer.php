@@ -22,6 +22,8 @@ final class Printer extends NettePrinter
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->setTypeResolving(false);
     }
 }

@@ -13,8 +13,10 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\AttributeGenerator;
 
+use ApiPlatform\SchemaGenerator\Model\Attribute;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
+use ApiPlatform\SchemaGenerator\Model\Use_;
 
 /**
  * Attribute Generator Interface.
@@ -26,19 +28,21 @@ interface AttributeGeneratorInterface
     /**
      * Generates class's attributes.
      *
-     * @return array<string, array>[]
+     * @return Attribute[]
      */
     public function generateClassAttributes(Class_ $class): array;
 
     /**
      * Generates field's attributes.
      *
-     * @return array<string, array>[]
+     * @return Attribute[]
      */
     public function generatePropertyAttributes(Property $property, string $className): array;
 
     /**
      * Generates uses.
+     *
+     * @return Use_[]
      */
     public function generateUses(Class_ $class): array;
 }

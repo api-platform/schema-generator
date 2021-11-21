@@ -13,8 +13,10 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\AttributeGenerator;
 
+use ApiPlatform\SchemaGenerator\Model\Attribute;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
+use ApiPlatform\SchemaGenerator\Model\Use_;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -32,8 +34,8 @@ final class SerializerGroupsAttributeGenerator extends AbstractAttributeGenerato
      */
     public function generatePropertyAttributes(Property $property, string $className): array
     {
-        if (false === $property->isId && $property->groups()) {
-            return [['Groups' => [$property->groups()]]];
+        if (false === $property->isId && $property->groups) {
+            return [new Attribute('Groups', [$property->groups])];
         }
 
         return [];
@@ -44,6 +46,6 @@ final class SerializerGroupsAttributeGenerator extends AbstractAttributeGenerato
      */
     public function generateUses(Class_ $class): array
     {
-        return [Groups::class];
+        return [new Use_(Groups::class)];
     }
 }

@@ -15,7 +15,6 @@ namespace ApiPlatform\SchemaGenerator\Model;
 
 use Doctrine\Inflector\Inflector;
 use EasyRdf\Resource as RdfResource;
-use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Helpers;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpFile;
@@ -23,29 +22,35 @@ use Nette\PhpGenerator\PhpFile;
 final class Class_
 {
     private string $name;
-    private string $namespace = '';
-    private ?Interface_ $interface = null;
-    private array $uses = [];
+    private RdfResource $resource;
+    public string $namespace = '';
+    /** @var false|string|null */
+    private $parent;
+    public ?Interface_ $interface = null;
     /** @var Property[] */
     private array $properties = [];
+    /** @var Use_[] */
+    private array $uses = [];
+    /** @var Attribute[] */
+    private array $attributes = [];
+    /** @var string[] */
+    private array $annotations = [];
     /** @var array|Constant[] */
     private array $constants = [];
-    /** @var array<string, array>[] */
-    private array $attributes = [];
-    private array $annotations = [];
-    private bool $hasConstructor = false;
-    private bool $parentHasConstructor = false;
-    private bool $isAbstract = false;
-    private bool $hasChild = false;
-    private bool $embeddable = false;
-    /** @var bool|string|null */
-    private $parent;
-    private RdfResource $resource;
+    public bool $hasConstructor = false;
+    public bool $parentHasConstructor = false;
+    public bool $isAbstract = false;
+    public bool $hasChild = false;
+    public bool $isEmbeddable = false;
     public ?string $security = null;
+    /** @var array<string, array<string, string[]>> */
     public array $operations = [];
 
     private const SCHEMA_ORG_ENUMERATION = 'https://schema.org/Enumeration';
 
+    /**
+     * @param false|string|null $parent
+     */
     public function __construct(string $name, RdfResource $resource, $parent = null)
     {
         $this->name = $name;
@@ -56,6 +61,55 @@ final class Class_
     public function name(): string
     {
         return $this->name;
+    }
+
+    public function resource(): RdfResource
+    {
+        return $this->resource;
+    }
+
+    public function resourceUri(): string
+    {
+        return $this->resource->getUri();
+    }
+
+    public function resourceComment(): ?string
+    {
+        return (string) $this->resource->get('rdfs:comment');
+    }
+
+    public function resourceLocalName(): string
+    {
+        return $this->resource->localName();
+    }
+
+    public function isInNamespace(string $namespace): bool
+    {
+        return $this->namespace === $namespace;
+    }
+
+    public function parent(): ?string
+    {
+        if (false === $this->parent) {
+            return '';
+        }
+
+        return $this->parent;
+    }
+
+    public function hasParent(): bool
+    {
+        return '' !== $this->parent && null !== $this->parent && false !== $this->parent;
+    }
+
+    /**
+     * @param false|string|null $parent
+     */
+    public function withParent($parent): self
+    {
+        $this->parent = $parent;
+
+        return $this;
     }
 
     public function interfaceName(): ?string
@@ -77,30 +131,27 @@ final class Class_
         return $this->interface->toNetteFile($fileHeader);
     }
 
-    public function withNamespace(string $namespace): self
+    /** @return array<string, Property> */
+    public function properties(): array
     {
-        $this->namespace = $namespace;
-
-        return $this;
+        return $this->properties;
     }
 
-    public function withParent($parent): self
+    /** @return array<string, Property> */
+    public function uniqueProperties(): array
     {
-        $this->parent = $parent;
-
-        return $this;
+        return array_filter($this->properties, static fn (Property $property) => $property->isUnique);
     }
 
-    public function withInterface(Interface_ $interface): self
+    /** @return string[] */
+    public function uniquePropertyNames(): array
     {
-        $this->interface = $interface;
-
-        return $this;
+        return array_map(static fn (Property $property) => $property->name(), array_values($this->uniqueProperties()));
     }
 
     public function addProperty(Property $property): self
     {
-        $this->properties[$property->name] = $property;
+        $this->properties[$property->name()] = $property;
 
         return $this;
     }
@@ -122,7 +173,7 @@ final class Class_
         return isset($this->properties[$propertyName]);
     }
 
-    public function addUse(string $use): self
+    public function addUse(Use_ $use): self
     {
         if (!\in_array($use, $this->uses, true)) {
             $this->uses[] = $use;
@@ -131,10 +182,7 @@ final class Class_
         return $this;
     }
 
-    /**
-     * @param array<string, array> $attribute
-     */
-    public function addAttribute(array $attribute): self
+    public function addAttribute(Attribute $attribute): self
     {
         if (!\in_array($attribute, $this->attributes, true)) {
             $this->attributes[] = $attribute;
@@ -174,64 +222,9 @@ final class Class_
         return $this->constants;
     }
 
-    public function resource(): RdfResource
-    {
-        return $this->resource;
-    }
-
-    public function resourceUri(): string
-    {
-        return $this->resource->getUri();
-    }
-
-    public function resourceComment(): ?string
-    {
-        return (string) $this->resource->get('rdfs:comment');
-    }
-
-    public function resourceLocalName(): string
-    {
-        return $this->resource->localName();
-    }
-
-    public function parent(): ?string
-    {
-        if (false === $this->parent) {
-            return '';
-        }
-
-        return $this->parent;
-    }
-
-    public function setParent(?string $parent): void
-    {
-        $this->parent = $parent;
-    }
-
-    public function hasParent(): bool
-    {
-        return '' !== $this->parent && null !== $this->parent && false !== $this->parent;
-    }
-
-    public function markWithConstructor(): self
-    {
-        $this->hasConstructor = true;
-
-        return $this;
-    }
-
-    public function setIsAbstract(bool $isAbstract): self
-    {
-        $this->isAbstract = $isAbstract;
-
-        return $this;
-    }
-
-    public function isAbstract(): bool
-    {
-        return $this->isAbstract;
-    }
-
+    /**
+     * @return RdfResource[]
+     */
     public function getSubClassOf(): array
     {
         return array_filter($this->resource->all('rdfs:subClassOf', 'resource'), static fn (RdfResource $resource) => !$resource->isBNode());
@@ -253,41 +246,16 @@ final class Class_
         return 'Enum' === $this->parent;
     }
 
-    public function isInNamespace(string $namespace): bool
-    {
-        return $this->namespace === $namespace;
-    }
-
-    public function namespace(): string
-    {
-        return $this->namespace;
-    }
-
-    /** @return array<string, Property> */
-    public function properties(): array
-    {
-        return $this->properties;
-    }
-
-    /** @return array<string, Property> */
-    public function uniqueProperties(): array
-    {
-        return array_filter($this->properties, static fn (Property $property) => $property->isUnique);
-    }
-
-    /** @return string[] */
-    public function uniquePropertyNames(): array
-    {
-        return array_map(static fn (Property $property) => $property->name, array_values($this->uniqueProperties()));
-    }
-
+    /**
+     * @param Configuration $config
+     */
     public function toNetteFile(array $config, Inflector $inflector): PhpFile
     {
-        $useDoctrineCollections = $config['doctrine']['useCollection'] ?? true;
-        $useAccessors = $config['accessorMethods'] ?? true;
-        $useFluentMutators = $config['fluentMutatorMethods'] ?? false;
+        $useDoctrineCollections = $config['doctrine']['useCollection'];
+        $useAccessors = $config['accessorMethods'];
+        $useFluentMutators = $config['fluentMutatorMethods'];
         $fileHeader = $config['header'] ?? null;
-        $fieldVisibility = $config['fieldVisibility'] ?? ClassType::VISIBILITY_PRIVATE;
+        $fieldVisibility = $config['fieldVisibility'];
 
         $file = new PhpFile();
         if (null !== $fileHeader && false !== $fileHeader) {
@@ -297,15 +265,13 @@ final class Class_
 
         $namespace = $file->addNamespace($this->namespace);
         foreach ($this->uses as $use) {
-            $namespace->addUse($use);
+            $namespace->addUse($use->name(), $use->alias());
         }
 
         $class = $namespace->addClass($this->name);
 
         foreach ($this->attributes as $attribute) {
-            foreach ($attribute as $attributeName => $attributeArgs) {
-                $class->addAttribute($attributeName, $attributeArgs);
-            }
+            $class->addAttribute($attribute->name(), $attribute->args());
         }
 
         foreach ($this->annotations as $annotation) {
@@ -314,11 +280,11 @@ final class Class_
 
         $class->setAbstract($this->isAbstract);
 
-        if (null !== $this->interface) {
+        if (null !== $this->interfaceName()) {
             $class->setImplements([$this->interfaceName()]);
         }
 
-        if ($this->hasParent()) {
+        if ($this->parent()) {
             $class->setExtends($this->parent());
         }
 
@@ -360,41 +326,5 @@ final class Class_
         }
 
         return $file;
-    }
-
-    public function isEmbeddable(): bool
-    {
-        return $this->embeddable;
-    }
-
-    public function setEmbeddable(bool $embeddable): self
-    {
-        $this->embeddable = $embeddable;
-
-        return $this;
-    }
-
-    public function hasChild(): bool
-    {
-        return $this->hasChild;
-    }
-
-    public function hasConstructor(): bool
-    {
-        return $this->hasConstructor;
-    }
-
-    public function markAsHasChild(): self
-    {
-        $this->hasChild = true;
-
-        return $this;
-    }
-
-    public function setParentHasConstructor(bool $parentHasConstructor): self
-    {
-        $this->parentHasConstructor = $parentHasConstructor;
-
-        return $this;
     }
 }

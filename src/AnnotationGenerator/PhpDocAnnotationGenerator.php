@@ -116,7 +116,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             return [];
         }
 
-        return [sprintf('@param %s $%s', $this->toPhpDocType($property), $property->name)];
+        return [sprintf('@param %s $%s', $this->toPhpDocType($property), $property->name())];
     }
 
     /**
@@ -143,7 +143,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         return [sprintf('@param %s $%s', $this->toPhpDocType($property, true), $this->inflector->singularize($property->name()))];
     }
 
-    private function isDocUseful(Property $property, $adderOrRemover = false): bool
+    private function isDocUseful(Property $property, bool $adderOrRemover = false): bool
     {
         $typeHint = $adderOrRemover ? $property->adderRemoverTypeHint ?? false : $property->typeHint ?? false;
 
@@ -152,6 +152,8 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
 
     /**
      * Generates class or interface PHPDoc.
+     *
+     * @return string[]
      */
     private function generateDoc(Class_ $class, bool $interface = false): array
     {
@@ -175,6 +177,8 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
 
     /**
      * Converts HTML to Markdown and explode.
+     *
+     * @return string[]
      */
     private function formatDoc(string $doc, bool $indent = false): array
     {

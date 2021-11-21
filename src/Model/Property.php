@@ -20,11 +20,12 @@ use Nette\PhpGenerator\Property as NetteProperty;
 
 final class Property
 {
-    public string $name;
+    private string $name;
     public ?RdfResource $resource = null;
     public string $cardinality;
-    public $range;
-    public $rangeName;
+    public ?RdfResource $range = null;
+    public ?string $rangeName = null;
+    /** @var array<string, string|string[]> */
     public ?array $ormColumn = null;
     public bool $isArray = false;
     public bool $isReadable = true;
@@ -35,20 +36,27 @@ final class Property
     public bool $isEmbedded = false;
     public ?string $mappedBy = null;
     public ?string $inversedBy = null;
+    /** @var string|bool */
     public $columnPrefix = false;
     public bool $isId = false;
     public ?string $typeHint = null;
     public ?string $relationTableName = null;
     public bool $isEnum = false;
     public ?string $adderRemoverTypeHint = null;
+    /** @var string[] */
     public array $groups = [];
     public ?string $security = null;
-    /** @var array<string, array>[] */
+    /** @var Attribute[] */
     private array $attributes = [];
+    /** @var string[] */
     private array $annotations = [];
+    /** @var string[] */
     private array $getterAnnotations = [];
+    /** @var string[] */
     private array $setterAnnotations = [];
+    /** @var string[] */
     private array $adderAnnotations = [];
+    /** @var string[] */
     private array $removerAnnotations = [];
 
     public function __construct(string $name)
@@ -61,10 +69,7 @@ final class Property
         return $this->name;
     }
 
-    /**
-     * @param array<string, array> $attribute
-     */
-    public function addAttribute(array $attribute): self
+    public function addAttribute(Attribute $attribute): self
     {
         if (!\in_array($attribute, $this->attributes, true)) {
             $this->attributes[] = $attribute;
@@ -109,6 +114,9 @@ final class Property
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function adderAnnotations(): array
     {
         return $this->adderAnnotations;
@@ -121,11 +129,6 @@ final class Property
         }
 
         return $this;
-    }
-
-    public function groups(): array
-    {
-        return $this->groups;
     }
 
     public function resourceUri(): ?string
@@ -149,7 +152,7 @@ final class Property
             $netteProperty->setType($this->typeHint);
         }
 
-        if (!$this->isArray || $this->isTypehintedAsCollection()) {
+        if (!$this->isArray || $this->isTypeHintedAsCollection()) {
             $netteProperty->setNullable($this->isNullable);
         }
 
@@ -158,9 +161,7 @@ final class Property
         }
 
         foreach ($this->attributes as $attribute) {
-            foreach ($attribute as $attributeName => $attributeArgs) {
-                $netteProperty->addAttribute($attributeName, $attributeArgs);
-            }
+            $netteProperty->addAttribute($attribute->name(), $attribute->args());
         }
         foreach ($this->annotations as $annotation) {
             $netteProperty->addComment($annotation);
@@ -169,6 +170,9 @@ final class Property
         return $netteProperty;
     }
 
+    /**
+     * @return Method[]
+     */
     public function generateNetteMethods(
         \Closure $singularize,
         bool $useDoctrineCollections = true,
@@ -201,6 +205,9 @@ final class Property
         return $getter;
     }
 
+    /**
+     * @return Method[]
+     */
     private function generateMutators(
         \Closure $singularize,
         bool $useDoctrineCollections = true,
@@ -284,9 +291,12 @@ PHP,
         return $mutators;
     }
 
+    /**
+     * @return array{}|int|null
+     */
     private function guessDefaultGeneratedValue(bool $useDoctrineCollections = true)
     {
-        if ($this->isArray && !$this->isTypehintedAsCollection() && ($this->isEnum || !$this->typeHint || 'array' === $this->typeHint || !$useDoctrineCollections)) {
+        if ($this->isArray && !$this->isTypeHintedAsCollection() && ($this->isEnum || !$this->typeHint || 'array' === $this->typeHint || !$useDoctrineCollections)) {
             return [];
         }
 
@@ -297,7 +307,7 @@ PHP,
         return -1;
     }
 
-    private function isTypehintedAsCollection(): bool
+    private function isTypeHintedAsCollection(): bool
     {
         return 'Collection' === $this->typeHint;
     }

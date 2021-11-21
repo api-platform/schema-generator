@@ -4,7 +4,6 @@ namespaces:
 # The list of types and properties we want to use
 types:
   Person:
-    parent: false
     properties:
       name: ~
       familyName: ~
@@ -26,8 +25,6 @@ types:
       url: ~
       friends: { range: "Person", cardinality: (0..*) }
   PostalAddress:
-    # Disable the generation of the class hierarchy for this type
-    parent: false
     properties:
       # Force the type of the addressCountry property to text
       addressCountry: { range: "https://schema.org/Text" }
@@ -37,7 +34,6 @@ types:
       postalCode: ~
       streetAddress: ~
   Organization:
-    parent: false
     properties:
       name: ~
       # Custom property with custom ORM\Column content

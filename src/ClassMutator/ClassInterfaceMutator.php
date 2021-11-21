@@ -27,6 +27,8 @@ final class ClassInterfaceMutator implements ClassMutatorInterface
 
     public function __invoke(Class_ $class): Class_
     {
-        return $class->withInterface(new Interface_(sprintf('%sInterface', $class->name()), $this->desiredNamespace));
+        $class->interface = new Interface_(sprintf('%sInterface', $class->name()), $this->desiredNamespace);
+
+        return $class;
     }
 }

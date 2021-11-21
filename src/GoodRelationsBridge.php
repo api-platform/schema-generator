@@ -28,6 +28,7 @@ class GoodRelationsBridge
      */
     private array $relations;
 
+    /** @var array<string, string> */
     private array $objectPropertiesTable = [
         'priceSpecification' => 'hasPriceSpecification',
         'businessFunction' => 'hasBusinessFunction',
@@ -46,6 +47,7 @@ class GoodRelationsBridge
         'acceptedPaymentMethod' => 'acceptedPaymentMethods',
     ];
 
+    /** @var array<string, string> */
     private array $datatypePropertiesTable = [
         'minPrice' => 'hasMinCurrencyValue',
         'unitCode' => 'hasUnitOfMeasurement',
@@ -97,14 +99,21 @@ class GoodRelationsBridge
     /**
      * Extracts cardinality from the Good Relations OWL.
      *
-     * @return string|bool
+     * @return string|false
      */
     public function extractCardinality(string $id)
     {
         foreach ($this->relations as $relation) {
             $result = $relation->xpath(sprintf('//*[@rdf:about="%s"]/rdfs:label', $this->getPropertyUrl($id)));
+            if (false === $result) {
+                continue;
+            }
             if (\count($result)) {
-                preg_match('/\(.\.\..\)/', $result[0]->asXML(), $matches);
+                $xmlResult = $result[0]->asXML();
+                if (false === $xmlResult) {
+                    continue;
+                }
+                preg_match('/\(.\.\..\)/', $xmlResult, $matches);
 
                 return $matches[0];
             }

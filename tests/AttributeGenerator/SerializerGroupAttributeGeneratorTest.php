@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\Tests\AttributeGenerator;
 
 use ApiPlatform\SchemaGenerator\AttributeGenerator\SerializerGroupsAttributeGenerator;
+use ApiPlatform\SchemaGenerator\Model\Attribute;
 use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\PhpTypeConverter;
 use Doctrine\Inflector\InflectorFactory;
@@ -43,6 +44,6 @@ class SerializerGroupAttributeGeneratorTest extends TestCase
         $property->isId = false;
         $property->groups = ['group'];
 
-        $this->assertSame([['Groups' => [['group']]]], $this->generator->generatePropertyAttributes($property, 'Res'));
+        $this->assertEquals([new Attribute('Groups', [['group']])], $this->generator->generatePropertyAttributes($property, 'Res'));
     }
 }

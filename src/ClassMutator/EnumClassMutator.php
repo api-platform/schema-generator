@@ -15,8 +15,9 @@ namespace ApiPlatform\SchemaGenerator\ClassMutator;
 
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Constant;
+use ApiPlatform\SchemaGenerator\Model\Use_;
 use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
-use EasyRdf\Graph;
+use EasyRdf\Graph as RdfGraph;
 use MyCLabs\Enum\Enum;
 
 final class EnumClassMutator implements ClassMutatorInterface
@@ -24,11 +25,14 @@ final class EnumClassMutator implements ClassMutatorInterface
     private PhpTypeConverterInterface $phpTypeConverter;
 
     /**
-     * @var Graph[]
+     * @var RdfGraph[]
      */
     private array $graphs;
     private string $desiredNamespace;
 
+    /**
+     * @param RdfGraph[] $graphs
+     */
     public function __construct(PhpTypeConverterInterface $phpTypeConverter, array $graphs, string $desiredNamespace)
     {
         $this->phpTypeConverter = $phpTypeConverter;
@@ -38,9 +42,10 @@ final class EnumClassMutator implements ClassMutatorInterface
 
     public function __invoke(Class_ $class): Class_
     {
-        $class = $class->withNamespace($this->desiredNamespace)
+        $class->namespace = $this->desiredNamespace;
+        $class = $class
             ->withParent('Enum')
-            ->addUse(Enum::class);
+            ->addUse(new Use_(Enum::class));
 
         foreach ($this->graphs as $graph) {
             foreach ($graph->allOfType($class->resourceUri()) as $instance) {
