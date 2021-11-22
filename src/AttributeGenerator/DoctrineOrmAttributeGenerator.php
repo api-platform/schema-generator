@@ -42,7 +42,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generateClassAttributes(Class_ $class): array
     {
-        if ($doctrineAttributes = $this->config['types'][$class->name()]['doctrine']['attributes']) {
+        if ($doctrineAttributes = (isset($this->config['types'][$class->name()]) ? $this->config['types'][$class->name()]['doctrine']['attributes'] : false)) {
             $attributes = [];
             foreach ($doctrineAttributes as $attributeName => $attributeArgs) {
                 $attributes[] = new Attribute($attributeName, $attributeArgs);
@@ -288,14 +288,14 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
 
         if (null !== $class->interfaceName()) {
             if (isset($this->config['types'][$rangeName]['namespaces']['interface'])) {
-                return sprintf('%s\\%s', $this->config['types'][$class->name()]['namespaces']['interface'], $class->interfaceName());
+                return sprintf('%s\\%s', $this->config['types'][$rangeName]['namespaces']['interface'], $class->interfaceName());
             }
 
             return sprintf('%s\\%s', $this->config['namespaces']['interface'], $class->interfaceName());
         }
 
         if (isset($this->config['types'][$rangeName]['namespaces']['class'])) {
-            return sprintf('%s\\%s', $this->config['types'][$class->name()]['namespaces']['class'], $class->name());
+            return sprintf('%s\\%s', $this->config['types'][$rangeName]['namespaces']['class'], $class->name());
         }
 
         return sprintf('%s\\%s', $this->config['namespaces']['entity'], $rangeName);

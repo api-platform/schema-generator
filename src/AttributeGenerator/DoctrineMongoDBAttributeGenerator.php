@@ -31,7 +31,7 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generateClassAttributes(Class_ $class): array
     {
-        if ($doctrineAttributes = $this->config['types'][$class->name()]['doctrine']['attributes']) {
+        if ($doctrineAttributes = isset($this->config['types'][$class->name()]) ? $this->config['types'][$class->name()]['doctrine']['attributes'] : false) {
             $attributes = [];
             foreach ($doctrineAttributes as $attributeName => $attributeArgs) {
                 $attributes[] = new Attribute($attributeName, $attributeArgs);
@@ -46,7 +46,7 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
 
         $attributes = [];
         if ($class->isAbstract) {
-            if ($inheritanceAttributes = ($this->config['doctrine']['inheritanceAttributes'])) {
+            if ($inheritanceAttributes = $this->config['doctrine']['inheritanceAttributes']) {
                 $attributes = [];
                 foreach ($inheritanceAttributes as $attributeName => $attributeArgs) {
                     $attributes[] = new Attribute($attributeName, $attributeArgs);
