@@ -53,9 +53,9 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
 
     public function __invoke(Class_ $class): Class_
     {
-        $typeConfig = $this->config['types'][$class->name()];
+        $typeConfig = $this->config['types'][$class->name()] ?? null;
 
-        if (!$typeConfig['allProperties']) {
+        if (null !== $typeConfig && !$typeConfig['allProperties']) {
             foreach ($typeConfig['properties'] as $key => $value) {
                 if ($value['exclude']) {
                     continue;
@@ -75,9 +75,12 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
                 $class = $this->generateCustomField($key, $class->resource(), $typeConfig, $class, $this->config);
             }
         } else {
-            $remainingProperties = $typeConfig['properties'];
+            $remainingProperties = $typeConfig['properties'] ?? [];
+            if (!isset($this->propertiesMap[$class->resourceUri()])) {
+                $this->logger->warning(sprintf('Properties for "%s" not found in the map.', $class->resourceUri()));
+            }
             // All properties
-            foreach ($this->propertiesMap[$class->resourceUri()] as $property) {
+            foreach ($this->propertiesMap[$class->resourceUri()] ?? [] as $property) {
                 unset($remainingProperties[$property->localName()]);
                 if ($property->hasProperty(self::SCHEMA_ORG_SUPERSEDED_BY)) {
                     $supersededBy = $property->get(self::SCHEMA_ORG_SUPERSEDED_BY);
@@ -101,10 +104,10 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
     /**
      * Add custom fields (not defined in the vocabulary).
      *
-     * @param TypeConfiguration $typeConfig
-     * @param Configuration     $config
+     * @param ?TypeConfiguration $typeConfig
+     * @param Configuration      $config
      */
-    private function generateCustomField(string $propertyName, RdfResource $type, array $typeConfig, Class_ $class, array $config): Class_
+    private function generateCustomField(string $propertyName, RdfResource $type, ?array $typeConfig, Class_ $class, array $config): Class_
     {
         $this->logger->info(sprintf('The property "%s" (type "%s") is a custom property.', $propertyName, $type->getUri()));
         $customResource = new RdfResource('_:'.$propertyName, new RdfGraph());
@@ -116,10 +119,10 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
     /**
      * Updates generated $class with given field config.
      *
-     * @param Configuration     $config
-     * @param TypeConfiguration $typeConfig
+     * @param Configuration      $config
+     * @param ?TypeConfiguration $typeConfig
      */
-    private function generateField(array $config, Class_ $class, RdfResource $type, array $typeConfig, RdfResource $property, bool $isCustom = false): Class_
+    private function generateField(array $config, Class_ $class, RdfResource $type, ?array $typeConfig, RdfResource $property, bool $isCustom = false): Class_
     {
         return ($this->propertyGenerator)($config, $class, $type, $typeConfig, $property, $isCustom);
     }

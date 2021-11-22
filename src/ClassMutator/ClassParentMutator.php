@@ -37,8 +37,8 @@ final class ClassParentMutator implements ClassMutatorInterface
 
     public function __invoke(Class_ $class): Class_
     {
-        $typeConfig = $this->config['types'][$class->name()];
-        $class->withParent($typeConfig['parent']);
+        $typeConfig = $this->config['types'][$class->name()] ?? null;
+        $class->withParent($typeConfig['parent'] ?? null);
 
         if (null === $class->parent() && $subclassOf = $class->getSubClassOf()) {
             if (\count($subclassOf) > 1) {
@@ -51,7 +51,7 @@ final class ClassParentMutator implements ClassMutatorInterface
         if ($class->hasParent() && isset($this->config['types'][$class->parent()]['namespaces']['class'])) {
             $parentNamespace = $this->config['types'][$class->parent()]['namespaces']['class'];
 
-            if ($class->isInNamespace($parentNamespace)) {
+            if (!$class->isInNamespace($parentNamespace)) {
                 $class->addUse(new Use_($parentNamespace.'\\'.$class->parent()));
             }
         }

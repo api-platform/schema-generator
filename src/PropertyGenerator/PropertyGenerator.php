@@ -50,10 +50,10 @@ final class PropertyGenerator
     }
 
     /**
-     * @param Configuration     $config
-     * @param TypeConfiguration $typeConfig
+     * @param Configuration      $config
+     * @param ?TypeConfiguration $typeConfig
      */
-    public function __invoke(array $config, Class_ $class, RdfResource $type, array $typeConfig, RdfResource $property, bool $isCustom = false): Class_
+    public function __invoke(array $config, Class_ $class, RdfResource $type, ?array $typeConfig, RdfResource $property, bool $isCustom = false): Class_
     {
         $typeUri = $type->getUri();
         $propertyName = $property->localName();

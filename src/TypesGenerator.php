@@ -27,6 +27,7 @@ use Doctrine\Inflector\Inflector;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\RdfNamespace;
 use EasyRdf\Resource as RdfResource;
+use Nette\InvalidArgumentException as NetteInvalidArgumentException;
 use PhpCsFixer\Cache\NullCacheManager;
 use PhpCsFixer\Differ\NullDiffer;
 use PhpCsFixer\Error\ErrorsManager;
@@ -212,7 +213,7 @@ class TypesGenerator
                         }
 
                         $parentConfig = $parentClass->parent() ? ($config['types'][$parentClass->parent()] ?? null) : null;
-                        $parentClass = $parentClass->parent() ? $classes[$parentClass->parent()] : null;
+                        $parentClass = $parentClass->parent() && isset($classes[$parentClass->parent()]) ? $classes[$parentClass->parent()] : null;
                     }
                 }
             }
@@ -252,9 +253,14 @@ class TypesGenerator
             $this->filesystem->mkdir($classDir);
 
             $path = sprintf('%s%s.php', $classDir, $className);
-            $generatedFiles[] = $path;
 
-            file_put_contents($path, $this->printer->printFile($class->toNetteFile($config, $this->inflector)));
+            try {
+                file_put_contents($path, $this->printer->printFile($class->toNetteFile($config, $this->inflector)));
+            } catch (NetteInvalidArgumentException $exception) {
+                $this->logger->warning($exception->getMessage());
+            }
+
+            $generatedFiles[] = $path;
 
             if (null !== $class->interfaceNamespace()) {
                 $interfaceDir = $this->namespaceToDir($config, $class->interfaceNamespace());
