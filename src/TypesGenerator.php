@@ -281,9 +281,16 @@ class TypesGenerator
             $dir = \dirname($file);
             $this->filesystem->mkdir($dir);
 
+            $fileType = $config['doctrine']['resolveTargetEntityConfigType'];
+
+            $mappingTemplateFile = 'doctrine.xml.twig';
+            if ('yaml' === $fileType) {
+                $mappingTemplateFile = 'doctrine.yaml.twig';
+            }
+
             file_put_contents(
                 $file,
-                $this->twig->render('doctrine.xml.twig', ['mappings' => $interfaceMappings])
+                $this->twig->render($mappingTemplateFile, ['mappings' => $interfaceMappings])
             );
 
             $generatedFiles[] = $file;

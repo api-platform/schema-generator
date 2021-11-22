@@ -1,0 +1,6 @@
+doctrine:
+    orm:
+      resolve_target_entities:
+{% for interface, class in mappings %}
+          {{ interface }}: {{ class }}
+{% endfor %}
