@@ -6,6 +6,9 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Attribute\MyCustomAttribute;
+use App\Model\MyCustomClass;
+use App\Model\MyCustomInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -21,11 +24,17 @@ use Symfony\Component\Validator\Constraints as Assert;
     iri: 'https://schema.org/Person',
     security: 'is_granted(\'ROLE_USER\')',
     itemOperations: ['get' => ['method' => 'GET'], 'delete' => ['method' => 'DELETE', 'security' => 'is_granted(\'ROLE_ADMIN\')']],
-    collectionOperations: ['get' => ['route_name' => 'get_person_collection']]
+    collectionOperations: ['get' => ['route_name' => 'get_person_collection']],
 )]
 #[UniqueEntity('email')]
-class Person
+#[MyCustomAttribute(foo: 'bar')]
+class Person extends MyCustomClass implements MyCustomInterface
 {
+    public const PERSON_TRAITS = ['nice', 'funny'];
+
+    private string $myProperty = 'foo';
+
+    #[MyCustomAttribute]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     #[ORM\Column(type: 'integer')]
@@ -107,11 +116,14 @@ class Person
     #[Assert\Url]
     private ?string $url = null;
 
-    /**
-     * @see _:customColumn
-     */
+    /** @see _:customColumn */
     #[ORM\Column(type: 'decimal', precision: 5, scale: 1, options: ['comment' => 'my comment'])]
     private ?Person $customColumn = null;
+
+    public function getMyProperty(): string
+    {
+        return $this->myProperty;
+    }
 
     public function getId(): ?int
     {

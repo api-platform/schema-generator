@@ -9,9 +9,6 @@ jobs:
   build:
     name: Create Release and Upload Release Asset
     runs-on: ubuntu-latest
-    env:
-      extensions: json
-      php_version: '8.0'
     outputs:
       upload_url: ${{ steps.step_upload_url.outputs.upload_url }}
     steps:
@@ -21,27 +18,25 @@ jobs:
       - name: Setup PHP with extensions
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ env.php_version }}
-          extensions: ${{ env.extensions }}
+          php-version: '8.0'
+          extensions: json
           ini-values: memory_limit=-1
-          tools: composer:v2
+          tools: composer
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
+        run: composer install --prefer-dist --no-interaction --no-progress --ansi
       
       - name: Download box.phar
-        run: |
-          wget -O box.phar https://github.com/humbug/box/releases/download/3.11.1/box.phar
-          export BOX_BIN=$(pwd)/box.phar
+        run: wget -O box.phar https://github.com/humbug/box/releases/download/3.13.0/box.phar
       
       - name: Compile project
-        run: php ./box.phar compile;
+        run: php ./box.phar compile
 
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}

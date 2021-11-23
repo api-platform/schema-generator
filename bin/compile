@@ -4,8 +4,20 @@ set -eox pipefail
 
 php "$BOX_BIN" compile;
 
-php schema.phar generate tmp/ tests/e2e/schema.yml;
+rm -rf tmp/original
 
-diff tests/e2e/src/App/Entity/Person.php tmp/App/Entity/Person.php;
-diff tests/e2e/src/App/Entity/PostalAddress.php tmp/App/Entity/PostalAddress.php;
-diff tests/e2e/src/App/Entity/Thing.php tmp/App/Entity/Thing.php;
+php schema.phar generate tmp/original tests/e2e/schema.yml -n -vv --ansi;
+
+diff tests/e2e/original/App/Entity/Person.php tmp/original/App/Entity/Person.php;
+diff tests/e2e/original/App/Entity/PostalAddress.php tmp/original/App/Entity/PostalAddress.php;
+diff tests/e2e/original/App/Entity/Thing.php tmp/original/App/Entity/Thing.php;
+
+# Already generated files
+
+cp -r tests/e2e/customized tmp/
+
+php schema.phar generate tmp/customized tests/e2e/schema.yml -n -vv --ansi;
+
+diff tests/e2e/customized/App/Entity/Person.php tmp/customized/App/Entity/Person.php;
+diff tests/e2e/customized/App/Entity/PostalAddress.php tmp/customized/App/Entity/PostalAddress.php;
+diff tests/e2e/customized/App/Entity/Thing.php tmp/customized/App/Entity/Thing.php;

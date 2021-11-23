@@ -15,12 +15,15 @@ namespace ApiPlatform\SchemaGenerator\Model;
 
 use Doctrine\Inflector\Inflector;
 use EasyRdf\Resource as RdfResource;
+use MyCLabs\Enum\Enum as MyCLabsEnum;
 use Nette\PhpGenerator\Helpers;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpFile;
 
 final class Class_
 {
+    use ResolveNameTrait;
+
     private string $name;
     private RdfResource $resource;
     public string $namespace = '';
@@ -249,7 +252,7 @@ final class Class_
     /**
      * @param Configuration $config
      */
-    public function toNetteFile(array $config, Inflector $inflector): PhpFile
+    public function toNetteFile(array $config, Inflector $inflector, ?PhpFile $file = null): PhpFile
     {
         $useDoctrineCollections = $config['doctrine']['useCollection'];
         $useAccessors = $config['accessorMethods'];
@@ -257,48 +260,98 @@ final class Class_
         $fileHeader = $config['header'] ?? null;
         $fieldVisibility = $config['fieldVisibility'];
 
-        $file = new PhpFile();
-        if (null !== $fileHeader && false !== $fileHeader) {
+        $file ??= new PhpFile();
+        if (null !== $fileHeader && false !== $fileHeader && !$file->getComment()) {
             // avoid nested doc-block for configurations that already have * as delimiter
             $file->setComment(Helpers::unformatDocComment($fileHeader));
         }
 
-        $namespace = $file->addNamespace($this->namespace);
+        $namespace = $file->getNamespaces()[$this->namespace] ?? null;
+        if (!$namespace) {
+            $namespace = $file->addNamespace($this->namespace);
+        }
+
         foreach ($this->uses as $use) {
             $namespace->addUse($use->name(), $use->alias());
         }
 
-        $class = $namespace->addClass($this->name);
-
-        foreach ($this->attributes as $attribute) {
-            $class->addAttribute($attribute->name(), $attribute->args());
+        $class = $namespace->getClasses()[$this->name] ?? null;
+        if (!$class) {
+            $class = $namespace->addClass($this->name);
         }
 
-        foreach ($this->annotations as $annotation) {
-            $class->addComment($annotation);
+        $netteAttributes = $class->getAttributes();
+        foreach ($this->attributes as $attribute) {
+            $hasAttribute = false;
+            foreach ($class->getAttributes() as $netteAttribute) {
+                if ($netteAttribute->getName() === $this->resolveName($namespace, $attribute->name())) {
+                    $hasAttribute = true;
+                }
+            }
+            if (!$hasAttribute) {
+                $netteAttributes[] = $attribute->toNetteAttribute($namespace);
+            }
+        }
+        $class->setAttributes($netteAttributes);
+
+        if (!$class->getComment()) {
+            foreach ($this->annotations as $annotation) {
+                $class->addComment($annotation);
+            }
         }
 
         $class->setAbstract($this->isAbstract);
 
         if (null !== $this->interfaceName()) {
-            $class->setImplements([$this->interfaceName()]);
+            $interfaceImplement = $this->resolveName($namespace, $this->interfaceName());
+            $implements = $class->getImplements();
+            if (!\in_array($interfaceImplement, $implements, true)) {
+                $implements[] = $interfaceImplement;
+            }
+            $class->setImplements($implements);
         }
 
         if ($this->parent()) {
-            $class->setExtends($this->parent());
+            $parentExtend = $this->resolveName($namespace, $this->parent());
+            if ($this->isParentEnum()) {
+                $parentExtend = MyCLabsEnum::class;
+            }
+            $extends = (array) $class->getExtends();
+            if (!\in_array($parentExtend, $extends, true)) {
+                $extends[] = $parentExtend;
+            }
+            $class->setExtends($extends);
         }
+
+        $netteConstants = $class->getConstants();
+        foreach ($this->constants as $constant) {
+            if (!isset($class->getConstants()[$constant->name()])) {
+                $netteConstants[] = $constant->toNetteConstant();
+            }
+        }
+        $class->setConstants($netteConstants);
 
         $sortedProperties = isset($this->properties['id']) ? ['id' => $this->properties['id']] + $this->properties : $this->properties;
 
-        $class->setConstants(array_map(static fn (Constant $constant) => $constant->toNetteConstant(), $this->constants));
-        $class->setProperties(array_map(
-            static function (Property $property) use ($useDoctrineCollections, $fieldVisibility) {
-                return $property->toNetteProperty($fieldVisibility, $useDoctrineCollections);
-            },
-            $sortedProperties
-        ));
+        $netteProperties = [];
+        foreach ($class->getProperties() as $netteProperty) {
+            $hasProperty = false;
+            foreach ($sortedProperties as $property) {
+                if ($property->name() === $netteProperty->getName()) {
+                    $hasProperty = true;
+                }
+            }
+            if (!$hasProperty) {
+                $netteProperties[] = $netteProperty;
+            }
+        }
+        foreach ($sortedProperties as $property) {
+            $netteProperty = $class->hasProperty($property->name()) ? $class->getProperty($property->name()) : null;
+            $netteProperties[] = $property->toNetteProperty($namespace, $fieldVisibility, $useDoctrineCollections, $netteProperty);
+        }
+        $class->setProperties($netteProperties);
 
-        if ($useDoctrineCollections && $this->hasConstructor) {
+        if ($useDoctrineCollections && $this->hasConstructor && !$class->hasMethod('__construct')) {
             $constructor = new Method('__construct');
             if ($this->parentHasConstructor) {
                 $constructor->addBody('parent::__construct();');
@@ -316,13 +369,50 @@ final class Class_
         }
 
         if ($useAccessors) {
+            $methods = [];
             foreach ($sortedProperties as $property) {
                 foreach ($property->generateNetteMethods(static function ($string) use ($inflector) {
                     return $inflector->singularize($string);
-                }, $useDoctrineCollections, $useFluentMutators) as $method) {
-                    $class->addMember($method);
+                }, $namespace, $useDoctrineCollections, $useFluentMutators) as $method) {
+                    $methods[] = $method;
                 }
             }
+
+            $netteMethods = [];
+            foreach ($class->getMethods() as $netteMethod) {
+                $hasMethod = false;
+                foreach ($methods as $method) {
+                    if ($method->getName() === $netteMethod->getName()) {
+                        $hasMethod = true;
+                    }
+                }
+                if (!$hasMethod) {
+                    $netteMethods[] = $netteMethod;
+                }
+            }
+
+            foreach ($methods as $method) {
+                if (!$class->hasMethod($method->getName())) {
+                    $netteMethods[] = $method;
+                    continue;
+                }
+                $netteMethod = $class->getMethod($method->getName());
+                $netteAttributes = $netteMethod->getAttributes();
+                foreach ($method->getAttributes() as $attribute) {
+                    $hasAttribute = false;
+                    foreach ($netteMethod->getAttributes() as $netteAttribute) {
+                        if ($netteAttribute->getName() === $attribute->getName()) {
+                            $hasAttribute = true;
+                        }
+                    }
+                    if (!$hasAttribute) {
+                        $netteAttributes[] = $attribute;
+                    }
+                }
+                $method->setAttributes($netteAttributes);
+                $netteMethods[] = $method;
+            }
+            $class->setMethods($netteMethods);
         }
 
         return $file;

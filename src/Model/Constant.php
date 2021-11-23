@@ -51,14 +51,14 @@ final class Constant
 
     public function toNetteConstant(): NetteConstant
     {
-        $netteConstant = (new NetteConstant($this->name))
+        $constant = (new NetteConstant($this->name))
             ->setValue($this->resource->getUri())
             ->setVisibility(ClassType::VISIBILITY_PUBLIC);
 
         foreach ($this->annotations as $annotation) {
-            $netteConstant->addComment($annotation);
+            $constant->addComment($annotation);
         }
 
-        return $netteConstant;
+        return $constant;
     }
 }

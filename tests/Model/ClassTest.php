@@ -51,12 +51,11 @@ class ClassTest extends TestCase
         $this->assertStringContainsString('class Book', $generated);
         $this->assertStringContainsString('namespace App\Entity;', $generated);
         $this->assertStringContainsString('use OtherApp\Interfaces\Printable;', $generated);
-        $this->assertStringContainsString('class Book implements \Printable', $generated);
+        $this->assertStringContainsString('class Book implements Printable', $generated);
         $this->assertStringContainsString('/** @see https://schema.org/Author */', $generated);
-        $this->assertStringContainsString('private ?Author $author = null;', $generated);
-        $this->assertStringContainsString('private ?Author $author = null;', $generated);
-        $this->assertStringContainsString('public function setAuthor(?Author $author): self', $generated);
-        $this->assertStringContainsString('public function getAuthor(): ?Author', $generated);
+        $this->assertStringContainsString('private ?App\Entity\Author $author = null;', $generated);
+        $this->assertStringContainsString('public function setAuthor(?App\Entity\Author $author): self', $generated);
+        $this->assertStringContainsString('public function getAuthor(): ?App\Entity\Author', $generated);
         $this->assertFalse($class->isEmbeddable);
         $this->assertFalse($class->hasChild);
         $this->assertFalse($class->hasParent());

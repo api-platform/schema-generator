@@ -28,6 +28,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Parser;
 use Twig\Environment;
@@ -85,6 +86,8 @@ final class GenerateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $io = new SymfonyStyle($input, $output);
+
         $defaultOutput = $this->defaultOutput ? realpath($this->defaultOutput) : null;
         $outputDir = $input->getArgument('output');
         $configArgument = $input->getArgument('config');
@@ -138,11 +141,8 @@ final class GenerateCommand extends Command
             $config = $parser->parse($defaultConfigContent);
             unset($parser);
         } else {
-            $helper = $this->getHelper('question');
-            $question = new ConfirmationQuestion('Your project has no config file. The entire vocabulary will be imported.'.\PHP_EOL.'Continue? [yN]', false);
-
-            if (!$helper->ask($input, $output, $question)) {
-                return 0;
+            if (!$io->askQuestion(new ConfirmationQuestion('Your project has no config file. The entire vocabulary will be imported.'.\PHP_EOL.'Continue?', false))) {
+                return Command::SUCCESS;
             }
 
             $config = [];
@@ -199,11 +199,12 @@ final class GenerateCommand extends Command
             new PhpTypeConverter(),
             $cardinalitiesExtractor,
             $goodRelationsBridge,
-            new Printer()
+            new Printer(),
+            $io
         );
 
         $entitiesGenerator->generate($processedConfiguration);
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

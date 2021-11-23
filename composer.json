@@ -42,7 +42,9 @@
         "symfony/yaml": "^5.2",
         "symfony/filesystem": "^5.2",
         "twig/twig": "^3.0",
-        "nette/php-generator": "^3.6"
+        "nette/php-generator": "^3.6 || ^4.0-dev",
+        "nette/utils": "^3.1 || ^4.0-dev",
+        "nikic/php-parser": "^4.13"
     },
     "require-dev": {
         "api-platform/core": "^2.5",

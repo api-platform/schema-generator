@@ -26,6 +26,9 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\NullLogger;
 use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Twig\Environment;
 
 /**
@@ -61,7 +64,8 @@ class TypesGeneratorTest extends TestCase
             new PhpTypeConverter(),
             $cardinalitiesExtractor,
             $goodRelationsBridge,
-            new Printer()
+            new Printer(),
+            new SymfonyStyle(new ArrayInput([]), new NullOutput())
         );
 
         $outputDir = 'build/type-generator-test';
