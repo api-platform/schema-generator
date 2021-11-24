@@ -7,6 +7,7 @@ types:
         properties:
             name: ~
     Person:
+        parent: ~
         operations:
             item:
                 get:

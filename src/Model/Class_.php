@@ -311,16 +311,13 @@ final class Class_
             $class->setImplements($implements);
         }
 
-        if ($this->parent()) {
+        if ($this->parent() && !$class->getExtends()) {
             $parentExtend = $this->resolveName($namespace, $this->parent());
             if ($this->isParentEnum()) {
                 $parentExtend = MyCLabsEnum::class;
             }
-            $extends = (array) $class->getExtends();
-            if (!\in_array($parentExtend, $extends, true)) {
-                $extends[] = $parentExtend;
-            }
-            $class->setExtends($extends);
+
+            $class->setExtends($parentExtend);
         }
 
         $netteConstants = $class->getConstants();
