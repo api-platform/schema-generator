@@ -13,17 +13,20 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator;
 
+use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\Printer as NettePrinter;
 
 final class Printer extends NettePrinter
 {
-    /** @var int */
-    protected $linesBetweenMethods = 1;
-
     public function __construct()
     {
         parent::__construct();
 
-        $this->setTypeResolving(false);
+        $this->linesBetweenMethods = 1;
+        // If the type name cannot be resolved with the namespace and its uses (nette/php-generator >= 4),
+        // disable type resolving to avoid using the root namespace.
+        if (!method_exists(PhpNamespace::class, 'resolveName')) {
+            $this->setTypeResolving(false);
+        }
     }
 }

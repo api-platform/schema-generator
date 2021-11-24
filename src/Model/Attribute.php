@@ -13,8 +13,13 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\Model;
 
+use Nette\PhpGenerator\Attribute as NetteAttribute;
+use Nette\PhpGenerator\PhpNamespace;
+
 final class Attribute
 {
+    use ResolveNameTrait;
+
     private string $name;
 
     /** @var (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[] */
@@ -40,5 +45,10 @@ final class Attribute
     public function args(): array
     {
         return $this->args;
+    }
+
+    public function toNetteAttribute(PhpNamespace $namespace): NetteAttribute
+    {
+        return new NetteAttribute($this->resolveName($namespace, $this->name), $this->args);
     }
 }

@@ -16,10 +16,13 @@ namespace ApiPlatform\SchemaGenerator\Model;
 use EasyRdf\Resource as RdfResource;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
+use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\Property as NetteProperty;
 
 final class Property
 {
+    use ResolveNameTrait;
+
     private string $name;
     public ?RdfResource $resource = null;
     public string $cardinality;
@@ -143,31 +146,45 @@ final class Property
         return $this;
     }
 
-    public function toNetteProperty(string $visibility = null, bool $useDoctrineCollections = true): NetteProperty
+    public function toNetteProperty(PhpNamespace $namespace, string $visibility = null, bool $useDoctrineCollections = true, ?NetteProperty $property = null): NetteProperty
     {
-        $netteProperty = (new NetteProperty($this->name))
-            ->setVisibility($visibility ?? ClassType::VISIBILITY_PRIVATE);
+        $property ??= new NetteProperty($this->name);
+
+        $property->setVisibility($visibility ?? ClassType::VISIBILITY_PRIVATE);
 
         if ($this->typeHint) {
-            $netteProperty->setType($this->typeHint);
+            $property->setType($this->resolveName($namespace, $this->typeHint));
         }
 
         if (!$this->isArray || $this->isTypeHintedAsCollection()) {
-            $netteProperty->setNullable($this->isNullable);
+            $property->setNullable($this->isNullable);
         }
 
         if (($default = $this->guessDefaultGeneratedValue($useDoctrineCollections)) !== -1) {
-            $netteProperty->setValue($default);
+            $property->setValue($default);
         }
 
+        $netteAttributes = $property->getAttributes();
         foreach ($this->attributes as $attribute) {
-            $netteProperty->addAttribute($attribute->name(), $attribute->args());
+            $hasAttribute = false;
+            foreach ($property->getAttributes() as $netteAttribute) {
+                if ($netteAttribute->getName() === $this->resolveName($namespace, $attribute->name())) {
+                    $hasAttribute = true;
+                }
+            }
+            if (!$hasAttribute) {
+                $netteAttributes[] = $attribute->toNetteAttribute($namespace);
+            }
         }
-        foreach ($this->annotations as $annotation) {
-            $netteProperty->addComment($annotation);
+        $property->setAttributes($netteAttributes);
+
+        if (!$property->getComment()) {
+            foreach ($this->annotations as $annotation) {
+                $property->addComment($annotation);
+            }
         }
 
-        return $netteProperty;
+        return $property;
     }
 
     /**
@@ -175,16 +192,17 @@ final class Property
      */
     public function generateNetteMethods(
         \Closure $singularize,
+        PhpNamespace $namespace,
         bool $useDoctrineCollections = true,
         bool $useFluentMutators = false
     ): array {
         return array_merge(
-            $this->generateMutators($singularize, $useDoctrineCollections, $useFluentMutators),
-            $this->isReadable ? [$this->generateGetter()] : []
+            $this->generateMutators($singularize, $namespace, $useDoctrineCollections, $useFluentMutators),
+            $this->isReadable ? [$this->generateGetter($namespace)] : []
         );
     }
 
-    private function generateGetter(): Method
+    private function generateGetter(PhpNamespace $namespace): Method
     {
         if (!$this->isReadable) {
             throw new \LogicException(sprintf("Property '%s' is not readable.", $this->name));
@@ -195,7 +213,7 @@ final class Property
             $getter->addComment($annotation);
         }
         if ($this->typeHint) {
-            $getter->setReturnType($this->typeHint);
+            $getter->setReturnType($this->resolveName($namespace, $this->typeHint));
             if ($this->isNullable && !$this->isArray) {
                 $getter->setReturnNullable();
             }
@@ -210,6 +228,7 @@ final class Property
      */
     private function generateMutators(
         \Closure $singularize,
+        PhpNamespace $namespace,
         bool $useDoctrineCollections = true,
         bool $useFluentMutators = false
     ): array {
@@ -228,7 +247,7 @@ final class Property
             }
             $parameter = $adder->addParameter($singularProperty);
             if ($this->typeHint && !$this->isEnum) {
-                $parameter->setType($this->adderRemoverTypeHint);
+                $parameter->setType($this->adderRemoverTypeHint ? $this->resolveName($namespace, $this->adderRemoverTypeHint) : $this->adderRemoverTypeHint);
             }
             $adder->addBody(
                 sprintf('$this->%s[] = %s;', $this->name(), ($this->isEnum ? '(string) ' : '')."$$singularProperty")
@@ -246,7 +265,7 @@ final class Property
             }
             $parameter = $remover->addParameter($singularProperty);
             if ($this->typeHint) {
-                $parameter->setType($this->adderRemoverTypeHint);
+                $parameter->setType($this->adderRemoverTypeHint ? $this->resolveName($namespace, $this->adderRemoverTypeHint) : $this->adderRemoverTypeHint);
             }
 
             if ($useDoctrineCollections && $this->typeHint && 'array' !== $this->typeHint && !$this->isEnum) {
@@ -277,7 +296,7 @@ PHP,
                 $setter->addComment($annotation);
             }
             $setter->addParameter($this->name())
-                   ->setType($this->typeHint)
+                   ->setType($this->typeHint ? $this->resolveName($namespace, $this->typeHint) : $this->typeHint)
                    ->setNullable($this->isNullable);
 
             $setter->addBody('$this->? = $?;', [$this->name(), $this->name()]);

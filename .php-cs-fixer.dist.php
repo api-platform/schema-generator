@@ -24,6 +24,7 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__)
     ->exclude('tests/Fixtures/app/cache')
     ->exclude('build')
+    ->exclude('tmp')
     ->exclude('tests/e2e');
 
 $config = new PhpCsFixer\Config();

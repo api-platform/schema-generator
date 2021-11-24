@@ -28,6 +28,7 @@ use EasyRdf\Graph as RdfGraph;
 use EasyRdf\RdfNamespace;
 use EasyRdf\Resource as RdfResource;
 use Nette\InvalidArgumentException as NetteInvalidArgumentException;
+use Nette\PhpGenerator\PhpFile;
 use PhpCsFixer\Cache\NullCacheManager;
 use PhpCsFixer\Differ\NullDiffer;
 use PhpCsFixer\Error\ErrorsManager;
@@ -37,6 +38,8 @@ use PhpCsFixer\RuleSet as LegacyRuleSet;
 use PhpCsFixer\RuleSet\RuleSet;
 use PhpCsFixer\Runner\Runner;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Twig\Environment;
 
@@ -91,11 +94,12 @@ class TypesGenerator
     private Filesystem $filesystem;
     private PropertyGenerator $propertyGenerator;
     private Printer $printer;
+    private SymfonyStyle $io;
 
     /**
      * @param RdfGraph[] $graphs
      */
-    public function __construct(Inflector $inflector, Environment $twig, LoggerInterface $logger, array $graphs, PhpTypeConverterInterface $phpTypeConverter, CardinalitiesExtractor $cardinalitiesExtractor, GoodRelationsBridge $goodRelationsBridge, Printer $printer)
+    public function __construct(Inflector $inflector, Environment $twig, LoggerInterface $logger, array $graphs, PhpTypeConverterInterface $phpTypeConverter, CardinalitiesExtractor $cardinalitiesExtractor, GoodRelationsBridge $goodRelationsBridge, Printer $printer, SymfonyStyle $io)
     {
         if (!$graphs) {
             throw new \InvalidArgumentException('At least one graph must be injected.');
@@ -111,6 +115,7 @@ class TypesGenerator
         $this->cardinalities = $cardinalitiesExtractor->extract();
         $this->propertyGenerator = new PropertyGenerator($this->goodRelationsBridge, $this->phpTypeConverter, $this->cardinalities, $this->logger);
         $this->printer = $printer;
+        $this->io = $io;
 
         RdfNamespace::set('schema', 'https://schema.org/');
     }
@@ -254,8 +259,17 @@ class TypesGenerator
 
             $path = sprintf('%s%s.php', $classDir, $className);
 
+            $file = null;
+            if (file_exists($path) && is_file($path) && is_readable($path) && $fileContent = file_get_contents($path)) {
+                $confirmation = $this->io->askQuestion(new ConfirmationQuestion(sprintf('File "%s" already exists, use it (if no it will be overwritten)?', $path)));
+                if ($confirmation) {
+                    $file = PhpFile::fromCode($fileContent);
+                    $this->logger->info(sprintf('Using "%s" as base file.', $path));
+                }
+            }
+
             try {
-                file_put_contents($path, $this->printer->printFile($class->toNetteFile($config, $this->inflector)));
+                file_put_contents($path, $this->printer->printFile($class->toNetteFile($config, $this->inflector, $file)));
             } catch (NetteInvalidArgumentException $exception) {
                 $this->logger->warning($exception->getMessage());
             }

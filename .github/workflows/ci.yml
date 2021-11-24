@@ -4,64 +4,86 @@ on:
   push:
   pull_request:
 
+env:
+  COVERAGE: '0'
+
 jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
-    env:
-      extensions: json
-      composer_version: 2
     strategy:
       matrix:
-        php_version:
+        php:
           - '7.4'
           - '8.0'
+        include:
+          - php: '8.0'
+            coverage: true
     steps:
       - uses: actions/checkout@v2
 
       - name: Get Composer Cache Directory
         id: composer-cache
-        run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
       
       - uses: actions/cache@v2
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
+          restore-keys: ${{ runner.os }}-composer-
 
       - name: Setup PHP with extensions
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php_version }}
-          extensions: ${{ env.extensions }}
+          php-version: ${{ matrix.php }}
+          extensions: json
           ini-values: memory_limit=-1
           coverage: pcov
-          tools: composer:v2, cs2pr, php-cs-fixer
+          tools: composer, cs2pr, php-cs-fixer
 
       - name: Install prerequisites
         run: |
-          export PATH="$PATH:$HOME/.composer/vendor/bin"
-          mkdir -p build/logs
-          wget https://github.com/satooshi/php-coveralls/releases/download/v2.4.3/php-coveralls.phar
           wget -O box.phar https://github.com/humbug/box/releases/download/3.13.0/box.phar
-          export BOX_BIN=$(pwd)/box.phar
+          echo "BOX_BIN=$(pwd)/box.phar" >> $GITHUB_ENV
           sudo chown -R $(whoami):$(whoami) .
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
+        if: startsWith(matrix.php, '8.0')
+        run: composer install --prefer-dist --no-interaction --no-progress --ansi
+
+      - name: Update dependencies
+        if: "!startsWith(matrix.php, '8.0')"
+        run: composer update --no-interaction --no-progress --ansi
+
+      - name: Enable code coverage
+        if: matrix.coverage
+        run: echo "COVERAGE=1" >> $GITHUB_ENV
 
       - name: Run phpunit
-        run: vendor/bin/simple-phpunit
+        run: |
+          mkdir -p build/logs/phpunit
+          if [ "$COVERAGE" = '1' ]; then
+            vendor/bin/simple-phpunit --coverage-clover build/logs/phpunit/clover.xml
+          else
+            vendor/bin/simple-phpunit
+          fi
 
       - name: Run php-cs-fixer
-        run: php-cs-fixer fix --dry-run --format=checkstyle | cs2pr
+        run: php-cs-fixer fix --dry-run --format=checkstyle --ansi | cs2pr
 
       - name: Run phpstan
-        run: |
-          vendor/bin/phpstan analyse
+        run: vendor/bin/phpstan analyse --ansi
 
       - name: Run e2e tests
+        if: startsWith(matrix.php, '8.0')
+        run: bin/compile
+
+      - name: Upload coverage results to Coveralls
+        if: matrix.coverage
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          php bin/compile
+          composer global require --prefer-dist --no-interaction --no-progress --ansi php-coveralls/php-coveralls
+          export PATH="$PATH:$HOME/.composer/vendor/bin"
+          php-coveralls --coverage_clover=build/logs/phpunit/clover.xml -v
+        continue-on-error: true
