@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -13,15 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @see https://schema.org/Thing
  */
-#[ORM\Entity]
-#[ApiResource(iri: 'https://schema.org/Thing')]
-class Thing
+#[ORM\MappedSuperclass]
+abstract class Thing
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'AUTO')]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
-
     /**
      * The name of the item.
      *
@@ -30,11 +23,6 @@ class Thing
     #[ORM\Column(type: 'text', nullable: true)]
     #[ApiProperty(iri: 'https://schema.org/name')]
     private ?string $name = null;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function setName(?string $name): void
     {

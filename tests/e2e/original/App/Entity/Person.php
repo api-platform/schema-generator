@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     collectionOperations: ['get' => ['route_name' => 'get_person_collection']],
 )]
 #[UniqueEntity('email')]
-class Person
+class Person extends Thing
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
