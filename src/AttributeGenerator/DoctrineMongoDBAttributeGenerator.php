@@ -79,7 +79,7 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
         $type = null;
         if ($property->isEnum) {
             $type = $property->isArray ? 'simple_array' : 'string';
-        } elseif ($property->isArray ?? false) {
+        } elseif ($property->isArray ?? false && $property->cardinality === CardinalitiesExtractor::CARDINALITY_UNKNOWN) {
             $type = 'collection';
         } elseif (null !== $phpType = $this->phpTypeConverter->getPhpType($property, $this->config, [])) {
             switch ($property->range->getUri()) {

@@ -112,7 +112,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
         $type = null;
         if ($property->isEnum) {
             $type = $property->isArray ? 'simple_array' : 'string';
-        } elseif ($property->isArray) {
+        } elseif ($property->isArray && $property->cardinality === CardinalitiesExtractor::CARDINALITY_UNKNOWN) {
             $type = 'json';
         } elseif ($property->range && null !== ($phpType = $this->phpTypeConverter->getPhpType($property, $this->config, []))) {
             switch ($property->range->getUri()) {
