@@ -11,6 +11,7 @@ php schema.phar generate tmp/original tests/e2e/schema.yml -n -vv --ansi;
 diff tests/e2e/original/App/Entity/Person.php tmp/original/App/Entity/Person.php;
 diff tests/e2e/original/App/Entity/PostalAddress.php tmp/original/App/Entity/PostalAddress.php;
 diff tests/e2e/original/App/Entity/Thing.php tmp/original/App/Entity/Thing.php;
+diff tests/e2e/original/App/Enum/GenderType.php tmp/original/App/Enum/GenderType.php;
 
 # Already generated files
 
@@ -21,3 +22,4 @@ php schema.phar generate tmp/customized tests/e2e/schema.yml -n -vv --ansi;
 diff tests/e2e/customized/App/Entity/Person.php tmp/customized/App/Entity/Person.php;
 diff tests/e2e/customized/App/Entity/PostalAddress.php tmp/customized/App/Entity/PostalAddress.php;
 diff tests/e2e/customized/App/Entity/Thing.php tmp/customized/App/Entity/Thing.php;
+diff tests/e2e/customized/App/Enum/GenderType.php tmp/customized/App/Enum/GenderType.php;

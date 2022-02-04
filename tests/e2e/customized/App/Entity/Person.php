@@ -7,6 +7,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Attribute\MyCustomAttribute;
+use App\Enum\GenderType;
 use App\Model\MyCustomClass;
 use App\Model\MyCustomInterface;
 use Doctrine\ORM\Mapping as ORM;
@@ -67,6 +68,16 @@ class Person extends MyCustomClass implements MyCustomInterface
     #[ApiProperty(iri: 'https://schema.org/additionalName')]
     #[Groups(['extra'])]
     private ?string $additionalName = null;
+
+    /**
+     * Gender of something, typically a \[\[Person\]\], but possibly also fictional characters, animals, etc. While https://schema.org/Male and https://schema.org/Female may be used, text strings are also acceptable for people who do not identify as a binary gender. The \[\[gender\]\] property can also be used in an extended sense to cover e.g. the gender of sports teams. As with the gender of individuals, we do not try to enumerate all possibilities. A mixed-gender \[\[SportsTeam\]\] can be indicated with a text value of "Mixed".
+     *
+     * @see https://schema.org/gender
+     */
+    #[ORM\Column(nullable: true)]
+    #[ApiProperty(iri: 'https://schema.org/gender')]
+    #[Assert\Choice(callback: [GenderType::class, 'toArray'])]
+    private ?string $gender = null;
 
     /**
      * Physical address of the item.
@@ -158,6 +169,16 @@ class Person extends MyCustomClass implements MyCustomInterface
     public function getAdditionalName(): ?string
     {
         return $this->additionalName;
+    }
+
+    public function setGender(?string $gender): void
+    {
+        $this->gender = $gender;
+    }
+
+    public function getGender(): ?string
+    {
+        return $this->gender;
     }
 
     public function setAddress(?PostalAddress $address): void

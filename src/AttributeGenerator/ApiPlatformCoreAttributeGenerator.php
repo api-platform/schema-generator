@@ -35,7 +35,7 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generateClassAttributes(Class_ $class): array
     {
-        if ($class->isAbstract) {
+        if ($class->isAbstract || $class->isEnum()) {
             return [];
         }
 
@@ -104,6 +104,6 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generateUses(Class_ $class): array
     {
-        return !$class->isEnum() ? [new Use_(ApiResource::class), new Use_(ApiProperty::class)] : [];
+        return [new Use_(ApiResource::class), new Use_(ApiProperty::class)];
     }
 }

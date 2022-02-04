@@ -23,6 +23,7 @@ use ApiPlatform\SchemaGenerator\TypesGenerator;
 use Doctrine\Inflector\InflectorFactory;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
+use Nette\PhpGenerator\Literal;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -105,7 +106,7 @@ class ConstraintAttributeGeneratorTest extends TestCase
         $property->rangeName = 'Enum';
         $property->isEnum = true;
         $property->isArray = true;
-        yield 'enum' => [$property, [new Attribute('Assert\Choice', ['callback' => ['Enum', 'toArray'], 'multiple' => true])]];
+        yield 'enum' => [$property, [new Attribute('Assert\Choice', ['callback' => [new Literal('Enum::class'), 'toArray'], 'multiple' => true])]];
     }
 
     public function testGenerateUses(): void
