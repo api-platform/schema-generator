@@ -71,7 +71,7 @@ final class ConstraintAttributeGenerator extends AbstractAttributeGenerator
         }
 
         if ($property->isEnum && $property->range && $property->rangeName) {
-            $args = ['callback' => [$property->rangeName, 'toArray']];
+            $args = ['callback' => [new Literal(sprintf('%s::class', $property->rangeName)), 'toArray']];
 
             if ($property->isArray) {
                 $args['multiple'] = true;

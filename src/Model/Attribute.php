@@ -22,11 +22,11 @@ final class Attribute
 
     private string $name;
 
-    /** @var (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[] */
+    /** @var (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal|\Nette\PhpGenerator\Literal[])[] */
     private array $args;
 
     /**
-     * @param (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[] $args
+     * @param (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal|\Nette\PhpGenerator\Literal[])[] $args
      */
     public function __construct(string $name, array $args = [])
     {
@@ -40,7 +40,7 @@ final class Attribute
     }
 
     /**
-     * @return (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]
+     * @return (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal|\Nette\PhpGenerator\Literal[])[]
      */
     public function args(): array
     {

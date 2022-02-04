@@ -23,6 +23,7 @@ types:
             familyName: ~
             givenName: ~
             additionalName: { groups: ['extra'] }
+            gender: { range: https://schema.org/GenderType }
             address: { range: https://schema.org/PostalAddress }
             birthDate: ~
             telephone: ~
@@ -37,3 +38,5 @@ types:
             postOfficeBoxNumber: ~
             postalCode: ~
             streetAddress: ~
+    GenderType:
+        properties: {}
