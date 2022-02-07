@@ -68,7 +68,7 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generatePropertyAttributes(Property $property, string $className): array
     {
-        if (null === $property->range) {
+        if (null === $property->range || null === $property->rangeName) {
             return [];
         }
 
@@ -77,11 +77,12 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
         }
 
         $type = null;
+        $isDataType = $this->phpTypeConverter->isDatatype($property->range);
         if ($property->isEnum) {
             $type = $property->isArray ? 'simple_array' : 'string';
-        } elseif ($property->isArray ?? false) {
+        } elseif ($property->isArray && $isDataType) {
             $type = 'collection';
-        } elseif (null !== $phpType = $this->phpTypeConverter->getPhpType($property, $this->config, [])) {
+        } elseif (!$property->isArray && $isDataType && null !== ($phpType = $this->phpTypeConverter->getPhpType($property, $this->config, []))) {
             switch ($property->range->getUri()) {
                 case 'http://www.w3.org/2001/XMLSchema#time':
                 case 'https://schema.org/Time':
