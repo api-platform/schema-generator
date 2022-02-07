@@ -55,8 +55,8 @@ class DoctrineMongoDBAttributeGeneratorTest extends TestCase
         $enumProperty->isArray = true;
         $vehicle->addProperty($enumProperty);
         $collectionProperty = new Property('collection');
-        $collectionProperty->rangeName = 'Thing';
-        $collectionProperty->range = new RdfResource('https://schema.org/Thing');
+        $collectionProperty->rangeName = 'string';
+        $collectionProperty->range = new RdfResource('http://www.w3.org/2001/XMLSchema#string');
         $collectionProperty->isArray = true;
         $vehicle->addProperty($collectionProperty);
         $weightProperty = new Property('weight');
@@ -72,6 +72,7 @@ class DoctrineMongoDBAttributeGeneratorTest extends TestCase
         $relationsProperty->rangeName = 'Person';
         $relationsProperty->range = new RdfResource('https://schema.org/Person');
         $relationsProperty->cardinality = CardinalitiesExtractor::CARDINALITY_1_N;
+        $relationsProperty->isArray = true;
         $vehicle->addProperty($relationsProperty);
 
         $this->classMap[$vehicle->name()] = $vehicle;

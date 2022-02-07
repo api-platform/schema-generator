@@ -93,7 +93,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generatePropertyAttributes(Property $property, string $className): array
     {
-        if (null === $property->rangeName) {
+        if (null === $property->range || null === $property->rangeName) {
             return [];
         }
 
@@ -110,11 +110,12 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
         }
 
         $type = null;
+        $isDataType = $this->phpTypeConverter->isDatatype($property->range);
         if ($property->isEnum) {
             $type = $property->isArray ? 'simple_array' : 'string';
-        } elseif ($property->isArray) {
+        } elseif ($property->isArray && $isDataType) {
             $type = 'json';
-        } elseif ($property->range && null !== ($phpType = $this->phpTypeConverter->getPhpType($property, $this->config, []))) {
+        } elseif (!$property->isArray && $isDataType && null !== ($phpType = $this->phpTypeConverter->getPhpType($property, $this->config, []))) {
             switch ($property->range->getUri()) {
                 // TODO: use more precise types for int (smallint, bigint...)
                 case 'http://www.w3.org/2001/XMLSchema#time':
@@ -173,7 +174,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
         }
 
         if (null === $relationName = $this->getRelationName($property->rangeName)) {
-            $this->logger->error('The type "{type}" of the property "{property}" from the class "{class}" doesn\'t exist', ['type' => $property->range ? $property->range->getUri() : $property->rangeName, 'property' => $property->name(), 'class' => $className]);
+            $this->logger->error('The type "{type}" of the property "{property}" from the class "{class}" doesn\'t exist', ['type' => $property->range->getUri(), 'property' => $property->name(), 'class' => $className]);
 
             return [];
         }

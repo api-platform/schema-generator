@@ -58,8 +58,8 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
         $enumProperty->isArray = true;
         $vehicle->addProperty($enumProperty);
         $collectionProperty = new Property('collection');
-        $collectionProperty->rangeName = 'Thing';
-        $collectionProperty->range = new RdfResource('https://schema.org/Thing');
+        $collectionProperty->rangeName = 'string';
+        $collectionProperty->range = new RdfResource('http://www.w3.org/2001/XMLSchema#string');
         $collectionProperty->isArray = true;
         $vehicle->addProperty($collectionProperty);
         $weightProperty = new Property('weight');
@@ -96,16 +96,19 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
         $relation0NProperty->rangeName = 'QuantitativeValue';
         $relation0NProperty->range = new RdfResource('https://schema.org/QuantitativeValue');
         $relation0NProperty->cardinality = CardinalitiesExtractor::CARDINALITY_0_N;
+        $relation0NProperty->isArray = true;
         $vehicle->addProperty($relation0NProperty);
         $relation1NProperty = new Property('relation1_N');
         $relation1NProperty->rangeName = 'QuantitativeValue';
         $relation1NProperty->range = new RdfResource('https://schema.org/QuantitativeValue');
         $relation1NProperty->cardinality = CardinalitiesExtractor::CARDINALITY_1_N;
+        $relation1NProperty->isArray = true;
         $vehicle->addProperty($relation1NProperty);
         $relationNNProperty = new Property('relationN_N');
         $relationNNProperty->rangeName = 'QuantitativeValue';
         $relationNNProperty->range = new RdfResource('https://schema.org/QuantitativeValue');
         $relationNNProperty->cardinality = CardinalitiesExtractor::CARDINALITY_N_N;
+        $relationNNProperty->isArray = true;
         $vehicle->addProperty($relationNNProperty);
 
         $this->classMap[$vehicle->name()] = $vehicle;

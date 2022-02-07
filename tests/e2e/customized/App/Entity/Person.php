@@ -10,6 +10,8 @@ use App\Attribute\MyCustomAttribute;
 use App\Enum\GenderType;
 use App\Model\MyCustomClass;
 use App\Model\MyCustomInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -127,9 +129,24 @@ class Person extends MyCustomClass implements MyCustomInterface
     #[Assert\Url]
     private ?string $url = null;
 
+    /**
+     * A sibling of the person.
+     *
+     * @see https://schema.org/siblings
+     */
+    #[ORM\ManyToMany(targetEntity: 'App\Entity\Person')]
+    #[ORM\InverseJoinColumn(unique: true)]
+    #[ApiProperty(iri: 'https://schema.org/siblings')]
+    private ?Collection $siblings = null;
+
     /** @see _:customColumn */
     #[ORM\Column(type: 'decimal', precision: 5, scale: 1, options: ['comment' => 'my comment'])]
     private ?Person $customColumn = null;
+
+    public function __construct()
+    {
+        $this->siblings = new ArrayCollection();
+    }
 
     public function getMyProperty(): string
     {
@@ -229,6 +246,21 @@ class Person extends MyCustomClass implements MyCustomInterface
     public function getUrl(): ?string
     {
         return $this->url;
+    }
+
+    public function addSibling(Person $sibling): void
+    {
+        $this->siblings[] = $sibling;
+    }
+
+    public function removeSibling(Person $sibling): void
+    {
+        $this->siblings->removeElement($sibling);
+    }
+
+    public function getSiblings(): Collection
+    {
+        return $this->siblings;
     }
 
     public function setCustomColumn(?Person $customColumn): void
