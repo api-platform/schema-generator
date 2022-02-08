@@ -62,7 +62,7 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
                 }
 
                 foreach ($this->getParentClasses($class->resource()) as $typeInHierarchy) {
-                    foreach ($this->propertiesMap[$typeInHierarchy->getUri()] as $property) {
+                    foreach ($this->propertiesMap[$typeInHierarchy->getUri()] ?? [] as $property) {
                         if ($key !== $property->localName()) {
                             continue;
                         }
