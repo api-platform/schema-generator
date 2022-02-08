@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.1
+
+* fix: use FQCN when using an enum in callback constraint and remove ApiResource from the enum
+* fix: make sure relations are generated
+* fix: inheritance from Intangible should not create warning
+
 ## 4.0.0
 
 * feat: support updating existing files
