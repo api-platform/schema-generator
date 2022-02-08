@@ -31,6 +31,10 @@ types:
             url: ~
             siblings: { cardinality: "(0..*)" }
             customColumn: { ormColumn: {type: "decimal", precision: 5, scale: 1, options: {comment: "my comment"}} }
+    Brand:
+        properties:
+            name: ~
+            slogan: ~
     PostalAddress:
         properties:
             addressCountry: { range: https://schema.org/Text }
