@@ -143,16 +143,11 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
         $myEnumClass = new SchemaClass('MyEnum', $myEnum);
         $this->classMap[$myEnumClass->name()] = $myEnumClass;
 
-        $customAttributes = new RdfResource('https://schema.org/CustomAttributes', $graph);
-        $customAttributesClass = new SchemaClass('CustomAttributes', $customAttributes);
-        $this->classMap[$customAttributesClass->name()] = $customAttributesClass;
-
         $configuration = new SchemaGeneratorConfiguration();
         /** @var Configuration $processedConfiguration */
         $processedConfiguration = (new Processor())->processConfiguration($configuration, [[
             'id' => ['generationStrategy' => 'auto', 'writable' => true],
             'types' => [
-                'CustomAttributes' => ['doctrine' => ['attributes' => ['ORM\Entity' => ['readOnly' => true]]]],
                 'Product' => null,
                 // Vehicle is not added deliberately
             ],
@@ -169,7 +164,6 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
     public function testGenerateClassAttributes(): void
     {
         $this->assertSame([], $this->generator->generateClassAttributes($this->classMap['MyEnum']));
-        $this->assertEquals([new Attribute('ORM\Entity', ['readOnly' => true])], $this->generator->generateClassAttributes($this->classMap['CustomAttributes']));
         $this->assertEquals([new Attribute('ORM\MappedSuperclass')], $this->generator->generateClassAttributes($this->classMap['Product']));
         $this->assertEquals([new Attribute('ORM\Entity')], $this->generator->generateClassAttributes($this->classMap['Vehicle']));
         $this->assertEquals([new Attribute('ORM\Embeddable')], $this->generator->generateClassAttributes($this->classMap['QuantitativeValue']));

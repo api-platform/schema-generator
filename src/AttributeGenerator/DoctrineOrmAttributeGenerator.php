@@ -42,15 +42,6 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generateClassAttributes(Class_ $class): array
     {
-        if ($doctrineAttributes = (isset($this->config['types'][$class->name()]) ? $this->config['types'][$class->name()]['doctrine']['attributes'] : false)) {
-            $attributes = [];
-            foreach ($doctrineAttributes as $attributeName => $attributeArgs) {
-                $attributes[] = new Attribute($attributeName, $attributeArgs);
-            }
-
-            return $attributes;
-        }
-
         if ($class->isEnum()) {
             return [];
         }

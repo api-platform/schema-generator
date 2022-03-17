@@ -97,16 +97,11 @@ class DoctrineMongoDBAttributeGeneratorTest extends TestCase
         $myEnumClass = new SchemaClass('MyEnum', $myEnum);
         $this->classMap[$myEnumClass->name()] = $myEnumClass;
 
-        $customAttributes = new RdfResource('https://schema.org/CustomAttributes', $graph);
-        $customAttributesClass = new SchemaClass('CustomAttributes', $customAttributes);
-        $this->classMap[$customAttributesClass->name()] = $customAttributesClass;
-
         $configuration = new SchemaGeneratorConfiguration();
         /** @var Configuration $processedConfiguration */
         $processedConfiguration = (new Processor())->processConfiguration($configuration, [[
             'id' => ['generationStrategy' => 'auto', 'writable' => true],
             'types' => [
-                'CustomAttributes' => ['doctrine' => ['attributes' => ['MongoDB\Document' => ['db' => 'my_db']]]],
                 'Product' => null,
                 // Vehicle is not added deliberately
             ],
@@ -123,7 +118,6 @@ class DoctrineMongoDBAttributeGeneratorTest extends TestCase
     public function testGenerateClassAttributes(): void
     {
         $this->assertSame([], $this->generator->generateClassAttributes($this->classMap['MyEnum']));
-        $this->assertEquals([new Attribute('MongoDB\Document', ['db' => 'my_db'])], $this->generator->generateClassAttributes($this->classMap['CustomAttributes']));
         $this->assertEquals([new Attribute('MongoDB\MappedSuperclass')], $this->generator->generateClassAttributes($this->classMap['Product']));
         $this->assertEquals([new Attribute('MongoDB\Document')], $this->generator->generateClassAttributes($this->classMap['Vehicle']));
     }

@@ -1,0 +1,28 @@
+uses:
+    App\Attributes\MyAttribute: ~
+types:
+  Book:
+    attributes:
+      - ORM\Entity: ~
+      - ApiResource: { routePrefix: '/library' }
+      - MyAttribute: ~
+    properties:
+      isbn: ~
+      title: { range: "https://schema.org/Text" }
+      author: { range: "https://schema.org/Text" }
+      description: ~
+      reviews:
+        mappedBy: book
+        cardinality: (1..*)
+        attributes:
+          ORM\OneToMany: { cascade: [persist, remove] }
+          ORM\OrderBy: { name: ASC }
+  Review:
+    properties:
+      book:
+        range: Book
+        inversedBy: reviews
+        cardinality: (*..1)
+      author: { range: "https://schema.org/Text" }
+      reviewBody: ~
+      rating: { range: "https://schema.org/Integer" }

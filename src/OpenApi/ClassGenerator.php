@@ -224,6 +224,10 @@ final class ClassGenerator
             $class->setRdfType($schema->externalDocs->url);
         }
 
+        foreach ($config['uses'] as $useName => $useArgs) {
+            $class->addUse(new Use_($useName, $useArgs['alias'] ?? null));
+        }
+
         foreach ($schema->properties as $propertyName => $schemaProperty) {
             \assert($schemaProperty instanceof Schema);
             $property = ($this->propertyGenerator)($propertyName, $config, $class, ['schema' => $schema, 'property' => $schemaProperty]);

@@ -10,7 +10,6 @@ parameters:
                 relationTableName: ?string,
                 cardinality: string,
                 ormColumn: array<string, string|string[]>,
-                apiPropertyArguments: array{},
                 groups: string[],
                 mappedBy: ?string,
                 inversedBy: ?string,
@@ -20,7 +19,8 @@ parameters:
                 required: ?boolean,
                 unique: boolean,
                 embedded: boolean,
-                columnPrefix: false|string
+                columnPrefix: false|string,
+                attributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]|null>
             }
         '''
         TypeConfiguration: '''
@@ -30,18 +30,17 @@ parameters:
                 abstract: ?boolean,
                 embeddable: boolean,
                 namespaces: array{class: ?string, interface: ?string},
-                doctrine: array{attributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]>},
+                attributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]|null>,
                 parent: false|string,
                 guessFrom: string,
                 operations: array<string, array<string, string[]>>,
-                apiResourceArguments: array{},
                 allProperties: boolean,
                 properties: array<string, PropertyConfiguration>
             }
         '''
         Configuration: '''
             array{
-                 vocabularies: array{uri: string, format: string, allTypes: ?boolean, apiResourceArguments: array{}}[],
+                 vocabularies: array{uri: string, format: string, allTypes: ?boolean, attributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]|null>}[],
                  vocabularyNamespace: string,
                  relations: string[],
                  debug: boolean,
@@ -50,6 +49,7 @@ parameters:
                  checkIsGoodRelations: boolean,
                  header: ?string,
                  namespaces: array{prefix: ?string, entity: string, enum: string, interface: string},
+                 uses: array<string, array{alias: ?string}>,
                  doctrine: array{useCollection: boolean, resolveTargetEntityConfigPath: ?string, resolveTargetEntityConfigType: 'XML'|'yaml', inheritanceAttributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]>},
                  validator: array{assertType: boolean},
                  author: false|string,

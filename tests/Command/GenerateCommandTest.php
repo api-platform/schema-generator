@@ -75,6 +75,49 @@ PHP
         , $person);
     }
 
+    public function testCustomAttributes(): void
+    {
+        $outputDir = __DIR__.'/../../build/custom-attributes';
+        $config = __DIR__.'/../config/custom-attributes.yaml';
+        $this->fs->mkdir($outputDir);
+        $commandTester = new CommandTester(new GenerateCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $book = file_get_contents("$outputDir/App/Entity/Book.php");
+
+        // Attributes given as ordered map (omap).
+        $this->assertStringContainsString(<<<'PHP'
+use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Attributes\MyAttribute;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * A book.
+ *
+ * @see https://schema.org/Book
+ */
+#[ORM\Entity]
+#[ApiResource(iri: 'https://schema.org/Book', routePrefix: '/library')]
+#[MyAttribute]
+class Book
+{
+PHP
+        , $book);
+
+        // Attributes given as unordered map.
+        $this->assertStringContainsString(<<<'PHP'
+    #[ORM\OneToMany(targetEntity: 'App\Entity\Review', mappedBy: 'book', cascade: ['persist', 'remove'])]
+PHP
+        , $book);
+        $this->assertStringContainsString(<<<'PHP'
+    #[ORM\OrderBy(name: 'ASC')]
+PHP
+        , $book);
+    }
+
     public function testFluentMutators(): void
     {
         $outputDir = __DIR__.'/../../build/fluent-mutators';
@@ -456,8 +499,8 @@ PHP
  *
  * @see http://www.w3.org/ns/activitystreams#Page
  */
-#[ORM\Entity]
 #[ApiResource(iri: 'http://www.w3.org/ns/activitystreams#Page', routePrefix: 'as')]
+#[ORM\Entity]
 class Page extends Object_
 PHP
             , $page);
