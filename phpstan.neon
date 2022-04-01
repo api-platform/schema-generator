@@ -17,6 +17,7 @@ parameters:
                 readable: boolean,
                 writable: boolean,
                 nullable: boolean,
+                required: ?boolean,
                 unique: boolean,
                 embedded: boolean,
                 columnPrefix: false|string
@@ -61,7 +62,8 @@ parameters:
                  annotationGenerators: class-string<ApiPlatform\SchemaGenerator\AnnotationGenerator\AnnotationGeneratorInterface>[],
                  attributeGenerators: class-string<ApiPlatform\SchemaGenerator\AttributeGenerator\AttributeGeneratorInterface>[],
                  generatorTemplates: string[],
-                 output: string
+                 output: string,
+                 openApi: array{file: string}
             }
         '''
     inferPrivatePropertyTypeFromConstructor: true

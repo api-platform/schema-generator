@@ -14,6 +14,9 @@
   "files": [
     "vendor/twig/twig/src/TwigTest.php"
   ],
+  "directories": [
+    "vendor/cebe/php-openapi/src/spec"
+  ],
   "force-autodiscovery": true,
 
   "compression": "GZ",

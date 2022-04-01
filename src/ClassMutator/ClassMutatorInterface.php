@@ -17,5 +17,5 @@ use ApiPlatform\SchemaGenerator\Model\Class_;
 
 interface ClassMutatorInterface
 {
-    public function __invoke(Class_ $class): Class_;
+    public function __invoke(Class_ $class): void;
 }

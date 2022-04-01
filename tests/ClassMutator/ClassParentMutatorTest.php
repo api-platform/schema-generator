@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\Tests\ClassMutator;
 
 use ApiPlatform\SchemaGenerator\ClassMutator\ClassParentMutator;
-use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Use_;
 use ApiPlatform\SchemaGenerator\PhpTypeConverter;
-use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
+use ApiPlatform\SchemaGenerator\Schema\Model\Class_ as SchemaClass;
+use ApiPlatform\SchemaGenerator\SchemaGeneratorConfiguration;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
 use PHPUnit\Framework\TestCase;
@@ -37,7 +37,7 @@ class ClassParentMutatorTest extends TestCase
     {
         $this->loggerProphecy = $this->prophesize(LoggerInterface::class);
 
-        $configuration = new TypesGeneratorConfiguration();
+        $configuration = new SchemaGeneratorConfiguration();
         /** @var Configuration $processedConfiguration */
         $processedConfiguration = (new Processor())->processConfiguration($configuration, [[
             'types' => [
@@ -46,43 +46,46 @@ class ClassParentMutatorTest extends TestCase
             ],
         ]]);
 
-        $this->classParentMutator = new ClassParentMutator($processedConfiguration, new PhpTypeConverter(), $this->loggerProphecy->reveal());
+        $this->classParentMutator = new ClassParentMutator($processedConfiguration, new PhpTypeConverter());
+        $this->classParentMutator->setLogger($this->loggerProphecy->reveal());
     }
 
     /**
      * @dataProvider provideInvokeTestCases
      */
-    public function testInvoke(Class_ $class, Class_ $expectedClass, ?string $loggerMessage = null): void
+    public function testInvoke(SchemaClass $class, SchemaClass $expectedClass, ?string $loggerMessage = null): void
     {
         if ($loggerMessage) {
             $this->loggerProphecy->warning($loggerMessage)->shouldBeCalled();
         }
 
-        $this->assertEquals($expectedClass, ($this->classParentMutator)($class));
+        ($this->classParentMutator)($class);
+
+        $this->assertEquals($expectedClass, $class);
     }
 
     /**
-     * @return \Generator<array{0: Class_, 1: Class_, 2?: string}>
+     * @return \Generator<array{0: SchemaClass, 1: SchemaClass, 2?: string}>
      */
     public function provideInvokeTestCases(): \Generator
     {
         $graph = new RdfGraph();
-        $product = new Class_('Product', new RdfResource('https://schema.org/Product', $graph));
+        $product = new SchemaClass('Product', new RdfResource('https://schema.org/Product', $graph));
         yield 'no parent' => [clone $product, clone $product];
 
         $graph = new RdfGraph();
         $graph->addResource('https://schema.org/CreativeWork', 'rdfs:subClassOf', 'https://schema.org/Thing');
-        $creativeWork = new Class_('CreativeWork', new RdfResource('https://schema.org/CreativeWork', $graph));
+        $creativeWork = new SchemaClass('CreativeWork', new RdfResource('https://schema.org/CreativeWork', $graph));
         yield 'with subclass' => [clone $creativeWork, (clone $creativeWork)->withParent('Thing')];
 
         $graph = new RdfGraph();
         $graph->addResource('https://schema.org/CreativeWork', 'rdfs:subClassOf', 'https://schema.org/Work');
         $graph->addResource('https://schema.org/CreativeWork', 'rdfs:subClassOf', 'https://schema.org/Thing');
-        $creativeWork = new Class_('CreativeWork', new RdfResource('https://schema.org/CreativeWork', $graph));
+        $creativeWork = new SchemaClass('CreativeWork', new RdfResource('https://schema.org/CreativeWork', $graph));
         yield 'with multiple subclasses' => [clone $creativeWork, (clone $creativeWork)->withParent('Work'), 'The type "https://schema.org/CreativeWork" has several supertypes. Using the first one.'];
 
         $graph = new RdfGraph();
-        $blogPosting = new Class_('BlogPosting', new RdfResource('https://schema.org/BlogPosting', $graph));
+        $blogPosting = new SchemaClass('BlogPosting', new RdfResource('https://schema.org/BlogPosting', $graph));
         yield 'with parent' => [clone $blogPosting, (clone $blogPosting)->withParent('SocialMediaPosting')->addUse(new Use_('socialMediaNamespace\SocialMediaPosting'))];
     }
 }

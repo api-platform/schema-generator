@@ -15,11 +15,10 @@ namespace ApiPlatform\SchemaGenerator\Tests\AttributeGenerator;
 
 use ApiPlatform\SchemaGenerator\AttributeGenerator\SerializerGroupsAttributeGenerator;
 use ApiPlatform\SchemaGenerator\Model\Attribute;
-use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\PhpTypeConverter;
-use Doctrine\Inflector\InflectorFactory;
+use ApiPlatform\SchemaGenerator\Schema\Model\Property as SchemaProperty;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\NullLogger;
+use Symfony\Component\String\Inflector\EnglishInflector;
 
 class SerializerGroupAttributeGeneratorTest extends TestCase
 {
@@ -29,10 +28,7 @@ class SerializerGroupAttributeGeneratorTest extends TestCase
     {
         $this->generator = new SerializerGroupsAttributeGenerator(
             new PhpTypeConverter(),
-            new NullLogger(),
-            InflectorFactory::create()->build(),
-            [],
-            [],
+            new EnglishInflector(),
             [],
             [],
         );
@@ -40,7 +36,7 @@ class SerializerGroupAttributeGeneratorTest extends TestCase
 
     public function testGeneratePropertyAttributes(): void
     {
-        $property = new Property('prop');
+        $property = new SchemaProperty('prop');
         $property->isId = false;
         $property->groups = ['group'];
 

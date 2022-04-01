@@ -19,69 +19,6 @@ use EasyRdf\Resource as RdfResource;
 
 interface PhpTypeConverterInterface
 {
-    public const BASE_MAPPING = [
-        // bool
-        'http://www.w3.org/2001/XMLSchema#boolean' => 'bool',
-        'https://schema.org/Boolean' => 'bool',
-        // float
-        'http://www.w3.org/2001/XMLSchema#float' => 'float',
-        'http://www.w3.org/2001/XMLSchema#double' => 'float',
-        'https://schema.org/Float' => 'float',
-        // int
-        'https://schema.org/Integer' => 'int',
-        'http://www.w3.org/2001/XMLSchema#integer' => 'int',
-        'http://www.w3.org/2001/XMLSchema#nonPositiveInteger' => 'int',
-        'http://www.w3.org/2001/XMLSchema#nonNegativeInteger' => 'int',
-        'http://www.w3.org/2001/XMLSchema#long' => 'int',
-        'http://www.w3.org/2001/XMLSchema#int' => 'int',
-        'http://www.w3.org/2001/XMLSchema#short' => 'int',
-        'http://www.w3.org/2001/XMLSchema#byte' => 'int',
-        'http://www.w3.org/2001/XMLSchema#unsignedLong' => 'int',
-        'http://www.w3.org/2001/XMLSchema#positiveInteger' => 'int',
-        'http://www.w3.org/2001/XMLSchema#unsignedInt' => 'int',
-        'http://www.w3.org/2001/XMLSchema#unsignedShort' => 'int',
-        'http://www.w3.org/2001/XMLSchema#unsignedByte' => 'int',
-        // string
-        'http://www.w3.org/2001/XMLSchema#string' => 'string',
-        'http://www.w3.org/2001/XMLSchema#hexBinary' => 'string',
-        'http://www.w3.org/2001/XMLSchema#base64Binary' => 'string',
-        'http://www.w3.org/2001/XMLSchema#anyURI' => 'string',
-        'http://www.w3.org/2001/XMLSchema#QName' => 'string',
-        'http://www.w3.org/2001/XMLSchema#NOTATION' => 'string',
-        'http://www.w3.org/2001/XMLSchema#decimal' => 'string',
-        'http://www.w3.org/2001/XMLSchema#normalizedString' => 'string',
-        'http://www.w3.org/2001/XMLSchema#token' => 'string',
-        'http://www.w3.org/2001/XMLSchema#language' => 'string',
-        'http://www.w3.org/2001/XMLSchema#NMTOKEN' => 'string',
-        'http://www.w3.org/2001/XMLSchema#NMTOKENS' => 'string',
-        'http://www.w3.org/2001/XMLSchema#Name' => 'string',
-        'http://www.w3.org/2001/XMLSchema#NCName' => 'string',
-        'http://www.w3.org/2001/XMLSchema#ID' => 'string',
-        'http://www.w3.org/2001/XMLSchema#IDREF' => 'string',
-        'http://www.w3.org/2001/XMLSchema#IDREFS' => 'string',
-        'http://www.w3.org/2001/XMLSchema#ENTITY' => 'string',
-        'http://www.w3.org/2001/XMLSchema#ENTITIES' => 'string',
-        'https://schema.org/Text' => 'string',
-        'https://schema.org/URL' => 'string',
-        'https://schema.org/Number' => 'string',
-        // DateTimeInterface
-        'http://www.w3.org/2001/XMLSchema#dateTime' => '\\'.\DateTimeInterface::class,
-        'http://www.w3.org/2001/XMLSchema#time' => '\\'.\DateTimeInterface::class,
-        'http://www.w3.org/2001/XMLSchema#date' => '\\'.\DateTimeInterface::class,
-        'http://www.w3.org/2001/XMLSchema#gYearMonth' => '\\'.\DateTimeInterface::class,
-        'http://www.w3.org/2001/XMLSchema#gYear' => '\\'.\DateTimeInterface::class,
-        'http://www.w3.org/2001/XMLSchema#gMonthDay' => '\\'.\DateTimeInterface::class,
-        'http://www.w3.org/2001/XMLSchema#gDay' => '\\'.\DateTimeInterface::class,
-        'http://www.w3.org/2001/XMLSchema#gMonth' => '\\'.\DateTimeInterface::class,
-        'https://schema.org/Date' => '\\'.\DateTimeInterface::class,
-        'https://schema.org/DateTime' => '\\'.\DateTimeInterface::class,
-        'https://schema.org/Time' => '\\'.\DateTimeInterface::class,
-        // DateInterval
-        'http://www.w3.org/2001/XMLSchema#duration' => '\\'.\DateInterval::class,
-        // mixed
-        'https://schema.org/DataType' => null,
-    ];
-
     /**
      * @internal
      */

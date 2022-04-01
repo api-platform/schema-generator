@@ -40,10 +40,12 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
         }
 
         $arguments = [];
-        if ($class->name() !== $localName = $class->resourceLocalName()) {
+        if ($class->name() !== $localName = $class->shortName()) {
             $arguments['shortName'] = $localName;
         }
-        $arguments['iri'] = $class->resourceUri();
+        if ($class->rdfType()) {
+            $arguments['iri'] = $class->rdfType();
+        }
         if ($class->security) {
             $arguments['security'] = $class->security;
         }
@@ -54,7 +56,7 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
                 $targetArguments = [];
                 foreach ($targetOperations as $method => $methodConfig) {
                     $methodArguments = [];
-                    foreach ($methodConfig as $key => $value) {
+                    foreach ($methodConfig ?? [] as $key => $value) {
                         $methodArguments[$key] = $value;
                     }
                     $targetArguments[$method] = $methodArguments;
@@ -90,7 +92,11 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generatePropertyAttributes(Property $property, string $className): array
     {
-        $arguments['iri'] = $property->resourceUri();
+        $arguments = [];
+
+        if ($property->rdfType()) {
+            $arguments['iri'] = $property->rdfType();
+        }
 
         if ($property->security) {
             $arguments['security'] = $property->security;

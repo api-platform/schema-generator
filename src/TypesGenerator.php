@@ -20,28 +20,23 @@ use ApiPlatform\SchemaGenerator\ClassMutator\ClassInterfaceMutator;
 use ApiPlatform\SchemaGenerator\ClassMutator\ClassParentMutator;
 use ApiPlatform\SchemaGenerator\ClassMutator\ClassPropertiesAppender;
 use ApiPlatform\SchemaGenerator\ClassMutator\ClassPropertiesTypehintMutator;
-use ApiPlatform\SchemaGenerator\ClassMutator\EnumClassMutator;
 use ApiPlatform\SchemaGenerator\Model\Class_;
-use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGenerator;
-use Doctrine\Inflector\Inflector;
+use ApiPlatform\SchemaGenerator\Model\Use_;
+use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGeneratorInterface;
+use ApiPlatform\SchemaGenerator\Schema\ClassMutator\EnumClassMutator as SchemaEnumClassMutator;
+use ApiPlatform\SchemaGenerator\Schema\Model\Class_ as SchemaClass;
+use ApiPlatform\SchemaGenerator\Schema\Model\Property as SchemaProperty;
+use ApiPlatform\SchemaGenerator\Schema\PropertyGenerator\IdPropertyGenerator;
+use ApiPlatform\SchemaGenerator\Schema\PropertyGenerator\PropertyGenerator;
+use ApiPlatform\SchemaGenerator\Schema\TypeConverter;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\RdfNamespace;
 use EasyRdf\Resource as RdfResource;
-use Nette\InvalidArgumentException as NetteInvalidArgumentException;
-use Nette\PhpGenerator\PhpFile;
-use PhpCsFixer\Cache\NullCacheManager;
-use PhpCsFixer\Differ\NullDiffer;
-use PhpCsFixer\Error\ErrorsManager;
-use PhpCsFixer\FixerFactory;
-use PhpCsFixer\Linter\Linter;
-use PhpCsFixer\RuleSet as LegacyRuleSet;
-use PhpCsFixer\RuleSet\RuleSet;
-use PhpCsFixer\Runner\Runner;
+use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Filesystem\Filesystem;
-use Twig\Environment;
+use Symfony\Component\String\Inflector\InflectorInterface;
 
 /**
  * Generates entity files.
@@ -50,6 +45,8 @@ use Twig\Environment;
  */
 class TypesGenerator
 {
+    use LoggerAwareTrait;
+
     /**
      * @var string
      *
@@ -82,40 +79,28 @@ class TypesGenerator
       'rdfs:domain',
     ];
 
-    private Environment $twig;
-    private LoggerInterface $logger;
     /** @var RdfGraph[] */
     private array $graphs;
     private PhpTypeConverterInterface $phpTypeConverter;
-    private GoodRelationsBridge $goodRelationsBridge;
     /** @var array<string, string> */
     private array $cardinalities;
-    private Inflector $inflector;
-    private Filesystem $filesystem;
-    private PropertyGenerator $propertyGenerator;
-    private Printer $printer;
-    private SymfonyStyle $io;
+    private InflectorInterface $inflector;
+    private PropertyGeneratorInterface $propertyGenerator;
 
     /**
      * @param RdfGraph[] $graphs
      */
-    public function __construct(Inflector $inflector, Environment $twig, LoggerInterface $logger, array $graphs, PhpTypeConverterInterface $phpTypeConverter, CardinalitiesExtractor $cardinalitiesExtractor, GoodRelationsBridge $goodRelationsBridge, Printer $printer, SymfonyStyle $io)
+    public function __construct(InflectorInterface $inflector, array $graphs, PhpTypeConverterInterface $phpTypeConverter, CardinalitiesExtractor $cardinalitiesExtractor, GoodRelationsBridge $goodRelationsBridge)
     {
         if (!$graphs) {
             throw new \InvalidArgumentException('At least one graph must be injected.');
         }
 
         $this->inflector = $inflector;
-        $this->twig = $twig;
-        $this->logger = $logger;
         $this->graphs = $graphs;
         $this->phpTypeConverter = $phpTypeConverter;
-        $this->goodRelationsBridge = $goodRelationsBridge;
-        $this->filesystem = new Filesystem();
         $this->cardinalities = $cardinalitiesExtractor->extract();
-        $this->propertyGenerator = new PropertyGenerator($this->goodRelationsBridge, $this->phpTypeConverter, $this->cardinalities, $this->logger);
-        $this->printer = $printer;
-        $this->io = $io;
+        $this->propertyGenerator = new PropertyGenerator($goodRelationsBridge, new TypeConverter(), $phpTypeConverter, $this->cardinalities);
 
         RdfNamespace::set('schema', 'https://schema.org/');
     }
@@ -124,8 +109,10 @@ class TypesGenerator
      * Generates files.
      *
      * @param Configuration $config
+     *
+     * @return Class_[]
      */
-    public function generate(array $config): void
+    public function generate(array $config): array
     {
         $typesToGenerate = $this->defineTypesToGenerate($config);
 
@@ -144,17 +131,17 @@ class TypesGenerator
                     continue;
                 }
 
-                $this->logger->warning('The type "{type}" is deprecated', ['type' => $type->getUri()]);
+                $this->logger ? $this->logger->warning('The type "{type}" is deprecated', ['type' => $type->getUri()]) : null;
             }
 
             $typeConfig = $config['types'][$typeName] ?? null;
             $parent = $typeConfig['parent'] ?? null;
-            $class = new Class_($typeName, $type, $parent);
+            $class = new SchemaClass($typeName, $type, $parent);
             $class->operations = $typeConfig['operations'] ?? [];
             $class->security = $typeConfig['security'] ?? null;
 
             if ($class->isEnum()) {
-                $class = (new EnumClassMutator(
+                (new SchemaEnumClassMutator(
                     $this->phpTypeConverter,
                     $this->graphs,
                     $config['namespaces']['enum']
@@ -165,37 +152,60 @@ class TypesGenerator
                 // Interfaces
                 if ($config['useInterface']) {
                     $interfaceNamespace = isset($typeConfig['namespaces']['interface']) && $typeConfig['namespaces']['interface'] ? $typeConfig['namespaces']['interface'] : $config['namespaces']['interface'];
-                    $class = (new ClassInterfaceMutator($interfaceNamespace))($class);
+                    (new ClassInterfaceMutator($interfaceNamespace))($class);
                 }
 
-                $class = (new ClassParentMutator($config, $this->phpTypeConverter, $this->logger))($class);
+                $classParentMutator = new ClassParentMutator($config, $this->phpTypeConverter);
+                if ($this->logger) {
+                    $classParentMutator->setLogger($this->logger);
+                }
+                ($classParentMutator)($class);
             }
 
-            $class = (new ClassPropertiesAppender($this->propertyGenerator, $this->logger, $config, $propertiesMap, $this->graphs))($class);
+            $classPropertiesAppender = new ClassPropertiesAppender($this->propertyGenerator, $config, $propertiesMap, $this->graphs);
+            if ($this->logger) {
+                $classPropertiesAppender->setLogger($this->logger);
+            }
+            ($classPropertiesAppender)($class);
             $class->isEmbeddable = $typeConfig['embeddable'] ?? false;
+
+            if ($config['doctrine']['useCollection']) {
+                $class->addUse(new Use_(ArrayCollection::class));
+                $class->addUse(new Use_(Collection::class));
+            }
 
             $classes[$typeName] = $class;
         }
 
         // Second pass
-        foreach ($classes as &$class) {
-            /** @var $class Class_ */
+        foreach ($classes as $class) {
+            /** @var $class SchemaClass */
             if ($class->hasParent() && !$class->isParentEnum()) {
                 $parentClass = $classes[$class->parent()] ?? null;
                 if (isset($parentClass)) {
                     $parentClass->hasChild = true;
                     $class->parentHasConstructor = $parentClass->hasConstructor;
                 } else {
-                    $this->logger->error(sprintf('The type "%s" (parent of "%s") doesn\'t exist', $class->parent(), $class->resourceUri()));
+                    $this->logger ? $this->logger->error(sprintf('The type "%s" (parent of "%s") doesn\'t exist', $class->parent(), $class->rdfType())) : null;
                 }
             }
 
-            $class = (new ClassPropertiesTypehintMutator($this->phpTypeConverter, $config, $classes))($class);
+            foreach ($class->properties() as $property) {
+                if (!$property instanceof SchemaProperty) {
+                    throw new \LogicException(sprintf('Property "%s" has to be an instance of "%s".', $property->name(), SchemaProperty::class));
+                }
+                $typeName = $property->rangeName;
+                if (isset($classes[$typeName])) {
+                    $property->reference = $classes[$typeName];
+                }
+            }
+
+            (new ClassPropertiesTypehintMutator($this->phpTypeConverter, $config, $classes))($class);
         }
 
         // Third pass
-        foreach ($classes as &$class) {
-            /* @var $class Class_ */
+        foreach ($classes as $class) {
+            /* @var $class SchemaClass */
             $class->isAbstract = $config['types'][$class->name()]['abstract'] ?? $class->hasChild;
 
             // When including all properties, ignore properties already set on parent
@@ -208,11 +218,11 @@ class TypesGenerator
                     }
 
                     $parentConfig = $config['types'][$class->parent()] ?? null;
-                    /** @var Class_|null $parentClass */
+                    /** @var SchemaClass|null $parentClass */
                     $parentClass = $classes[$class->parent()];
 
                     while ($parentClass) {
-                        if (\array_key_exists($propertyName, $parentConfig['properties'] ?? []) || \in_array($property, $propertiesMap[$parentClass->resourceUri()], true)) {
+                        if (\array_key_exists($propertyName, $parentConfig['properties'] ?? []) || \in_array($property, $propertiesMap[$parentClass->rdfType()], true)) {
                             $class->removePropertyByName($propertyName);
                             continue 2;
                         }
@@ -226,15 +236,18 @@ class TypesGenerator
 
         // Generate ID
         if ($config['id']['generate']) {
-            foreach ($classes as &$class) {
-                $class = (new ClassIdAppender($config))($class);
+            foreach ($classes as $class) {
+                (new ClassIdAppender(new IdPropertyGenerator(), $config))($class);
             }
         }
 
         // Initialize annotation generators
         $annotationGenerators = [];
         foreach ($config['annotationGenerators'] as $annotationGenerator) {
-            $generator = new $annotationGenerator($this->phpTypeConverter, $this->logger, $this->inflector, $this->graphs, $this->cardinalities, $config, $classes);
+            $generator = new $annotationGenerator($this->phpTypeConverter, $this->inflector, $config, $classes);
+            if (method_exists($generator, 'setLogger')) {
+                $generator->setLogger($this->logger);
+            }
 
             $annotationGenerators[] = $generator;
         }
@@ -242,75 +255,20 @@ class TypesGenerator
         // Initialize attribute generators
         $attributeGenerators = [];
         foreach ($config['attributeGenerators'] as $attributeGenerator) {
-            $generator = new $attributeGenerator($this->phpTypeConverter, $this->logger, $this->inflector, $this->graphs, $this->cardinalities, $config, $classes);
+            $generator = new $attributeGenerator($this->phpTypeConverter, $this->inflector, $config, $classes);
+            if (method_exists($generator, 'setLogger')) {
+                $generator->setLogger($this->logger);
+            }
 
             $attributeGenerators[] = $generator;
         }
 
-        $interfaceMappings = [];
-        $generatedFiles = [];
-
-        foreach ($classes as $className => &$class) {
-            $class = (new AnnotationsAppender($classes, $annotationGenerators, $typesToGenerate))($class);
-            $class = (new AttributeAppender($classes, $attributeGenerators))($class);
-
-            $classDir = $this->namespaceToDir($config, $class->namespace);
-            $this->filesystem->mkdir($classDir);
-
-            $path = sprintf('%s%s.php', $classDir, $className);
-
-            $file = null;
-            if (file_exists($path) && is_file($path) && is_readable($path) && $fileContent = file_get_contents($path)) {
-                $confirmation = $this->io->askQuestion(new ConfirmationQuestion(sprintf('File "%s" already exists, use it (if no it will be overwritten)?', $path)));
-                if ($confirmation) {
-                    $file = PhpFile::fromCode($fileContent);
-                    $this->logger->info(sprintf('Using "%s" as base file.', $path));
-                }
-            }
-
-            try {
-                file_put_contents($path, $this->printer->printFile($class->toNetteFile($config, $this->inflector, $file)));
-            } catch (NetteInvalidArgumentException $exception) {
-                $this->logger->warning($exception->getMessage());
-            }
-
-            $generatedFiles[] = $path;
-
-            if (null !== $class->interfaceNamespace()) {
-                $interfaceDir = $this->namespaceToDir($config, $class->interfaceNamespace());
-                $this->filesystem->mkdir($interfaceDir);
-
-                $path = sprintf('%s%s.php', $interfaceDir, $class->interfaceName());
-                $generatedFiles[] = $path;
-                file_put_contents($path, $this->printer->printFile($class->interfaceToNetteFile($config['header'] ?? null)));
-
-                if ($config['doctrine']['resolveTargetEntityConfigPath'] && !$class->isAbstract) {
-                    $interfaceMappings[$class->interfaceNamespace().'\\'.$class->interfaceName()] = $class->namespace.'\\'.$className;
-                }
-            }
+        foreach ($classes as $class) {
+            (new AnnotationsAppender($classes, $annotationGenerators, $typesToGenerate))($class);
+            (new AttributeAppender($classes, $attributeGenerators))($class);
         }
 
-        if ($config['doctrine']['resolveTargetEntityConfigPath'] && \count($interfaceMappings) > 0) {
-            $file = $config['output'].'/'.$config['doctrine']['resolveTargetEntityConfigPath'];
-            $dir = \dirname($file);
-            $this->filesystem->mkdir($dir);
-
-            $fileType = $config['doctrine']['resolveTargetEntityConfigType'];
-
-            $mappingTemplateFile = 'doctrine.xml.twig';
-            if ('yaml' === $fileType) {
-                $mappingTemplateFile = 'doctrine.yaml.twig';
-            }
-
-            file_put_contents(
-                $file,
-                $this->twig->render($mappingTemplateFile, ['mappings' => $interfaceMappings])
-            );
-
-            $generatedFiles[] = $file;
-        }
-
-        $this->fixCs($generatedFiles);
+        return $classes;
     }
 
     /**
@@ -434,7 +392,7 @@ class TypesGenerator
                         continue;
                     }
 
-                    $this->logger->warning('The property "{property}" of the type "{type}" is deprecated', ['property' => $property->getUri(), 'type' => $typeUri]);
+                    $this->logger ? $this->logger->warning('The property "{property}" of the type "{type}" is deprecated', ['property' => $property->getUri(), 'type' => $typeUri]) : null;
                 }
 
                 $map[$typeUri][] = $property;
@@ -450,7 +408,7 @@ class TypesGenerator
     private function defineTypesToGenerate(array $config): array
     {
         $typesToGenerate = [];
-        if ($config['allTypes'] || !$config['types']) {
+        if ($config['allTypes']) {
             foreach ($this->graphs as $graph) {
                 foreach (self::$classTypes as $classType) {
                     foreach ($graph->allOfType($classType) as $type) {
@@ -478,7 +436,7 @@ class TypesGenerator
                 if ($resource) {
                     $typesToGenerate[$typeName] = $resource;
                 } else {
-                    $this->logger->warning('Type "{typeName}" cannot be found. Using "{guessFrom}" type to generate entity.', ['typeName' => $typeName, 'guessFrom' => $typeConfig['guessFrom']]);
+                    $this->logger ? $this->logger->warning('Type "{typeName}" cannot be found. Using "{guessFrom}" type to generate entity.', ['typeName' => $typeName, 'guessFrom' => $typeConfig['guessFrom']]) : null;
                     if (isset($graph)) {
                         $type = $graph->resource($vocabularyNamespace.$typeConfig['guessFrom']);
                         $typesToGenerate[$typeName] = $type;
@@ -490,55 +448,11 @@ class TypesGenerator
         return $typesToGenerate;
     }
 
-    /**
-     * Converts a namespace to a directory path according to PSR-4.
-     *
-     * @param Configuration $config
-     */
-    private function namespaceToDir(array $config, string $namespace): string
+    public function setLogger(LoggerInterface $logger): void
     {
-        if (null !== ($prefix = $config['namespaces']['prefix'] ?? null) && 0 === strpos($namespace, $prefix)) {
-            $namespace = substr($namespace, \strlen($prefix));
+        $this->logger = $logger;
+        if (method_exists($this->propertyGenerator, 'setLogger')) {
+            $this->propertyGenerator->setLogger($logger);
         }
-
-        return sprintf('%s/%s/', $config['output'], str_replace('\\', '/', $namespace));
-    }
-
-    /**
-     * Uses PHP CS Fixer to make generated files following PSR and Symfony Coding Standards.
-     *
-     * @param string[] $files
-     */
-    private function fixCs(array $files): void
-    {
-        $fileInfos = [];
-        foreach ($files as $file) {
-            $fileInfos[] = new \SplFileInfo($file);
-        }
-
-        // to keep compatibility with both versions of php-cs-fixer: 2.x and 3.x
-        // ruleset object must be created depending on which class is available
-        $rulesetClass = class_exists(LegacyRuleSet::class) ? LegacyRuleSet::class : Ruleset::class;
-        $fixers = (new FixerFactory())
-            ->registerBuiltInFixers()
-            ->useRuleSet(new $rulesetClass([ // @phpstan-ignore-line
-                '@Symfony' => true,
-                'array_syntax' => ['syntax' => 'short'],
-                'phpdoc_order' => true,
-                'declare_strict_types' => true,
-            ]))
-            ->getFixers();
-
-        $runner = new Runner(
-            new \ArrayIterator($fileInfos),
-            $fixers,
-            new NullDiffer(),
-            null,
-            new ErrorsManager(),
-            new Linter(),
-            false,
-            new NullCacheManager()
-        );
-        $runner->fix();
     }
 }

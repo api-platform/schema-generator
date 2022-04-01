@@ -16,17 +16,16 @@ namespace ApiPlatform\SchemaGenerator\Tests\AttributeGenerator;
 use ApiPlatform\SchemaGenerator\AttributeGenerator\DoctrineMongoDBAttributeGenerator;
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\Model\Attribute;
-use ApiPlatform\SchemaGenerator\Model\Class_;
-use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\PhpTypeConverter;
+use ApiPlatform\SchemaGenerator\Schema\Model\Class_ as SchemaClass;
+use ApiPlatform\SchemaGenerator\Schema\Model\Property;
+use ApiPlatform\SchemaGenerator\SchemaGeneratorConfiguration;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
-use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
-use Doctrine\Inflector\InflectorFactory;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\NullLogger;
 use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\String\Inflector\EnglishInflector;
 
 class DoctrineMongoDBAttributeGeneratorTest extends TestCase
 {
@@ -38,39 +37,45 @@ class DoctrineMongoDBAttributeGeneratorTest extends TestCase
     {
         $graph = new RdfGraph();
 
-        $product = new Class_('Product', new RdfResource('https://schema.org/Product', $graph));
+        $product = new SchemaClass('Product', new RdfResource('https://schema.org/Product', $graph));
         $product->isAbstract = true;
         $this->classMap[$product->name()] = $product;
 
-        $vehicle = new Class_('Vehicle', new RdfResource('htts://schema.org/Vehicle', $graph));
+        $vehicle = new SchemaClass('Vehicle', new RdfResource('htts://schema.org/Vehicle', $graph));
         $idProperty = new Property('id');
         $idProperty->rangeName = 'identifier';
         $idProperty->range = new RdfResource('https://schema.org/identifier');
+        $idProperty->type = 'string';
         $idProperty->isId = true;
         $vehicle->addProperty($idProperty);
         $enumProperty = new Property('enum');
         $enumProperty->rangeName = 'Thing';
         $enumProperty->range = new RdfResource('https://schema.org/Thing');
+        $enumProperty->reference = new SchemaClass('Thing', new RdfResource('htts://schema.org/Thing', $graph));
         $enumProperty->isEnum = true;
         $enumProperty->isArray = true;
         $vehicle->addProperty($enumProperty);
         $collectionProperty = new Property('collection');
         $collectionProperty->rangeName = 'string';
         $collectionProperty->range = new RdfResource('http://www.w3.org/2001/XMLSchema#string');
+        $collectionProperty->type = 'string';
         $collectionProperty->isArray = true;
         $vehicle->addProperty($collectionProperty);
         $weightProperty = new Property('weight');
         $weightProperty->rangeName = 'nonPositiveInteger';
         $weightProperty->range = new RdfResource('http://www.w3.org/2001/XMLSchema#nonPositiveInteger');
+        $weightProperty->type = 'nonPositiveInteger';
         $vehicle->addProperty($weightProperty);
         $relationProperty = new Property('relation');
         $relationProperty->rangeName = 'Person';
         $relationProperty->range = new RdfResource('https://schema.org/Person');
+        $relationProperty->reference = new SchemaClass('Person', new RdfResource('htts://schema.org/Person', $graph));
         $relationProperty->cardinality = CardinalitiesExtractor::CARDINALITY_1_1;
         $vehicle->addProperty($relationProperty);
         $relationsProperty = new Property('relations');
         $relationsProperty->rangeName = 'Person';
         $relationsProperty->range = new RdfResource('https://schema.org/Person');
+        $relationsProperty->reference = new SchemaClass('Person', new RdfResource('htts://schema.org/Person', $graph));
         $relationsProperty->cardinality = CardinalitiesExtractor::CARDINALITY_1_N;
         $relationsProperty->isArray = true;
         $vehicle->addProperty($relationsProperty);
@@ -79,14 +84,14 @@ class DoctrineMongoDBAttributeGeneratorTest extends TestCase
 
         $myEnum = new RdfResource('https://schema.org/MyEnum', $graph);
         $myEnum->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);
-        $myEnumClass = new Class_('MyEnum', $myEnum);
+        $myEnumClass = new SchemaClass('MyEnum', $myEnum);
         $this->classMap[$myEnumClass->name()] = $myEnumClass;
 
         $customAttributes = new RdfResource('https://schema.org/CustomAttributes', $graph);
-        $customAttributesClass = new Class_('CustomAttributes', $customAttributes);
+        $customAttributesClass = new SchemaClass('CustomAttributes', $customAttributes);
         $this->classMap[$customAttributesClass->name()] = $customAttributesClass;
 
-        $configuration = new TypesGeneratorConfiguration();
+        $configuration = new SchemaGeneratorConfiguration();
         /** @var Configuration $processedConfiguration */
         $processedConfiguration = (new Processor())->processConfiguration($configuration, [[
             'id' => ['generationStrategy' => 'auto', 'writable' => true],
@@ -99,10 +104,7 @@ class DoctrineMongoDBAttributeGeneratorTest extends TestCase
 
         $this->generator = new DoctrineMongoDBAttributeGenerator(
             new PhpTypeConverter(),
-            new NullLogger(),
-            InflectorFactory::create()->build(),
-            [],
-            [],
+            new EnglishInflector(),
             $processedConfiguration,
             $this->classMap
         );

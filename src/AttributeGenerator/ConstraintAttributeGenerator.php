@@ -42,19 +42,20 @@ final class ConstraintAttributeGenerator extends AbstractAttributeGenerator
 
         $asserts = [];
 
-        if (!$property->isArray && $property->range) {
-            switch ($property->range->getUri()) {
-                case 'https://schema.org/URL':
+        if (!$property->isArray && $property->type) {
+            switch ($property->type) {
+                case 'url':
                     $asserts[] = new Attribute('Assert\Url');
                     break;
-                case 'https://schema.org/Date':
-                case 'https://schema.org/DateTime':
-                case 'https://schema.org/Time':
+                case 'date':
+                case 'dateTime':
+                case 'duration':
+                case 'time':
                     $asserts[] = new Attribute('Assert\Type', [new Literal('\DateTimeInterface::class')]);
                     break;
             }
 
-            if (null !== $property->resource && 'https://schema.org/email' === $property->resourceUri()) {
+            if ('https://schema.org/email' === $property->rdfType()) {
                 $asserts[] = new Attribute('Assert\Email');
             }
 
@@ -70,8 +71,8 @@ final class ConstraintAttributeGenerator extends AbstractAttributeGenerator
             $asserts[] = new Attribute('Assert\NotNull');
         }
 
-        if ($property->isEnum && $property->range && $property->rangeName) {
-            $args = ['callback' => [new Literal(sprintf('%s::class', $property->rangeName)), 'toArray']];
+        if ($property->isEnum && $property->reference) {
+            $args = ['callback' => [new Literal(sprintf('%s::class', $property->reference->name())), 'toArray']];
 
             if ($property->isArray) {
                 $args['multiple'] = true;
@@ -97,11 +98,11 @@ final class ConstraintAttributeGenerator extends AbstractAttributeGenerator
         $uses[] = new Use_(UniqueEntity::class);
 
         foreach ($class->properties() as $property) {
-            if ($property->isEnum && $property->range) {
-                $rangeName = $property->rangeName;
-                $enumClass = $this->classes[$rangeName];
+            if ($property->isEnum && $property->reference) {
+                $enumName = $property->reference->name();
+                $enumClass = $this->classes[$enumName];
                 $enumNamespace = $enumClass->namespace ?? $this->config['namespaces']['enum'];
-                $use = new Use_(sprintf('%s\%s', $enumNamespace, $rangeName));
+                $use = new Use_(sprintf('%s\%s', $enumNamespace, $enumName));
 
                 if (!\in_array($use, $uses, true)) {
                     $uses[] = $use;

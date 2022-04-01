@@ -14,21 +14,21 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\Tests;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
+use ApiPlatform\SchemaGenerator\FilesGenerator;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
 use ApiPlatform\SchemaGenerator\PhpTypeConverter;
 use ApiPlatform\SchemaGenerator\Printer;
+use ApiPlatform\SchemaGenerator\SchemaGeneratorConfiguration;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
-use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
-use Doctrine\Inflector\InflectorFactory;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\RdfNamespace;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
-use Psr\Log\NullLogger;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\String\Inflector\EnglishInflector;
 use Twig\Environment;
 
 /**
@@ -56,24 +56,30 @@ class TypesGeneratorTest extends TestCase
         $goodRelationsBridgeProphecy = $this->prophesize(GoodRelationsBridge::class);
         $goodRelationsBridge = $goodRelationsBridgeProphecy->reveal();
 
+        $inflector = new EnglishInflector();
+
         $typesGenerator = new TypesGenerator(
-            InflectorFactory::create()->build(),
-            $twig,
-            new NullLogger(),
+            $inflector,
             $this->getGraphs(),
             new PhpTypeConverter(),
             $cardinalitiesExtractor,
-            $goodRelationsBridge,
+            $goodRelationsBridge
+        );
+
+        $filesGenerator = new FilesGenerator(
+            $inflector,
             new Printer(),
+            $twig,
             new SymfonyStyle(new ArrayInput([]), new NullOutput())
         );
 
         $outputDir = 'build/type-generator-test';
-        $configuration = new TypesGeneratorConfiguration();
+        $configuration = new SchemaGeneratorConfiguration();
         /** @var Configuration $processedConfiguration */
         $processedConfiguration = (new Processor())->processConfiguration($configuration, [$this->getConfig()]);
         $processedConfiguration['output'] = $outputDir;
-        $typesGenerator->generate($processedConfiguration);
+        $classes = $typesGenerator->generate($processedConfiguration);
+        $filesGenerator->generate($classes, $processedConfiguration);
 
         $article = file_get_contents("$outputDir/App/Entity/Article.php");
         $this->assertStringContainsString('abstract class Article extends CreativeWork', $article);

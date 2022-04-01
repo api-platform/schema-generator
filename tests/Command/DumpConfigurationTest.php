@@ -28,6 +28,8 @@ class DumpConfigurationTest extends TestCase
         $this->assertEquals(0, $commandTester->execute([]));
         $this->assertEquals(<<<'YAML'
 config:
+    openApi:
+        file:                 null
 
     # RDF vocabularies
     vocabularies:
@@ -217,6 +219,9 @@ config:
 
                     # Is the property nullable?
                     nullable:             true
+
+                    # Is the property required?
+                    required:             true
 
                     # The property unique
                     unique:               false

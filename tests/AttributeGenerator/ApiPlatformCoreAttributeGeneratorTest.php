@@ -17,16 +17,15 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\SchemaGenerator\AttributeGenerator\ApiPlatformCoreAttributeGenerator;
 use ApiPlatform\SchemaGenerator\Model\Attribute;
-use ApiPlatform\SchemaGenerator\Model\Class_;
-use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\Model\Use_;
 use ApiPlatform\SchemaGenerator\PhpTypeConverter;
+use ApiPlatform\SchemaGenerator\Schema\Model\Class_ as SchemaClass;
+use ApiPlatform\SchemaGenerator\Schema\Model\Property;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
-use Doctrine\Inflector\InflectorFactory;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\NullLogger;
+use Symfony\Component\String\Inflector\EnglishInflector;
 
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
@@ -39,10 +38,7 @@ class ApiPlatformCoreAttributeGeneratorTest extends TestCase
     {
         $this->generator = new ApiPlatformCoreAttributeGenerator(
             new PhpTypeConverter(),
-            new NullLogger(),
-            InflectorFactory::create()->build(),
-            [],
-            [],
+            new EnglishInflector(),
             [],
             [],
         );
@@ -51,34 +47,34 @@ class ApiPlatformCoreAttributeGeneratorTest extends TestCase
     /**
      * @dataProvider provideGenerateClassAttributesCases
      */
-    public function testGenerateClassAttributes(Class_ $class, array $attributes): void
+    public function testGenerateClassAttributes(SchemaClass $class, array $attributes): void
     {
         $this->assertEquals($attributes, $this->generator->generateClassAttributes($class));
     }
 
     public function provideGenerateClassAttributesCases(): \Generator
     {
-        yield 'classical' => [new Class_('Res', new RdfResource('https://schema.org/Res', new RdfGraph())), [new Attribute('ApiResource', ['iri' => 'https://schema.org/Res'])]];
+        yield 'classical' => [new SchemaClass('Res', new RdfResource('https://schema.org/Res', new RdfGraph())), [new Attribute('ApiResource', ['iri' => 'https://schema.org/Res'])]];
 
-        $class = new Class_('WithOperations', new RdfResource('https://schema.org/WithOperations', new RdfGraph()));
+        $class = new SchemaClass('WithOperations', new RdfResource('https://schema.org/WithOperations', new RdfGraph()));
         $class->operations = [
             'item' => ['get' => ['route_name' => 'api_about_get']],
             'collection' => [],
         ];
         yield 'with operations' => [$class, [new Attribute('ApiResource', ['iri' => 'https://schema.org/WithOperations', 'itemOperations' => ['get' => ['route_name' => 'api_about_get']], 'collectionOperations' => []])]];
 
-        $class = new Class_('Abstract', new RdfResource('https://schema.org/Abstract'));
+        $class = new SchemaClass('Abstract', new RdfResource('https://schema.org/Abstract'));
         $class->isAbstract = true;
         yield 'abstract' => [$class, []];
 
         $resource = new RdfResource('https://schema.org/MyEnum', new RdfGraph());
         $resource->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);
-        $class = new Class_('Enum', $resource);
+        $class = new SchemaClass('Enum', $resource);
         yield 'enum' => [$class, []];
 
-        yield 'with short name' => [(new Class_('WithShortName', new RdfResource('https://schema.org/DifferentLocalName', new RdfGraph()))), [new Attribute('ApiResource', ['shortName' => 'DifferentLocalName', 'iri' => 'https://schema.org/DifferentLocalName'])]];
+        yield 'with short name' => [(new SchemaClass('WithShortName', new RdfResource('https://schema.org/DifferentLocalName', new RdfGraph()))), [new Attribute('ApiResource', ['shortName' => 'DifferentLocalName', 'iri' => 'https://schema.org/DifferentLocalName'])]];
 
-        $class = new Class_('WithSecurity', new RdfResource('https://schema.org/WithSecurity', new RdfGraph()));
+        $class = new SchemaClass('WithSecurity', new RdfResource('https://schema.org/WithSecurity', new RdfGraph()));
         $class->security = "is_granted('ROLE_USER')";
         yield 'with security' => [$class, [new Attribute('ApiResource', ['iri' => 'https://schema.org/WithSecurity', 'security' => "is_granted('ROLE_USER')"])]];
     }
@@ -110,6 +106,6 @@ class ApiPlatformCoreAttributeGeneratorTest extends TestCase
 
     public function testGenerateUses(): void
     {
-        $this->assertEquals([new Use_(ApiResource::class), new Use_(ApiProperty::class)], $this->generator->generateUses(new Class_('Res', new RdfResource('https://schema.org/Res', new RdfGraph()))));
+        $this->assertEquals([new Use_(ApiResource::class), new Use_(ApiProperty::class)], $this->generator->generateUses(new SchemaClass('Res', new RdfResource('https://schema.org/Res', new RdfGraph()))));
     }
 }

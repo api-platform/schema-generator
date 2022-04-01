@@ -13,26 +13,29 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\Model;
 
-use EasyRdf\Resource as RdfResource;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\Property as NetteProperty;
 
-final class Property
+abstract class Property
 {
     use ResolveNameTrait;
 
     private string $name;
-    public ?RdfResource $resource = null;
     public string $cardinality;
-    public ?RdfResource $range = null;
-    public ?string $rangeName = null;
+    /** @var ?string the data type (array and object are not one) */
+    public ?string $type = null;
+    /** @var ?string the array data type (object is not one) */
+    public ?string $arrayType = null;
+    /** @var bool can be true and array type false if the property is an array of references */
+    public bool $isArray = false;
+    public ?Class_ $reference = null;
     /** @var array<string, string|string[]> */
     public ?array $ormColumn = null;
-    public bool $isArray = false;
     public bool $isReadable = true;
     public bool $isWritable = true;
+    public bool $isRequired = false;
     public bool $isNullable = true;
     public bool $isUnique = false;
     public bool $isCustom = false;
@@ -71,6 +74,10 @@ final class Property
     {
         return $this->name;
     }
+
+    abstract public function description(): ?string;
+
+    abstract public function rdfType(): ?string;
 
     public function addAttribute(Attribute $attribute): self
     {
@@ -132,11 +139,6 @@ final class Property
         }
 
         return $this;
-    }
-
-    public function resourceUri(): ?string
-    {
-        return $this->resource ? $this->resource->getUri() : null;
     }
 
     public function markAsCustom(): self

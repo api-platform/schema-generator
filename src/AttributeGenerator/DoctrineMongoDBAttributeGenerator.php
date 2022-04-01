@@ -68,7 +68,7 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generatePropertyAttributes(Property $property, string $className): array
     {
-        if (null === $property->range || null === $property->rangeName) {
+        if (null === $property->type && null === $property->reference) {
             return [];
         }
 
@@ -77,19 +77,16 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
         }
 
         $type = null;
-        $isDataType = $this->phpTypeConverter->isDatatype($property->range);
         if ($property->isEnum) {
             $type = $property->isArray ? 'simple_array' : 'string';
-        } elseif ($property->isArray && $isDataType) {
+        } elseif ($property->isArray && $property->type) {
             $type = 'collection';
-        } elseif (!$property->isArray && $isDataType && null !== ($phpType = $this->phpTypeConverter->getPhpType($property, $this->config, []))) {
-            switch ($property->range->getUri()) {
-                case 'http://www.w3.org/2001/XMLSchema#time':
-                case 'https://schema.org/Time':
+        } elseif (!$property->isArray && $property->type && !$property->reference && null !== ($phpType = $this->phpTypeConverter->getPhpType($property, $this->config, []))) {
+            switch ($property->type) {
+                case 'time':
                     $type = 'time';
                     break;
-                case 'http://www.w3.org/2001/XMLSchema#dateTime':
-                case 'https://schema.org/DateTime':
+                case 'dateTime':
                     $type = 'date';
                     break;
                 default:
@@ -116,17 +113,23 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
             return [new Attribute('MongoDB\Field', ['type' => $type])];
         }
 
-        if ((CardinalitiesExtractor::CARDINALITY_0_1 === $property->cardinality
-                || CardinalitiesExtractor::CARDINALITY_1_1 === $property->cardinality
-                || CardinalitiesExtractor::CARDINALITY_N_0 === $property->cardinality
-                || CardinalitiesExtractor::CARDINALITY_N_1 === $property->cardinality) && $property->rangeName) {
-            return [new Attribute('MongoDB\ReferenceOne', ['targetDocument' => $this->getRelationName($property->rangeName), 'simple' => true])];
+        if (null === $relationName = $this->getRelationName($property->reference)) {
+            $this->logger ? $this->logger->error('There is no reference for the property "{property}" from the class "{class}"', ['property' => $property->name(), 'class' => $className]) : null;
+
+            return [];
         }
 
-        if ((CardinalitiesExtractor::CARDINALITY_0_N === $property->cardinality
+        if (CardinalitiesExtractor::CARDINALITY_0_1 === $property->cardinality
+                || CardinalitiesExtractor::CARDINALITY_1_1 === $property->cardinality
+                || CardinalitiesExtractor::CARDINALITY_N_0 === $property->cardinality
+                || CardinalitiesExtractor::CARDINALITY_N_1 === $property->cardinality) {
+            return [new Attribute('MongoDB\ReferenceOne', ['targetDocument' => $relationName, 'simple' => true])];
+        }
+
+        if (CardinalitiesExtractor::CARDINALITY_0_N === $property->cardinality
                 || CardinalitiesExtractor::CARDINALITY_1_N === $property->cardinality
-                || CardinalitiesExtractor::CARDINALITY_N_N === $property->cardinality) && $property->rangeName) {
-            return [new Attribute('MongoDB\ReferenceMany', ['targetDocument' => $this->getRelationName($property->rangeName), 'simple' => true])];
+                || CardinalitiesExtractor::CARDINALITY_N_N === $property->cardinality) {
+            return [new Attribute('MongoDB\ReferenceMany', ['targetDocument' => $relationName, 'simple' => true])];
         }
 
         return [];
@@ -143,10 +146,13 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
     /**
      * Gets class or interface name to use in relations.
      */
-    private function getRelationName(string $rangeName): string
+    private function getRelationName(?Class_ $reference): ?string
     {
-        return isset($this->classes[$rangeName]) && $this->classes[$rangeName]->interfaceName()
-            ? $this->classes[$rangeName]->interfaceName() : $rangeName;
+        if (!$reference) {
+            return null;
+        }
+
+        return $reference->interfaceName() ?: $reference->name();
     }
 
     /**

@@ -1,5 +1,10 @@
 # app/config/schema.yml
 
+namespaces:
+    entity: App\Schema\Entity
+    enum: App\Schema\Enum
+    interface: App\Schema\Model
+
 # The list of types and properties we want to use
 types:
     # Parent class of Person
