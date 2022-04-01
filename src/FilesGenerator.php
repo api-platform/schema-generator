@@ -153,6 +153,7 @@ final class FilesGenerator
         $fixers = (new FixerFactory())
             ->registerBuiltInFixers()
             ->useRuleSet(new $rulesetClass([ // @phpstan-ignore-line
+                '@PhpCsFixer' => true,
                 '@Symfony' => true,
                 'array_syntax' => ['syntax' => 'short'],
                 'phpdoc_order' => true,

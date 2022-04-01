@@ -102,6 +102,7 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                     ->scalarPrototype()->end()
                 ->end()
                 ->booleanNode('debug')->defaultFalse()->info('Debug mode')->end()
+                ->booleanNode('apiPlatformOldAttributes')->defaultFalse()->info('Use old API Platform attributes (API Platform < 2.7)')->end()
                 ->arrayNode('id')
                     ->addDefaultsIfNotSet()
                     ->info('IDs configuration')

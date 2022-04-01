@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace App\OpenApi\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -16,9 +22,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity]
 #[ApiResource(
-    iri: 'https://schema.org/Book',
-    itemOperations: ['get' => [], 'put' => [], 'patch' => [], 'delete' => []],
-    collectionOperations: ['get' => [], 'post' => []],
+    types: ['https://schema.org/Book'],
+    operations: [new Get(), new Put(), new Patch(), new Delete(), new GetCollection(), new Post()],
 )]
 class Book
 {
@@ -33,7 +38,7 @@ class Book
      * @see https://schema.org/isbn
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/isbn')]
+    #[ApiProperty(types: ['https://schema.org/isbn'])]
     private ?string $isbn = null;
 
     /**
@@ -42,7 +47,7 @@ class Book
      * @see https://schema.org/name
      */
     #[ORM\Column(type: 'text')]
-    #[ApiProperty(iri: 'https://schema.org/name')]
+    #[ApiProperty(types: ['https://schema.org/name'])]
     #[Assert\NotNull]
     private string $title;
 
@@ -52,7 +57,7 @@ class Book
      * @see https://schema.org/description
      */
     #[ORM\Column(type: 'text')]
-    #[ApiProperty(iri: 'https://schema.org/description')]
+    #[ApiProperty(types: ['https://schema.org/description'])]
     #[Assert\NotNull]
     private string $description;
 
@@ -62,7 +67,7 @@ class Book
      * @see https://schema.org/author
      */
     #[ORM\Column(type: 'text')]
-    #[ApiProperty(iri: 'https://schema.org/author')]
+    #[ApiProperty(types: ['https://schema.org/author'])]
     #[Assert\NotNull]
     private string $author;
 
@@ -72,7 +77,7 @@ class Book
      * @see https://schema.org/dateCreated
      */
     #[ORM\Column(type: 'date')]
-    #[ApiProperty(iri: 'https://schema.org/dateCreated')]
+    #[ApiProperty(types: ['https://schema.org/dateCreated'])]
     #[Assert\Type(\DateTimeInterface::class)]
     #[Assert\NotNull]
     private \DateTimeInterface $publicationDate;
@@ -84,7 +89,7 @@ class Book
      */
     #[ORM\OneToMany(targetEntity: 'App\OpenApi\Entity\Review', mappedBy: 'book')]
     #[ORM\InverseJoinColumn(nullable: false, unique: true)]
-    #[ApiProperty(iri: 'https://schema.org/reviews')]
+    #[ApiProperty(types: ['https://schema.org/reviews'])]
     #[Assert\NotNull]
     private Collection $reviews;
 

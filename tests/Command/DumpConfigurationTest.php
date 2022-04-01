@@ -61,6 +61,9 @@ config:
     # Debug mode
     debug:                false
 
+    # Use old API Platform attributes (API Platform < 2.7)
+    apiPlatformOldAttributes: false
+
     # IDs configuration
     id:
 

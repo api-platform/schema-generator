@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Schema\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Schema\Enum\GenderType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -21,9 +24,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity]
 #[ApiResource(
-    iri: 'https://schema.org/Person',
-    itemOperations: ['get' => ['method' => 'GET'], 'delete' => ['method' => 'DELETE', 'security' => 'is_granted(\'ROLE_ADMIN\')']],
-    collectionOperations: ['get' => ['route_name' => 'get_person_collection']],
+    types: ['https://schema.org/Person'],
+    operations: [
+        new Get(),
+        new GetCollection(routeName: 'get_person_collection'),
+        new Delete(security: 'is_granted(\'ROLE_ADMIN\')'),
+    ],
     security: 'is_granted(\'ROLE_USER\')',
 )]
 #[UniqueEntity('email')]
@@ -40,7 +46,7 @@ class Person extends Thing
      * @see https://schema.org/familyName
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/familyName')]
+    #[ApiProperty(types: ['https://schema.org/familyName'])]
     private ?string $familyName = null;
 
     /**
@@ -49,7 +55,7 @@ class Person extends Thing
      * @see https://schema.org/givenName
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/givenName')]
+    #[ApiProperty(types: ['https://schema.org/givenName'])]
     private ?string $givenName = null;
 
     /**
@@ -58,7 +64,7 @@ class Person extends Thing
      * @see https://schema.org/additionalName
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/additionalName')]
+    #[ApiProperty(types: ['https://schema.org/additionalName'])]
     #[Groups(['extra'])]
     private ?string $additionalName = null;
 
@@ -68,7 +74,7 @@ class Person extends Thing
      * @see https://schema.org/gender
      */
     #[ORM\Column(nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/gender')]
+    #[ApiProperty(types: ['https://schema.org/gender'])]
     #[Assert\Choice(callback: [GenderType::class, 'toArray'])]
     private ?string $gender = null;
 
@@ -78,7 +84,7 @@ class Person extends Thing
      * @see https://schema.org/address
      */
     #[ORM\ManyToOne(targetEntity: 'App\Schema\Entity\PostalAddress')]
-    #[ApiProperty(iri: 'https://schema.org/address')]
+    #[ApiProperty(types: ['https://schema.org/address'])]
     private ?PostalAddress $address = null;
 
     /**
@@ -87,7 +93,7 @@ class Person extends Thing
      * @see https://schema.org/birthDate
      */
     #[ORM\Column(type: 'date', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/birthDate')]
+    #[ApiProperty(types: ['https://schema.org/birthDate'])]
     #[Assert\Type(\DateTimeInterface::class)]
     private ?\DateTimeInterface $birthDate = null;
 
@@ -97,7 +103,7 @@ class Person extends Thing
      * @see https://schema.org/telephone
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/telephone')]
+    #[ApiProperty(types: ['https://schema.org/telephone'])]
     private ?string $telephone = null;
 
     /**
@@ -106,7 +112,7 @@ class Person extends Thing
      * @see https://schema.org/email
      */
     #[ORM\Column(type: 'text', nullable: true, unique: true)]
-    #[ApiProperty(iri: 'https://schema.org/email', security: 'is_granted(\'ROLE_ADMIN\')')]
+    #[ApiProperty(types: ['https://schema.org/email'], security: 'is_granted(\'ROLE_ADMIN\')')]
     #[Assert\Email]
     private ?string $email = null;
 
@@ -116,7 +122,7 @@ class Person extends Thing
      * @see https://schema.org/url
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/url')]
+    #[ApiProperty(types: ['https://schema.org/url'])]
     #[Assert\Url]
     private ?string $url = null;
 
@@ -127,7 +133,7 @@ class Person extends Thing
      */
     #[ORM\ManyToMany(targetEntity: 'App\Schema\Entity\Person')]
     #[ORM\InverseJoinColumn(unique: true)]
-    #[ApiProperty(iri: 'https://schema.org/siblings')]
+    #[ApiProperty(types: ['https://schema.org/siblings'])]
     private ?Collection $siblings = null;
 
     /**
@@ -135,7 +141,7 @@ class Person extends Thing
      *
      * @see https://schema.org/knowsAbout
      */
-    #[ApiProperty(iri: 'https://schema.org/knowsAbout')]
+    #[ApiProperty(types: ['https://schema.org/knowsAbout'])]
     private ?Thing $knowsAbout = null;
 
     /**

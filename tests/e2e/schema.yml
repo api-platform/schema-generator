@@ -14,15 +14,11 @@ types:
     Person:
         parent: ~
         operations:
-            item:
-                get:
-                    method: GET
-                delete:
-                    method: DELETE
-                    security: "is_granted('ROLE_ADMIN')"
-            collection:
-                get:
-                    route_name: get_person_collection
+            Get: ~
+            GetCollection:
+                routeName: get_person_collection
+            Delete:
+                security: "is_granted('ROLE_ADMIN')"
         attributes:
             ORM\Entity: ~
             ApiResource:
@@ -49,7 +45,6 @@ types:
             addressCountry: { range: https://schema.org/Text }
             addressLocality: ~
             addressRegion: ~
-            postOfficeBoxNumber: ~
             postalCode: ~
             streetAddress: ~
     GenderType:
