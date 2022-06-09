@@ -121,13 +121,13 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
                 || CardinalitiesExtractor::CARDINALITY_1_1 === $property->cardinality
                 || CardinalitiesExtractor::CARDINALITY_N_0 === $property->cardinality
                 || CardinalitiesExtractor::CARDINALITY_N_1 === $property->cardinality) {
-            return [new Attribute('MongoDB\ReferenceOne', ['targetDocument' => $relationName, 'simple' => true])];
+            return [new Attribute('MongoDB\ReferenceOne', ['targetDocument' => $relationName])];
         }
 
         if (CardinalitiesExtractor::CARDINALITY_0_N === $property->cardinality
                 || CardinalitiesExtractor::CARDINALITY_1_N === $property->cardinality
                 || CardinalitiesExtractor::CARDINALITY_N_N === $property->cardinality) {
-            return [new Attribute('MongoDB\ReferenceMany', ['targetDocument' => $relationName, 'simple' => true])];
+            return [new Attribute('MongoDB\ReferenceMany', ['targetDocument' => $relationName])];
         }
 
         return [];
