@@ -62,7 +62,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
      *     property: RdfResource
      * } $context
      */
-    public function __invoke(string $name, array $config, Class_ $class, array $context, bool $isCustom = false, ?Property $property = null): Property
+    public function __invoke(string $name, array $config, Class_ $class, array $context, bool $isCustom = false, ?Property $property = null): ?Property
     {
         $type = $context['type'];
         $typeConfig = $context['typeConfig'];
@@ -136,7 +136,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
         }
 
         if (!$ranges) {
-            return $schemaProperty;
+            return null;
         }
 
         $isNullable = (bool) ($propertyConfig['nullable'] ?? !\in_array($cardinality, [

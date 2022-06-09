@@ -29,5 +29,5 @@ interface PropertyGeneratorInterface
         array $context,
         bool $isCustom = false,
         ?Property $property = null
-    ): Property;
+    ): ?Property;
 }

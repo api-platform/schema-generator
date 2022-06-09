@@ -22,7 +22,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
      * @param Configuration $config
      * @param array{}       $context
      */
-    public function __invoke(string $name, array $config, Class_ $class, array $context, bool $isCustom = false, ?Property $property = null): Property
+    public function __invoke(string $name, array $config, Class_ $class, array $context, bool $isCustom = false, ?Property $property = null): ?Property
     {
         if (!$property) {
             throw new \LogicException('A property must be given.');
