@@ -131,6 +131,14 @@ class Person extends Thing
     private ?Collection $siblings = null;
 
     /**
+     * Of a \[\[Person\]\], and less typically of an \[\[Organization\]\], to indicate a topic that is known about - suggesting possible expertise but not implying it. We do not distinguish skill levels here, or relate this to educational content, events, objectives or \[\[JobPosting\]\] descriptions.
+     *
+     * @see https://schema.org/knowsAbout
+     */
+    #[ApiProperty(iri: 'https://schema.org/knowsAbout')]
+    private ?Thing $knowsAbout = null;
+
+    /**
      * @see _:customColumn
      */
     #[ORM\Column(type: 'decimal', precision: 5, scale: 1, options: ['comment' => 'my comment'])]
@@ -252,6 +260,16 @@ class Person extends Thing
     public function getSiblings(): Collection
     {
         return $this->siblings;
+    }
+
+    public function setKnowsAbout(?Thing $knowsAbout): void
+    {
+        $this->knowsAbout = $knowsAbout;
+    }
+
+    public function getKnowsAbout(): ?Thing
+    {
+        return $this->knowsAbout;
     }
 
     public function setCustomColumn(?Person $customColumn): void

@@ -24,11 +24,16 @@ use ApiPlatform\SchemaGenerator\TypesGenerator;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\String\Inflector\EnglishInflector;
 
 class DoctrineMongoDBAttributeGeneratorTest extends TestCase
 {
+    use ProphecyTrait;
+
     private DoctrineMongoDBAttributeGenerator $generator;
 
     private array $classMap = [];
@@ -66,6 +71,11 @@ class DoctrineMongoDBAttributeGeneratorTest extends TestCase
         $weightProperty->range = new RdfResource('http://www.w3.org/2001/XMLSchema#nonPositiveInteger');
         $weightProperty->type = 'nonPositiveInteger';
         $vehicle->addProperty($weightProperty);
+        $productProperty = new Property('product');
+        $productProperty->rangeName = 'Product';
+        $productProperty->range = new RdfResource('https://schema.org/Product');
+        $productProperty->reference = $product;
+        $vehicle->addProperty($productProperty);
         $relationProperty = new Property('relation');
         $relationProperty->rangeName = 'Person';
         $relationProperty->range = new RdfResource('https://schema.org/Person');
@@ -144,5 +154,14 @@ class DoctrineMongoDBAttributeGeneratorTest extends TestCase
             [new Attribute('MongoDB\ReferenceMany', ['targetDocument' => 'Person', 'simple' => true])],
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('relations'), 'Vehicle')
         );
+    }
+
+    public function testGenerateAbstractRelation(): void
+    {
+        $loggerProphecy = $this->prophesize(LoggerInterface::class);
+        $loggerProphecy->warning(Argument::cetera())->shouldBeCalledOnce();
+        $this->generator->setLogger($loggerProphecy->reveal());
+
+        $this->assertSame([], $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('product'), 'Vehicle'));
     }
 }
