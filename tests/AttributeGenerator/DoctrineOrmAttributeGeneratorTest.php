@@ -24,6 +24,9 @@ use ApiPlatform\SchemaGenerator\TypesGenerator;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\String\Inflector\EnglishInflector;
 
@@ -32,6 +35,8 @@ use Symfony\Component\String\Inflector\EnglishInflector;
  */
 class DoctrineOrmAttributeGeneratorTest extends TestCase
 {
+    use ProphecyTrait;
+
     private DoctrineOrmAttributeGenerator $generator;
 
     private array $classMap = [];
@@ -76,6 +81,11 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
         $prefixedWeightProperty->range = new RdfResource('https://schema.org/QuantitativeValue');
         $prefixedWeightProperty->reference = new SchemaClass('QuantitativeValue', new RdfResource('htts://schema.org/QuantitativeValue', $graph));
         $vehicle->addProperty($prefixedWeightProperty);
+        $productProperty = new Property('product');
+        $productProperty->rangeName = 'Product';
+        $productProperty->range = new RdfResource('https://schema.org/Product');
+        $productProperty->reference = $product;
+        $vehicle->addProperty($productProperty);
         $relation01Property = new Property('relation0_1');
         $relation01Property->rangeName = 'QuantitativeValue';
         $relation01Property->range = new RdfResource('https://schema.org/QuantitativeValue');
@@ -215,5 +225,14 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
             [new Attribute('ORM\ManyToMany', ['targetEntity' => 'App\Entity\QuantitativeValue'])],
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('relationN_N'), 'Vehicle')
         );
+    }
+
+    public function testGenerateAbstractRelation(): void
+    {
+        $loggerProphecy = $this->prophesize(LoggerInterface::class);
+        $loggerProphecy->warning(Argument::cetera())->shouldBeCalledOnce();
+        $this->generator->setLogger($loggerProphecy->reveal());
+
+        $this->assertSame([], $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('product'), 'Vehicle'));
     }
 }

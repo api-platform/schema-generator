@@ -170,9 +170,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
             return [new Attribute('ORM\Column', $args)];
         }
 
-        if (null === $relationName = $this->getRelationName($property->reference)) {
-            $this->logger ? $this->logger->error('There is no reference for the property "{property}" from the class "{class}"', ['property' => $property->name(), 'class' => $className]) : null;
-
+        if (null === $relationName = $this->getRelationName($property, $className)) {
             return [];
         }
 
@@ -276,9 +274,23 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
     /**
      * Gets class or interface name to use in relations.
      */
-    private function getRelationName(?Class_ $reference): ?string
+    private function getRelationName(Property $property, string $className): ?string
     {
+        $reference = $property->reference;
+
         if (!$reference) {
+            $this->logger ? $this->logger->error('There is no reference for the property "{property}" from the class "{class}"', ['property' => $property->name(), 'class' => $className]) : null;
+
+            return null;
+        }
+
+        if ($reference->isAbstract && !$this->config['doctrine']['inheritanceAttributes']) {
+            $this->logger ? $this->logger->warning(
+                <<<'EOD'
+                Cannot create a relation from the property "{property}" of the class "{class}" to the class "{referenceClass}" because the latter is a Mapped Superclass.
+                If you want to add a relation anyway, use an inheritance mapping strategy and a discriminator column to do so.
+                EOD, ['property' => $property->name(), 'class' => $className, 'referenceClass' => $reference->shortName()]) : null;
+
             return null;
         }
 
