@@ -147,11 +147,11 @@ class DoctrineMongoDBAttributeGeneratorTest extends TestCase
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('weight'), 'Vehicle')
         );
         $this->assertEquals(
-            [new Attribute('MongoDB\ReferenceOne', ['targetDocument' => 'Person', 'simple' => true])],
+            [new Attribute('MongoDB\ReferenceOne', ['targetDocument' => 'Person'])],
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('relation'), 'Vehicle')
         );
         $this->assertEquals(
-            [new Attribute('MongoDB\ReferenceMany', ['targetDocument' => 'Person', 'simple' => true])],
+            [new Attribute('MongoDB\ReferenceMany', ['targetDocument' => 'Person'])],
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('relations'), 'Vehicle')
         );
     }
