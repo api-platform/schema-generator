@@ -15,7 +15,7 @@ namespace ApiPlatform\SchemaGenerator\Command;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
-use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
+use ApiPlatform\SchemaGenerator\SchemaGeneratorConfiguration;
 use EasyRdf\Graph as RdfGraph;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,8 +37,8 @@ final class ExtractCardinalitiesCommand extends Command
         $this
             ->setName('extract-cardinalities')
             ->setDescription('Extract properties\' cardinality')
-            ->addOption('vocabulary-file', 's', InputOption::VALUE_REQUIRED, 'The path or URL of the vocabulary RDF file to use.', TypesGeneratorConfiguration::SCHEMA_ORG_URI)
-            ->addOption('cardinality-file', 'g', InputOption::VALUE_REQUIRED, 'The path or URL of the OWL file containing the cardinality definitions.', TypesGeneratorConfiguration::GOOD_RELATIONS_URI)
+            ->addOption('vocabulary-file', 's', InputOption::VALUE_REQUIRED, 'The path or URL of the vocabulary RDF file to use.', SchemaGeneratorConfiguration::SCHEMA_ORG_URI)
+            ->addOption('cardinality-file', 'g', InputOption::VALUE_REQUIRED, 'The path or URL of the OWL file containing the cardinality definitions.', SchemaGeneratorConfiguration::GOOD_RELATIONS_URI)
         ;
     }
 

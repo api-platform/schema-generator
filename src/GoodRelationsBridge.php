@@ -105,18 +105,17 @@ class GoodRelationsBridge
     {
         foreach ($this->relations as $relation) {
             $result = $relation->xpath(sprintf('//*[@rdf:about="%s"]/rdfs:label', $this->getPropertyUrl($id)));
-            if (false === $result) {
+            if (!$result) {
                 continue;
             }
-            if (\count($result)) {
-                $xmlResult = $result[0]->asXML();
-                if (false === $xmlResult) {
-                    continue;
-                }
-                preg_match('/\(.\.\..\)/', $xmlResult, $matches);
 
-                return $matches[0];
+            $xmlResult = $result[0]->asXML();
+            if (false === $xmlResult) {
+                continue;
             }
+            preg_match('/\(.\.\..\)/', $xmlResult, $matches);
+
+            return $matches[0];
         }
 
         return false;

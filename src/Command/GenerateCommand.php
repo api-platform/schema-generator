@@ -13,27 +13,18 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\Command;
 
-use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
-use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
-use ApiPlatform\SchemaGenerator\PhpTypeConverter;
-use ApiPlatform\SchemaGenerator\Printer;
-use ApiPlatform\SchemaGenerator\TypesGenerator;
-use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
-use Doctrine\Inflector\InflectorFactory;
-use EasyRdf\Graph as RdfGraph;
+use ApiPlatform\SchemaGenerator\OpenApi\Generator as OpenApiGenerator;
+use ApiPlatform\SchemaGenerator\Schema\Generator as SchemaGenerator;
+use ApiPlatform\SchemaGenerator\SchemaGeneratorConfiguration;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Parser;
-use Twig\Environment;
-use Twig\Extension\DebugExtension;
-use Twig\Loader\FilesystemLoader;
 
 /**
  * Generate entities command.
@@ -110,6 +101,9 @@ final class GenerateCommand extends Command
         } else {
             (new Filesystem())->mkdir($outputDir);
             $outputDir = realpath($outputDir);
+            if (!$outputDir) {
+                throw new \InvalidArgumentException(sprintf('The "%s" directory cannot be created.', $outputDir));
+            }
         }
 
         if ($configArgument) {
@@ -128,83 +122,43 @@ final class GenerateCommand extends Command
             if (false === ($configContent = file_get_contents($configArgument))) {
                 throw new \RuntimeException(sprintf('Cannot read "%s" content.', $configArgument));
             }
-
-            $parser = new Parser();
-            $config = $parser->parse($configContent);
-            unset($parser);
         } elseif (is_readable(self::DEFAULT_CONFIG_FILE)) {
-            if (false === ($defaultConfigContent = file_get_contents(self::DEFAULT_CONFIG_FILE))) {
+            if (false === ($configContent = file_get_contents(self::DEFAULT_CONFIG_FILE))) {
                 throw new \RuntimeException(sprintf('Cannot read "%s" content.', self::DEFAULT_CONFIG_FILE));
             }
-
-            $parser = new Parser();
-            $config = $parser->parse($defaultConfigContent);
-            unset($parser);
         } else {
             if (!$io->askQuestion(new ConfirmationQuestion('Your project has no config file. The entire vocabulary will be imported.'.\PHP_EOL.'Continue?', false))) {
                 return Command::SUCCESS;
             }
-
-            $config = [];
+            $configContent = 'allTypes: true';
         }
 
+        $configuration = $this->processConfiguration($configContent, $outputDir, $dir === $defaultOutput ? $this->namespacePrefix : null);
+
+        (new SchemaGenerator())->generate($configuration, $output, $io);
+        (new OpenApiGenerator())->generate($configuration, $configArgument ?? self::DEFAULT_CONFIG_FILE, $output, $io);
+
+        return Command::SUCCESS;
+    }
+
+    /**
+     * @return Configuration
+     */
+    private function processConfiguration(string $configContent, string $outputDir, ?string $defaultNamespacePrefix): array
+    {
+        $parser = new Parser();
+        $config = $parser->parse($configContent);
+        unset($parser);
+
         $processor = new Processor();
-        $configuration = new TypesGeneratorConfiguration($dir === $defaultOutput ? $this->namespacePrefix : null);
-        /** @var Configuration */
+        $configuration = new SchemaGeneratorConfiguration($defaultNamespacePrefix);
+        /** @var Configuration $processedConfiguration */
         $processedConfiguration = $processor->processConfiguration($configuration, [$config]);
         $processedConfiguration['output'] = $outputDir;
         if (!$processedConfiguration['output']) {
-            throw new \RuntimeException('The specified output is invalid');
+            throw new \RuntimeException('The specified output is invalid.');
         }
 
-        $graphs = [];
-        foreach ($processedConfiguration['vocabularies'] as $vocab) {
-            $graph = new RdfGraph();
-            if (0 === strpos($vocab['uri'], 'http://') || 0 === strpos($vocab['uri'], 'https://')) {
-                $graph->load($vocab['uri'], $vocab['format']);
-            } else {
-                $graph->parseFile($vocab['uri'], $vocab['format']);
-            }
-
-            $graphs[] = $graph;
-        }
-
-        $relations = [];
-        foreach ($processedConfiguration['relations'] as $relation) {
-            $relations[] = new \SimpleXMLElement($relation, 0, true);
-        }
-
-        $goodRelationsBridge = new GoodRelationsBridge($relations);
-        $cardinalitiesExtractor = new CardinalitiesExtractor($graphs, $goodRelationsBridge);
-
-        $templatePaths = $processedConfiguration['generatorTemplates'];
-        $templatePaths[] = __DIR__.'/../../templates/';
-
-        $inflector = InflectorFactory::create()->build();
-
-        $loader = new FilesystemLoader($templatePaths);
-        $twig = new Environment($loader, ['autoescape' => false, 'debug' => $processedConfiguration['debug']]);
-
-        if ($processedConfiguration['debug']) {
-            $twig->addExtension(new DebugExtension());
-        }
-
-        $logger = new ConsoleLogger($output);
-
-        $entitiesGenerator = new TypesGenerator(
-            $inflector,
-            $twig,
-            $logger,
-            $graphs,
-            new PhpTypeConverter(),
-            $cardinalitiesExtractor,
-            $goodRelationsBridge,
-            new Printer(),
-            $io
-        );
-
-        $entitiesGenerator->generate($processedConfiguration);
-
-        return Command::SUCCESS;
+        return $processedConfiguration;
     }
 }

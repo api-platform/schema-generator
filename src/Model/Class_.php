@@ -13,19 +13,18 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\Model;
 
-use Doctrine\Inflector\Inflector;
-use EasyRdf\Resource as RdfResource;
 use MyCLabs\Enum\Enum as MyCLabsEnum;
+use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Helpers;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpFile;
+use Symfony\Component\String\Inflector\InflectorInterface;
 
-final class Class_
+abstract class Class_
 {
     use ResolveNameTrait;
 
-    private string $name;
-    private RdfResource $resource;
+    protected string $name;
     public string $namespace = '';
     /** @var false|string|null */
     private $parent;
@@ -46,18 +45,15 @@ final class Class_
     public bool $hasChild = false;
     public bool $isEmbeddable = false;
     public ?string $security = null;
-    /** @var array<string, array<string, string[]>> */
+    /** @var array<string, array<string, string[]|null>> */
     public array $operations = [];
-
-    private const SCHEMA_ORG_ENUMERATION = 'https://schema.org/Enumeration';
 
     /**
      * @param false|string|null $parent
      */
-    public function __construct(string $name, RdfResource $resource, $parent = null)
+    public function __construct(string $name, $parent = null)
     {
         $this->name = $name;
-        $this->resource = $resource;
         $this->parent = $parent;
     }
 
@@ -66,25 +62,11 @@ final class Class_
         return $this->name;
     }
 
-    public function resource(): RdfResource
-    {
-        return $this->resource;
-    }
+    abstract public function description(): ?string;
 
-    public function resourceUri(): string
-    {
-        return $this->resource->getUri();
-    }
+    abstract public function rdfType(): ?string;
 
-    public function resourceComment(): ?string
-    {
-        return (string) $this->resource->get('rdfs:comment');
-    }
-
-    public function resourceLocalName(): string
-    {
-        return $this->resource->localName();
-    }
+    abstract public function shortName(): string;
 
     public function isInNamespace(string $namespace): bool
     {
@@ -225,20 +207,7 @@ final class Class_
         return $this->constants;
     }
 
-    /**
-     * @return RdfResource[]
-     */
-    public function getSubClassOf(): array
-    {
-        return array_filter($this->resource->all('rdfs:subClassOf', 'resource'), static fn (RdfResource $resource) => !$resource->isBNode());
-    }
-
-    public function isEnum(): bool
-    {
-        $subClassOf = $this->resource->get('rdfs:subClassOf');
-
-        return $subClassOf && self::SCHEMA_ORG_ENUMERATION === $subClassOf->getUri();
-    }
+    abstract public function isEnum(): bool;
 
     public function isParentEnum(): bool
     {
@@ -252,7 +221,7 @@ final class Class_
     /**
      * @param Configuration $config
      */
-    public function toNetteFile(array $config, Inflector $inflector, ?PhpFile $file = null): PhpFile
+    public function toNetteFile(array $config, InflectorInterface $inflector, ?PhpFile $file = null): PhpFile
     {
         $useDoctrineCollections = $config['doctrine']['useCollection'];
         $useAccessors = $config['accessorMethods'];
@@ -275,6 +244,7 @@ final class Class_
             $namespace->addUse($use->name(), $use->alias());
         }
 
+        /** @var ?ClassType $class */
         $class = $namespace->getClasses()[$this->name] ?? null;
         if (!$class) {
             $class = $namespace->addClass($this->name);
@@ -369,7 +339,7 @@ final class Class_
             $methods = [];
             foreach ($sortedProperties as $property) {
                 foreach ($property->generateNetteMethods(static function ($string) use ($inflector) {
-                    return $inflector->singularize($string);
+                    return $inflector->singularize($string)[0];
                 }, $namespace, $useDoctrineCollections, $useFluentMutators) as $method) {
                     $methods[] = $method;
                 }

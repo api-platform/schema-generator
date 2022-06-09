@@ -15,6 +15,8 @@ namespace ApiPlatform\SchemaGenerator;
 
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
+use ApiPlatform\SchemaGenerator\Schema\Model\Property as SchemaProperty;
+use ApiPlatform\SchemaGenerator\Schema\TypeConverter;
 use EasyRdf\Resource as RdfResource;
 
 final class PhpTypeConverter implements PhpTypeConverterInterface
@@ -24,11 +26,15 @@ final class PhpTypeConverter implements PhpTypeConverterInterface
      */
     public function isDatatype(RdfResource $range): bool
     {
-        return isset(PhpTypeConverterInterface::BASE_MAPPING[$this->getUri($range)]) || $this->isLangString($range);
+        return isset(TypeConverter::RANGE_MAPPING[$this->getUri($range)]) || $this->isLangString($range);
     }
 
     public function getPhpType(Property $property, array $config = [], array $classes = []): ?string
     {
+        if (!$property instanceof SchemaProperty) {
+            throw new \LogicException(sprintf('Property "%s" has to be an instance of "%s".', $property->name(), SchemaProperty::class));
+        }
+
         if ($property->isArray && $property->range) {
             return ($config['doctrine']['useCollection'] ?? false) && !$this->isDatatype($property->range) ? 'Collection' : 'array';
         }
@@ -50,7 +56,7 @@ final class PhpTypeConverter implements PhpTypeConverterInterface
     /**
      * @param Class_[] $classes
      */
-    private function getNonArrayType(Property $property, array $classes): ?string
+    private function getNonArrayType(SchemaProperty $property, array $classes): ?string
     {
         if ($property->isEnum) {
             return 'string';
@@ -60,9 +66,32 @@ final class PhpTypeConverter implements PhpTypeConverterInterface
             return null;
         }
 
-        $rangeUri = $this->getUri($property->range);
-        if (isset(PhpTypeConverterInterface::BASE_MAPPING[$rangeUri])) {
-            return PhpTypeConverterInterface::BASE_MAPPING[$rangeUri];
+        if ($property->type) {
+            switch ($property->type) {
+                case 'integer':
+                case 'negativeInteger':
+                case 'nonNegativeInteger':
+                case 'positiveInteger':
+                case 'nonPositiveInteger':
+                case 'byte':
+                    return 'int';
+                case 'boolean':
+                    return 'bool';
+                case 'float':
+                case 'double':
+                case 'decimal':
+                    return 'float';
+                case 'date':
+                case 'dateTime':
+                case 'time':
+                    return '\\'.\DateTimeInterface::class;
+                case 'duration':
+                    return '\\'.\DateInterval::class;
+                case 'mixed':
+                    return null;
+                default:
+                    return 'string';
+            }
         }
 
         $typeName = $property->rangeName;

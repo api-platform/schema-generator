@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\Command;
 
-use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
+use ApiPlatform\SchemaGenerator\SchemaGeneratorConfiguration;
 use Symfony\Component\Config\Definition\Dumper\YamlReferenceDumper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,7 +41,7 @@ final class DumpConfigurationCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $configuration = new TypesGeneratorConfiguration();
+        $configuration = new SchemaGeneratorConfiguration();
         $dumper = new YamlReferenceDumper();
         $output->writeln($dumper->dump($configuration));
 

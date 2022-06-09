@@ -17,11 +17,11 @@ use ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Interface_;
 use ApiPlatform\SchemaGenerator\PhpTypeConverter;
-use Doctrine\Inflector\InflectorFactory;
+use ApiPlatform\SchemaGenerator\Schema\Model\Class_ as SchemaClass;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\NullLogger;
+use Symfony\Component\String\Inflector\EnglishInflector;
 
 class PhpDocAnnotationGeneratorTest extends TestCase
 {
@@ -31,10 +31,7 @@ class PhpDocAnnotationGeneratorTest extends TestCase
     {
         $this->generator = new PhpDocAnnotationGenerator(
             new PhpTypeConverter(),
-            new NullLogger(),
-            InflectorFactory::create()->build(),
-            [],
-            [],
+            new EnglishInflector(),
             ['author' => 'Bill'],
             [],
         );
@@ -50,11 +47,11 @@ class PhpDocAnnotationGeneratorTest extends TestCase
 
     public function provideGenerateClassAnnotationsCases(): \Generator
     {
-        $class = new Class_('Res', new RdfResource('https://schema.org/Res'));
+        $class = new SchemaClass('Res', new RdfResource('https://schema.org/Res'));
         $class->interface = new Interface_('Interface', '/foo');
         yield 'with interface' => [$class, ['{@inheritdoc}', '', '@author Bill']];
 
         $graph = new RdfGraph();
-        yield 'with resource' => [new Class_('Res', new RdfResource('https://schema.org/Res', $graph)), ['', '', '@see https://schema.org/Res', '@author Bill']];
+        yield 'with resource' => [new SchemaClass('Res', new RdfResource('https://schema.org/Res', $graph)), ['@see https://schema.org/Res', '@author Bill']];
     }
 }

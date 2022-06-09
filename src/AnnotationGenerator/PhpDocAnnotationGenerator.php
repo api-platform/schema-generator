@@ -17,9 +17,8 @@ use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Constant;
 use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
-use Doctrine\Inflector\Inflector;
 use League\HTMLToMarkdown\HtmlConverter;
-use Psr\Log\LoggerInterface;
+use Symfony\Component\String\Inflector\InflectorInterface;
 
 /**
  * PHPDoc annotation generator.
@@ -35,9 +34,9 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
     /**
      * {@inheritdoc}
      */
-    public function __construct(PhpTypeConverterInterface $phpTypeConverter, LoggerInterface $logger, Inflector $inflector, array $graphs, array $cardinalities, array $config, array $classes)
+    public function __construct(PhpTypeConverterInterface $phpTypeConverter, InflectorInterface $inflector, array $config, array $classes)
     {
-        parent::__construct($phpTypeConverter, $logger, $inflector, $graphs, $cardinalities, $config, $classes);
+        parent::__construct($phpTypeConverter, $inflector, $config, $classes);
 
         $this->htmlToMarkdown = new HtmlConverter();
     }
@@ -74,9 +73,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
      */
     public function generatePropertyAnnotations(Property $property, string $className): array
     {
-        $comment = $property->resource ? $property->resource->get('rdfs:comment') : '';
-
-        $description = $this->formatDoc((string) $comment, true);
+        $description = $this->formatDoc((string) $property->description(), true);
 
         $annotations = [];
         if ($this->isDocUseful($property)) {
@@ -86,8 +83,8 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             $annotations[] = '';
         }
 
-        if (null !== $property->resource) {
-            $annotations[] = sprintf('@see %s', $property->resourceUri());
+        if (null !== $property->rdfType()) {
+            $annotations[] = sprintf('@see %s', $property->rdfType());
         }
 
         $annotations[] = '';
@@ -128,7 +125,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             return [];
         }
 
-        return [sprintf('@param %s $%s', $this->toPhpDocType($property, true), $this->inflector->singularize($property->name()))];
+        return [sprintf('@param %s $%s', $this->toPhpDocType($property, true), $this->inflector->singularize($property->name())[0])];
     }
 
     /**
@@ -140,14 +137,14 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             return [];
         }
 
-        return [sprintf('@param %s $%s', $this->toPhpDocType($property, true), $this->inflector->singularize($property->name()))];
+        return [sprintf('@param %s $%s', $this->toPhpDocType($property, true), $this->inflector->singularize($property->name())[0])];
     }
 
     private function isDocUseful(Property $property, bool $adderOrRemover = false): bool
     {
-        $typeHint = $adderOrRemover ? $property->adderRemoverTypeHint ?? false : $property->typeHint ?? false;
+        $typeHint = $adderOrRemover ? $property->adderRemoverTypeHint : $property->typeHint;
 
-        return false === $typeHint || 'array' === $typeHint;
+        return \in_array($typeHint, [false, 'array', 'Collection'], true);
     }
 
     /**
@@ -163,9 +160,13 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
             $annotations[] = '{@inheritdoc}';
             $annotations[] = '';
         } else {
-            $annotations = $this->formatDoc((string) $class->resourceComment());
-            $annotations[] = '';
-            $annotations[] = sprintf('@see %s', $class->resource());
+            if ($class->description()) {
+                $annotations = $this->formatDoc($class->description());
+                $annotations[] = '';
+            }
+            if ($class->rdfType()) {
+                $annotations[] = sprintf('@see %s', $class->rdfType());
+            }
         }
 
         if ($this->config['author']) {
@@ -194,9 +195,6 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         return $doc;
     }
 
-    /**
-     * Converts a RDF range to a PHPDoc type.
-     */
     protected function toPhpDocType(Property $property, bool $adderOrRemover = false): ?string
     {
         $suffix = $property->isNullable ? '|null' : '';
@@ -211,16 +209,15 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         $enforcedNonArrayProperty = clone $property;
         $enforcedNonArrayProperty->isArray = false;
 
-        if (null !== $phpDocType = $this->phpTypeConverter->getPhpType($enforcedNonArrayProperty)) {
+        if (!$property->reference && null !== $phpDocType = $this->phpTypeConverter->getPhpType($enforcedNonArrayProperty)) {
             return ($property->isArray ? sprintf('%s[]', $phpDocType) : $phpDocType).$suffix;
         }
 
-        if (null === $property->range) {
+        if (!$property->reference) {
             return null;
         }
 
-        $phpDocType = isset($this->classes[$property->rangeName]) && $this->classes[$property->rangeName]->interfaceName() ?
-            $this->classes[$property->rangeName]->interfaceName() : $property->rangeName;
+        $phpDocType = $property->reference->interfaceName() ?: $property->reference->name();
         if (!$property->isArray || $adderOrRemover) {
             return $phpDocType.$suffix;
         }

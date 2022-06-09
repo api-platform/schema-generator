@@ -1,0 +1,7 @@
+namespaces:
+    entity: App\OpenApi\Entity
+    enum: App\OpenApi\Enum
+    interface: App\OpenApi\Model
+
+openApi:
+    file: './openapi.yml'

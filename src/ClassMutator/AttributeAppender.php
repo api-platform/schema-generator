@@ -34,16 +34,14 @@ final class AttributeAppender implements ClassMutatorInterface
         $this->classes = $classes;
     }
 
-    public function __invoke(Class_ $class): Class_
+    public function __invoke(Class_ $class): void
     {
-        $class = $this->generateClassUses($class);
-        $class = $this->generateClassAttributes($class);
-        $class = $this->generatePropertiesAttributes($class);
-
-        return $class;
+        $this->generateClassUses($class);
+        $this->generateClassAttributes($class);
+        $this->generatePropertiesAttributes($class);
     }
 
-    private function generateClassUses(Class_ $class): Class_
+    private function generateClassUses(Class_ $class): void
     {
         $interfaceNamespace = isset($this->classes[$class->name()]) ? $this->classes[$class->name()]->interfaceNamespace() : null;
         if ($interfaceNamespace && $class->interfaceNamespace() !== $class->namespace) {
@@ -51,11 +49,11 @@ final class AttributeAppender implements ClassMutatorInterface
         }
 
         foreach ($class->properties() as $property) {
-            if (isset($this->classes[$property->rangeName]) && $this->classes[$property->rangeName]->interfaceName()) {
+            if ($property->reference && $property->reference->interfaceName()) {
                 $class->addUse(new Use_(sprintf(
                     '%s\\%s',
-                    $this->classes[$property->rangeName]->interfaceNamespace(),
-                    $this->classes[$property->rangeName]->interfaceName()
+                    $property->reference->interfaceNamespace(),
+                    $property->reference->interfaceName()
                 )));
             }
         }
@@ -65,22 +63,18 @@ final class AttributeAppender implements ClassMutatorInterface
                 $class->addUse($use);
             }
         }
-
-        return $class;
     }
 
-    private function generateClassAttributes(Class_ $class): Class_
+    private function generateClassAttributes(Class_ $class): void
     {
         foreach ($this->attributeGenerators as $generator) {
             foreach ($generator->generateClassAttributes($class) as $attribute) {
                 $class->addAttribute($attribute);
             }
         }
-
-        return $class;
     }
 
-    private function generatePropertiesAttributes(Class_ $class): Class_
+    private function generatePropertiesAttributes(Class_ $class): void
     {
         foreach ($class->properties() as $property) {
             foreach ($this->attributeGenerators as $attributeGenerator) {
@@ -89,7 +83,5 @@ final class AttributeAppender implements ClassMutatorInterface
                 }
             }
         }
-
-        return $class;
     }
 }

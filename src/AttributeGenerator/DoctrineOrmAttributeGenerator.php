@@ -93,7 +93,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generatePropertyAttributes(Property $property, string $className): array
     {
-        if (null === $property->range || null === $property->rangeName) {
+        if (null === $property->type && null === $property->reference) {
             return [];
         }
 
@@ -110,20 +110,16 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
         }
 
         $type = null;
-        $isDataType = $this->phpTypeConverter->isDatatype($property->range);
         if ($property->isEnum) {
             $type = $property->isArray ? 'simple_array' : 'string';
-        } elseif ($property->isArray && $isDataType) {
+        } elseif ($property->isArray && $property->type) {
             $type = 'json';
-        } elseif (!$property->isArray && $isDataType && null !== ($phpType = $this->phpTypeConverter->getPhpType($property, $this->config, []))) {
-            switch ($property->range->getUri()) {
-                // TODO: use more precise types for int (smallint, bigint...)
-                case 'http://www.w3.org/2001/XMLSchema#time':
-                case 'https://schema.org/Time':
+        } elseif (!$property->isArray && $property->type && !$property->reference && null !== ($phpType = $this->phpTypeConverter->getPhpType($property, $this->config, []))) {
+            switch ($property->type) {
+                case 'time':
                     $type = 'time';
                     break;
-                case 'http://www.w3.org/2001/XMLSchema#dateTime':
-                case 'https://schema.org/DateTime':
+                case 'dateTime':
                     $type = 'date';
                     break;
                 default:
@@ -132,6 +128,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                         case 'bool':
                             $type = 'boolean';
                             break;
+                        // TODO: use more precise types for int (smallint, bigint...)
                         case 'int':
                             $type = 'integer';
                             break;
@@ -173,8 +170,8 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
             return [new Attribute('ORM\Column', $args)];
         }
 
-        if (null === $relationName = $this->getRelationName($property->rangeName)) {
-            $this->logger->error('The type "{type}" of the property "{property}" from the class "{class}" doesn\'t exist', ['type' => $property->range->getUri(), 'property' => $property->name(), 'class' => $className]);
+        if (null === $relationName = $this->getRelationName($property->reference)) {
+            $this->logger ? $this->logger->error('There is no reference for the property "{property}" from the class "{class}"', ['property' => $property->name(), 'class' => $className]) : null;
 
             return [];
         }
@@ -279,26 +276,24 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
     /**
      * Gets class or interface name to use in relations.
      */
-    private function getRelationName(string $rangeName): ?string
+    private function getRelationName(?Class_ $reference): ?string
     {
-        if (!isset($this->classes[$rangeName])) {
+        if (!$reference) {
             return null;
         }
 
-        $class = $this->classes[$rangeName];
-
-        if (null !== $class->interfaceName()) {
-            if (isset($this->config['types'][$rangeName]['namespaces']['interface'])) {
-                return sprintf('%s\\%s', $this->config['types'][$rangeName]['namespaces']['interface'], $class->interfaceName());
+        if (null !== $reference->interfaceName()) {
+            if (isset($this->config['types'][$reference->name()]['namespaces']['interface'])) {
+                return sprintf('%s\\%s', $this->config['types'][$reference->name()]['namespaces']['interface'], $reference->interfaceName());
             }
 
-            return sprintf('%s\\%s', $this->config['namespaces']['interface'], $class->interfaceName());
+            return sprintf('%s\\%s', $this->config['namespaces']['interface'], $reference->interfaceName());
         }
 
-        if (isset($this->config['types'][$rangeName]['namespaces']['class'])) {
-            return sprintf('%s\\%s', $this->config['types'][$rangeName]['namespaces']['class'], $class->name());
+        if (isset($this->config['types'][$reference->name()]['namespaces']['class'])) {
+            return sprintf('%s\\%s', $this->config['types'][$reference->name()]['namespaces']['class'], $reference->name());
         }
 
-        return sprintf('%s\\%s', $this->config['namespaces']['entity'], $rangeName);
+        return sprintf('%s\\%s', $this->config['namespaces']['entity'], $reference->name());
     }
 }

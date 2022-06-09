@@ -15,18 +15,17 @@ namespace ApiPlatform\SchemaGenerator\Tests\AttributeGenerator;
 
 use ApiPlatform\SchemaGenerator\AttributeGenerator\ConstraintAttributeGenerator;
 use ApiPlatform\SchemaGenerator\Model\Attribute;
-use ApiPlatform\SchemaGenerator\Model\Class_;
-use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\Model\Use_;
 use ApiPlatform\SchemaGenerator\PhpTypeConverter;
+use ApiPlatform\SchemaGenerator\Schema\Model\Class_ as SchemaClass;
+use ApiPlatform\SchemaGenerator\Schema\Model\Property;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
-use Doctrine\Inflector\InflectorFactory;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
 use Nette\PhpGenerator\Literal;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\NullLogger;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\String\Inflector\EnglishInflector;
 
 class ConstraintAttributeGeneratorTest extends TestCase
 {
@@ -36,10 +35,7 @@ class ConstraintAttributeGeneratorTest extends TestCase
     {
         $this->generator = new ConstraintAttributeGenerator(
             new PhpTypeConverter(),
-            new NullLogger(),
-            InflectorFactory::create()->build(),
-            [],
-            [],
+            new EnglishInflector(),
             ['id' => ['generationStrategy' => 'uuid']],
             [],
         );
@@ -48,7 +44,7 @@ class ConstraintAttributeGeneratorTest extends TestCase
     /**
      * @dataProvider provideGenerateClassAttributesCases
      */
-    public function testGenerateClassAttributes(Class_ $class, array $attributes): void
+    public function testGenerateClassAttributes(SchemaClass $class, array $attributes): void
     {
         $this->assertEquals($attributes, $this->generator->generateClassAttributes($class));
     }
@@ -59,10 +55,10 @@ class ConstraintAttributeGeneratorTest extends TestCase
         $resource = new RdfResource('https://schema.org/Enum', $graph);
         $resource->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);
 
-        yield 'enum' => [new Class_('Enum', $resource), []];
+        yield 'enum' => [new SchemaClass('Enum', $resource), []];
 
         $graph = new RdfGraph();
-        $class = new Class_('Foo', new RdfResource('https://schema.org/Foo', $graph));
+        $class = new SchemaClass('Foo', new RdfResource('https://schema.org/Foo', $graph));
         $uniqueProperty = new Property('bar');
         $uniqueProperty->isUnique = true;
         $class->addProperty($uniqueProperty);
@@ -70,7 +66,7 @@ class ConstraintAttributeGeneratorTest extends TestCase
         yield 'one unique property' => [$class, [new Attribute('UniqueEntity', ['bar'])]];
 
         $graph = new RdfGraph();
-        $class = new Class_('Foo', new RdfResource('https://schema.org/Foo', $graph));
+        $class = new SchemaClass('Foo', new RdfResource('https://schema.org/Foo', $graph));
         $uniqueProperty = new Property('bar');
         $uniqueProperty->isUnique = true;
         $class->addProperty($uniqueProperty);
@@ -96,14 +92,13 @@ class ConstraintAttributeGeneratorTest extends TestCase
         yield 'uuid' => [$property, [new Attribute('Assert\Uuid')]];
 
         $property = new Property('prop');
-        $property->range = new RdfResource('https://schema.org/email');
         $property->resource = new RdfResource('https://schema.org/email');
+        $property->type = 'string';
         $property->isNullable = false;
         yield 'email' => [$property, [new Attribute('Assert\Email'), new Attribute('Assert\NotNull')]];
 
         $property = new Property('prop');
-        $property->range = new RdfResource('https://schema.org/Enum');
-        $property->rangeName = 'Enum';
+        $property->reference = new SchemaClass('Enum', new RdfResource('https://schema.org/Enum', new RdfGraph()));
         $property->isEnum = true;
         $property->isArray = true;
         yield 'enum' => [$property, [new Attribute('Assert\Choice', ['callback' => [new Literal('Enum::class'), 'toArray'], 'multiple' => true])]];
@@ -111,7 +106,7 @@ class ConstraintAttributeGeneratorTest extends TestCase
 
     public function testGenerateUses(): void
     {
-        $this->assertEquals([new Use_('Symfony\Component\Validator\Constraints', 'Assert'), new Use_(UniqueEntity::class)], $this->generator->generateUses(new Class_('Res', new RdfResource('https://schema.org/Res', new RdfGraph()))));
+        $this->assertEquals([new Use_('Symfony\Component\Validator\Constraints', 'Assert'), new Use_(UniqueEntity::class)], $this->generator->generateUses(new SchemaClass('Res', new RdfResource('https://schema.org/Res', new RdfGraph()))));
     }
 
     public function testGenerateNoUsesForEnum(): void
@@ -119,6 +114,6 @@ class ConstraintAttributeGeneratorTest extends TestCase
         $graph = new RdfGraph();
         $myEnum = new RdfResource('https://schema.org/MyEnum', $graph);
         $myEnum->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);
-        $this->assertSame([], $this->generator->generateUses(new Class_('MyEnum', $myEnum)));
+        $this->assertSame([], $this->generator->generateUses(new SchemaClass('MyEnum', $myEnum)));
     }
 }

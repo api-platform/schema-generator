@@ -8,11 +8,11 @@ rm -rf tmp/original
 
 php schema.phar generate tmp/original tests/e2e/schema.yml -n -vv --ansi;
 
-diff tests/e2e/original/App/Entity/Brand.php tmp/original/App/Entity/Brand.php;
-diff tests/e2e/original/App/Entity/Person.php tmp/original/App/Entity/Person.php;
-diff tests/e2e/original/App/Entity/PostalAddress.php tmp/original/App/Entity/PostalAddress.php;
-diff tests/e2e/original/App/Entity/Thing.php tmp/original/App/Entity/Thing.php;
-diff tests/e2e/original/App/Enum/GenderType.php tmp/original/App/Enum/GenderType.php;
+diff tests/e2e/original/App/Schema/Entity/Brand.php tmp/original/App/Schema/Entity/Brand.php;
+diff tests/e2e/original/App/Schema/Entity/Person.php tmp/original/App/Schema/Entity/Person.php;
+diff tests/e2e/original/App/Schema/Entity/PostalAddress.php tmp/original/App/Schema/Entity/PostalAddress.php;
+diff tests/e2e/original/App/Schema/Entity/Thing.php tmp/original/App/Schema/Entity/Thing.php;
+diff tests/e2e/original/App/Schema/Enum/GenderType.php tmp/original/App/Schema/Enum/GenderType.php;
 
 # Already generated files
 
@@ -20,8 +20,21 @@ cp -r tests/e2e/customized tmp/
 
 php schema.phar generate tmp/customized tests/e2e/schema.yml -n -vv --ansi;
 
-diff tests/e2e/customized/App/Entity/Brand.php tmp/customized/App/Entity/Brand.php;
-diff tests/e2e/customized/App/Entity/Person.php tmp/customized/App/Entity/Person.php;
-diff tests/e2e/customized/App/Entity/PostalAddress.php tmp/customized/App/Entity/PostalAddress.php;
-diff tests/e2e/customized/App/Entity/Thing.php tmp/customized/App/Entity/Thing.php;
-diff tests/e2e/customized/App/Enum/GenderType.php tmp/customized/App/Enum/GenderType.php;
+diff tests/e2e/customized/App/Schema/Entity/Brand.php tmp/customized/App/Schema/Entity/Brand.php;
+diff tests/e2e/customized/App/Schema/Entity/Person.php tmp/customized/App/Schema/Entity/Person.php;
+diff tests/e2e/customized/App/Schema/Entity/PostalAddress.php tmp/customized/App/Schema/Entity/PostalAddress.php;
+diff tests/e2e/customized/App/Schema/Entity/Thing.php tmp/customized/App/Schema/Entity/Thing.php;
+diff tests/e2e/customized/App/Schema/Enum/GenderType.php tmp/customized/App/Schema/Enum/GenderType.php;
+
+php schema.phar generate tmp/original tests/e2e/schema_openapi.yml -n -vv --ansi;
+
+diff tests/e2e/original/App/OpenApi/Entity/Book.php tmp/original/App/OpenApi/Entity/Book.php;
+diff tests/e2e/original/App/OpenApi/Entity/Parchment.php tmp/original/App/OpenApi/Entity/Parchment.php;
+diff tests/e2e/original/App/OpenApi/Entity/Review.php tmp/original/App/OpenApi/Entity/Review.php;
+diff tests/e2e/original/App/OpenApi/Entity/TopBook.php tmp/original/App/OpenApi/Entity/TopBook.php;
+
+php schema.phar generate tmp/original tests/e2e/schema_openapi_ref.yml -n -vv --ansi;
+
+diff tests/e2e/original/App/OpenApi/Entity/Order.php tmp/original/App/OpenApi/Entity/Order.php;
+diff tests/e2e/original/App/OpenApi/Entity/Pet.php tmp/original/App/OpenApi/Entity/Pet.php;
+diff tests/e2e/original/App/OpenApi/Entity/User.php tmp/original/App/OpenApi/Entity/User.php;

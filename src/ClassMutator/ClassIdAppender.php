@@ -14,22 +14,24 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\ClassMutator;
 
 use ApiPlatform\SchemaGenerator\Model\Class_;
-use ApiPlatform\SchemaGenerator\PropertyGenerator\IdPropertyGenerator;
+use ApiPlatform\SchemaGenerator\PropertyGenerator\IdPropertyGeneratorInterface;
 
 final class ClassIdAppender implements ClassMutatorInterface
 {
+    private IdPropertyGeneratorInterface $idPropertyGenerator;
     /** @var Configuration */
     private array $config;
 
     /**
      * @param Configuration $config
      */
-    public function __construct(array $config)
+    public function __construct(IdPropertyGeneratorInterface $idPropertyGenerator, array $config)
     {
+        $this->idPropertyGenerator = $idPropertyGenerator;
         $this->config = $config;
     }
 
-    public function __invoke(Class_ $class): Class_
+    public function __invoke(Class_ $class): void
     {
         if (
             $class->isEnum()
@@ -37,9 +39,9 @@ final class ClassIdAppender implements ClassMutatorInterface
             || ($class->hasParent() && 'parent' === $this->config['id']['onClass'])
             || ($class->hasChild && 'child' === $this->config['id']['onClass'])
         ) {
-            return $class;
+            return;
         }
 
-        return $class->addProperty((new IdPropertyGenerator())($this->config['id']['generationStrategy'], $this->config['id']['writable']));
+        $class->addProperty(($this->idPropertyGenerator)($this->config['id']['generationStrategy'], $this->config['id']['writable']));
     }
 }

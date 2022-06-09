@@ -39,21 +39,19 @@ final class AnnotationsAppender implements ClassMutatorInterface
         $this->typesToGenerate = $typesToGenerate;
     }
 
-    public function __invoke(Class_ $class): Class_
+    public function __invoke(Class_ $class): void
     {
-        $class = $this->generateClassUses($class);
-        $class = $this->generateClassAnnotations($class);
+        $this->generateClassUses($class);
+        $this->generateClassAnnotations($class);
         if (false === isset($this->typesToGenerate[$class->name()])) {
-            $class = $this->generateInterfaceAnnotations($class);
+            $this->generateInterfaceAnnotations($class);
         }
 
-        $class = $this->generateConstantAnnotations($class);
-        $class = $this->generatePropertiesAnnotations($class);
-
-        return $class;
+        $this->generateConstantAnnotations($class);
+        $this->generatePropertiesAnnotations($class);
     }
 
-    private function generateClassUses(Class_ $class): Class_
+    private function generateClassUses(Class_ $class): void
     {
         $interfaceNamespace = isset($this->classes[$class->name()]) ? $this->classes[$class->name()]->interfaceNamespace() : null;
         if ($interfaceNamespace && $class->interfaceNamespace() !== $class->namespace) {
@@ -61,11 +59,11 @@ final class AnnotationsAppender implements ClassMutatorInterface
         }
 
         foreach ($class->properties() as $property) {
-            if (isset($this->classes[$property->rangeName]) && $this->classes[$property->rangeName]->interfaceName()) {
+            if ($property->reference && $property->reference->interfaceName()) {
                 $class->addUse(new Use_(sprintf(
                     '%s\\%s',
-                    $this->classes[$property->rangeName]->interfaceNamespace(),
-                    $this->classes[$property->rangeName]->interfaceName()
+                    $property->reference->interfaceNamespace(),
+                    $property->reference->interfaceName()
                 )));
             }
         }
@@ -75,22 +73,18 @@ final class AnnotationsAppender implements ClassMutatorInterface
                 $class->addUse($use);
             }
         }
-
-        return $class;
     }
 
-    private function generateClassAnnotations(Class_ $class): Class_
+    private function generateClassAnnotations(Class_ $class): void
     {
         foreach ($this->annotationGenerators as $generator) {
             foreach ($generator->generateClassAnnotations($class) as $annotation) {
                 $class->addAnnotation($annotation);
             }
         }
-
-        return $class;
     }
 
-    private function generateConstantAnnotations(Class_ $class): Class_
+    private function generateConstantAnnotations(Class_ $class): void
     {
         foreach ($class->constants() as $constant) {
             foreach ($this->annotationGenerators as $generator) {
@@ -99,24 +93,20 @@ final class AnnotationsAppender implements ClassMutatorInterface
                 }
             }
         }
-
-        return $class;
     }
 
-    private function generateInterfaceAnnotations(Class_ $class): Class_
+    private function generateInterfaceAnnotations(Class_ $class): void
     {
         foreach ($this->annotationGenerators as $generator) {
             foreach ($generator->generateInterfaceAnnotations($class) as $interfaceAnnotation) {
                 $class->addInterfaceAnnotation($interfaceAnnotation);
             }
         }
-
-        return $class;
     }
 
-    private function generatePropertiesAnnotations(Class_ $class): Class_
+    private function generatePropertiesAnnotations(Class_ $class): void
     {
-        foreach ($class->properties() as $name => &$property) {
+        foreach ($class->properties() as $property) {
             foreach ($this->annotationGenerators as $annotationGenerator) {
                 foreach ($annotationGenerator->generatePropertyAnnotations($property, $class->name()) as $propertyAnnotation) {
                     $property->addAnnotation($propertyAnnotation);
@@ -141,7 +131,5 @@ final class AnnotationsAppender implements ClassMutatorInterface
                 }
             }
         }
-
-        return $class;
     }
 }

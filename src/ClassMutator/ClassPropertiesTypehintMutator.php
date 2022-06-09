@@ -35,10 +35,10 @@ final class ClassPropertiesTypehintMutator implements ClassMutatorInterface
         $this->config = $config;
     }
 
-    public function __invoke(Class_ $class): Class_
+    public function __invoke(Class_ $class): void
     {
         foreach ($class->properties() as $property) {
-            $property->isEnum = isset($this->classes[$property->rangeName]) && ($this->classes[$property->rangeName])->isEnum();
+            $property->isEnum = $property->isEnum ?: $property->reference && $property->reference->isEnum();
             $property->typeHint = $this->phpTypeConverter->getPhpType(
                 $property,
                 $this->config,
@@ -52,7 +52,5 @@ final class ClassPropertiesTypehintMutator implements ClassMutatorInterface
                 $property->adderRemoverTypeHint = $this->phpTypeConverter->getPhpType($nonArrayForcedProperty, $this->config, $this->classes);
             }
         }
-
-        return $class;
     }
 }

@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 
 class InterfaceTest extends TestCase
 {
-    public function testInterface()
+    public function testInterface(): void
     {
         $interface = new Interface_('Printable', "App\Entity");
         $interface->addAnnotation('@see description');

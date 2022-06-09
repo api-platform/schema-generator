@@ -14,15 +14,17 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\ClassMutator;
 
 use ApiPlatform\SchemaGenerator\Model\Class_;
-use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGenerator;
+use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGeneratorInterface;
+use ApiPlatform\SchemaGenerator\Schema\Model\Class_ as SchemaClass;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
-use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareTrait;
 
 final class ClassPropertiesAppender implements ClassMutatorInterface
 {
-    private PropertyGenerator $propertyGenerator;
-    private LoggerInterface $logger;
+    use LoggerAwareTrait;
+
+    private PropertyGeneratorInterface $propertyGenerator;
     /** @var array<string, RdfResource[]> */
     private array $propertiesMap;
     /** @var Configuration */
@@ -42,17 +44,20 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
      * @param array<string, RdfResource[]> $propertiesMap
      * @param RdfGraph[]                   $graphs
      */
-    public function __construct(PropertyGenerator $propertyGenerator, LoggerInterface $logger, array $config, array $propertiesMap, array $graphs)
+    public function __construct(PropertyGeneratorInterface $propertyGenerator, array $config, array $propertiesMap, array $graphs)
     {
         $this->propertiesMap = $propertiesMap;
         $this->propertyGenerator = $propertyGenerator;
-        $this->logger = $logger;
         $this->config = $config;
         $this->graphs = $graphs;
     }
 
-    public function __invoke(Class_ $class): Class_
+    public function __invoke(Class_ $class): void
     {
+        if (!$class instanceof SchemaClass) {
+            return;
+        }
+
         $typeConfig = $this->config['types'][$class->name()] ?? null;
 
         if (null !== $typeConfig && !$typeConfig['allProperties']) {
@@ -67,26 +72,26 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
                             continue;
                         }
 
-                        $class = $this->generateField($this->config, $class, $class->resource(), $typeConfig, $property);
+                        $this->generateField($this->config, $class, $class->resource(), $typeConfig, $property);
                         continue 3;
                     }
                 }
 
-                $class = $this->generateCustomField($key, $class->resource(), $typeConfig, $class, $this->config);
+                $this->generateCustomField($key, $class->resource(), $typeConfig, $class, $this->config);
             }
         } else {
             $remainingProperties = $typeConfig['properties'] ?? [];
-            if (!isset($this->propertiesMap[$class->resourceUri()])) {
-                $this->logger->warning(sprintf('Properties for "%s" not found in the map.', $class->resourceUri()));
+            if (!isset($this->propertiesMap[$class->rdfType()])) {
+                $this->logger ? $this->logger->warning(sprintf('Properties for "%s" not found in the map.', $class->rdfType())) : null;
             }
             // All properties
-            foreach ($this->propertiesMap[$class->resourceUri()] ?? [] as $property) {
+            foreach ($this->propertiesMap[$class->rdfType()] ?? [] as $property) {
                 unset($remainingProperties[$property->localName()]);
                 if ($property->hasProperty(self::SCHEMA_ORG_SUPERSEDED_BY)) {
                     $supersededBy = $property->get(self::SCHEMA_ORG_SUPERSEDED_BY);
-                    $this->logger->warning(sprintf('The property "%s" is superseded by "%s". Using the superseding property.', $property->getUri(), $supersededBy->getUri()));
+                    $this->logger ? $this->logger->warning(sprintf('The property "%s" is superseded by "%s". Using the superseding property.', $property->getUri(), $supersededBy->getUri())) : null;
                 } else {
-                    $class = $this->generateField($this->config, $class, $class->resource(), $typeConfig, $property);
+                    $this->generateField($this->config, $class, $class->resource(), $typeConfig, $property);
                 }
             }
 
@@ -94,11 +99,9 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
                 if ($remainingProperty['exclude']) {
                     continue;
                 }
-                $class = $this->generateCustomField($key, $class->resource(), $typeConfig, $class, $this->config);
+                $this->generateCustomField($key, $class->resource(), $typeConfig, $class, $this->config);
             }
         }
-
-        return $class;
     }
 
     /**
@@ -107,13 +110,13 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
      * @param ?TypeConfiguration $typeConfig
      * @param Configuration      $config
      */
-    private function generateCustomField(string $propertyName, RdfResource $type, ?array $typeConfig, Class_ $class, array $config): Class_
+    private function generateCustomField(string $propertyName, RdfResource $type, ?array $typeConfig, SchemaClass $class, array $config): void
     {
-        $this->logger->info(sprintf('The property "%s" (type "%s") is a custom property.', $propertyName, $type->getUri()));
+        $this->logger ? $this->logger->info(sprintf('The property "%s" (type "%s") is a custom property.', $propertyName, $type->getUri())) : null;
         $customResource = new RdfResource('_:'.$propertyName, new RdfGraph());
         $customResource->add('rdfs:range', $type);
 
-        return $this->generateField($config, $class, $type, $typeConfig, $customResource, true);
+        $this->generateField($config, $class, $type, $typeConfig, $customResource, true);
     }
 
     /**
@@ -122,9 +125,11 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
      * @param Configuration      $config
      * @param ?TypeConfiguration $typeConfig
      */
-    private function generateField(array $config, Class_ $class, RdfResource $type, ?array $typeConfig, RdfResource $property, bool $isCustom = false): Class_
+    private function generateField(array $config, SchemaClass $class, RdfResource $type, ?array $typeConfig, RdfResource $typeProperty, bool $isCustom = false): void
     {
-        return ($this->propertyGenerator)($config, $class, $type, $typeConfig, $property, $isCustom);
+        $property = ($this->propertyGenerator)($typeProperty->localName(), $config, $class, ['type' => $type, 'typeConfig' => $typeConfig, 'property' => $typeProperty], $isCustom);
+
+        $class->addProperty($property);
     }
 
     /**
