@@ -227,7 +227,9 @@ final class ClassGenerator
         foreach ($schema->properties as $propertyName => $schemaProperty) {
             \assert($schemaProperty instanceof Schema);
             $property = ($this->propertyGenerator)($propertyName, $config, $class, ['schema' => $schema, 'property' => $schemaProperty]);
-            $class->addProperty($property);
+            if ($property) {
+                $class->addProperty($property);
+            }
         }
 
         if ($config['doctrine']['useCollection']) {

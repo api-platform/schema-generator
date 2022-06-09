@@ -129,7 +129,9 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
     {
         $property = ($this->propertyGenerator)($typeProperty->localName(), $config, $class, ['type' => $type, 'typeConfig' => $typeConfig, 'property' => $typeProperty], $isCustom);
 
-        $class->addProperty($property);
+        if ($property) {
+            $class->addProperty($property);
+        }
     }
 
     /**
