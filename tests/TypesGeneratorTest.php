@@ -224,6 +224,8 @@ PHP, $thing);
         $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/CompetencyWorldEntity', 'rdf:type', 'rdfs:Class');
         $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/CompetencyWorldEntity', 'rdfs:subClassOf', 'https://schema.org/Thing');
 
+        $nodeGraph->addResource('_:b0_n0', 'rdf:type', 'rdfs:Class');
+
         $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/hasAppellation', 'rdf:type', 'rdf:Property');
         $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/hasAppellation', 'schema:domainIncludes', 'https://gitlab.com/mmorg/nodefr-2/CompetencyWorldEntity');
         $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/hasAppellation', 'schema:rangeIncludes', 'https://schema.org/Text');
