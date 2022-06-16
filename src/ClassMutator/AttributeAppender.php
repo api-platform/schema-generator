@@ -34,7 +34,10 @@ final class AttributeAppender implements ClassMutatorInterface
         $this->classes = $classes;
     }
 
-    public function __invoke(Class_ $class): void
+    /**
+     * @param array{} $context
+     */
+    public function __invoke(Class_ $class, array $context): void
     {
         $this->generateClassUses($class);
         $this->generateClassAttributes($class);

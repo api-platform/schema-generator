@@ -23,34 +23,56 @@ use ApiPlatform\SchemaGenerator\TypesGenerator;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\RdfNamespace;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\String\Inflector\EnglishInflector;
 use Twig\Environment;
 
 /**
  * @author Teoh Han Hui <teohhanhui@gmail.com>
+ *
+ * @phpstan-type Config array{
+ *     vocabularies?: array{uri: string, format: ?string, allTypes?: boolean}[],
+ *     annotationGenerators: string[],
+ *     attributeGenerators: string[],
+ *     types?: array<string, array{
+ *         allProperties?: boolean,
+ *         properties?: ?array<string, ?array{
+ *             cardinality: string,
+ *             range: string
+ *         }>,
+ *         parent?: ?string
+ *     }>,
+ *     allTypes?: boolean,
+ *     resolveTypes?: boolean
+ * }
  */
 class TypesGeneratorTest extends TestCase
 {
     use ProphecyTrait;
 
+    private string $outputDir = 'build/type-generator-test';
+    private TypesGenerator $typesGenerator;
+    private FilesGenerator $filesGenerator;
+
     protected function setUp(): void
     {
         RdfNamespace::set('schema', 'https://schema.org/');
-    }
 
-    public function testGenerate(): void
-    {
         $twigProphecy = $this->prophesize(Environment::class);
         $twig = $twigProphecy->reveal();
 
         $cardinalitiesExtractorProphecy = $this->prophesize(CardinalitiesExtractor::class);
         $cardinalities = $this->getCardinalities();
-        $cardinalitiesExtractorProphecy->extract()->willReturn($cardinalities)->shouldBeCalled();
+        $cardinalitiesExtractorProphecy->extract(Argument::type('array'))->willReturn($cardinalities);
         $cardinalitiesExtractor = $cardinalitiesExtractorProphecy->reveal();
 
         $goodRelationsBridgeProphecy = $this->prophesize(GoodRelationsBridge::class);
@@ -58,30 +80,29 @@ class TypesGeneratorTest extends TestCase
 
         $inflector = new EnglishInflector();
 
-        $typesGenerator = new TypesGenerator(
+        $this->typesGenerator = new TypesGenerator(
             $inflector,
-            $this->getGraphs(),
             new PhpTypeConverter(),
             $cardinalitiesExtractor,
             $goodRelationsBridge
         );
 
-        $filesGenerator = new FilesGenerator(
+        $this->filesGenerator = new FilesGenerator(
             $inflector,
             new Printer(),
             $twig,
             new SymfonyStyle(new ArrayInput([]), new NullOutput())
         );
+    }
 
-        $outputDir = 'build/type-generator-test';
-        $configuration = new SchemaGeneratorConfiguration();
-        /** @var Configuration $processedConfiguration */
-        $processedConfiguration = (new Processor())->processConfiguration($configuration, [$this->getConfig()]);
-        $processedConfiguration['output'] = $outputDir;
-        $classes = $typesGenerator->generate($processedConfiguration);
-        $filesGenerator->generate($classes, $processedConfiguration);
+    public function testGenerate(): void
+    {
+        $this->generateForConfiguration($this->getConfig(), $this->getGraphs());
 
-        $article = file_get_contents("$outputDir/App/Entity/Article.php");
+        $finder = new Finder();
+        self::assertSame(6, $finder->files()->in($this->outputDir)->count());
+
+        $article = file_get_contents("$this->outputDir/App/Entity/Article.php");
         $this->assertStringContainsString('abstract class Article extends CreativeWork', $article);
         $this->assertStringContainsString('private ?string $articleBody = null;', $article);
         $this->assertStringContainsString('private array $articleSection = [];', $article);
@@ -90,19 +111,19 @@ class TypesGeneratorTest extends TestCase
         $this->assertStringContainsString('public function addArticleSection(string $articleSection): void', $article);
         $this->assertStringContainsString('public function removeArticleSection(string $articleSection): void', $article);
 
-        $creativeWork = file_get_contents("$outputDir/App/Entity/CreativeWork.php");
+        $creativeWork = file_get_contents("$this->outputDir/App/Entity/CreativeWork.php");
         $this->assertStringContainsString('abstract class CreativeWork extends Thing', $creativeWork);
         $this->assertStringContainsString('private ?Person $author = null;', $creativeWork);
         $this->assertStringContainsString('private ?\DateTimeInterface $datePublished = null;', $creativeWork);
         $this->assertStringContainsString('private ?string $headline = null;', $creativeWork);
         $this->assertStringContainsString('private ?bool $isFamilyFriendly = null;', $creativeWork);
 
-        $blogPosting = file_get_contents("$outputDir/App/Entity/BlogPosting.php");
+        $blogPosting = file_get_contents("$this->outputDir/App/Entity/BlogPosting.php");
         $this->assertStringContainsString('class BlogPosting extends SocialMediaPosting', $blogPosting);
         $this->assertStringContainsString('private ?int $id = null;', $blogPosting);
         $this->assertStringContainsString('public function getId(): ?int', $blogPosting);
 
-        $socialMediaPosting = file_get_contents("$outputDir/App/Entity/SocialMediaPosting.php");
+        $socialMediaPosting = file_get_contents("$this->outputDir/App/Entity/SocialMediaPosting.php");
         $this->assertStringContainsString('abstract class SocialMediaPosting extends Article', $socialMediaPosting);
         $this->assertStringContainsString('private ?CreativeWork $sharedContent = null;', $socialMediaPosting);
         $this->assertStringContainsString(<<<'PHP'
@@ -119,12 +140,12 @@ PHP, $socialMediaPosting);
     }
 PHP, $socialMediaPosting);
 
-        $person = file_get_contents("$outputDir/App/Entity/Person.php");
+        $person = file_get_contents("$this->outputDir/App/Entity/Person.php");
         $this->assertStringContainsString('class Person extends Thing', $person);
         $this->assertStringContainsString('private ?int $id = null;', $person);
         $this->assertStringContainsString('public function getId(): ?int', $person);
 
-        $thing = file_get_contents("$outputDir/App/Entity/Thing.php");
+        $thing = file_get_contents("$this->outputDir/App/Entity/Thing.php");
         $this->assertStringContainsString(<<<'PHP'
 abstract class Thing
 {
@@ -143,12 +164,71 @@ abstract class Thing
 PHP, $thing);
     }
 
+    public function testGenerateAllResolveTypes(): void
+    {
+        $this->generateForConfiguration($this->getAllResolveTypesConfig(), $this->getGraphs());
+
+        $finder = new Finder();
+        self::assertSame(2, $finder->files()->in($this->outputDir)->count());
+    }
+
+    public function testGenerateVocabAllTypes(): void
+    {
+        $this->generateForConfiguration($this->getVocabAllTypesConfig(), $this->getGraphs());
+
+        $finder = new Finder();
+        self::assertSame(2, $finder->files()->in($this->outputDir)->count());
+    }
+
+    public function testGenerateMissingParent(): void
+    {
+        $loggerProphecy = $this->prophesize(LoggerInterface::class);
+        $loggerProphecy->error('The type "CreativeWork" (parent of "https://schema.org/Article") doesn\'t exist')->shouldBeCalled();
+        $this->typesGenerator->setLogger($loggerProphecy->reveal());
+
+        $this->generateForConfiguration($this->getMissingParentConfig(), $this->getGraphs());
+
+        $finder = new Finder();
+        self::assertSame(1, $finder->files()->in($this->outputDir)->count());
+
+        $this->typesGenerator->setLogger(new NullLogger());
+    }
+
+    /**
+     * @param Config $config
+     */
+    private function generateForConfiguration(array $config, array $graphs): void
+    {
+        $finder = new Finder();
+
+        $filesystem = new Filesystem();
+        if ($filesystem->exists($this->outputDir)) {
+            $filesystem->remove($finder->files()->in($this->outputDir));
+        }
+
+        $configuration = new SchemaGeneratorConfiguration();
+        /** @var Configuration $processedConfiguration */
+        $processedConfiguration = (new Processor())->processConfiguration($configuration, [$config]);
+        $processedConfiguration['output'] = $this->outputDir;
+        $classes = $this->typesGenerator->generate($graphs, $processedConfiguration);
+        $this->filesGenerator->generate($classes, $processedConfiguration);
+    }
+
     /**
      * @return RdfGraph[]
      */
     private function getGraphs(): array
     {
-        $graph = new RdfGraph();
+        $nodeGraph = new RdfGraph('nodefr-2.jsonld');
+
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/CompetencyWorldEntity', 'rdf:type', 'rdfs:Class');
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/CompetencyWorldEntity', 'rdfs:subClassOf', 'https://schema.org/Thing');
+
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/hasAppellation', 'rdf:type', 'rdf:Property');
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/hasAppellation', 'schema:domainIncludes', 'https://gitlab.com/mmorg/nodefr-2/CompetencyWorldEntity');
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/hasAppellation', 'schema:rangeIncludes', 'https://schema.org/Text');
+
+        $graph = new RdfGraph(SchemaGeneratorConfiguration::SCHEMA_ORG_URI);
 
         $graph->addResource('https://schema.org/Article', 'rdf:type', 'rdfs:Class');
         $graph->addResource('https://schema.org/Article', 'rdfs:subClassOf', 'https://schema.org/CreativeWork');
@@ -199,7 +279,7 @@ PHP, $thing);
         $graph->addResource('https://schema.org/sharedContent', 'schema:domainIncludes', 'https://schema.org/SocialMediaPosting');
         $graph->addResource('https://schema.org/sharedContent', 'schema:rangeIncludes', 'https://schema.org/CreativeWork');
 
-        return [$graph];
+        return [$nodeGraph, $graph];
     }
 
     /**
@@ -220,17 +300,7 @@ PHP, $thing);
     }
 
     /**
-     * @return array{
-     *     annotationGenerators: string[],
-     *     attributeGenerators: string[],
-     *     types: array<string, array{
-     *         allProperties?: boolean,
-     *         properties?: ?array<string, array{
-     *             cardinality: string,
-     *             range: string
-     *         }>
-     *     }>
-     * }
+     * @return Config
      */
     private function getConfig(): array
     {
@@ -275,6 +345,71 @@ PHP, $thing);
                 'Thing' => [
                     'parent' => null,
                     'allProperties' => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @return Config
+     */
+    private function getMissingParentConfig(): array
+    {
+        return [
+            'annotationGenerators' => [
+            ],
+            'attributeGenerators' => [
+            ],
+            'types' => [
+                'Article' => [
+                    'parent' => null,
+                    'properties' => [
+                        'articleBody' => null,
+                        'articleSection' => null,
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @return Config
+     */
+    private function getAllResolveTypesConfig(): array
+    {
+        return [
+            'vocabularies' => [
+                ['uri' => SchemaGeneratorConfiguration::SCHEMA_ORG_URI, 'format' => null, 'allTypes' => false],
+                ['uri' => 'nodefr-2.jsonld', 'format' => 'jsonld'],
+            ],
+            'annotationGenerators' => [
+            ],
+            'attributeGenerators' => [
+            ],
+            'allTypes' => true,
+            'resolveTypes' => true,
+        ];
+    }
+
+    /**
+     * @return Config
+     */
+    private function getVocabAllTypesConfig(): array
+    {
+        return [
+            'vocabularies' => [
+                ['uri' => SchemaGeneratorConfiguration::SCHEMA_ORG_URI, 'format' => null, 'allTypes' => false],
+                ['uri' => 'nodefr-2.jsonld', 'format' => 'jsonld', 'allTypes' => true],
+            ],
+            'annotationGenerators' => [
+            ],
+            'attributeGenerators' => [
+            ],
+            'types' => [
+                'BlogPosting' => [
+                    'parent' => null,
+                    'allProperties' => true,
+                    'properties' => null,
                 ],
             ],
         ];

@@ -59,7 +59,8 @@
         "symfony/serializer": "^5.2 || ^6.0",
         "symfony/validator": "^5.2 || ^6.0",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpstan/phpstan": "^1.2.0"
+        "phpstan/phpstan": "^1.2.0",
+        "symfony/finder": "^5.2 || ^6.0"
     },
     "bin": [
         "bin/schema"

@@ -39,7 +39,10 @@ final class AnnotationsAppender implements ClassMutatorInterface
         $this->typesToGenerate = $typesToGenerate;
     }
 
-    public function __invoke(Class_ $class): void
+    /**
+     * @param array{} $context
+     */
+    public function __invoke(Class_ $class, array $context): void
     {
         $this->generateClassUses($class);
         $this->generateClassAnnotations($class);

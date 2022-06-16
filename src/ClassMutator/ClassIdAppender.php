@@ -31,7 +31,10 @@ final class ClassIdAppender implements ClassMutatorInterface
         $this->config = $config;
     }
 
-    public function __invoke(Class_ $class): void
+    /**
+     * @param array{} $context
+     */
+    public function __invoke(Class_ $class, array $context): void
     {
         if (
             $class->isEnum()

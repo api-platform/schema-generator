@@ -41,7 +41,7 @@ parameters:
         '''
         Configuration: '''
             array{
-                 vocabularies: array{uri: string, format: string}[],
+                 vocabularies: array{uri: string, format: string, allTypes: ?boolean}[],
                  vocabularyNamespace: string,
                  relations: string[],
                  debug: boolean,
@@ -58,6 +58,7 @@ parameters:
                  fluentMutatorMethods: boolean,
                  rangeMapping: array<string, string>,
                  allTypes: boolean,
+                 resolveTypes: boolean,
                  types: array<string, TypeConfiguration>,
                  annotationGenerators: class-string<ApiPlatform\SchemaGenerator\AnnotationGenerator\AnnotationGeneratorInterface>[],
                  attributeGenerators: class-string<ApiPlatform\SchemaGenerator\AttributeGenerator\AttributeGeneratorInterface>[],

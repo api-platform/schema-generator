@@ -43,6 +43,9 @@ config:
             # RDF vocabulary format
             format:               null # Example: rdfxml
 
+            # Generate all types for this vocabulary, even if an explicit configuration exists. If allTypes is enabled globally, it can be disabled for this particular vocabulary
+            allTypes:             null
+
     # Namespace of the vocabulary to import
     vocabularyNamespace:  'https://schema.org/' # Example: 'http://www.w3.org/ns/activitystreams#'
 
@@ -133,6 +136,9 @@ config:
 
     # Generate all types, even if an explicit configuration exists
     allTypes:             false
+
+    # If a type is present in a vocabulary but not explicitly imported (types) or if the vocabulary is not totally imported (allTypes), it will be generated
+    resolveTypes:         false
 
     # Types to import from the vocabulary
     types:

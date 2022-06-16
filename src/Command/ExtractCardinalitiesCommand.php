@@ -64,8 +64,8 @@ final class ExtractCardinalitiesCommand extends Command
         $cardinality = [new \SimpleXMLElement($input->getOption('cardinality-file'), 0, true)];
 
         $goodRelationsBridge = new GoodRelationsBridge($cardinality);
-        $cardinalitiesExtractor = new CardinalitiesExtractor($relations, $goodRelationsBridge);
-        $result = $cardinalitiesExtractor->extract();
+        $cardinalitiesExtractor = new CardinalitiesExtractor($goodRelationsBridge);
+        $result = $cardinalitiesExtractor->extract($relations);
 
         $output->writeln(json_encode($result, \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT));
 

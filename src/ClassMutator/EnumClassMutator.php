@@ -29,7 +29,10 @@ abstract class EnumClassMutator implements ClassMutatorInterface
         $this->desiredNamespace = $desiredNamespace;
     }
 
-    public function __invoke(Class_ $class): void
+    /**
+     * @param array{} $context
+     */
+    public function __invoke(Class_ $class, array $context): void
     {
         $class->namespace = $this->desiredNamespace;
         $class
