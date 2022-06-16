@@ -142,11 +142,11 @@ final class ClassGenerator
         // Second pass
         foreach ($classes as $class) {
             if ($config['useInterface']) {
-                (new ClassInterfaceMutator($config['namespaces']['interface']))($class);
+                (new ClassInterfaceMutator($config['namespaces']['interface']))($class, []);
             }
 
             if ($config['id']['generate']) {
-                (new ClassIdAppender(new IdPropertyGenerator(), $config))($class);
+                (new ClassIdAppender(new IdPropertyGenerator(), $config))($class, []);
             }
 
             // Try to guess the references from the property names.
@@ -163,7 +163,7 @@ final class ClassGenerator
 
         // Third pass
         foreach ($classes as $class) {
-            (new ClassPropertiesTypehintMutator($this->phpTypeConverter, $config, $classes))($class);
+            (new ClassPropertiesTypehintMutator($this->phpTypeConverter, $config, $classes))($class, []);
 
             // Try to guess the mapped by from the references
             foreach ($class->properties() as $property) {
@@ -201,8 +201,8 @@ final class ClassGenerator
         }
 
         foreach ($classes as $class) {
-            (new AnnotationsAppender($classes, $annotationGenerators, []))($class);
-            (new AttributeAppender($classes, $attributeGenerators))($class);
+            (new AnnotationsAppender($classes, $annotationGenerators, []))($class, []);
+            (new AttributeAppender($classes, $attributeGenerators))($class, []);
         }
 
         return $classes;
@@ -259,7 +259,7 @@ final class ClassGenerator
                     $this->phpTypeConverter,
                     $config['namespaces']['enum'],
                     $schemaProperty->enum
-                ))($enumClass);
+                ))($enumClass, []);
                 $enumClasses[$name] = $enumClass;
 
                 if ($classProperty = $class->getPropertyByName($propertyName)) {

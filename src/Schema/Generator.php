@@ -35,7 +35,7 @@ final class Generator
     {
         $graphs = [];
         foreach ($configuration['vocabularies'] as $vocab) {
-            $graph = new RdfGraph();
+            $graph = new RdfGraph($vocab['uri']);
             if (0 === strpos($vocab['uri'], 'http://') || 0 === strpos($vocab['uri'], 'https://')) {
                 $graph->load($vocab['uri'], $vocab['format']);
             } else {
@@ -51,7 +51,7 @@ final class Generator
         }
 
         $goodRelationsBridge = new GoodRelationsBridge($relations);
-        $cardinalitiesExtractor = new CardinalitiesExtractor($graphs, $goodRelationsBridge);
+        $cardinalitiesExtractor = new CardinalitiesExtractor($goodRelationsBridge);
 
         $inflector = new EnglishInflector();
 
@@ -59,14 +59,13 @@ final class Generator
 
         $entitiesGenerator = new TypesGenerator(
             $inflector,
-            $graphs,
             new PhpTypeConverter(),
             $cardinalitiesExtractor,
             $goodRelationsBridge
         );
         $entitiesGenerator->setLogger($logger);
 
-        $classes = $entitiesGenerator->generate($configuration);
+        $classes = $entitiesGenerator->generate($graphs, $configuration);
 
         $twig = (new TwigBuilder())->build($configuration);
 

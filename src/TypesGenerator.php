@@ -79,28 +79,17 @@ class TypesGenerator
       'rdfs:domain',
     ];
 
-    /** @var RdfGraph[] */
-    private array $graphs;
     private PhpTypeConverterInterface $phpTypeConverter;
-    /** @var array<string, string> */
-    private array $cardinalities;
     private InflectorInterface $inflector;
+    private CardinalitiesExtractor $cardinalitiesExtractor;
     private PropertyGeneratorInterface $propertyGenerator;
 
-    /**
-     * @param RdfGraph[] $graphs
-     */
-    public function __construct(InflectorInterface $inflector, array $graphs, PhpTypeConverterInterface $phpTypeConverter, CardinalitiesExtractor $cardinalitiesExtractor, GoodRelationsBridge $goodRelationsBridge)
+    public function __construct(InflectorInterface $inflector, PhpTypeConverterInterface $phpTypeConverter, CardinalitiesExtractor $cardinalitiesExtractor, GoodRelationsBridge $goodRelationsBridge)
     {
-        if (!$graphs) {
-            throw new \InvalidArgumentException('At least one graph must be injected.');
-        }
-
         $this->inflector = $inflector;
-        $this->graphs = $graphs;
         $this->phpTypeConverter = $phpTypeConverter;
-        $this->cardinalities = $cardinalitiesExtractor->extract();
-        $this->propertyGenerator = new PropertyGenerator($goodRelationsBridge, new TypeConverter(), $phpTypeConverter, $this->cardinalities);
+        $this->cardinalitiesExtractor = $cardinalitiesExtractor;
+        $this->propertyGenerator = new PropertyGenerator($goodRelationsBridge, new TypeConverter(), $phpTypeConverter);
 
         RdfNamespace::set('schema', 'https://schema.org/');
     }
@@ -108,85 +97,53 @@ class TypesGenerator
     /**
      * Generates files.
      *
+     * @param RdfGraph[]    $graphs
      * @param Configuration $config
      *
      * @return Class_[]
      */
-    public function generate(array $config): array
+    public function generate(array $graphs, array $config): array
     {
-        $typesToGenerate = $this->defineTypesToGenerate($config);
+        if (!$graphs) {
+            throw new \InvalidArgumentException('At least one graph must be injected.');
+        }
+
+        [$typeNamesToGenerate, $types] = $this->defineTypesToGenerate($graphs, $config);
 
         $classes = [];
-        $propertiesMap = $this->createPropertiesMap($typesToGenerate, $config);
+        $propertiesMap = $this->createPropertiesMap($graphs, $types, $config);
+        $cardinalities = $this->cardinalitiesExtractor->extract($graphs);
 
-        foreach ($typesToGenerate as $typeName => $type) {
-            if ($type->isBNode()) {
-                // Ignore blank nodes
-                continue;
+        foreach ($types as $typeName => $type) {
+            if ($class = $this->buildClass($graphs, $cardinalities, $typeName, $type, $propertiesMap, $config)) {
+                $classes[$typeName] = $class;
             }
-
-            $typeName = $this->phpTypeConverter->escapeIdentifier(\is_string($typeName) ? $typeName : $type->localName());
-            if ($type->isA('owl:DeprecatedClass')) {
-                if (!isset($config['types'][$typeName])) {
-                    continue;
-                }
-
-                $this->logger ? $this->logger->warning('The type "{type}" is deprecated', ['type' => $type->getUri()]) : null;
-            }
-
-            $typeConfig = $config['types'][$typeName] ?? null;
-            $parent = $typeConfig['parent'] ?? null;
-            $class = new SchemaClass($typeName, $type, $parent);
-            $class->operations = $typeConfig['operations'] ?? [];
-            $class->security = $typeConfig['security'] ?? null;
-
-            if ($class->isEnum()) {
-                (new SchemaEnumClassMutator(
-                    $this->phpTypeConverter,
-                    $this->graphs,
-                    $config['namespaces']['enum']
-                ))($class);
-            } else {
-                $class->namespace = $typeConfig['namespaces']['class'] ?? $config['namespaces']['entity'];
-
-                // Interfaces
-                if ($config['useInterface']) {
-                    $interfaceNamespace = isset($typeConfig['namespaces']['interface']) && $typeConfig['namespaces']['interface'] ? $typeConfig['namespaces']['interface'] : $config['namespaces']['interface'];
-                    (new ClassInterfaceMutator($interfaceNamespace))($class);
-                }
-
-                $classParentMutator = new ClassParentMutator($config, $this->phpTypeConverter);
-                if ($this->logger) {
-                    $classParentMutator->setLogger($this->logger);
-                }
-                ($classParentMutator)($class);
-            }
-
-            $classPropertiesAppender = new ClassPropertiesAppender($this->propertyGenerator, $config, $propertiesMap, $this->graphs);
-            if ($this->logger) {
-                $classPropertiesAppender->setLogger($this->logger);
-            }
-            ($classPropertiesAppender)($class);
-            $class->isEmbeddable = $typeConfig['embeddable'] ?? false;
-
-            if ($config['doctrine']['useCollection']) {
-                $class->addUse(new Use_(ArrayCollection::class));
-                $class->addUse(new Use_(Collection::class));
-            }
-
-            $classes[$typeName] = $class;
         }
+
+        foreach ($typeNamesToGenerate as $typeNameToGenerate) {
+            $class = $classes[$typeNameToGenerate];
+            while (($parent = $class->parent()) && !$class->isParentEnum()) {
+                if (!isset($classes[$parent])) {
+                    $this->logger ? $this->logger->error(sprintf('The type "%s" (parent of "%s") doesn\'t exist', $parent, $class->rdfType())) : null;
+                    break;
+                }
+                if (!\in_array($parent, $typeNamesToGenerate, true)) {
+                    $typeNamesToGenerate[] = $parent;
+                }
+                $class = $classes[$parent];
+            }
+        }
+        $classes = array_intersect_key($classes, array_flip($typeNamesToGenerate));
+        $types = array_intersect_key($types, array_flip($typeNamesToGenerate));
 
         // Second pass
         foreach ($classes as $class) {
             /** @var $class SchemaClass */
             if ($class->hasParent() && !$class->isParentEnum()) {
                 $parentClass = $classes[$class->parent()] ?? null;
-                if (isset($parentClass)) {
+                if ($parentClass) {
                     $parentClass->hasChild = true;
                     $class->parentHasConstructor = $parentClass->hasConstructor;
-                } else {
-                    $this->logger ? $this->logger->error(sprintf('The type "%s" (parent of "%s") doesn\'t exist', $class->parent(), $class->rdfType())) : null;
                 }
             }
 
@@ -200,7 +157,7 @@ class TypesGenerator
                 }
             }
 
-            (new ClassPropertiesTypehintMutator($this->phpTypeConverter, $config, $classes))($class);
+            (new ClassPropertiesTypehintMutator($this->phpTypeConverter, $config, $classes))($class, []);
         }
 
         // Third pass
@@ -237,7 +194,7 @@ class TypesGenerator
         // Generate ID
         if ($config['id']['generate']) {
             foreach ($classes as $class) {
-                (new ClassIdAppender(new IdPropertyGenerator(), $config))($class);
+                (new ClassIdAppender(new IdPropertyGenerator(), $config))($class, []);
             }
         }
 
@@ -264,24 +221,89 @@ class TypesGenerator
         }
 
         foreach ($classes as $class) {
-            (new AnnotationsAppender($classes, $annotationGenerators, $typesToGenerate))($class);
-            (new AttributeAppender($classes, $attributeGenerators))($class);
+            (new AnnotationsAppender($classes, $annotationGenerators, $types))($class, []);
+            (new AttributeAppender($classes, $attributeGenerators))($class, []);
         }
 
         return $classes;
     }
 
     /**
+     * @param RdfGraph[]                   $graphs
+     * @param array<string, string>        $cardinalities
+     * @param array<string, RdfResource[]> $propertiesMap
+     * @param Configuration                $config
+     */
+    private function buildClass(array $graphs, array $cardinalities, string $typeName, RdfResource $type, array $propertiesMap, array $config): ?SchemaClass
+    {
+        if ($type->isBNode()) {
+            // Ignore blank nodes
+            return null;
+        }
+
+        if ($type->isA('owl:DeprecatedClass')) {
+            if (!isset($config['types'][$typeName])) {
+                return null;
+            }
+
+            $this->logger ? $this->logger->warning('The type "{type}" is deprecated', ['type' => $type->getUri()]) : null;
+        }
+
+        $typeConfig = $config['types'][$typeName] ?? null;
+        $parent = $typeConfig['parent'] ?? null;
+        $class = new SchemaClass($typeName, $type, $parent);
+        $class->operations = $typeConfig['operations'] ?? [];
+        $class->security = $typeConfig['security'] ?? null;
+
+        if ($class->isEnum()) {
+            (new SchemaEnumClassMutator(
+                $this->phpTypeConverter,
+                $graphs,
+                $config['namespaces']['enum']
+            ))($class, []);
+        } else {
+            $class->namespace = $typeConfig['namespaces']['class'] ?? $config['namespaces']['entity'];
+
+            // Interfaces
+            if ($config['useInterface']) {
+                $interfaceNamespace = isset($typeConfig['namespaces']['interface']) && $typeConfig['namespaces']['interface'] ? $typeConfig['namespaces']['interface'] : $config['namespaces']['interface'];
+                (new ClassInterfaceMutator($interfaceNamespace))($class, []);
+            }
+
+            $classParentMutator = new ClassParentMutator($config, $this->phpTypeConverter);
+            if ($this->logger) {
+                $classParentMutator->setLogger($this->logger);
+            }
+            ($classParentMutator)($class, []);
+        }
+
+        $classPropertiesAppender = new ClassPropertiesAppender($this->propertyGenerator, $config, $propertiesMap);
+        if ($this->logger) {
+            $classPropertiesAppender->setLogger($this->logger);
+        }
+        ($classPropertiesAppender)($class, ['graphs' => $graphs, 'cardinalities' => $cardinalities]);
+        $class->isEmbeddable = $typeConfig['embeddable'] ?? false;
+
+        if ($config['doctrine']['useCollection']) {
+            $class->addUse(new Use_(ArrayCollection::class));
+            $class->addUse(new Use_(Collection::class));
+        }
+
+        return $class;
+    }
+
+    /**
      * Gets the parent classes of the current one and add them to $parentClasses array.
      *
+     * @param RdfGraph[]    $graphs
      * @param RdfResource[] $parentClasses
      *
      * @return RdfResource[]
      */
-    private function getParentClasses(RdfResource $resource, array $parentClasses = []): array
+    private function getParentClasses(array $graphs, RdfResource $resource, array $parentClasses = []): array
     {
         if ([] === $parentClasses) {
-            return $this->getParentClasses($resource, [$resource]);
+            return $this->getParentClasses($graphs, $resource, [$resource]);
         }
 
         $filterBNodes = fn ($parentClasses) => array_filter($parentClasses, fn ($parentClass) => !$parentClass->isBNode());
@@ -292,11 +314,11 @@ class TypesGenerator
         $parentClassUri = $subclasses[0]->getUri();
         $parentClasses[] = $subclasses[0];
 
-        foreach ($this->graphs as $graph) {
+        foreach ($graphs as $graph) {
             foreach (self::$classTypes as $classType) {
                 foreach ($graph->allOfType($classType) as $type) {
                     if ($type->getUri() === $parentClassUri) {
-                        return $this->getParentClasses($type, $parentClasses);
+                        return $this->getParentClasses($graphs, $type, $parentClasses);
                     }
                 }
             }
@@ -308,18 +330,19 @@ class TypesGenerator
     /**
      * Creates a map between classes and properties.
      *
+     * @param RdfGraph[]    $graphs
      * @param RdfResource[] $types
      * @param Configuration $config
      *
      * @return array<string, RdfResource[]>
      */
-    private function createPropertiesMap(array $types, array $config): array
+    private function createPropertiesMap(array $graphs, array $types, array $config): array
     {
         $typesResources = [];
         $map = [];
         foreach ($types as $type) {
             // get all parent classes until the root
-            $parentClasses = $this->getParentClasses($type);
+            $parentClasses = $this->getParentClasses($graphs, $type);
             $typesResources[] = [
                 'resources' => $parentClasses,
                 'uris' => array_map(static fn (RdfResource $parentClass) => $parentClass->getUri(), $parentClasses),
@@ -328,7 +351,7 @@ class TypesGenerator
             $map[$type->getUri()] = [];
         }
 
-        foreach ($this->graphs as $graph) {
+        foreach ($graphs as $graph) {
             foreach (self::$propertyTypes as $propertyType) {
                 /** @var RdfResource $property */
                 foreach ($graph->allOfType($propertyType) as $property) {
@@ -401,51 +424,72 @@ class TypesGenerator
     }
 
     /**
+     * @param RdfGraph[]    $graphs
      * @param Configuration $config
      *
-     * @return RdfResource[]
+     * @return array{0: string[], 1: array<string, RdfResource>}
      */
-    private function defineTypesToGenerate(array $config): array
+    private function defineTypesToGenerate(array $graphs, array $config): array
     {
-        $typesToGenerate = [];
-        if ($config['allTypes']) {
-            foreach ($this->graphs as $graph) {
-                foreach (self::$classTypes as $classType) {
-                    foreach ($graph->allOfType($classType) as $type) {
-                        if (!($config['types'][$this->phpTypeConverter->escapeIdentifier($type->localName())]['exclude'] ?? false)) {
-                            $typesToGenerate[] = $type;
-                        }
-                    }
+        $typeNamesToGenerate = [];
+        $allTypes = [];
+
+        foreach ($graphs as $graph) {
+            $vocabAllTypes = $config['allTypes'];
+            foreach ($config['vocabularies'] as $vocab) {
+                if ($graph->getUri() !== $vocab['uri']) {
+                    continue;
                 }
+                $vocabAllTypes = $vocab['allTypes'] ?? $vocabAllTypes;
             }
-        } else {
-            foreach ($config['types'] as $typeName => $typeConfig) {
-                $vocabularyNamespace = $typeConfig['vocabularyNamespace'] ?? $config['vocabularyNamespace'];
-
-                $resource = null;
-                foreach ($this->graphs as $graph) {
-                    $resources = $graph->resources();
-
-                    $typeIri = $vocabularyNamespace.$typeName;
-                    if (isset($resources[$typeIri])) {
-                        $resource = $graph->resource($typeIri);
-                        break;
-                    }
-                }
-
-                if ($resource) {
-                    $typesToGenerate[$typeName] = $resource;
-                } else {
-                    $this->logger ? $this->logger->warning('Type "{typeName}" cannot be found. Using "{guessFrom}" type to generate entity.', ['typeName' => $typeName, 'guessFrom' => $typeConfig['guessFrom']]) : null;
-                    if (isset($graph)) {
-                        $type = $graph->resource($vocabularyNamespace.$typeConfig['guessFrom']);
-                        $typesToGenerate[$typeName] = $type;
+            foreach (self::$classTypes as $classType) {
+                foreach ($graph->allOfType($classType) as $type) {
+                    $typeName = $this->phpTypeConverter->escapeIdentifier($type->localName());
+                    if (!($config['types'][$typeName]['exclude'] ?? false)) {
+                        if ($config['resolveTypes'] || $vocabAllTypes) {
+                            $allTypes[$typeName] = $type;
+                        }
+                        if ($vocabAllTypes) {
+                            $typeNamesToGenerate[] = $typeName;
+                        }
                     }
                 }
             }
         }
 
-        return $typesToGenerate;
+        foreach ($config['types'] as $typeName => $typeConfig) {
+            $vocabularyNamespace = $typeConfig['vocabularyNamespace'] ?? $config['vocabularyNamespace'];
+
+            $resource = null;
+            foreach ($graphs as $graph) {
+                $resources = $graph->resources();
+
+                $typeIri = $vocabularyNamespace.$typeName;
+                if (isset($resources[$typeIri])) {
+                    $resource = $graph->resource($typeIri);
+                    break;
+                }
+            }
+
+            $typeName = $this->phpTypeConverter->escapeIdentifier($typeName);
+            if ($resource) {
+                $allTypes[$typeName] = $resource;
+                if (!\in_array($typeName, $typeNamesToGenerate, true)) {
+                    $typeNamesToGenerate[] = $typeName;
+                }
+            } else {
+                $this->logger ? $this->logger->warning('Type "{typeName}" cannot be found. Using "{guessFrom}" type to generate entity.', ['typeName' => $typeName, 'guessFrom' => $typeConfig['guessFrom']]) : null;
+                if (isset($graph)) {
+                    $type = $graph->resource($vocabularyNamespace.$typeConfig['guessFrom']);
+                    $allTypes[$typeName] = $type;
+                    if (!\in_array($typeName, $typeNamesToGenerate, true)) {
+                        $typeNamesToGenerate[] = $typeName;
+                    }
+                }
+            }
+        }
+
+        return [$typeNamesToGenerate, $allTypes];
     }
 
     public function setLogger(LoggerInterface $logger): void

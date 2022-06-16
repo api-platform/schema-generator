@@ -35,7 +35,10 @@ final class ClassPropertiesTypehintMutator implements ClassMutatorInterface
         $this->config = $config;
     }
 
-    public function __invoke(Class_ $class): void
+    /**
+     * @param array{} $context
+     */
+    public function __invoke(Class_ $class, array $context): void
     {
         foreach ($class->properties() as $property) {
             $property->isEnum = $property->isEnum ?: $property->reference && $property->reference->isEnum();

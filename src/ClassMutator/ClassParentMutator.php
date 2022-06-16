@@ -36,7 +36,10 @@ final class ClassParentMutator implements ClassMutatorInterface
         $this->config = $config;
     }
 
-    public function __invoke(Class_ $class): void
+    /**
+     * @param array{} $context
+     */
+    public function __invoke(Class_ $class, array $context): void
     {
         if (!$class instanceof SchemaClass) {
             return;
@@ -47,7 +50,7 @@ final class ClassParentMutator implements ClassMutatorInterface
 
         if (null === $class->parent() && $subclassOf = $class->getSubClassOf()) {
             if (\count($subclassOf) > 1) {
-                $this->logger ? $this->logger->warning(sprintf('The type "%s" has several supertypes. Using the first one.', $class->rdfType())) : null;
+                $this->logger ? $this->logger->info(sprintf('The type "%s" has several supertypes. Using the first one.', $class->rdfType())) : null;
             }
 
             $class->withParent($this->phpTypeConverter->escapeIdentifier($subclassOf[0]->localName()));

@@ -42,7 +42,7 @@ class ClassPropertiesAppenderTest extends TestCase
     {
         $this->loggerProphecy = $this->prophesize(LoggerInterface::class);
 
-        $propertyGenerator = new SchemaPropertyGenerator(new GoodRelationsBridge([]), new TypeConverter(), new PhpTypeConverter(), []);
+        $propertyGenerator = new SchemaPropertyGenerator(new GoodRelationsBridge([]), new TypeConverter(), new PhpTypeConverter());
 
         $configuration = new SchemaGeneratorConfiguration();
         $processedConfiguration = (new Processor())->processConfiguration($configuration, [[
@@ -67,7 +67,7 @@ class ClassPropertiesAppenderTest extends TestCase
             'https://schema.org/Person' => [new RdfResource('https://schema.org/givenName', $this->graph)],
         ];
 
-        $this->classPropertiesAppender = new ClassPropertiesAppender($propertyGenerator, $processedConfiguration, $propertiesMap, []);
+        $this->classPropertiesAppender = new ClassPropertiesAppender($propertyGenerator, $processedConfiguration, $propertiesMap);
         $this->classPropertiesAppender->setLogger($this->loggerProphecy->reveal());
     }
 
@@ -85,7 +85,7 @@ class ClassPropertiesAppenderTest extends TestCase
             $this->loggerProphecy->warning($loggerMessage)->shouldBeCalled();
         }
 
-        ($this->classPropertiesAppender)($class);
+        ($this->classPropertiesAppender)($class, ['graphs' => [], 'cardinalities' => []]);
 
         $this->assertEquals($expectedClass, $class);
     }

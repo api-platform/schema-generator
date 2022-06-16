@@ -32,31 +32,25 @@ class CardinalitiesExtractor
     public const CARDINALITY_N_N = '(*..*)';
     public const CARDINALITY_UNKNOWN = 'unknown';
 
-    /**
-     * @var RdfGraph[]
-     */
-    private array $graphs;
     private GoodRelationsBridge $goodRelationsBridge;
 
-    /**
-     * @param RdfGraph[] $graphs
-     */
-    public function __construct(array $graphs, GoodRelationsBridge $goodRelationsBridge)
+    public function __construct(GoodRelationsBridge $goodRelationsBridge)
     {
-        $this->graphs = $graphs;
         $this->goodRelationsBridge = $goodRelationsBridge;
     }
 
     /**
      * Extracts cardinality of properties.
      *
+     * @param RdfGraph[] $graphs
+     *
      * @return array<string, string>
      */
-    public function extract(): array
+    public function extract(array $graphs): array
     {
         $properties = [];
 
-        foreach ($this->graphs as $graph) {
+        foreach ($graphs as $graph) {
             foreach (TypesGenerator::$propertyTypes as $propertyType) {
                 /** @var RdfResource $property */
                 foreach ($graph->allOfType($propertyType) as $property) {

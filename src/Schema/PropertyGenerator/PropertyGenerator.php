@@ -37,20 +37,14 @@ final class PropertyGenerator implements PropertyGeneratorInterface
 
     private GoodRelationsBridge $goodRelationsBridge;
     private PhpTypeConverterInterface $phpTypeConverter;
-    /** @var array<string, string> */
-    private array $cardinalities;
     private TypeConverter $typeConverter;
     private PropertyGeneratorInterface $propertyGenerator;
 
-    /**
-     * @param array<string, string> $cardinalities
-     */
-    public function __construct(GoodRelationsBridge $goodRelationsBridge, TypeConverter $typeConverter, PhpTypeConverterInterface $phpTypeConverter, array $cardinalities, ?PropertyGeneratorInterface $propertyGenerator = null)
+    public function __construct(GoodRelationsBridge $goodRelationsBridge, TypeConverter $typeConverter, PhpTypeConverterInterface $phpTypeConverter, ?PropertyGeneratorInterface $propertyGenerator = null)
     {
         $this->goodRelationsBridge = $goodRelationsBridge;
         $this->typeConverter = $typeConverter;
         $this->phpTypeConverter = $phpTypeConverter;
-        $this->cardinalities = $cardinalities;
         $this->propertyGenerator = $propertyGenerator ?? new CommonPropertyGenerator();
     }
 
@@ -59,6 +53,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
      * @param array{
      *     type: RdfResource,
      *     typeConfig: ?TypeConfiguration,
+     *     cardinalities: array<string, string>,
      *     property: RdfResource
      * } $context
      */
@@ -66,6 +61,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
     {
         $type = $context['type'];
         $typeConfig = $context['typeConfig'];
+        $cardinalities = $context['cardinalities'];
         $typeProperty = $context['property'];
 
         $typeUri = $type->getUri();
@@ -75,7 +71,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
 
         $cardinality = $propertyConfig['cardinality'] ?? false;
         if (!$cardinality || CardinalitiesExtractor::CARDINALITY_UNKNOWN === $cardinality) {
-            $cardinality = $this->cardinalities[$propertyUri] ?? CardinalitiesExtractor::CARDINALITY_1_1;
+            $cardinality = $cardinalities[$propertyUri] ?? CardinalitiesExtractor::CARDINALITY_1_1;
         }
 
         $isArray = \in_array($cardinality, [
@@ -121,7 +117,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
         }
 
         if (\count($ranges) > 1) {
-            $this->logger ? $this->logger->warning(sprintf('The property "%s" (type "%s") has several types. Using the first one ("%s"). Other possible options: "%s".', $propertyUri, $typeUri, $ranges[0]->getUri(), implode('", "', array_map(static fn (RdfResource $range) => $range->getUri(), $ranges)))) : null;
+            $this->logger ? $this->logger->info(sprintf('The property "%s" (type "%s") has several types. Using the first one ("%s"). Other possible options: "%s".', $propertyUri, $typeUri, $ranges[0]->getUri(), implode('", "', array_map(static fn (RdfResource $range) => $range->getUri(), $ranges)))) : null;
         }
 
         $rangeName = null;
