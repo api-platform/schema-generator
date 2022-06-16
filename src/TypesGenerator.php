@@ -236,11 +236,6 @@ class TypesGenerator
      */
     private function buildClass(array $graphs, array $cardinalities, string $typeName, RdfResource $type, array $propertiesMap, array $config): ?SchemaClass
     {
-        if ($type->isBNode()) {
-            // Ignore blank nodes
-            return null;
-        }
-
         if ($type->isA('owl:DeprecatedClass')) {
             if (!isset($config['types'][$typeName])) {
                 return null;
@@ -444,6 +439,10 @@ class TypesGenerator
             }
             foreach (self::$classTypes as $classType) {
                 foreach ($graph->allOfType($classType) as $type) {
+                    if ($type->isBNode()) {
+                        continue;
+                    }
+
                     $typeName = $this->phpTypeConverter->escapeIdentifier($type->localName());
                     if (!($config['types'][$typeName]['exclude'] ?? false)) {
                         if ($config['resolveTypes'] || $vocabAllTypes) {
