@@ -424,6 +424,30 @@ PHP
         $this->assertStringNotContainsString('protected', $creativeWork);
     }
 
+    public function testActivityStreams(): void
+    {
+        $outputDir = __DIR__.'/../../build/activity-streams';
+        $config = __DIR__.'/../config/activity-streams.yaml';
+
+        $this->fs->mkdir($outputDir);
+
+        $commandTester = new CommandTester(new GenerateCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $object = file_get_contents("$outputDir/App/Entity/Object_.php");
+
+        $this->assertStringContainsString(<<<'PHP'
+    /**
+     * The content of the object.
+     *
+     * @see http://www.w3.org/ns/activitystreams#content
+     */
+    #[ApiProperty(iri: 'http://www.w3.org/ns/activitystreams#content')]
+    private ?string $content = null;
+PHP
+            , $object);
+    }
+
     public function testGenerationWithoutConfigFileQuestion(): void
     {
         // No config file is given.
