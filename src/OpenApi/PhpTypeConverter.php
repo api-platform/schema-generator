@@ -15,15 +15,9 @@ namespace ApiPlatform\SchemaGenerator\OpenApi;
 
 use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
-use EasyRdf\Resource as RdfResource;
 
 final class PhpTypeConverter implements PhpTypeConverterInterface
 {
-    public function isDatatype(RdfResource $range): bool
-    {
-        return true;
-    }
-
     public function getPhpType(Property $property, array $config = [], array $classes = []): ?string
     {
         if ($property->reference && $property->isArray) {

@@ -17,7 +17,7 @@ use EasyRdf\Resource as RdfResource;
 
 final class TypeConverter
 {
-    public const RANGE_MAPPING = [
+    public const RANGE_DATA_TYPE_MAPPING = [
         'https://schema.org/URL' => 'url',
 
         'https://schema.org/Boolean' => 'boolean',
@@ -89,6 +89,8 @@ final class TypeConverter
         'http://www.w3.org/2001/XMLSchema#ENTITY' => 'string',
         'http://www.w3.org/2001/XMLSchema#ENTITIES' => 'string',
 
+        'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString' => 'string',
+
         'https://schema.org/DataType' => 'mixed',
     ];
 
@@ -98,13 +100,19 @@ final class TypeConverter
             return null;
         }
 
-        return self::RANGE_MAPPING[$this->getUri($range)] ?? null;
+        return self::RANGE_DATA_TYPE_MAPPING[$this->getUri($range)] ?? null;
     }
 
     private function getUri(RdfResource $range): string
     {
         if ($range->isBNode() && $onDatatype = $range->get('owl:onDatatype')) {
             return $onDatatype->getUri();
+        }
+
+        if ($range->isBNode() &&
+            null !== ($unionOf = $range->get('owl:unionOf')) &&
+            null !== ($rdfFirst = $unionOf->get('rdf:first'))) {
+            return $rdfFirst->getUri();
         }
 
         return $range->getUri();

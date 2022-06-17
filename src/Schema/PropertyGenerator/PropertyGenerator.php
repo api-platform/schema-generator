@@ -177,7 +177,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
     private function getRanges(RdfResource $range, ?array $propertyConfig, array $config): array
     {
         $localName = $range->localName();
-        $dataType = $this->phpTypeConverter->isDatatype($range);
+        $dataType = (bool) $this->typeConverter->getType($range);
         $ranges = [];
         if (!$dataType && $range->isBNode()) {
             if (null !== ($unionOf = $range->get('owl:unionOf'))) {

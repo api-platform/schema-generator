@@ -17,18 +17,14 @@ use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\Schema\Model\Property as SchemaProperty;
 use ApiPlatform\SchemaGenerator\Schema\TypeConverter;
-use EasyRdf\Resource as RdfResource;
 
 final class PhpTypeConverter implements PhpTypeConverterInterface
 {
-    private const RDF_LANG_STRING = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString';
+    private TypeConverter $typeConverter;
 
-    /**
-     * Is this type a datatype?
-     */
-    public function isDatatype(RdfResource $range): bool
+    public function __construct()
     {
-        return isset(TypeConverter::RANGE_MAPPING[$this->getUri($range)]) || $this->isLangString($range);
+        $this->typeConverter = new TypeConverter();
     }
 
     public function getPhpType(Property $property, array $config = [], array $classes = []): ?string
@@ -38,7 +34,7 @@ final class PhpTypeConverter implements PhpTypeConverterInterface
         }
 
         if ($property->isArray && $property->range) {
-            return ($config['doctrine']['useCollection'] ?? false) && !$this->isDatatype($property->range) ? 'Collection' : 'array';
+            return ($config['doctrine']['useCollection'] ?? false) && !$this->typeConverter->getType($property->range) ? 'Collection' : 'array';
         }
 
         return $this->getNonArrayType($property, $classes);
@@ -101,33 +97,6 @@ final class PhpTypeConverter implements PhpTypeConverterInterface
             return $type;
         }
 
-        if ($this->isLangString($property->range)) {
-            return 'string';
-        }
-
         return null;
-    }
-
-    /**
-     * This is a hack to detect internationalized strings.
-     *
-     * @todo find something smarter to detect this kind of strings
-     */
-    private function isLangString(RdfResource $range): bool
-    {
-        return self::RDF_LANG_STRING === $this->getUri($range)
-            || ($range->isBNode() &&
-            null !== ($unionOf = $range->get('owl:unionOf')) &&
-            null !== ($rdfFirst = $unionOf->get('rdf:first')) &&
-            self::RDF_LANG_STRING === $rdfFirst->getUri());
-    }
-
-    private function getUri(RdfResource $range): string
-    {
-        if ($range->isBNode() && $onDatatype = $range->get('owl:onDatatype')) {
-            return $onDatatype->getUri();
-        }
-
-        return $range->getUri();
     }
 }
