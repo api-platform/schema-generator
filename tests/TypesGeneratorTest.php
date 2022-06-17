@@ -170,6 +170,14 @@ PHP, $thing);
 
         $finder = new Finder();
         self::assertSame(2, $finder->files()->in($this->outputDir)->count());
+
+        $competencyWorldEntity = file_get_contents("$this->outputDir/App/Entity/CompetencyWorldEntity.php");
+        $this->assertStringContainsString('class CompetencyWorldEntity extends Thing', $competencyWorldEntity);
+        $this->assertStringContainsString('private ?int $id = null;', $competencyWorldEntity);
+        $this->assertStringContainsString('private string $hasAppellation;', $competencyWorldEntity);
+        $this->assertStringContainsString('public function getId(): ?int', $competencyWorldEntity);
+        $this->assertStringContainsString('public function setHasAppellation(string $hasAppellation): void', $competencyWorldEntity);
+        $this->assertStringContainsString('public function getHasAppellation(): string', $competencyWorldEntity);
     }
 
     public function testGenerateVocabAllTypes(): void
@@ -228,6 +236,7 @@ PHP, $thing);
 
         $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/hasAppellation', 'rdf:type', 'rdf:Property');
         $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/hasAppellation', 'schema:domainIncludes', 'https://gitlab.com/mmorg/nodefr-2/CompetencyWorldEntity');
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/hasAppellation', 'schema:rangeIncludes', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
         $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/hasAppellation', 'schema:rangeIncludes', 'https://schema.org/Text');
 
         $graph = new RdfGraph(SchemaGeneratorConfiguration::SCHEMA_ORG_URI);

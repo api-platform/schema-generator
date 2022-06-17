@@ -21,6 +21,8 @@ use EasyRdf\Resource as RdfResource;
 
 final class PhpTypeConverter implements PhpTypeConverterInterface
 {
+    private const RDF_LANG_STRING = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString';
+
     /**
      * Is this type a datatype?
      */
@@ -107,16 +109,17 @@ final class PhpTypeConverter implements PhpTypeConverterInterface
     }
 
     /**
-     * This is a hack to detect internationalized strings in ActivityStreams.
+     * This is a hack to detect internationalized strings.
      *
      * @todo find something smarter to detect this kind of strings
      */
     private function isLangString(RdfResource $range): bool
     {
-        return $range->isBNode() &&
+        return self::RDF_LANG_STRING === $this->getUri($range)
+            || ($range->isBNode() &&
             null !== ($unionOf = $range->get('owl:unionOf')) &&
             null !== ($rdfFirst = $unionOf->get('rdf:first')) &&
-            'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString' === $rdfFirst->getUri();
+            self::RDF_LANG_STRING === $rdfFirst->getUri());
     }
 
     private function getUri(RdfResource $range): string
