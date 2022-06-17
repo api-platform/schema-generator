@@ -74,9 +74,9 @@ class ApiPlatformCoreAttributeGeneratorTest extends TestCase
 
         yield 'with short name' => [(new SchemaClass('WithShortName', new RdfResource('https://schema.org/DifferentLocalName', new RdfGraph()))), [new Attribute('ApiResource', ['shortName' => 'DifferentLocalName', 'iri' => 'https://schema.org/DifferentLocalName'])]];
 
-        $class = new SchemaClass('WithSecurity', new RdfResource('https://schema.org/WithSecurity', new RdfGraph()));
-        $class->security = "is_granted('ROLE_USER')";
-        yield 'with security' => [$class, [new Attribute('ApiResource', ['iri' => 'https://schema.org/WithSecurity', 'security' => "is_granted('ROLE_USER')"])]];
+        $class = new SchemaClass('WithApiResourceArguments', new RdfResource('https://schema.org/WithApiResourceArguments', new RdfGraph()));
+        $class->apiResourceArguments = ['security' => "is_granted('ROLE_USER')"];
+        yield 'with ApiResource arguments' => [$class, [new Attribute('ApiResource', ['iri' => 'https://schema.org/WithApiResourceArguments', 'security' => "is_granted('ROLE_USER')"])]];
     }
 
     /**
@@ -93,10 +93,10 @@ class ApiPlatformCoreAttributeGeneratorTest extends TestCase
         $property->resource = new RdfResource('https://schema.org/prop');
         yield 'classical' => [$property, [new Attribute('ApiProperty', ['iri' => 'https://schema.org/prop'])]];
 
-        $property = new Property('WithSecurity');
-        $property->resource = new RdfResource('https://schema.org/WithSecurity');
-        $property->security = "is_granted('ROLE_ADMIN')";
-        yield 'with security' => [$property, [new Attribute('ApiProperty', ['iri' => 'https://schema.org/WithSecurity', 'security' => "is_granted('ROLE_ADMIN')"])]];
+        $property = new Property('WithApiPropertyArguments');
+        $property->resource = new RdfResource('https://schema.org/WithApiPropertyArguments');
+        $property->apiPropertyArguments = ['security' => "is_granted('ROLE_ADMIN')"];
+        yield 'with ApiProperty arguments' => [$property, [new Attribute('ApiProperty', ['iri' => 'https://schema.org/WithApiPropertyArguments', 'security' => "is_granted('ROLE_ADMIN')"])]];
     }
 
     public function testGenerateCustomPropertyAttributes(): void

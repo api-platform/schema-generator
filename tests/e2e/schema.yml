@@ -23,7 +23,8 @@ types:
             collection:
                 get:
                     route_name: get_person_collection
-        security: "is_granted('ROLE_USER')"
+        apiResourceArguments:
+            security: "is_granted('ROLE_USER')"
         properties:
             familyName: ~
             givenName: ~
@@ -32,7 +33,7 @@ types:
             address: { range: https://schema.org/PostalAddress }
             birthDate: ~
             telephone: ~
-            email: { unique: true, security: "is_granted('ROLE_ADMIN')" }
+            email: { unique: true, apiPropertyArguments: [security: "is_granted('ROLE_ADMIN')"] }
             url: ~
             siblings: { cardinality: "(0..*)" }
             knowsAbout: { range: https://schema.org/Thing }

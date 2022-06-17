@@ -44,7 +44,8 @@ abstract class Class_
     public bool $isAbstract = false;
     public bool $hasChild = false;
     public bool $isEmbeddable = false;
-    public ?string $security = null;
+    // @phpstan-ignore-next-line dynamic array
+    public array $apiResourceArguments = [];
     /** @var array<string, array<string, string[]|null>> */
     public array $operations = [];
 

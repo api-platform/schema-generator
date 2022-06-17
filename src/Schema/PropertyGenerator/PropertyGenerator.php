@@ -163,7 +163,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
         $schemaProperty->mappedBy = $propertyConfig['mappedBy'] ?? null;
         $schemaProperty->inversedBy = $propertyConfig['inversedBy'] ?? null;
         $schemaProperty->groups = $propertyConfig['groups'] ?? [];
-        $schemaProperty->security = $propertyConfig['security'] ?? null;
+        $schemaProperty->apiPropertyArguments = $propertyConfig['apiPropertyArguments'] ?? [];
 
         return $schemaProperty;
     }

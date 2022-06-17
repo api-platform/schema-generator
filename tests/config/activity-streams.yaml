@@ -1,5 +1,5 @@
 vocabularies:
-    - tests/data/activitystreams2.owl
+    - { uri: tests/data/activitystreams2.owl, apiResourceArguments: [routePrefix: 'as'] }
 vocabularyNamespace: http://www.w3.org/ns/activitystreams#
 allTypes: true
 types:

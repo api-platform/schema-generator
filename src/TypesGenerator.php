@@ -245,10 +245,11 @@ class TypesGenerator
         }
 
         $typeConfig = $config['types'][$typeName] ?? null;
+        $vocabConfig = $config['vocabularies'][$type->getGraph()->getUri()] ?? null;
         $parent = $typeConfig['parent'] ?? null;
         $class = new SchemaClass($typeName, $type, $parent);
         $class->operations = $typeConfig['operations'] ?? [];
-        $class->security = $typeConfig['security'] ?? null;
+        $class->apiResourceArguments = array_merge($vocabConfig['apiResourceArguments'] ?? [], $typeConfig['apiResourceArguments'] ?? []);
 
         if ($class->isEnum()) {
             (new SchemaEnumClassMutator(
@@ -430,13 +431,7 @@ class TypesGenerator
         $allTypes = [];
 
         foreach ($graphs as $graph) {
-            $vocabAllTypes = $config['allTypes'];
-            foreach ($config['vocabularies'] as $vocab) {
-                if ($graph->getUri() !== $vocab['uri']) {
-                    continue;
-                }
-                $vocabAllTypes = $vocab['allTypes'] ?? $vocabAllTypes;
-            }
+            $vocabAllTypes = $config['vocabularies'][$graph->getUri()]['allTypes'] ?? $config['allTypes'];
             foreach (self::$classTypes as $classType) {
                 foreach ($graph->allOfType($classType) as $type) {
                     if ($type->isBNode()) {

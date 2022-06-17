@@ -447,6 +447,20 @@ PHP
     private ?string $content = null;
 PHP
             , $object);
+
+        $page = file_get_contents("$outputDir/App/Entity/Page.php");
+
+        $this->assertStringContainsString(<<<'PHP'
+/**
+ * A Web Page.
+ *
+ * @see http://www.w3.org/ns/activitystreams#Page
+ */
+#[ORM\Entity]
+#[ApiResource(iri: 'http://www.w3.org/ns/activitystreams#Page', routePrefix: 'as')]
+class Page extends Object_
+PHP
+            , $page);
     }
 
     public function testGenerationWithoutConfigFileQuestion(): void
