@@ -51,7 +51,8 @@ abstract class Property
     public ?string $adderRemoverTypeHint = null;
     /** @var string[] */
     public array $groups = [];
-    public ?string $security = null;
+    // @phpstan-ignore-next-line dynamic array
+    public array $apiPropertyArguments = [];
     /** @var Attribute[] */
     private array $attributes = [];
     /** @var string[] */

@@ -34,12 +34,12 @@ final class Generator
     public function generate(array $configuration, OutputInterface $output, SymfonyStyle $io): void
     {
         $graphs = [];
-        foreach ($configuration['vocabularies'] as $vocab) {
-            $graph = new RdfGraph($vocab['uri']);
-            if (0 === strpos($vocab['uri'], 'http://') || 0 === strpos($vocab['uri'], 'https://')) {
-                $graph->load($vocab['uri'], $vocab['format']);
+        foreach ($configuration['vocabularies'] as $uri => $vocab) {
+            $graph = new RdfGraph($uri);
+            if (0 === strpos($uri, 'http://') || 0 === strpos($uri, 'https://')) {
+                $graph->load($uri, $vocab['format']);
             } else {
-                $graph->parseFile($vocab['uri'], $vocab['format']);
+                $graph->parseFile($uri, $vocab['format']);
             }
 
             $graphs[] = $graph;

@@ -46,6 +46,15 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
     {
         $namespacePrefix = $this->defaultPrefix ?? 'App\\';
 
+        /* @see https://yaml.org/type/omap.html */
+        $transformOmap = fn (array $nodeConfig) => !empty(array_filter(
+            $nodeConfig,
+            fn ($v, $k) => \is_int($k) && \is_array($v) && 1 === \count($v) && \is_string(array_keys($v)[0]),
+            \ARRAY_FILTER_USE_BOTH
+        ))
+            ? array_reduce(array_values($nodeConfig), fn (array $map, array $v) => $map + $v, [])
+            : $nodeConfig;
+
         $treeBuilder = new TreeBuilder('config');
 
         $treeBuilder
@@ -59,23 +68,25 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                 ->end()
                 ->arrayNode('vocabularies')
                     ->info('RDF vocabularies')
-                    ->defaultValue([['uri' => self::SCHEMA_ORG_URI, 'format' => 'rdfxml']])
+                    ->defaultValue([self::SCHEMA_ORG_URI => ['format' => 'rdfxml']])
                     ->beforeNormalization()
                         ->ifArray()
-                        ->then(static function (array $v) {
-                            return array_map(
-                                static function ($rdf) {
-                                    return \is_scalar($rdf) ? ['uri' => $rdf, 'format' => null] : $rdf;
-                                },
-                                $v
-                            );
-                        })
+                        ->then(fn (array $v) => array_map(fn ($rdf) => \is_scalar($rdf) ? ['uri' => $rdf] : $rdf, $v))
                     ->end()
+                    ->useAttributeAsKey('uri')
                     ->arrayPrototype()
                         ->children()
-                            ->scalarNode('uri')->defaultValue(self::SCHEMA_ORG_URI)->info('RDF vocabulary to use')->example('https://schema.org/version/latest/schemaorg-current-https.rdf')->end()
+                            ->scalarNode('uri')->info('RDF vocabulary to use')->example('https://schema.org/version/latest/schemaorg-current-https.rdf')->end()
                             ->scalarNode('format')->defaultNull()->info('RDF vocabulary format')->example('rdfxml')->end()
                             ->booleanNode('allTypes')->defaultNull()->info('Generate all types for this vocabulary, even if an explicit configuration exists. If allTypes is enabled globally, it can be disabled for this particular vocabulary')->end()
+                            ->arrayNode('apiResourceArguments')
+                                ->info('Arguments to add to ApiResource for all the classes generated for this vocabulary')
+                                ->variablePrototype()->end()
+                                ->beforeNormalization()
+                                    ->ifArray()
+                                    ->then($transformOmap)
+                                ->end()
+                            ->end()
                         ->end()
                     ->end()
                 ->end()
@@ -84,7 +95,7 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                     ->info('OWL relation files containing cardinality information in the GoodRelations format')
                     ->example(self::GOOD_RELATIONS_URI)
                     ->defaultValue([self::GOOD_RELATIONS_URI])
-                    ->prototype('scalar')->end()
+                    ->scalarPrototype()->end()
                 ->end()
                 ->booleanNode('debug')->defaultFalse()->info('Debug mode')->end()
                 ->arrayNode('id')
@@ -119,7 +130,7 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                         ->enumNode('resolveTargetEntityConfigType')->defaultValue('XML')->values(['XML', 'yaml'])->info('The Resolve Target Entity Listener config file type')->end()
                         ->arrayNode('inheritanceAttributes')
                             ->info('Doctrine inheritance attributes (if set, no other attributes are generated)')
-                            ->prototype('variable')->end()
+                            ->variablePrototype()->end()
                         ->end()
                     ->end()
                 ->end()
@@ -136,7 +147,7 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                 ->booleanNode('fluentMutatorMethods')->defaultFalse()->info('Set this flag to true to generate fluent setter, adder and remover methods')->end()
                 ->arrayNode('rangeMapping')
                     ->useAttributeAsKey('name')
-                    ->prototype('scalar')->end()
+                    ->scalarPrototype()->end()
                 ->end()
                 ->booleanNode('allTypes')->defaultFalse()->info('Generate all types, even if an explicit configuration exists')->end()
                 ->booleanNode('resolveTypes')->defaultFalse()->info('If a type is present in a vocabulary but not explicitly imported (types) or if the vocabulary is not totally imported (allTypes), it will be generated')->end()
@@ -172,7 +183,7 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                                 ->children()
                                     ->arrayNode('attributes')
                                         ->info('Doctrine attributes (if set, no other attributes are generated)')
-                                        ->prototype('variable')->end()
+                                        ->variablePrototype()->end()
                                     ->end()
                                 ->end()
                             ->end()
@@ -180,9 +191,16 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                             ->scalarNode('guessFrom')->defaultValue('Thing')->info('If declaring a custom class, this will be the class from which properties type will be guessed')->end()
                             ->arrayNode('operations')
                                 ->info('Operations for the class')
-                                ->prototype('variable')->end()
+                                ->variablePrototype()->end()
                             ->end()
-                            ->scalarNode('security')->defaultNull()->info('Security directive for the class')->end()
+                            ->arrayNode('apiResourceArguments')
+                                ->info('Arguments to add to ApiResource (for instance security)')
+                                ->variablePrototype()->end()
+                                ->beforeNormalization()
+                                    ->ifArray()
+                                    ->then($transformOmap)
+                                ->end()
+                            ->end()
                             ->booleanNode('allProperties')->defaultFalse()->info('Import all existing properties')->end()
                             ->arrayNode('properties')
                                 ->info('Properties of this type to use')
@@ -206,12 +224,19 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                                         ->arrayNode('ormColumn')
                                             ->info('The doctrine column attribute content')
                                             ->example('{type: "decimal", precision: 5, scale: 1, options: {comment: "my comment"}}')
-                                            ->prototype('variable')->end()
+                                            ->variablePrototype()->end()
                                         ->end()
-                                        ->scalarNode('security')->defaultNull()->info('Security directive for the property')->end()
+                                        ->arrayNode('apiPropertyArguments')
+                                            ->info('Arguments to add to ApiProperty (for instance security)')
+                                            ->variablePrototype()->end()
+                                            ->beforeNormalization()
+                                                ->ifArray()
+                                                ->then($transformOmap)
+                                            ->end()
+                                        ->end()
                                         ->arrayNode('groups')
                                             ->info('Symfony Serialization Groups')
-                                            ->prototype('scalar')->end()
+                                            ->scalarPrototype()->end()
                                         ->end()
                                         ->scalarNode('mappedBy')->defaultNull()->info('The doctrine mapped by attribute')->example('partOfSeason')->end()
                                         ->scalarNode('inversedBy')->defaultNull()->info('The doctrine inversed by attribute')->example('episodes')->end()
@@ -233,7 +258,7 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                     ->defaultValue([
                         PhpDocAnnotationGenerator::class,
                     ])
-                    ->prototype('scalar')->end()
+                    ->scalarPrototype()->end()
                 ->end()
                 ->arrayNode('attributeGenerators')
                     ->info('Attribute generators to use')
@@ -243,11 +268,11 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                         ConstraintAttributeGenerator::class,
                         SerializerGroupsAttributeGenerator::class,
                     ])
-                    ->prototype('scalar')->end()
+                    ->scalarPrototype()->end()
                 ->end()
                 ->arrayNode('generatorTemplates')
                     ->info('Directories for custom generator twig templates')
-                    ->prototype('scalar')->end()
+                    ->scalarPrototype()->end()
                 ->end()
             ->end();
 

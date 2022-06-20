@@ -21,7 +21,7 @@ interface PropertyGeneratorInterface
     /**
      * @param Configuration $config
      */
-    // @phpstan-ignore-next-line
+    // @phpstan-ignore-next-line dynamic context
     public function __invoke(
         string $name,
         array $config,

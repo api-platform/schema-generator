@@ -35,16 +35,19 @@ config:
     vocabularies:
 
         # Prototype
-        -
+        uri:
 
             # RDF vocabulary to use
-            uri:                  'https://schema.org/version/latest/schemaorg-current-https.rdf' # Example: 'https://schema.org/version/latest/schemaorg-current-https.rdf'
+            uri:                  ~ # Example: 'https://schema.org/version/latest/schemaorg-current-https.rdf'
 
             # RDF vocabulary format
             format:               null # Example: rdfxml
 
             # Generate all types for this vocabulary, even if an explicit configuration exists. If allTypes is enabled globally, it can be disabled for this particular vocabulary
             allTypes:             null
+
+            # Arguments to add to ApiResource for all the classes generated for this vocabulary
+            apiResourceArguments: []
 
     # Namespace of the vocabulary to import
     vocabularyNamespace:  'https://schema.org/' # Example: 'http://www.w3.org/ns/activitystreams#'
@@ -180,8 +183,8 @@ config:
             # Operations for the class
             operations:           []
 
-            # Security directive for the class
-            security:             null
+            # Arguments to add to ApiResource (for instance security)
+            apiResourceArguments: []
 
             # Import all existing properties
             allProperties:        false
@@ -205,8 +208,8 @@ config:
                     # The doctrine column attribute content
                     ormColumn:            [] # Example: '{type: "decimal", precision: 5, scale: 1, options: {comment: "my comment"}}'
 
-                    # Security directive for the property
-                    security:             null
+                    # Arguments to add to ApiProperty (for instance security)
+                    apiPropertyArguments: []
 
                     # Symfony Serialization Groups
                     groups:               []

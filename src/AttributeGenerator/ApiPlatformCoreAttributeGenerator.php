@@ -46,8 +46,8 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
         if ($class->rdfType()) {
             $arguments['iri'] = $class->rdfType();
         }
-        if ($class->security) {
-            $arguments['security'] = $class->security;
+        if ($class->apiResourceArguments) {
+            $arguments = array_merge($arguments, $class->apiResourceArguments);
         }
 
         if ($class->operations) {
@@ -98,8 +98,8 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
             $arguments['iri'] = $property->rdfType();
         }
 
-        if ($property->security) {
-            $arguments['security'] = $property->security;
+        if ($property->apiPropertyArguments) {
+            $arguments = array_merge($arguments, $property->apiPropertyArguments);
         }
 
         return $property->isCustom ? [] : [new Attribute('ApiProperty', $arguments)];

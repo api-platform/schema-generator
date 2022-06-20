@@ -10,7 +10,7 @@ parameters:
                 relationTableName: ?string,
                 cardinality: string,
                 ormColumn: array<string, string|string[]>,
-                security: ?string,
+                apiPropertyArguments: array{},
                 groups: string[],
                 mappedBy: ?string,
                 inversedBy: ?string,
@@ -34,14 +34,14 @@ parameters:
                 parent: false|string,
                 guessFrom: string,
                 operations: array<string, array<string, string[]>>,
-                security: ?string,
+                apiResourceArguments: array{},
                 allProperties: boolean,
                 properties: array<string, PropertyConfiguration>
             }
         '''
         Configuration: '''
             array{
-                 vocabularies: array{uri: string, format: string, allTypes: ?boolean}[],
+                 vocabularies: array{uri: string, format: string, allTypes: ?boolean, apiResourceArguments: array{}}[],
                  vocabularyNamespace: string,
                  relations: string[],
                  debug: boolean,
