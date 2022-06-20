@@ -22,6 +22,7 @@ use Symfony\Component\String\Inflector\InflectorInterface;
 
 abstract class Class_
 {
+    use AddAttributeTrait;
     use ResolveNameTrait;
 
     protected string $name;
@@ -44,8 +45,6 @@ abstract class Class_
     public bool $isAbstract = false;
     public bool $hasChild = false;
     public bool $isEmbeddable = false;
-    // @phpstan-ignore-next-line dynamic array
-    public array $apiResourceArguments = [];
     /** @var array<string, array<string, string[]|null>> */
     public array $operations = [];
 
@@ -163,15 +162,6 @@ abstract class Class_
     {
         if (!\in_array($use, $this->uses, true)) {
             $this->uses[] = $use;
-        }
-
-        return $this;
-    }
-
-    public function addAttribute(Attribute $attribute): self
-    {
-        if (!\in_array($attribute, $this->attributes, true)) {
-            $this->attributes[] = $attribute;
         }
 
         return $this;

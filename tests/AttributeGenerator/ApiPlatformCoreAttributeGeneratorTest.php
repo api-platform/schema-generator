@@ -73,10 +73,6 @@ class ApiPlatformCoreAttributeGeneratorTest extends TestCase
         yield 'enum' => [$class, []];
 
         yield 'with short name' => [(new SchemaClass('WithShortName', new RdfResource('https://schema.org/DifferentLocalName', new RdfGraph()))), [new Attribute('ApiResource', ['shortName' => 'DifferentLocalName', 'iri' => 'https://schema.org/DifferentLocalName'])]];
-
-        $class = new SchemaClass('WithApiResourceArguments', new RdfResource('https://schema.org/WithApiResourceArguments', new RdfGraph()));
-        $class->apiResourceArguments = ['security' => "is_granted('ROLE_USER')"];
-        yield 'with ApiResource arguments' => [$class, [new Attribute('ApiResource', ['iri' => 'https://schema.org/WithApiResourceArguments', 'security' => "is_granted('ROLE_USER')"])]];
     }
 
     /**
@@ -92,11 +88,6 @@ class ApiPlatformCoreAttributeGeneratorTest extends TestCase
         $property = new Property('prop');
         $property->resource = new RdfResource('https://schema.org/prop');
         yield 'classical' => [$property, [new Attribute('ApiProperty', ['iri' => 'https://schema.org/prop'])]];
-
-        $property = new Property('WithApiPropertyArguments');
-        $property->resource = new RdfResource('https://schema.org/WithApiPropertyArguments');
-        $property->apiPropertyArguments = ['security' => "is_granted('ROLE_ADMIN')"];
-        yield 'with ApiProperty arguments' => [$property, [new Attribute('ApiProperty', ['iri' => 'https://schema.org/WithApiPropertyArguments', 'security' => "is_granted('ROLE_ADMIN')"])]];
     }
 
     public function testGenerateCustomPropertyAttributes(): void

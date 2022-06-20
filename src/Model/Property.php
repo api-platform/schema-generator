@@ -20,6 +20,7 @@ use Nette\PhpGenerator\Property as NetteProperty;
 
 abstract class Property
 {
+    use AddAttributeTrait;
     use ResolveNameTrait;
 
     private string $name;
@@ -51,8 +52,6 @@ abstract class Property
     public ?string $adderRemoverTypeHint = null;
     /** @var string[] */
     public array $groups = [];
-    // @phpstan-ignore-next-line dynamic array
-    public array $apiPropertyArguments = [];
     /** @var Attribute[] */
     private array $attributes = [];
     /** @var string[] */
@@ -79,15 +78,6 @@ abstract class Property
     abstract public function description(): ?string;
 
     abstract public function rdfType(): ?string;
-
-    public function addAttribute(Attribute $attribute): self
-    {
-        if (!\in_array($attribute, $this->attributes, true)) {
-            $this->attributes[] = $attribute;
-        }
-
-        return $this;
-    }
 
     public function addAnnotation(string $annotation): self
     {

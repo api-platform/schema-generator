@@ -20,6 +20,7 @@ use ApiPlatform\SchemaGenerator\ClassMutator\ClassInterfaceMutator;
 use ApiPlatform\SchemaGenerator\ClassMutator\ClassParentMutator;
 use ApiPlatform\SchemaGenerator\ClassMutator\ClassPropertiesAppender;
 use ApiPlatform\SchemaGenerator\ClassMutator\ClassPropertiesTypehintMutator;
+use ApiPlatform\SchemaGenerator\Model\Attribute;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Use_;
 use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGeneratorInterface;
@@ -249,7 +250,13 @@ class TypesGenerator
         $parent = $typeConfig['parent'] ?? null;
         $class = new SchemaClass($typeName, $type, $parent);
         $class->operations = $typeConfig['operations'] ?? [];
-        $class->apiResourceArguments = array_merge($vocabConfig['apiResourceArguments'] ?? [], $typeConfig['apiResourceArguments'] ?? []);
+        $attributes = array_merge($vocabConfig['attributes'] ?? [], $typeConfig['attributes'] ?? []);
+        foreach ($attributes as $attributeName => $attributeArgs) {
+            $class->addAttribute(new Attribute($attributeName, $attributeArgs ?? []));
+        }
+        foreach ($config['uses'] as $useName => $useArgs) {
+            $class->addUse(new Use_($useName, $useArgs['alias'] ?? null));
+        }
 
         if ($class->isEnum()) {
             (new SchemaEnumClassMutator(

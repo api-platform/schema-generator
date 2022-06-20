@@ -25,9 +25,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity]
 #[ApiResource(
     iri: 'https://schema.org/Person',
-    security: 'is_granted(\'ROLE_USER\')',
     itemOperations: ['get' => ['method' => 'GET'], 'delete' => ['method' => 'DELETE', 'security' => 'is_granted(\'ROLE_ADMIN\')']],
     collectionOperations: ['get' => ['route_name' => 'get_person_collection']],
+    security: 'is_granted(\'ROLE_USER\')',
 )]
 #[UniqueEntity('email')]
 #[MyCustomAttribute(foo: 'bar')]

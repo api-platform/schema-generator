@@ -46,8 +46,8 @@ config:
             # Generate all types for this vocabulary, even if an explicit configuration exists. If allTypes is enabled globally, it can be disabled for this particular vocabulary
             allTypes:             null
 
-            # Arguments to add to ApiResource for all the classes generated for this vocabulary
-            apiResourceArguments: []
+            # Attributes (merged with generated attributes)
+            attributes:           []
 
     # Namespace of the vocabulary to import
     vocabularyNamespace:  'https://schema.org/' # Example: 'http://www.w3.org/ns/activitystreams#'
@@ -99,6 +99,18 @@ config:
 
         # The namespace of the generated interfaces
         interface:            App\Model # Example: App\Model
+
+    # Custom uses (for instance if you use a custom attribute)
+    uses:
+
+        # Prototype
+        name:
+
+            # Name of this use
+            name:                 ~ # Example: App\Attributes\MyAttribute
+
+            # The alias to use for this use
+            alias:                null
 
     # Doctrine
     doctrine:
@@ -169,10 +181,9 @@ config:
 
                 # The namespace for the generated interface (override any other defined namespace)
                 interface:            null
-            doctrine:
 
-                # Doctrine attributes (if set, no other attributes are generated)
-                attributes:           []
+            # Attributes (merged with generated attributes)
+            attributes:           []
 
             # The parent class, set to false for a top level class
             parent:               false
@@ -182,9 +193,6 @@ config:
 
             # Operations for the class
             operations:           []
-
-            # Arguments to add to ApiResource (for instance security)
-            apiResourceArguments: []
 
             # Import all existing properties
             allProperties:        false
@@ -207,9 +215,6 @@ config:
 
                     # The doctrine column attribute content
                     ormColumn:            [] # Example: '{type: "decimal", precision: 5, scale: 1, options: {comment: "my comment"}}'
-
-                    # Arguments to add to ApiProperty (for instance security)
-                    apiPropertyArguments: []
 
                     # Symfony Serialization Groups
                     groups:               []
@@ -240,6 +245,9 @@ config:
 
                     # The property columnPrefix
                     columnPrefix:         false
+
+                    # Attributes (merged with generated attributes)
+                    attributes:           []
 
     # Annotation generators to use
     annotationGenerators:
