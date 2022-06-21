@@ -87,8 +87,8 @@ PHP
 
         // Attributes given as ordered map (omap).
         $this->assertStringContainsString(<<<'PHP'
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
 use App\Attributes\MyAttribute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -100,7 +100,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @see https://schema.org/Book
  */
 #[ORM\Entity]
-#[ApiResource(iri: 'https://schema.org/Book', routePrefix: '/library')]
+#[ApiResource(types: ['https://schema.org/Book'], routePrefix: '/library')]
 #[MyAttribute]
 class Book
 {
@@ -459,7 +459,7 @@ PHP
      * @see https://schema.org/award
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/award')]
+    #[ApiProperty(types: ['https://schema.org/award'])]
     private ?string $award = null;
 PHP
             , $creativeWork);
@@ -486,7 +486,7 @@ PHP
      * @see http://www.w3.org/ns/activitystreams#content
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'http://www.w3.org/ns/activitystreams#content')]
+    #[ApiProperty(types: ['http://www.w3.org/ns/activitystreams#content'])]
     private ?string $content = null;
 PHP
             , $object);
@@ -499,7 +499,7 @@ PHP
  *
  * @see http://www.w3.org/ns/activitystreams#Page
  */
-#[ApiResource(iri: 'http://www.w3.org/ns/activitystreams#Page', routePrefix: 'as')]
+#[ApiResource(types: ['http://www.w3.org/ns/activitystreams#Page'], routePrefix: 'as')]
 #[ORM\Entity]
 class Page extends Object_
 PHP

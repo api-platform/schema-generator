@@ -33,7 +33,7 @@ parameters:
                 attributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]|null>,
                 parent: false|string,
                 guessFrom: string,
-                operations: array<string, array<string, string[]>>,
+                operations: array<string, ?array<string, string|int|bool|string[]|null>>,
                 allProperties: boolean,
                 properties: array<string, PropertyConfiguration>
             }
@@ -44,6 +44,7 @@ parameters:
                  vocabularyNamespace: string,
                  relations: string[],
                  debug: boolean,
+                 apiPlatformOldAttributes: boolean,
                  id: array{generate: boolean, generationStrategy: string, writable: boolean, onClass: string},
                  useInterface: boolean,
                  checkIsGoodRelations: boolean,

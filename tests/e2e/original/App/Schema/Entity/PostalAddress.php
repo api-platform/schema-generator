@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Schema\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @see https://schema.org/PostalAddress
  */
 #[ORM\Entity]
-#[ApiResource(iri: 'https://schema.org/PostalAddress')]
+#[ApiResource(types: ['https://schema.org/PostalAddress'])]
 class PostalAddress
 {
     #[ORM\Id]
@@ -28,7 +28,7 @@ class PostalAddress
      * @see https://schema.org/addressCountry
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/addressCountry')]
+    #[ApiProperty(types: ['https://schema.org/addressCountry'])]
     private ?string $addressCountry = null;
 
     /**
@@ -37,7 +37,7 @@ class PostalAddress
      * @see https://schema.org/addressLocality
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/addressLocality')]
+    #[ApiProperty(types: ['https://schema.org/addressLocality'])]
     private ?string $addressLocality = null;
 
     /**
@@ -46,17 +46,8 @@ class PostalAddress
      * @see https://schema.org/addressRegion
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/addressRegion')]
+    #[ApiProperty(types: ['https://schema.org/addressRegion'])]
     private ?string $addressRegion = null;
-
-    /**
-     * The post office box number for PO box addresses.
-     *
-     * @see https://schema.org/postOfficeBoxNumber
-     */
-    #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/postOfficeBoxNumber')]
-    private ?string $postOfficeBoxNumber = null;
 
     /**
      * The postal code. For example, 94043.
@@ -64,7 +55,7 @@ class PostalAddress
      * @see https://schema.org/postalCode
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/postalCode')]
+    #[ApiProperty(types: ['https://schema.org/postalCode'])]
     private ?string $postalCode = null;
 
     /**
@@ -73,7 +64,7 @@ class PostalAddress
      * @see https://schema.org/streetAddress
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/streetAddress')]
+    #[ApiProperty(types: ['https://schema.org/streetAddress'])]
     private ?string $streetAddress = null;
 
     public function getId(): ?int
@@ -109,16 +100,6 @@ class PostalAddress
     public function getAddressRegion(): ?string
     {
         return $this->addressRegion;
-    }
-
-    public function setPostOfficeBoxNumber(?string $postOfficeBoxNumber): void
-    {
-        $this->postOfficeBoxNumber = $postOfficeBoxNumber;
-    }
-
-    public function getPostOfficeBoxNumber(): ?string
-    {
-        return $this->postOfficeBoxNumber;
     }
 
     public function setPostalCode(?string $postalCode): void

@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace App\OpenApi\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -16,9 +22,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity]
 #[ApiResource(
-    iri: 'http://schema.org/Review',
-    itemOperations: ['get' => [], 'put' => [], 'patch' => [], 'delete' => []],
-    collectionOperations: ['get' => [], 'post' => []],
+    types: ['http://schema.org/Review'],
+    operations: [new Get(), new Put(), new Patch(), new Delete(), new GetCollection(), new Post()],
 )]
 class Review
 {
@@ -33,7 +38,7 @@ class Review
      * @see http://schema.org/reviewBody
      */
     #[ORM\Column(type: 'text')]
-    #[ApiProperty(iri: 'http://schema.org/reviewBody')]
+    #[ApiProperty(types: ['http://schema.org/reviewBody'])]
     #[Assert\NotNull]
     private string $body;
 
@@ -57,7 +62,7 @@ class Review
      */
     #[ORM\OneToOne(targetEntity: 'App\OpenApi\Entity\Book')]
     #[ORM\JoinColumn(nullable: false)]
-    #[ApiProperty(iri: 'https://schema.org/Book')]
+    #[ApiProperty(types: ['https://schema.org/Book'])]
     #[Assert\NotNull]
     private Book $book;
 
@@ -67,7 +72,7 @@ class Review
      * @see http://schema.org/author
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'http://schema.org/author')]
+    #[ApiProperty(types: ['http://schema.org/author'])]
     private ?string $author = null;
 
     /**

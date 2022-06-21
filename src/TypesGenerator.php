@@ -459,6 +459,9 @@ class TypesGenerator
         }
 
         foreach ($config['types'] as $typeName => $typeConfig) {
+            if ($typeConfig['exclude']) {
+                continue;
+            }
             $vocabularyNamespace = $typeConfig['vocabularyNamespace'] ?? $config['vocabularyNamespace'];
 
             $resource = null;

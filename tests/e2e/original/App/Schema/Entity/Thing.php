@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Schema\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Metadata\ApiProperty;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -21,7 +21,7 @@ abstract class Thing
      * @see https://schema.org/name
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/name')]
+    #[ApiProperty(types: ['https://schema.org/name'])]
     private ?string $name = null;
 
     public function setName(?string $name): void

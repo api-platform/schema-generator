@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Schema\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @see https://schema.org/Brand
  */
 #[ORM\Entity]
-#[ApiResource(iri: 'https://schema.org/Brand')]
+#[ApiResource(types: ['https://schema.org/Brand'])]
 class Brand
 {
     #[ORM\Id]
@@ -28,7 +28,7 @@ class Brand
      * @see https://schema.org/name
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/name')]
+    #[ApiProperty(types: ['https://schema.org/name'])]
     private ?string $name = null;
 
     /**
@@ -37,7 +37,7 @@ class Brand
      * @see https://schema.org/slogan
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/slogan')]
+    #[ApiProperty(types: ['https://schema.org/slogan'])]
     private ?string $slogan = null;
 
     public function getId(): ?int

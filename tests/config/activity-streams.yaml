@@ -3,6 +3,8 @@ vocabularies:
 vocabularyNamespace: http://www.w3.org/ns/activitystreams#
 allTypes: true
 types:
+    Delete:
+        exclude: true
     Place:
         allProperties: true
         properties:

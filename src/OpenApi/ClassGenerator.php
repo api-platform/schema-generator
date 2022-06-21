@@ -123,18 +123,14 @@ final class ClassGenerator
             $pathCollection = $openApi->paths->getPath(sprintf('/%s', $collectionResourceName));
             $listOperation = $pathCollection->get ?? null;
             $createOperation = $pathCollection->post ?? null;
-            $class->operations = [
-                'item' => array_merge(
-                    $showOperation ? ['get' => null] : [],
-                    $putOperation ? ['put' => null] : [],
-                    $patchOperation ? ['patch' => null] : [],
-                    $deleteOperation ? ['delete' => null] : [],
-                ),
-                'collection' => array_merge(
-                    $listOperation ? ['get' => null] : [],
-                    $createOperation ? ['post' => null] : [],
-                ),
-            ];
+            $class->operations = array_merge(
+                $showOperation ? ['Get' => null] : [],
+                $putOperation ? ['Put' => null] : [],
+                $patchOperation ? ['Patch' => null] : [],
+                $deleteOperation ? ['Delete' => null] : [],
+                $listOperation ? ['GetCollection' => null] : [],
+                $createOperation ? ['Post' => null] : [],
+            );
 
             $classes[$name] = $class;
         }

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\OpenApi\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -13,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * This entity represents a "most borrowed book" in a given a given French library.
  */
 #[ORM\Entity]
-#[ApiResource(itemOperations: ['get' => []], collectionOperations: ['get' => []])]
+#[ApiResource(operations: [new Get(), new GetCollection()])]
 class TopBook
 {
     #[ORM\Id]
