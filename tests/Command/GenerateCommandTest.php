@@ -504,6 +504,9 @@ PHP
 class Page extends Object_
 PHP
             , $page);
+
+        self::assertFalse($this->fs->exists("$outputDir/App/Entity/Delete.php"));
+        self::assertFalse($this->fs->exists("$outputDir/App/Entity/Travel.php"));
     }
 
     public function testGenerationWithoutConfigFileQuestion(): void

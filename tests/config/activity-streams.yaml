@@ -9,3 +9,5 @@ types:
         allProperties: true
         properties:
             units: { range: 'http://www.w3.org/2001/XMLSchema#string' }
+    Travel:
+        exclude: true
