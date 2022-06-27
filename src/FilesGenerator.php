@@ -25,7 +25,7 @@ use PhpCsFixer\RuleSet as LegacyRuleSet;
 use PhpCsFixer\RuleSet\RuleSet;
 use PhpCsFixer\Runner\Runner;
 use Psr\Log\LoggerAwareTrait;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\String\Inflector\InflectorInterface;
@@ -69,8 +69,8 @@ final class FilesGenerator
 
             $file = null;
             if (file_exists($path) && is_file($path) && is_readable($path) && $fileContent = file_get_contents($path)) {
-                $confirmation = $this->io->askQuestion(new ConfirmationQuestion(sprintf('File "%s" already exists, use it (if no it will be overwritten)?', $path)));
-                if ($confirmation) {
+                $choice = $this->io->askQuestion(new ChoiceQuestion(sprintf('File "%s" already exists, keep your changes and update it (use) or overwrite it (overwrite)?', $path), ['use', 'overwrite'], 0));
+                if ('use' === $choice) {
                     $file = PhpFile::fromCode($fileContent);
                     $this->logger ? $this->logger->info(sprintf('Using "%s" as base file.', $path)) : null;
                 }
