@@ -69,26 +69,6 @@ final class PropertyGenerator implements PropertyGeneratorInterface
 
         $propertyConfig = $typeConfig['properties'][$name] ?? null;
 
-        $cardinality = $propertyConfig['cardinality'] ?? false;
-        if (!$cardinality || CardinalitiesExtractor::CARDINALITY_UNKNOWN === $cardinality) {
-            $cardinality = $cardinalities[$propertyUri] ?? $config['relations']['defaultCardinality'];
-        }
-
-        $isArray = \in_array($cardinality, [
-            CardinalitiesExtractor::CARDINALITY_0_N,
-            CardinalitiesExtractor::CARDINALITY_1_N,
-            CardinalitiesExtractor::CARDINALITY_N_N,
-        ], true);
-
-        $schemaProperty = new SchemaProperty($name);
-        $schemaProperty->isArray = $isArray;
-
-        $schemaProperty = ($this->propertyGenerator)($name, $config, $class, $context, $isCustom, $schemaProperty);
-
-        if (!$schemaProperty instanceof SchemaProperty) {
-            throw new \LogicException(sprintf('Property has to be an instance of "%s".', SchemaProperty::class));
-        }
-
         // Warn when property are not part of GoodRelations
         if ($config['checkIsGoodRelations'] && !$this->goodRelationsBridge->exists($name)) {
             $this->logger ? $this->logger->warning(sprintf('The property "%s" (type "%s") is not part of GoodRelations.', $propertyUri, $typeUri)) : null;
@@ -135,10 +115,35 @@ final class PropertyGenerator implements PropertyGeneratorInterface
             return null;
         }
 
+        $type = $this->typeConverter->getType($range);
+
+        $cardinality = $propertyConfig['cardinality'] ?? CardinalitiesExtractor::CARDINALITY_UNKNOWN;
+        if (CardinalitiesExtractor::CARDINALITY_UNKNOWN === $cardinality) {
+            $cardinality = $cardinalities[$propertyUri] ?? CardinalitiesExtractor::CARDINALITY_UNKNOWN;
+        }
+        if (!$type && CardinalitiesExtractor::CARDINALITY_UNKNOWN === $cardinality) {
+            $cardinality = $config['relations']['defaultCardinality'];
+        }
+
+        $isArray = \in_array($cardinality, [
+            CardinalitiesExtractor::CARDINALITY_0_N,
+            CardinalitiesExtractor::CARDINALITY_1_N,
+            CardinalitiesExtractor::CARDINALITY_N_N,
+        ], true);
+
+        $schemaProperty = new SchemaProperty($name);
+        $schemaProperty->isArray = $isArray;
+
+        $schemaProperty = ($this->propertyGenerator)($name, $config, $class, $context, $isCustom, $schemaProperty);
+
+        if (!$schemaProperty instanceof SchemaProperty) {
+            throw new \LogicException(sprintf('Property has to be an instance of "%s".', SchemaProperty::class));
+        }
+
         $isNullable = (bool) ($propertyConfig['nullable'] ?? !\in_array($cardinality, [
-                CardinalitiesExtractor::CARDINALITY_1_1,
-                CardinalitiesExtractor::CARDINALITY_1_N,
-            ], true));
+            CardinalitiesExtractor::CARDINALITY_1_1,
+            CardinalitiesExtractor::CARDINALITY_1_N,
+        ], true));
 
         $columnPrefix = false;
         $isEmbedded = $propertyConfig['embedded'] ?? false;
@@ -150,7 +155,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
         $schemaProperty->resource = $typeProperty;
         $schemaProperty->range = $range;
         $schemaProperty->rangeName = $rangeName;
-        $schemaProperty->type = $this->typeConverter->getType($range);
+        $schemaProperty->type = $type;
         $schemaProperty->cardinality = $cardinality;
         $schemaProperty->ormColumn = $propertyConfig['ormColumn'] ?? null;
         $schemaProperty->isReadable = $propertyConfig['readable'] ?? true;
