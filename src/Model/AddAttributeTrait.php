@@ -22,11 +22,13 @@ trait AddAttributeTrait
                 $this->attributes,
                 fn (Attribute $attr) => $attr->name() === $attribute->name()
             ))) {
-                $this->attributes[] = $attribute;
+                if ($attribute->append) {
+                    $this->attributes[] = $attribute;
+                }
             } else {
                 $this->attributes = array_map(
                     fn (Attribute $attr) => $attr->name() === $attribute->name()
-                        ? new Attribute($attr->name(), array_merge($attribute->args(), $attr->args()))
+                        ? new Attribute($attr->name(), array_merge($attr->args(), $attribute->args()))
                         : $attr,
                     $this->attributes
                 );

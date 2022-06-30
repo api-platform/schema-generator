@@ -25,12 +25,18 @@ final class Attribute
     /** @var (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal|\Nette\PhpGenerator\Literal[])[] */
     private array $args;
 
+    public bool $append = true;
+
     /**
      * @param (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal|\Nette\PhpGenerator\Literal[])[] $args
      */
     public function __construct(string $name, array $args = [])
     {
         $this->name = $name;
+
+        $this->append = (bool) ($args['alwaysGenerate'] ?? true);
+        unset($args['alwaysGenerate']);
+
         $this->args = $args;
     }
 

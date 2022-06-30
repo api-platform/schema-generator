@@ -15,7 +15,6 @@ namespace ApiPlatform\SchemaGenerator\Schema\PropertyGenerator;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
-use ApiPlatform\SchemaGenerator\Model\Attribute;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
@@ -164,10 +163,6 @@ final class PropertyGenerator implements PropertyGeneratorInterface
         $schemaProperty->mappedBy = $propertyConfig['mappedBy'] ?? null;
         $schemaProperty->inversedBy = $propertyConfig['inversedBy'] ?? null;
         $schemaProperty->groups = $propertyConfig['groups'] ?? [];
-
-        foreach ($propertyConfig['attributes'] ?? [] as $attributeName => $attributeArgs) {
-            $schemaProperty->addAttribute(new Attribute($attributeName, $attributeArgs ?? []));
-        }
 
         return $schemaProperty;
     }

@@ -499,8 +499,8 @@ PHP
  *
  * @see http://www.w3.org/ns/activitystreams#Page
  */
-#[ApiResource(types: ['http://www.w3.org/ns/activitystreams#Page'], routePrefix: 'as')]
 #[ORM\Entity]
+#[ApiResource(types: ['http://www.w3.org/ns/activitystreams#Page'], routePrefix: 'as')]
 class Page extends Object_
 PHP
             , $page);
