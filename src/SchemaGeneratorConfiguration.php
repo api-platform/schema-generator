@@ -15,6 +15,7 @@ namespace ApiPlatform\SchemaGenerator;
 
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator;
 use ApiPlatform\SchemaGenerator\AttributeGenerator\ApiPlatformCoreAttributeGenerator;
+use ApiPlatform\SchemaGenerator\AttributeGenerator\ConfigurationAttributeGenerator;
 use ApiPlatform\SchemaGenerator\AttributeGenerator\ConstraintAttributeGenerator;
 use ApiPlatform\SchemaGenerator\AttributeGenerator\DoctrineOrmAttributeGenerator;
 use ApiPlatform\SchemaGenerator\AttributeGenerator\SerializerGroupsAttributeGenerator;
@@ -263,6 +264,8 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                         ApiPlatformCoreAttributeGenerator::class,
                         ConstraintAttributeGenerator::class,
                         SerializerGroupsAttributeGenerator::class,
+                        // Configuration attribute generator needs to be last to merge its attributes with previously generated ones.
+                        ConfigurationAttributeGenerator::class,
                     ])
                     ->scalarPrototype()->end()
                 ->end()
