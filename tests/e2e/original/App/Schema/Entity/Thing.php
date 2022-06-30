@@ -12,9 +12,17 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @see https://schema.org/Thing
  */
-#[ORM\MappedSuperclass]
-abstract class Thing
+#[ORM\Entity]
+#[ORM\InheritanceType('JOINED')]
+#[ORM\DiscriminatorColumn(name: 'discr')]
+#[ORM\DiscriminatorMap(['thing' => Thing::class, 'person' => Person::class])]
+class Thing
 {
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
+
     /**
      * The name of the item.
      *
@@ -23,6 +31,11 @@ abstract class Thing
     #[ORM\Column(type: 'text', nullable: true)]
     #[ApiProperty(types: ['https://schema.org/name'])]
     private ?string $name = null;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function setName(?string $name): void
     {

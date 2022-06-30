@@ -23,10 +23,8 @@ use ApiPlatform\SchemaGenerator\SchemaGeneratorConfiguration;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
+use Nette\PhpGenerator\Literal;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\String\Inflector\EnglishInflector;
 
@@ -35,8 +33,6 @@ use Symfony\Component\String\Inflector\EnglishInflector;
  */
 class DoctrineOrmAttributeGeneratorTest extends TestCase
 {
-    use ProphecyTrait;
-
     private DoctrineOrmAttributeGenerator $generator;
 
     private array $classMap = [];
@@ -45,11 +41,22 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
     {
         $graph = new RdfGraph();
 
-        $product = new SchemaClass('Product', new RdfResource('https://schema.org/Product', $graph));
-        $product->isAbstract = true;
+        $thing = new SchemaClass('Thing', new RdfResource('https://schema.org/Thing', $graph));
+        $thing->isAbstract = true;
+        $thing->hasChild = true;
+        $this->classMap[$thing->name()] = $thing;
+
+        $organization = new SchemaClass('Organization', new RdfResource('https://schema.org/Organization', $graph));
+        $this->classMap[$organization->name()] = $organization;
+
+        $product = new SchemaClass('Product', new RdfResource('https://schema.org/Product', $graph), 'Thing');
+        $product->hasChild = true;
+        $product->isReferencedBy = [$organization];
         $this->classMap[$product->name()] = $product;
 
-        $vehicle = new SchemaClass('Vehicle', new RdfResource('htts://schema.org/Vehicle', $graph));
+        $vehicle = new SchemaClass('Vehicle', new RdfResource('htts://schema.org/Vehicle', $graph), 'Product');
+        $vehicle->hasChild = true;
+        $vehicle->isAbstract = true;
         $idProperty = new Property('id');
         $idProperty->rangeName = 'identifier';
         $idProperty->range = new RdfResource('https://schema.org/identifier');
@@ -134,6 +141,9 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
 
         $this->classMap[$vehicle->name()] = $vehicle;
 
+        $car = new SchemaClass('Car', new RdfResource('https://schema.org/Car', $graph), 'Vehicle');
+        $this->classMap[$car->name()] = $car;
+
         $quantitativeValue = new SchemaClass('QuantitativeValue', new RdfResource('https://schema.org/QuantitativeValue', $graph));
         $quantitativeValue->isEmbeddable = true;
         $this->classMap[$quantitativeValue->name()] = $quantitativeValue;
@@ -164,8 +174,14 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
     public function testGenerateClassAttributes(): void
     {
         $this->assertSame([], $this->generator->generateClassAttributes($this->classMap['MyEnum']));
-        $this->assertEquals([new Attribute('ORM\MappedSuperclass')], $this->generator->generateClassAttributes($this->classMap['Product']));
-        $this->assertEquals([new Attribute('ORM\Entity')], $this->generator->generateClassAttributes($this->classMap['Vehicle']));
+        $this->assertEquals([new Attribute('ORM\MappedSuperclass')], $this->generator->generateClassAttributes($this->classMap['Thing']));
+        $this->assertEquals([
+            new Attribute('ORM\Entity'),
+            new Attribute('ORM\InheritanceType', ['JOINED']),
+            new Attribute('ORM\DiscriminatorColumn', ['name' => 'discr']),
+            new Attribute('ORM\DiscriminatorMap', [['product' => new Literal('Product::class'), 'car' => new Literal('Car::class')]]),
+        ], $this->generator->generateClassAttributes($this->classMap['Product']));
+        $this->assertEquals([new Attribute('ORM\Entity')], $this->generator->generateClassAttributes($this->classMap['Car']));
         $this->assertEquals([new Attribute('ORM\Embeddable')], $this->generator->generateClassAttributes($this->classMap['QuantitativeValue']));
     }
 
@@ -219,14 +235,5 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
             [new Attribute('ORM\ManyToMany', ['targetEntity' => 'App\Entity\QuantitativeValue'])],
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('relationN_N'), 'Vehicle')
         );
-    }
-
-    public function testGenerateAbstractRelation(): void
-    {
-        $loggerProphecy = $this->prophesize(LoggerInterface::class);
-        $loggerProphecy->warning(Argument::cetera())->shouldBeCalledOnce();
-        $this->generator->setLogger($loggerProphecy->reveal());
-
-        $this->assertSame([], $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('product'), 'Vehicle'));
     }
 }

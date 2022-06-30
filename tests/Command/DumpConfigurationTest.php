@@ -76,9 +76,6 @@ config:
         # Is the ID writable? Only applicable if "generationStrategy" is "uuid".
         writable:             false
 
-        # Set to "child" to generate the id on the child class, and "parent" to use the parent class instead.
-        onClass:              child # One of "child"; "parent"
-
     # Generate interfaces and use Doctrine's Resolve Target Entity feature
     useInterface:         false
 
@@ -129,6 +126,9 @@ config:
 
         # Doctrine inheritance attributes (if set, no other attributes are generated)
         inheritanceAttributes: []
+
+        # The inheritance type to use when an entity is referenced by another and has child
+        inheritanceType:      JOINED # One of "JOINED"; "SINGLE_TABLE"; "SINGLE_COLLECTION"; "TABLE_PER_CLASS"; "COLLECTION_PER_CLASS"; "NONE"
 
     # Symfony Validator Component
     validator:

@@ -78,9 +78,9 @@ class ApiPlatformCoreAttributeGeneratorTest extends TestCase
         ];
         yield 'with operations (old)' => [$class, [new Attribute('ApiResource', ['iri' => 'https://schema.org/WithOperations', 'itemOperations' => ['get' => ['route_name' => 'api_about_get']], 'collectionOperations' => []])], true];
 
-        $class = new SchemaClass('Abstract', new RdfResource('https://schema.org/Abstract'));
-        $class->isAbstract = true;
-        yield 'abstract' => [$class, []];
+        $class = new SchemaClass('HasChild', new RdfResource('https://schema.org/HasChild'));
+        $class->hasChild = true;
+        yield 'has child' => [$class, []];
 
         $resource = new RdfResource('https://schema.org/MyEnum', new RdfGraph());
         $resource->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);

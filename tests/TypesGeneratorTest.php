@@ -112,7 +112,7 @@ class TypesGeneratorTest extends TestCase
         $this->assertStringContainsString('public function removeArticleSection(string $articleSection): void', $article);
 
         $creativeWork = file_get_contents("$this->outputDir/App/Entity/CreativeWork.php");
-        $this->assertStringContainsString('abstract class CreativeWork extends Thing', $creativeWork);
+        $this->assertStringContainsString('class CreativeWork extends Thing', $creativeWork);
         $this->assertStringContainsString('private ?Person $author = null;', $creativeWork);
         $this->assertStringContainsString('private ?\DateTimeInterface $datePublished = null;', $creativeWork);
         $this->assertStringContainsString('private ?string $headline = null;', $creativeWork);
@@ -120,8 +120,6 @@ class TypesGeneratorTest extends TestCase
 
         $blogPosting = file_get_contents("$this->outputDir/App/Entity/BlogPosting.php");
         $this->assertStringContainsString('class BlogPosting extends SocialMediaPosting', $blogPosting);
-        $this->assertStringContainsString('private ?int $id = null;', $blogPosting);
-        $this->assertStringContainsString('public function getId(): ?int', $blogPosting);
 
         $socialMediaPosting = file_get_contents("$this->outputDir/App/Entity/SocialMediaPosting.php");
         $this->assertStringContainsString('abstract class SocialMediaPosting extends Article', $socialMediaPosting);
@@ -142,14 +140,18 @@ PHP, $socialMediaPosting);
 
         $person = file_get_contents("$this->outputDir/App/Entity/Person.php");
         $this->assertStringContainsString('class Person extends Thing', $person);
-        $this->assertStringContainsString('private ?int $id = null;', $person);
-        $this->assertStringContainsString('public function getId(): ?int', $person);
 
         $thing = file_get_contents("$this->outputDir/App/Entity/Thing.php");
         $this->assertStringContainsString(<<<'PHP'
 abstract class Thing
 {
+    private ?int $id = null;
     private ?string $name = null;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function setName(?string $name): void
     {
@@ -173,9 +175,7 @@ PHP, $thing);
 
         $competencyWorldEntity = file_get_contents("$this->outputDir/App/Entity/CompetencyWorldEntity.php");
         $this->assertStringContainsString('class CompetencyWorldEntity extends Thing', $competencyWorldEntity);
-        $this->assertStringContainsString('private ?int $id = null;', $competencyWorldEntity);
         $this->assertStringContainsString('private string $hasAppellation;', $competencyWorldEntity);
-        $this->assertStringContainsString('public function getId(): ?int', $competencyWorldEntity);
         $this->assertStringContainsString('public function setHasAppellation(string $hasAppellation): void', $competencyWorldEntity);
         $this->assertStringContainsString('public function getHasAppellation(): string', $competencyWorldEntity);
     }

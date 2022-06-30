@@ -43,17 +43,12 @@ class Person extends MyCustomClass implements MyCustomInterface
 
     private string $myProperty = 'foo';
 
-    #[MyCustomAttribute]
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'AUTO')]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
-
     /**
      * Family name. In the U.S., the last name of a Person.
      *
      * @see https://schema.org/familyName
      */
+    #[MyCustomAttribute]
     #[ORM\Column(type: 'text', nullable: true)]
     #[ApiProperty(types: ['https://schema.org/familyName'])]
     private ?string $familyName = null;
@@ -150,6 +145,7 @@ class Person extends MyCustomClass implements MyCustomInterface
      *
      * @see https://schema.org/knowsAbout
      */
+    #[ORM\ManyToOne(targetEntity: 'App\Schema\Entity\Thing')]
     #[ApiProperty(types: ['https://schema.org/knowsAbout'])]
     private ?Thing $knowsAbout = null;
 
@@ -165,11 +161,6 @@ class Person extends MyCustomClass implements MyCustomInterface
     public function getMyProperty(): string
     {
         return $this->myProperty;
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function setFamilyName(?string $familyName): void

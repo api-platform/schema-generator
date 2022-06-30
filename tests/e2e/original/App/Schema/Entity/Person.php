@@ -35,11 +35,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity('email')]
 class Person extends Thing
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'AUTO')]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
-
     /**
      * Family name. In the U.S., the last name of a Person.
      *
@@ -141,6 +136,7 @@ class Person extends Thing
      *
      * @see https://schema.org/knowsAbout
      */
+    #[ORM\ManyToOne(targetEntity: 'App\Schema\Entity\Thing')]
     #[ApiProperty(types: ['https://schema.org/knowsAbout'])]
     private ?Thing $knowsAbout = null;
 
@@ -153,11 +149,6 @@ class Person extends Thing
     public function __construct()
     {
         $this->siblings = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function setFamilyName(?string $familyName): void
