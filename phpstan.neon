@@ -42,7 +42,7 @@ parameters:
             array{
                  vocabularies: array{uri: string, format: string, allTypes: ?boolean, attributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]|null>}[],
                  vocabularyNamespace: string,
-                 relations: string[],
+                 relations: array{uris: string[], defaultCardinality: string},
                  debug: boolean,
                  apiPlatformOldAttributes: boolean,
                  id: array{generate: boolean, generationStrategy: string, writable: boolean},
