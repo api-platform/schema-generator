@@ -240,8 +240,8 @@ config:
                     # Is the property writable?
                     writable:             true
 
-                    # Is the property nullable?
-                    nullable:             true
+                    # Is the property nullable? (if null, cardinality will be used: will be true if no cardinality found)
+                    nullable:             null
 
                     # Is the property required?
                     required:             true

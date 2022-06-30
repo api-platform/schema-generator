@@ -123,16 +123,16 @@ class TypesGeneratorTest extends TestCase
 
         $socialMediaPosting = file_get_contents("$this->outputDir/App/Entity/SocialMediaPosting.php");
         $this->assertStringContainsString('abstract class SocialMediaPosting extends Article', $socialMediaPosting);
-        $this->assertStringContainsString('private ?CreativeWork $sharedContent = null;', $socialMediaPosting);
+        $this->assertStringContainsString('private CreativeWork $sharedContent;', $socialMediaPosting);
         $this->assertStringContainsString(<<<'PHP'
-    public function setSharedContent(?CreativeWork $sharedContent): void
+    public function setSharedContent(CreativeWork $sharedContent): void
     {
         $this->sharedContent = $sharedContent;
     }
 PHP, $socialMediaPosting);
 
         $this->assertStringContainsString(<<<'PHP'
-    public function getSharedContent(): ?CreativeWork
+    public function getSharedContent(): CreativeWork
     {
         return $this->sharedContent;
     }
@@ -175,9 +175,9 @@ PHP, $thing);
 
         $competencyWorldEntity = file_get_contents("$this->outputDir/App/Entity/CompetencyWorldEntity.php");
         $this->assertStringContainsString('class CompetencyWorldEntity extends Thing', $competencyWorldEntity);
-        $this->assertStringContainsString('private string $hasAppellation;', $competencyWorldEntity);
-        $this->assertStringContainsString('public function setHasAppellation(string $hasAppellation): void', $competencyWorldEntity);
-        $this->assertStringContainsString('public function getHasAppellation(): string', $competencyWorldEntity);
+        $this->assertStringContainsString('private ?string $hasAppellation = null;', $competencyWorldEntity);
+        $this->assertStringContainsString('public function setHasAppellation(?string $hasAppellation): void', $competencyWorldEntity);
+        $this->assertStringContainsString('public function getHasAppellation(): ?string', $competencyWorldEntity);
     }
 
     public function testGenerateVocabAllTypes(): void

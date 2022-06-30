@@ -77,19 +77,22 @@ class Person extends MyCustomClass implements MyCustomInterface
      *
      * @see https://schema.org/gender
      */
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column]
     #[ApiProperty(types: ['https://schema.org/gender'])]
+    #[Assert\NotNull]
     #[Assert\Choice(callback: [GenderType::class, 'toArray'])]
-    private ?string $gender = null;
+    private string $gender;
 
     /**
      * Physical address of the item.
      *
      * @see https://schema.org/address
      */
-    #[ORM\ManyToOne(targetEntity: 'App\Schema\Entity\PostalAddress')]
+    #[ORM\OneToOne(targetEntity: 'App\Schema\Entity\PostalAddress')]
+    #[ORM\JoinColumn(nullable: false)]
     #[ApiProperty(types: ['https://schema.org/address'])]
-    private ?PostalAddress $address = null;
+    #[Assert\NotNull]
+    private PostalAddress $address;
 
     /**
      * Date of birth.
@@ -145,13 +148,16 @@ class Person extends MyCustomClass implements MyCustomInterface
      *
      * @see https://schema.org/knowsAbout
      */
-    #[ORM\ManyToOne(targetEntity: 'App\Schema\Entity\Thing')]
+    #[ORM\OneToOne(targetEntity: 'App\Schema\Entity\Thing')]
+    #[ORM\JoinColumn(nullable: false)]
     #[ApiProperty(types: ['https://schema.org/knowsAbout'])]
-    private ?Thing $knowsAbout = null;
+    #[Assert\NotNull]
+    private Thing $knowsAbout;
 
     /** @see _:customColumn */
     #[ORM\Column(type: 'decimal', precision: 5, scale: 1, options: ['comment' => 'my comment'])]
-    private ?Person $customColumn = null;
+    #[Assert\NotNull]
+    private Person $customColumn;
 
     public function __construct()
     {
@@ -193,22 +199,22 @@ class Person extends MyCustomClass implements MyCustomInterface
         return $this->additionalName;
     }
 
-    public function setGender(?string $gender): void
+    public function setGender(string $gender): void
     {
         $this->gender = $gender;
     }
 
-    public function getGender(): ?string
+    public function getGender(): string
     {
         return $this->gender;
     }
 
-    public function setAddress(?PostalAddress $address): void
+    public function setAddress(PostalAddress $address): void
     {
         $this->address = $address;
     }
 
-    public function getAddress(): ?PostalAddress
+    public function getAddress(): PostalAddress
     {
         return $this->address;
     }
@@ -271,22 +277,22 @@ class Person extends MyCustomClass implements MyCustomInterface
         return $this->siblings;
     }
 
-    public function setKnowsAbout(?Thing $knowsAbout): void
+    public function setKnowsAbout(Thing $knowsAbout): void
     {
         $this->knowsAbout = $knowsAbout;
     }
 
-    public function getKnowsAbout(): ?Thing
+    public function getKnowsAbout(): Thing
     {
         return $this->knowsAbout;
     }
 
-    public function setCustomColumn(?Person $customColumn): void
+    public function setCustomColumn(Person $customColumn): void
     {
         $this->customColumn = $customColumn;
     }
 
-    public function getCustomColumn(): ?Person
+    public function getCustomColumn(): Person
     {
         return $this->customColumn;
     }

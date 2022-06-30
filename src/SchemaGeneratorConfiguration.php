@@ -245,7 +245,7 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                                         ->scalarNode('inversedBy')->defaultNull()->info('The doctrine inversed by attribute')->example('episodes')->end()
                                         ->booleanNode('readable')->defaultTrue()->info('Is the property readable?')->end()
                                         ->booleanNode('writable')->defaultTrue()->info('Is the property writable?')->end()
-                                        ->booleanNode('nullable')->defaultTrue()->info('Is the property nullable?')->end()
+                                        ->booleanNode('nullable')->defaultNull()->info('Is the property nullable? (if null, cardinality will be used: will be true if no cardinality found)')->end()
                                         ->booleanNode('required')->defaultTrue()->info('Is the property required?')->end()
                                         ->booleanNode('unique')->defaultFalse()->info('The property unique')->end()
                                         ->booleanNode('embedded')->defaultFalse()->info('Is the property embedded?')->end()
