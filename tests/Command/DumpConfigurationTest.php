@@ -52,11 +52,17 @@ config:
     # Namespace of the vocabulary to import
     vocabularyNamespace:  'https://schema.org/' # Example: 'http://www.w3.org/ns/activitystreams#'
 
-    # OWL relation files containing cardinality information in the GoodRelations format
-    relations:            # Example: 'https://archive.org/services/purl/goodrelations/v1.owl'
+    # Relations configuration
+    relations:
 
-        # Default:
-        - https://archive.org/services/purl/goodrelations/v1.owl
+        # OWL relation URIs containing cardinality information in the GoodRelations format
+        uris:                 # Example: 'https://archive.org/services/purl/goodrelations/v1.owl'
+
+            # Default:
+            - https://archive.org/services/purl/goodrelations/v1.owl
+
+        # The default cardinality to use when it cannot be extracted
+        defaultCardinality:   (1..1) # One of "(0..1)"; "(0..*)"; "(1..1)"; "(1..*)"; "(*..0)"; "(*..1)"; "(*..*)"
 
     # Debug mode
     debug:                false

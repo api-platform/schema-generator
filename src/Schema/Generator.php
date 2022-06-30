@@ -46,7 +46,7 @@ final class Generator
         }
 
         $relations = [];
-        foreach ($configuration['relations'] as $relation) {
+        foreach ($configuration['relations']['uris'] as $relation) {
             $relations[] = new \SimpleXMLElement($relation, 0, true);
         }
 

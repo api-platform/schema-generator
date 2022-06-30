@@ -71,7 +71,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
 
         $cardinality = $propertyConfig['cardinality'] ?? false;
         if (!$cardinality || CardinalitiesExtractor::CARDINALITY_UNKNOWN === $cardinality) {
-            $cardinality = $cardinalities[$propertyUri] ?? CardinalitiesExtractor::CARDINALITY_1_1;
+            $cardinality = $cardinalities[$propertyUri] ?? $config['relations']['defaultCardinality'];
         }
 
         $isArray = \in_array($cardinality, [
