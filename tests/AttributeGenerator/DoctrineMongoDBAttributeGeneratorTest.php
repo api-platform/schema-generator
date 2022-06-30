@@ -23,17 +23,13 @@ use ApiPlatform\SchemaGenerator\SchemaGeneratorConfiguration;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
+use Nette\PhpGenerator\Literal;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\String\Inflector\EnglishInflector;
 
 class DoctrineMongoDBAttributeGeneratorTest extends TestCase
 {
-    use ProphecyTrait;
-
     private DoctrineMongoDBAttributeGenerator $generator;
 
     private array $classMap = [];
@@ -42,11 +38,22 @@ class DoctrineMongoDBAttributeGeneratorTest extends TestCase
     {
         $graph = new RdfGraph();
 
-        $product = new SchemaClass('Product', new RdfResource('https://schema.org/Product', $graph));
-        $product->isAbstract = true;
+        $thing = new SchemaClass('Thing', new RdfResource('https://schema.org/Thing', $graph));
+        $thing->isAbstract = true;
+        $thing->hasChild = true;
+        $this->classMap[$thing->name()] = $thing;
+
+        $organization = new SchemaClass('Organization', new RdfResource('https://schema.org/Organization', $graph));
+        $this->classMap[$organization->name()] = $organization;
+
+        $product = new SchemaClass('Product', new RdfResource('https://schema.org/Product', $graph), 'Thing');
+        $product->hasChild = true;
+        $product->isReferencedBy = [$organization];
         $this->classMap[$product->name()] = $product;
 
-        $vehicle = new SchemaClass('Vehicle', new RdfResource('htts://schema.org/Vehicle', $graph));
+        $vehicle = new SchemaClass('Vehicle', new RdfResource('htts://schema.org/Vehicle', $graph), 'Product');
+        $vehicle->hasChild = true;
+        $vehicle->isAbstract = true;
         $idProperty = new Property('id');
         $idProperty->rangeName = 'identifier';
         $idProperty->range = new RdfResource('https://schema.org/identifier');
@@ -92,6 +99,9 @@ class DoctrineMongoDBAttributeGeneratorTest extends TestCase
 
         $this->classMap[$vehicle->name()] = $vehicle;
 
+        $car = new SchemaClass('Car', new RdfResource('https://schema.org/Car', $graph), 'Vehicle');
+        $this->classMap[$car->name()] = $car;
+
         $myEnum = new RdfResource('https://schema.org/MyEnum', $graph);
         $myEnum->add('rdfs:subClassOf', ['type' => 'uri', 'value' => TypesGenerator::SCHEMA_ORG_ENUMERATION]);
         $myEnumClass = new SchemaClass('MyEnum', $myEnum);
@@ -118,8 +128,14 @@ class DoctrineMongoDBAttributeGeneratorTest extends TestCase
     public function testGenerateClassAttributes(): void
     {
         $this->assertSame([], $this->generator->generateClassAttributes($this->classMap['MyEnum']));
-        $this->assertEquals([new Attribute('MongoDB\MappedSuperclass')], $this->generator->generateClassAttributes($this->classMap['Product']));
-        $this->assertEquals([new Attribute('MongoDB\Document')], $this->generator->generateClassAttributes($this->classMap['Vehicle']));
+        $this->assertEquals([new Attribute('MongoDB\MappedSuperclass')], $this->generator->generateClassAttributes($this->classMap['Thing']));
+        $this->assertEquals([
+            new Attribute('MongoDB\Document'),
+            new Attribute('MongoDB\InheritanceType', ['SINGLE_COLLECTION']),
+            new Attribute('MongoDB\DiscriminatorField', ['discr']),
+            new Attribute('MongoDB\DiscriminatorMap', [['product' => new Literal('Product::class'), 'car' => new Literal('Car::class')]]),
+        ], $this->generator->generateClassAttributes($this->classMap['Product']));
+        $this->assertEquals([new Attribute('MongoDB\Document')], $this->generator->generateClassAttributes($this->classMap['Car']));
     }
 
     public function testGenerateFieldAttributes(): void
@@ -148,14 +164,5 @@ class DoctrineMongoDBAttributeGeneratorTest extends TestCase
             [new Attribute('MongoDB\ReferenceMany', ['targetDocument' => 'Person'])],
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('relations'), 'Vehicle')
         );
-    }
-
-    public function testGenerateAbstractRelation(): void
-    {
-        $loggerProphecy = $this->prophesize(LoggerInterface::class);
-        $loggerProphecy->warning(Argument::cetera())->shouldBeCalledOnce();
-        $this->generator->setLogger($loggerProphecy->reveal());
-
-        $this->assertSame([], $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('product'), 'Vehicle'));
     }
 }

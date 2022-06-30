@@ -40,7 +40,11 @@ types:
         properties:
             name: ~
             slogan: ~
+    ContactPoint:
+        properties:
+            telephone: ~
     PostalAddress:
+        parent: ~
         properties:
             addressCountry: { range: https://schema.org/Text }
             addressLocality: ~

@@ -15,13 +15,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ApiResource(types: ['https://schema.org/PostalAddress'])]
-class PostalAddress
+class PostalAddress extends ContactPoint
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'AUTO')]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
-
     /**
      * The country. For example, USA. You can also provide the two-letter \[ISO 3166-1 alpha-2 country code\](http://en.wikipedia.org/wiki/ISO\_3166-1).
      *
@@ -66,11 +61,6 @@ class PostalAddress
     #[ORM\Column(type: 'text', nullable: true)]
     #[ApiProperty(types: ['https://schema.org/streetAddress'])]
     private ?string $streetAddress = null;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function setAddressCountry(?string $addressCountry): void
     {

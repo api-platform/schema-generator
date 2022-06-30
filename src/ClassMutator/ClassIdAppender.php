@@ -37,10 +37,9 @@ final class ClassIdAppender implements ClassMutatorInterface
     public function __invoke(Class_ $class, array $context): void
     {
         if (
-            $class->isEnum()
-            || $class->isEmbeddable
-            || ($class->hasParent() && 'parent' === $this->config['id']['onClass'])
-            || ($class->hasChild && 'child' === $this->config['id']['onClass'])
+            $class->isEmbeddable
+            || $class->isEnum()
+            || $class->hasParent()
         ) {
             return;
         }

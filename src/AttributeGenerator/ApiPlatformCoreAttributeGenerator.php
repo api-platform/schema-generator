@@ -44,7 +44,7 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
      */
     public function generateClassAttributes(Class_ $class): array
     {
-        if ($class->isAbstract || $class->isEnum()) {
+        if ($class->hasChild || $class->isEnum()) {
             return [];
         }
 

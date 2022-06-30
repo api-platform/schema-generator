@@ -42,6 +42,8 @@ abstract class Class_
     private array $constants = [];
     public bool $hasConstructor = false;
     public bool $parentHasConstructor = false;
+    /** @var Class_[] */
+    public array $isReferencedBy = [];
     public bool $isAbstract = false;
     public bool $hasChild = false;
     public bool $isEmbeddable = false;

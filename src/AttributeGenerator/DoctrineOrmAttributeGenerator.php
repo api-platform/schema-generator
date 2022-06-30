@@ -18,6 +18,8 @@ use ApiPlatform\SchemaGenerator\Model\Attribute;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\Model\Use_;
+use Nette\PhpGenerator\Literal;
+use function Symfony\Component\String\u;
 
 /**
  * Doctrine attribute generator.
@@ -51,17 +53,29 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
         }
 
         $attributes = [];
-        if ($class->isAbstract) {
-            if ($inheritanceAttributes = $this->config['doctrine']['inheritanceAttributes']) {
-                $attributes = [];
-                foreach ($inheritanceAttributes as $attributeName => $attributeArgs) {
-                    $attributes[] = new Attribute($attributeName, $attributeArgs);
-                }
-
-                return $attributes;
+        if ($class->hasChild && ($inheritanceAttributes = $this->config['doctrine']['inheritanceAttributes'])) {
+            foreach ($inheritanceAttributes as $attributeName => $attributeArgs) {
+                $attributes[] = new Attribute($attributeName, $attributeArgs);
             }
-
+        } elseif ($class->isAbstract) {
             $attributes[] = new Attribute('ORM\MappedSuperclass');
+        } elseif ($class->hasChild && $class->isReferencedBy) {
+            $parentNames = [$class->name()];
+            $childNames = [];
+            while (!empty($parentNames)) {
+                $directChildren = [];
+                foreach ($parentNames as $parentName) {
+                    $directChildren = array_merge($directChildren, array_filter($this->classes, fn (Class_ $childClass) => $parentName === $childClass->parent()));
+                }
+                $parentNames = array_keys($directChildren);
+                $childNames = array_merge($childNames, array_keys(array_filter($directChildren, fn (Class_ $childClass) => !$childClass->isAbstract)));
+            }
+            $mapNames = array_merge([$class->name()], $childNames);
+
+            $attributes[] = new Attribute('ORM\Entity');
+            $attributes[] = new Attribute('ORM\InheritanceType', [\in_array($this->config['doctrine']['inheritanceType'], ['JOINED', 'SINGLE_TABLE', 'TABLE_PER_CLASS', 'NONE'], true) ? $this->config['doctrine']['inheritanceType'] : 'JOINED']);
+            $attributes[] = new Attribute('ORM\DiscriminatorColumn', ['name' => 'discr']);
+            $attributes[] = new Attribute('ORM\DiscriminatorMap', [array_reduce($mapNames, fn (array $map, string $mapName) => $map + [u($mapName)->camel()->toString() => new Literal(sprintf('%s::class', $mapName))], [])]);
         } else {
             $attributes[] = new Attribute('ORM\Entity');
         }
@@ -72,8 +86,6 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
             }
 
             $attributes[] = new Attribute('ORM\Table', ['name' => strtolower($class->name())]);
-
-            return $attributes;
         }
 
         return $attributes;
@@ -271,16 +283,6 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
 
         if (!$reference) {
             $this->logger ? $this->logger->error('There is no reference for the property "{property}" from the class "{class}"', ['property' => $property->name(), 'class' => $className]) : null;
-
-            return null;
-        }
-
-        if ($reference->isAbstract && !$this->config['doctrine']['inheritanceAttributes']) {
-            $this->logger ? $this->logger->warning(
-                <<<'EOD'
-                Cannot create a relation from the property "{property}" of the class "{class}" to the class "{referenceClass}" because the latter is a Mapped Superclass.
-                If you want to add a relation anyway, use an inheritance mapping strategy and a discriminator column to do so.
-                EOD, ['property' => $property->name(), 'class' => $className, 'referenceClass' => $reference->shortName()]) : null;
 
             return null;
         }

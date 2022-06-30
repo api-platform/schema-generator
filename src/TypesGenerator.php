@@ -136,6 +136,8 @@ class TypesGenerator
         $classes = array_intersect_key($classes, array_flip($typeNamesToGenerate));
         $types = array_intersect_key($types, array_flip($typeNamesToGenerate));
 
+        $referencedByClasses = [];
+
         // Second pass
         foreach ($classes as $class) {
             /** @var $class SchemaClass */
@@ -154,6 +156,7 @@ class TypesGenerator
                 $typeName = $property->rangeName;
                 if (isset($classes[$typeName])) {
                     $property->reference = $classes[$typeName];
+                    $referencedByClasses[$typeName][$class->name()] = $class;
                 }
             }
 
@@ -162,8 +165,11 @@ class TypesGenerator
 
         // Third pass
         foreach ($classes as $class) {
+            $class->isReferencedBy = $referencedByClasses[$class->name()] ?? [];
             /* @var $class SchemaClass */
-            $class->isAbstract = $config['types'][$class->name()]['abstract'] ?? $class->hasChild;
+            $class->isAbstract = $config['types'][$class->name()]['abstract']
+                // Class is abstract if it has child and if it is not referenced by a relation
+                ?? ($class->hasChild && !$class->isReferencedBy);
 
             // When including all properties, ignore properties already set on parent
             if (($config['types'][$class->name()]['allProperties'] ?? true) && isset($classes[$class->parent()])) {
