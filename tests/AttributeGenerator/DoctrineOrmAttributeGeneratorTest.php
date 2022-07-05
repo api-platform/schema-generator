@@ -185,7 +185,7 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
         $this->assertEquals([new Attribute('ORM\Embeddable')], $this->generator->generateClassAttributes($this->classMap['QuantitativeValue']));
     }
 
-    public function testGenerateFieldAttributes(): void
+    public function testGeneratePropertyAttributes(): void
     {
         $this->assertEquals(
             [new Attribute('ORM\Id'), new Attribute('ORM\Column', ['type' => 'integer'])],
@@ -224,15 +224,15 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('relationN_1'), 'Vehicle')
         );
         $this->assertEquals(
-            [new Attribute('ORM\ManyToMany', ['targetEntity' => 'App\Entity\QuantitativeValue']), new Attribute('ORM\InverseJoinColumn', ['unique' => true])],
+            [new Attribute('ORM\ManyToMany', ['targetEntity' => 'App\Entity\QuantitativeValue']), new Attribute('ORM\JoinTable', ['name' => 'vehicle_quantitative_value_relation0_n']), new Attribute('ORM\InverseJoinColumn', ['unique' => true])],
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('relation0_N'), 'Vehicle')
         );
         $this->assertEquals(
-            [new Attribute('ORM\ManyToMany', ['targetEntity' => 'App\Entity\QuantitativeValue']), new Attribute('ORM\InverseJoinColumn', ['nullable' => false, 'unique' => true])],
+            [new Attribute('ORM\ManyToMany', ['targetEntity' => 'App\Entity\QuantitativeValue']), new Attribute('ORM\JoinTable', ['name' => 'vehicle_quantitative_value_relation1_n']), new Attribute('ORM\InverseJoinColumn', ['nullable' => false, 'unique' => true])],
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('relation1_N'), 'Vehicle')
         );
         $this->assertEquals(
-            [new Attribute('ORM\ManyToMany', ['targetEntity' => 'App\Entity\QuantitativeValue'])],
+            [new Attribute('ORM\ManyToMany', ['targetEntity' => 'App\Entity\QuantitativeValue']), new Attribute('ORM\JoinTable', ['name' => 'vehicle_quantitative_value_relation_nn'])],
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('relationN_N'), 'Vehicle')
         );
     }

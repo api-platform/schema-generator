@@ -32,8 +32,6 @@ abstract class Property
     /** @var bool can be true and array type false if the property is an array of references */
     public bool $isArray = false;
     public ?Class_ $reference = null;
-    /** @var array<string, string|string[]> */
-    public ?array $ormColumn = null;
     public bool $isReadable = true;
     public bool $isWritable = true;
     public bool $isRequired = false;
@@ -47,7 +45,6 @@ abstract class Property
     public $columnPrefix = false;
     public bool $isId = false;
     public ?string $typeHint = null;
-    public ?string $relationTableName = null;
     public bool $isEnum = false;
     public ?string $adderRemoverTypeHint = null;
     /** @var string[] */

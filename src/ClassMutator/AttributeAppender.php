@@ -44,6 +44,11 @@ final class AttributeAppender implements ClassMutatorInterface
         $this->generatePropertiesAttributes($class);
     }
 
+    public function appendLate(Class_ $class): void
+    {
+        $this->generateLateClassAttributes($class);
+    }
+
     private function generateClassUses(Class_ $class): void
     {
         $interfaceNamespace = isset($this->classes[$class->name()]) ? $this->classes[$class->name()]->interfaceNamespace() : null;
@@ -84,6 +89,15 @@ final class AttributeAppender implements ClassMutatorInterface
                 foreach ($attributeGenerator->generatePropertyAttributes($property, $class->name()) as $propertyAttribute) {
                     $property->addAttribute($propertyAttribute);
                 }
+            }
+        }
+    }
+
+    private function generateLateClassAttributes(Class_ $class): void
+    {
+        foreach ($this->attributeGenerators as $generator) {
+            foreach ($generator->generateLateClassAttributes($class) as $attribute) {
+                $class->addAttribute($attribute);
             }
         }
     }

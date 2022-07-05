@@ -66,6 +66,14 @@ abstract class AbstractAttributeGenerator implements AttributeGeneratorInterface
     /**
      * {@inheritdoc}
      */
+    public function generateLateClassAttributes(Class_ $class): array
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function generateUses(Class_ $class): array
     {
         return [];

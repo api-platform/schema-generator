@@ -196,9 +196,13 @@ final class ClassGenerator
             $attributeGenerators[] = $generator;
         }
 
+        $attributeAppender = new AttributeAppender($classes, $attributeGenerators);
         foreach ($classes as $class) {
             (new AnnotationsAppender($classes, $annotationGenerators, []))($class, []);
-            (new AttributeAppender($classes, $attributeGenerators))($class, []);
+            $attributeAppender($class, []);
+        }
+        foreach ($classes as $class) {
+            $attributeAppender->appendLate($class);
         }
 
         return $classes;

@@ -139,6 +139,7 @@ class Person extends MyCustomClass implements MyCustomInterface
      * @see https://schema.org/siblings
      */
     #[ORM\ManyToMany(targetEntity: 'App\Schema\Entity\Person')]
+    #[ORM\JoinTable(name: 'person_person_siblings')]
     #[ORM\InverseJoinColumn(unique: true)]
     #[ApiProperty(types: ['https://schema.org/siblings'])]
     private ?Collection $siblings = null;
@@ -155,9 +156,8 @@ class Person extends MyCustomClass implements MyCustomInterface
     private Thing $knowsAbout;
 
     /** @see _:customColumn */
-    #[ORM\Column(type: 'decimal', precision: 5, scale: 1, options: ['comment' => 'my comment'])]
-    #[Assert\NotNull]
-    private Person $customColumn;
+    #[ORM\Column(type: 'decimal', nullable: true, precision: 5, scale: 1, options: ['comment' => 'my comment'])]
+    private ?string $customColumn = null;
 
     public function __construct()
     {
@@ -287,12 +287,12 @@ class Person extends MyCustomClass implements MyCustomInterface
         return $this->knowsAbout;
     }
 
-    public function setCustomColumn(Person $customColumn): void
+    public function setCustomColumn(?string $customColumn): void
     {
         $this->customColumn = $customColumn;
     }
 
-    public function getCustomColumn(): Person
+    public function getCustomColumn(): ?string
     {
         return $this->customColumn;
     }

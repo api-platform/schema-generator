@@ -52,7 +52,6 @@ final class IdPropertyGenerator implements IdPropertyGeneratorInterface
         }
 
         $property->cardinality = CardinalitiesExtractor::CARDINALITY_1_1;
-        $property->ormColumn = null;
         $property->isWritable = $writable;
         $property->isNullable = $nullable;
         $property->isUnique = false;

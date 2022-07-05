@@ -18,10 +18,7 @@ trait AddAttributeTrait
     public function addAttribute(Attribute $attribute): self
     {
         if (!\in_array($attribute, $this->attributes, true)) {
-            if (empty(array_filter(
-                $this->attributes,
-                fn (Attribute $attr) => $attr->name() === $attribute->name()
-            ))) {
+            if (!$this->getAttributeWithName($attribute->name())) {
                 if ($attribute->append) {
                     $this->attributes[] = $attribute;
                 }
@@ -36,5 +33,13 @@ trait AddAttributeTrait
         }
 
         return $this;
+    }
+
+    public function getAttributeWithName(string $name): ?Attribute
+    {
+        return array_values(array_filter(
+            $this->attributes,
+            fn (Attribute $attr) => $attr->name() === $name
+        ))[0] ?? null;
     }
 }

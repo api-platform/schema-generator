@@ -138,7 +138,7 @@ class DoctrineMongoDBAttributeGeneratorTest extends TestCase
         $this->assertEquals([new Attribute('MongoDB\Document')], $this->generator->generateClassAttributes($this->classMap['Car']));
     }
 
-    public function testGenerateFieldAttributes(): void
+    public function testGeneratePropertyAttributes(): void
     {
         $this->assertEquals(
             [new Attribute('MongoDB\Id', ['strategy' => 'INCREMENT'])],

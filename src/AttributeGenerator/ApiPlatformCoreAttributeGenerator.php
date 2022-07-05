@@ -81,13 +81,9 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
             } else {
                 $arguments['operations'] = [];
                 foreach ($class->operations as $operationMetadataClass => $methodConfig) {
-                    $arguments['operations'][] = new Literal(sprintf('new %s(%s)',
+                    $arguments['operations'][] = new Literal(sprintf('new %s(...?:)',
                         $operationMetadataClass,
-                        implode(', ', array_map(
-                            fn ($k, $v) => sprintf('%s: %s', $k, (\is_string($v) ? sprintf("'%s'", addslashes($v)) : (\is_scalar($v) ? $v : ''))),
-                            array_keys($methodConfig ?? []), array_values($methodConfig ?? [])
-                        ))
-                    ));
+                    ), [$methodConfig ?? []]);
                 }
             }
         }
