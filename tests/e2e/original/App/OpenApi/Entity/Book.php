@@ -88,6 +88,7 @@ class Book
      * @see https://schema.org/reviews
      */
     #[ORM\OneToMany(targetEntity: 'App\OpenApi\Entity\Review', mappedBy: 'book')]
+    #[ORM\JoinTable(name: 'book_review_reviews')]
     #[ORM\InverseJoinColumn(nullable: false, unique: true)]
     #[ApiProperty(types: ['https://schema.org/reviews'])]
     #[Assert\NotNull]

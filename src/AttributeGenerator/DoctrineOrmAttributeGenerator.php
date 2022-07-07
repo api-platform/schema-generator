@@ -28,6 +28,8 @@ use function Symfony\Component\String\u;
  */
 final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
 {
+    use GenerateIdentifierNameTrait;
+
     private const RESERVED_KEYWORDS = [
         'add',
         'create',
@@ -85,7 +87,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                 continue;
             }
 
-            $attributes[] = new Attribute('ORM\Table', ['name' => strtolower($class->name())]);
+            $attributes[] = new Attribute('ORM\Table', ['name' => $this->generateIdentifierName($class->name(), 'table', $this->config)]);
         }
 
         return $attributes;
@@ -100,16 +102,8 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
             return [];
         }
 
-        if ($property->ormColumn) {
-            return [new Attribute('ORM\Column', $property->ormColumn)];
-        }
-
         if ($property->isId) {
             return $this->generateIdAttributes();
-        }
-
-        if (isset($this->config['types'][$className]['properties'][$property->name()])) {
-            $property->relationTableName = $this->config['types'][$className]['properties'][$property->name()]['relationTableName'];
         }
 
         $type = null;
@@ -173,13 +167,21 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
             return [new Attribute('ORM\Column', $args)];
         }
 
-        if (null === $relationName = $this->getRelationName($property, $className)) {
+        if (!$property->reference) {
+            $this->logger ? $this->logger->error('There is no reference for the property "{property}" from the class "{class}"', ['property' => $property->name(), 'class' => $className]) : null;
+
+            return [];
+        }
+
+        if (null === $relationName = $this->getRelationName($property)) {
             return [];
         }
 
         if ($property->isEmbedded) {
             return [new Attribute('ORM\Embedded', ['class' => $relationName, 'columnPrefix' => $property->columnPrefix])];
         }
+
+        $relationTableName = $this->generateIdentifierName($className.ucfirst($property->reference->name()).ucfirst($property->name()), 'join_table', $this->config);
 
         $attributes = [];
         switch ($property->cardinality) {
@@ -212,9 +214,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                 } else {
                     $attributes[] = new Attribute('ORM\ManyToMany', ['targetEntity' => $relationName]);
                 }
-                if ($property->relationTableName) {
-                    $attributes[] = new Attribute('ORM\JoinTable', ['name' => $property->relationTableName]);
-                }
+                $attributes[] = new Attribute('ORM\JoinTable', ['name' => $relationTableName]);
                 $attributes[] = new Attribute('ORM\InverseJoinColumn', ['unique' => true]);
                 break;
             case CardinalitiesExtractor::CARDINALITY_1_N:
@@ -223,16 +223,12 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                 } else {
                     $attributes[] = new Attribute('ORM\ManyToMany', ['targetEntity' => $relationName]);
                 }
-                if ($property->relationTableName) {
-                    $attributes[] = new Attribute('ORM\JoinTable', ['name' => $property->relationTableName]);
-                }
+                $attributes[] = new Attribute('ORM\JoinTable', ['name' => $relationTableName]);
                 $attributes[] = new Attribute('ORM\InverseJoinColumn', ['nullable' => false, 'unique' => true]);
                 break;
             case CardinalitiesExtractor::CARDINALITY_N_N:
                 $attributes[] = new Attribute('ORM\ManyToMany', ['targetEntity' => $relationName]);
-                if ($property->relationTableName) {
-                    $attributes[] = new Attribute('ORM\JoinTable', ['name' => $property->relationTableName]);
-                }
+                $attributes[] = new Attribute('ORM\JoinTable', ['name' => $relationTableName]);
                 break;
         }
 
@@ -277,13 +273,11 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
     /**
      * Gets class or interface name to use in relations.
      */
-    private function getRelationName(Property $property, string $className): ?string
+    private function getRelationName(Property $property): ?string
     {
         $reference = $property->reference;
 
         if (!$reference) {
-            $this->logger ? $this->logger->error('There is no reference for the property "{property}" from the class "{class}"', ['property' => $property->name(), 'class' => $className]) : null;
-
             return null;
         }
 

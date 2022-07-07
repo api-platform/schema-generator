@@ -157,7 +157,6 @@ final class PropertyGenerator implements PropertyGeneratorInterface
         $schemaProperty->rangeName = $rangeName;
         $schemaProperty->type = $type;
         $schemaProperty->cardinality = $cardinality;
-        $schemaProperty->ormColumn = $propertyConfig['ormColumn'] ?? null;
         $schemaProperty->isReadable = $propertyConfig['readable'] ?? true;
         $schemaProperty->isWritable = $propertyConfig['writable'] ?? true;
         $schemaProperty->isNullable = $isNullable;

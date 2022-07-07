@@ -126,7 +126,6 @@ class ClassPropertiesAppenderTest extends TestCase
         $expectedGivenNameProperty->type = 'string';
         $expectedGivenNameProperty->isNullable = true;
         $expectedGivenNameProperty->isRequired = true;
-        $expectedGivenNameProperty->ormColumn = [];
         yield 'with configuration' => [clone $person, (clone $person)->addProperty($expectedGivenNameProperty), $graph];
     }
 }

@@ -7,9 +7,7 @@ parameters:
             array{
                 exclude: boolean,
                 range: ?string,
-                relationTableName: ?string,
                 cardinality: string,
-                ormColumn: array<string, string|string[]>,
                 groups: string[],
                 mappedBy: ?string,
                 inversedBy: ?string,
@@ -51,7 +49,14 @@ parameters:
                  header: ?string,
                  namespaces: array{prefix: ?string, entity: string, enum: string, interface: string},
                  uses: array<string, array{alias: ?string}>,
-                 doctrine: array{useCollection: boolean, resolveTargetEntityConfigPath: ?string, resolveTargetEntityConfigType: 'XML'|'yaml', inheritanceAttributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]>, inheritanceType: 'JOINED'|'SINGLE_TABLE'|'SINGLE_COLLECTION'|'TABLE_PER_CLASS'|'COLLECTION_PER_CLASS'|'NONE'},
+                 doctrine: array{
+                     useCollection: boolean,
+                     resolveTargetEntityConfigPath: ?string,
+                     resolveTargetEntityConfigType: 'XML'|'yaml',
+                     inheritanceAttributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]>,
+                     inheritanceType: 'JOINED'|'SINGLE_TABLE'|'SINGLE_COLLECTION'|'TABLE_PER_CLASS'|'COLLECTION_PER_CLASS'|'NONE',
+                     maxIdentifierLength: integer
+                 },
                  validator: array{assertType: boolean},
                  author: false|string,
                  fieldVisibility: string,

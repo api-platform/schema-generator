@@ -17,6 +17,7 @@ use ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator;
 use ApiPlatform\SchemaGenerator\AttributeGenerator\ApiPlatformCoreAttributeGenerator;
 use ApiPlatform\SchemaGenerator\AttributeGenerator\ConfigurationAttributeGenerator;
 use ApiPlatform\SchemaGenerator\AttributeGenerator\ConstraintAttributeGenerator;
+use ApiPlatform\SchemaGenerator\AttributeGenerator\DoctrineOrmAssociationOverrideAttributeGenerator;
 use ApiPlatform\SchemaGenerator\AttributeGenerator\DoctrineOrmAttributeGenerator;
 use ApiPlatform\SchemaGenerator\AttributeGenerator\SerializerGroupsAttributeGenerator;
 use Symfony\Component\Config\Definition\Builder\NodeBuilder;
@@ -159,6 +160,7 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                             ->end()
                         ->end()
                         ->enumNode('inheritanceType')->defaultValue('JOINED')->values(['JOINED', 'SINGLE_TABLE', 'SINGLE_COLLECTION', 'TABLE_PER_CLASS', 'COLLECTION_PER_CLASS', 'NONE'])->info('The inheritance type to use when an entity is referenced by another and has child')->end()
+                        ->integerNode('maxIdentifierLength')->defaultValue(63)->info('Maximum length of any given database identifier, like tables or column names')->end()
                     ->end()
                 ->end()
                 ->arrayNode('validator')
@@ -221,7 +223,6 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                                     ->children()
                                         ->booleanNode('exclude')->defaultFalse()->info('Exclude this property, even if "allProperties" is set to true"')->end()
                                         ->scalarNode('range')->defaultNull()->info('The property range')->example('Offer')->end()
-                                        ->scalarNode('relationTableName')->defaultNull()->info('The relation table name')->example('organization_member')->end()
                                         ->enumNode('cardinality')->defaultValue(CardinalitiesExtractor::CARDINALITY_UNKNOWN)->values([
                                             CardinalitiesExtractor::CARDINALITY_0_1,
                                             CardinalitiesExtractor::CARDINALITY_0_N,
@@ -232,11 +233,6 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                                             CardinalitiesExtractor::CARDINALITY_N_N,
                                             CardinalitiesExtractor::CARDINALITY_UNKNOWN,
                                         ])->end()
-                                        ->arrayNode('ormColumn')
-                                            ->info('The doctrine column attribute content')
-                                            ->example('{type: "decimal", precision: 5, scale: 1, options: {comment: "my comment"}}')
-                                            ->variablePrototype()->end()
-                                        ->end()
                                         ->arrayNode('groups')
                                             ->info('Symfony Serialization Groups')
                                             ->scalarPrototype()->end()
@@ -268,6 +264,7 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                     ->info('Attribute generators to use')
                     ->defaultValue([
                         DoctrineOrmAttributeGenerator::class,
+                        DoctrineOrmAssociationOverrideAttributeGenerator::class,
                         ApiPlatformCoreAttributeGenerator::class,
                         ConstraintAttributeGenerator::class,
                         SerializerGroupsAttributeGenerator::class,

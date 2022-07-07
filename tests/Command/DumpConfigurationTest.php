@@ -136,6 +136,9 @@ config:
         # The inheritance type to use when an entity is referenced by another and has child
         inheritanceType:      JOINED # One of "JOINED"; "SINGLE_TABLE"; "SINGLE_COLLECTION"; "TABLE_PER_CLASS"; "COLLECTION_PER_CLASS"; "NONE"
 
+        # Maximum length of any given database identifier, like tables or column names
+        maxIdentifierLength:  63
+
     # Symfony Validator Component
     validator:
 
@@ -217,13 +220,7 @@ config:
 
                     # The property range
                     range:                null # Example: Offer
-
-                    # The relation table name
-                    relationTableName:    null # Example: organization_member
                     cardinality:          unknown # One of "(0..1)"; "(0..*)"; "(1..1)"; "(1..*)"; "(*..0)"; "(*..1)"; "(*..*)"; "unknown"
-
-                    # The doctrine column attribute content
-                    ormColumn:            [] # Example: '{type: "decimal", precision: 5, scale: 1, options: {comment: "my comment"}}'
 
                     # Symfony Serialization Groups
                     groups:               []
@@ -269,6 +266,7 @@ config:
 
         # Defaults:
         - ApiPlatform\SchemaGenerator\AttributeGenerator\DoctrineOrmAttributeGenerator
+        - ApiPlatform\SchemaGenerator\AttributeGenerator\DoctrineOrmAssociationOverrideAttributeGenerator
         - ApiPlatform\SchemaGenerator\AttributeGenerator\ApiPlatformCoreAttributeGenerator
         - ApiPlatform\SchemaGenerator\AttributeGenerator\ConstraintAttributeGenerator
         - ApiPlatform\SchemaGenerator\AttributeGenerator\SerializerGroupsAttributeGenerator

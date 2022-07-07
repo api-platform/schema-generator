@@ -35,7 +35,7 @@ types:
             url: ~
             siblings: { cardinality: "(0..*)" }
             knowsAbout: { range: https://schema.org/Thing }
-            customColumn: { ormColumn: {type: "decimal", precision: 5, scale: 1, options: {comment: "my comment"}} }
+            customColumn: { range: https://schema.org/Text, attributes: { ORM\Column: { type: "decimal", precision: 5, scale: 1, options: { comment: "my comment" } } } }
     Brand:
         properties:
             name: ~

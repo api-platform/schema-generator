@@ -10,15 +10,14 @@ types:
       gender: ~
       address: { range: PostalAddress }
       # Custom range and custom ORM\Column content
-      birthDate: { range: DateTime, ormColumn: { type: "datetimetz", nullable: true, options: { comment: "Birthdate with timezone." } } }
+      birthDate: { range: DateTime, attributes: { ORM\Column: { type: "datetimetz", nullable: true, options: { comment: "Birthdate with timezone." } } } }
       telephone: ~
       email: ~
       jobTitle: ~
-      # Default relation table name would be "person_organization" for all following fields, but we customize them
       affiliation: ~
-      brand: { relationTableName: "person_brand"}
-      memberOf: { range: "Organization", cardinality: (1..*), relationTableName: "person_memberof" }
-      worksFor: { range: "Organization", cardinality: (0..*), relationTableName: "person_worksfor" }
+      brand: { attributes: { ORM\JoinTable: { name: "person_brand" } } }
+      memberOf: { range: "Organization", cardinality: (1..*), attributes: { ORM\JoinTable: { name: "person_memberof" } } }
+      worksFor: { range: "Organization", cardinality: (0..*), attributes: { ORM\JoinTable: { name: "person_worksfor" } } }
       # url field is a custom one without definition, it should render error
       url: ~
       friends: { range: "Person", cardinality: (0..*) }
@@ -35,4 +34,4 @@ types:
     properties:
       name: ~
       # Custom property with custom ORM\Column content
-      adminCode: { range: https://schema.org/Text, ormColumn: { type: "string", length: 3, unique: true, nullable: false, options: { comment: "A code for central administration." } } }
+      adminCode: { range: https://schema.org/Text, attributes: { ORM\Column: { type: "string", length: 3, unique: true, nullable: false, options: { comment: "A code for central administration." } } } }

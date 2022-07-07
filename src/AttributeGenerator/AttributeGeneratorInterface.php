@@ -19,8 +19,6 @@ use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\Model\Use_;
 
 /**
- * Attribute Generator Interface.
- *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
 interface AttributeGeneratorInterface
@@ -38,6 +36,13 @@ interface AttributeGeneratorInterface
      * @return Attribute[]
      */
     public function generatePropertyAttributes(Property $property, string $className): array;
+
+    /**
+     * Generates class attributes once class and properties attributes for all classes have been generated.
+     *
+     * @return Attribute[]
+     */
+    public function generateLateClassAttributes(Class_ $class): array;
 
     /**
      * Generates uses.
