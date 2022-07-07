@@ -16,25 +16,21 @@ namespace ApiPlatform\SchemaGenerator;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\Schema\Model\Property as SchemaProperty;
-use ApiPlatform\SchemaGenerator\Schema\TypeConverter;
 
 final class PhpTypeConverter implements PhpTypeConverterInterface
 {
-    private TypeConverter $typeConverter;
-
-    public function __construct()
-    {
-        $this->typeConverter = new TypeConverter();
-    }
-
     public function getPhpType(Property $property, array $config = [], array $classes = []): ?string
     {
         if (!$property instanceof SchemaProperty) {
             throw new \LogicException(sprintf('Property "%s" has to be an instance of "%s".', $property->name(), SchemaProperty::class));
         }
 
-        if ($property->isArray && $property->range) {
-            return ($config['doctrine']['useCollection'] ?? false) && !$this->typeConverter->getType($property->range) ? 'Collection' : 'array';
+        if ($property->isArray && $property->reference) {
+            return ($config['doctrine']['useCollection'] ?? false) ? 'Collection' : 'array';
+        }
+
+        if ($property->isArray) {
+            return 'array';
         }
 
         return $this->getNonArrayType($property, $classes);

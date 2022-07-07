@@ -176,6 +176,8 @@ PHP, $thing);
         $competencyWorldEntity = file_get_contents("$this->outputDir/App/Entity/CompetencyWorldEntity.php");
         $this->assertStringContainsString('class CompetencyWorldEntity extends Thing', $competencyWorldEntity);
         $this->assertStringContainsString('private ?string $hasAppellation = null;', $competencyWorldEntity);
+        $this->assertStringContainsString('private ?string $hasDescription = null;', $competencyWorldEntity);
+        $this->assertStringContainsString('private array $intendedOccupation = [];', $competencyWorldEntity);
         $this->assertStringContainsString('public function setHasAppellation(?string $hasAppellation): void', $competencyWorldEntity);
         $this->assertStringContainsString('public function getHasAppellation(): ?string', $competencyWorldEntity);
     }
@@ -238,6 +240,23 @@ PHP, $thing);
         $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/hasAppellation', 'schema:domainIncludes', 'https://gitlab.com/mmorg/nodefr-2/CompetencyWorldEntity');
         $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/hasAppellation', 'schema:rangeIncludes', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
         $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/hasAppellation', 'schema:rangeIncludes', 'https://schema.org/Text');
+
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/hasDescription', 'rdf:type', 'rdf:Property');
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/hasDescription', 'schema:domainIncludes', 'https://gitlab.com/mmorg/nodefr-2/CompetencyWorldEntity');
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/hasDescription', 'schema:rangeIncludes', 'https://gitlab.com/mmorg/nodefr-2/n3-5');
+
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/n3-5', 'rdf:type', 'rdfs:Class');
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/n3-5', 'owl:unionOf', 'https://gitlab.com/mmorg/nodefr-2/n3-6');
+
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/n3-6', 'rdf:first', 'http://www.w3.org/2001/XMLSchema#language');
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/n3-6', 'rdf:rest', 'https://gitlab.com/mmorg/nodefr-2/n3-7');
+
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/n3-7', 'rdf:first', 'http://www.w3.org/2001/XMLSchema#string');
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/n3-7', 'rdf:rest', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
+
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/intendedOccupation', 'rdf:type', 'rdf:Property');
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/intendedOccupation', 'schema:domainIncludes', 'https://gitlab.com/mmorg/nodefr-2/CompetencyWorldEntity');
+        $nodeGraph->addResource('https://gitlab.com/mmorg/nodefr-2/intendedOccupation', 'schema:rangeIncludes', 'https://gitlab.com/mmorg/nodefr-2/specialCase');
 
         $graph = new RdfGraph(SchemaGeneratorConfiguration::SCHEMA_ORG_URI);
 
@@ -397,6 +416,7 @@ PHP, $thing);
             ],
             'attributeGenerators' => [
             ],
+            'relations' => ['defaultCardinality' => '(1..*)'],
             'allTypes' => true,
             'resolveTypes' => true,
         ];

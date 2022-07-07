@@ -181,8 +181,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
     {
         $localName = $range->localName();
         $dataType = (bool) $this->typeConverter->getType($range);
-        $ranges = [];
-        if (!$dataType && $range->isBNode()) {
+        if (!$dataType) {
             if (null !== ($unionOf = $range->get('owl:unionOf'))) {
                 return $this->getRanges($unionOf, $propertyConfig, $config);
             }
@@ -192,9 +191,9 @@ final class PropertyGenerator implements PropertyGeneratorInterface
                 if (null !== ($rdfRest = $range->get('rdf:rest'))) {
                     $ranges = array_merge($ranges, $this->getRanges($rdfRest, $propertyConfig, $config));
                 }
-            }
 
-            return $ranges;
+                return $ranges;
+            }
         }
 
         if (
