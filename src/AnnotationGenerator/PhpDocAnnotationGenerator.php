@@ -76,8 +76,8 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         $description = $this->formatDoc((string) $property->description(), true);
 
         $annotations = [];
-        if ($this->isDocUseful($property)) {
-            $annotations[] = sprintf('@var %s %s', $this->toPhpDocType($property), $this->escapePhpDoc($description[0]));
+        if ($this->isDocUseful($property) && $phpDocType = $this->toPhpDocType($property)) {
+            $annotations[] = sprintf('@var %s %s', $phpDocType, $this->escapePhpDoc($description[0]));
         } else {
             $annotations = $description;
             $annotations[] = '';
