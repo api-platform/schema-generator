@@ -178,7 +178,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
         }
 
         if ($property->isEmbedded) {
-            return [new Attribute('ORM\Embedded', ['class' => $relationName, 'columnPrefix' => $property->columnPrefix])];
+            return [new Attribute('ORM\Embedded', ['class' => $relationName])];
         }
 
         $relationTableName = $this->generateIdentifierName($className.ucfirst($property->reference->name()).ucfirst($property->name()), 'join_table', $this->config);

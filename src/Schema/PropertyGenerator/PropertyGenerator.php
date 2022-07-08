@@ -145,13 +145,6 @@ final class PropertyGenerator implements PropertyGeneratorInterface
             CardinalitiesExtractor::CARDINALITY_1_N,
         ], true));
 
-        $columnPrefix = false;
-        $isEmbedded = $propertyConfig['embedded'] ?? false;
-
-        if (true === $isEmbedded) {
-            $columnPrefix = $propertyConfig['columnPrefix'] ?? false;
-        }
-
         $schemaProperty->resource = $typeProperty;
         $schemaProperty->range = $range;
         $schemaProperty->rangeName = $rangeName;
@@ -162,8 +155,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
         $schemaProperty->isNullable = $isNullable;
         $schemaProperty->isRequired = $propertyConfig['required'] ?? false;
         $schemaProperty->isUnique = $propertyConfig['unique'] ?? false;
-        $schemaProperty->isEmbedded = $isEmbedded;
-        $schemaProperty->columnPrefix = $columnPrefix;
+        $schemaProperty->isEmbedded = $propertyConfig['embedded'] ?? false;
         $schemaProperty->mappedBy = $propertyConfig['mappedBy'] ?? null;
         $schemaProperty->inversedBy = $propertyConfig['inversedBy'] ?? null;
         $schemaProperty->groups = $propertyConfig['groups'] ?? [];
