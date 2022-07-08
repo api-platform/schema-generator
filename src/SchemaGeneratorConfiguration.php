@@ -19,7 +19,6 @@ use ApiPlatform\SchemaGenerator\AttributeGenerator\ConfigurationAttributeGenerat
 use ApiPlatform\SchemaGenerator\AttributeGenerator\ConstraintAttributeGenerator;
 use ApiPlatform\SchemaGenerator\AttributeGenerator\DoctrineOrmAssociationOverrideAttributeGenerator;
 use ApiPlatform\SchemaGenerator\AttributeGenerator\DoctrineOrmAttributeGenerator;
-use ApiPlatform\SchemaGenerator\AttributeGenerator\SerializerGroupsAttributeGenerator;
 use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -266,7 +265,6 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                         DoctrineOrmAssociationOverrideAttributeGenerator::class,
                         ApiPlatformCoreAttributeGenerator::class,
                         ConstraintAttributeGenerator::class,
-                        SerializerGroupsAttributeGenerator::class,
                         // Configuration attribute generator needs to be last to merge its attributes with previously generated ones.
                         ConfigurationAttributeGenerator::class,
                     ])
