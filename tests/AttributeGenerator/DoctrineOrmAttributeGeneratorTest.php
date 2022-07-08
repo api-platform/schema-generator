@@ -82,7 +82,6 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
         $weightProperty->type = 'nonPositiveInteger';
         $vehicle->addProperty($weightProperty);
         $prefixedWeightProperty = new Property('prefixedWeight');
-        $prefixedWeightProperty->columnPrefix = 'weight_';
         $prefixedWeightProperty->isEmbedded = true;
         $prefixedWeightProperty->rangeName = 'QuantitativeValue';
         $prefixedWeightProperty->range = new RdfResource('https://schema.org/QuantitativeValue');
@@ -204,7 +203,7 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('weight'), 'Vehicle')
         );
         $this->assertEquals(
-            [new Attribute('ORM\Embedded', ['class' => 'App\Entity\QuantitativeValue', 'columnPrefix' => 'weight_'])],
+            [new Attribute('ORM\Embedded', ['class' => 'App\Entity\QuantitativeValue'])],
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('prefixedWeight'), 'Vehicle')
         );
         $this->assertEquals(

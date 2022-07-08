@@ -41,8 +41,6 @@ abstract class Property
     public bool $isEmbedded = false;
     public ?string $mappedBy = null;
     public ?string $inversedBy = null;
-    /** @var string|bool */
-    public $columnPrefix = false;
     public bool $isId = false;
     public ?string $typeHint = null;
     public bool $isEnum = false;

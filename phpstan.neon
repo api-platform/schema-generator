@@ -17,7 +17,6 @@ parameters:
                 required: ?boolean,
                 unique: boolean,
                 embedded: boolean,
-                columnPrefix: false|string,
                 attributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]|null>
             }
         '''

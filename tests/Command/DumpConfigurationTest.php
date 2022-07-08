@@ -249,9 +249,6 @@ config:
                     # Is the property embedded?
                     embedded:             false
 
-                    # The property columnPrefix
-                    columnPrefix:         false
-
                     # Attributes (merged with generated attributes)
                     attributes:           []
 

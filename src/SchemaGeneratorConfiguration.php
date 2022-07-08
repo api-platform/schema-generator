@@ -245,7 +245,6 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                                         ->booleanNode('required')->defaultTrue()->info('Is the property required?')->end()
                                         ->booleanNode('unique')->defaultFalse()->info('The property unique')->end()
                                         ->booleanNode('embedded')->defaultFalse()->info('Is the property embedded?')->end()
-                                        ->scalarNode('columnPrefix')->defaultFalse()->info('The property columnPrefix')->end()
                                         ->append($attributesNode())
                                     ->end()
                                 ->end()
