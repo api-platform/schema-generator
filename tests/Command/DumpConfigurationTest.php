@@ -266,7 +266,6 @@ config:
         - ApiPlatform\SchemaGenerator\AttributeGenerator\DoctrineOrmAssociationOverrideAttributeGenerator
         - ApiPlatform\SchemaGenerator\AttributeGenerator\ApiPlatformCoreAttributeGenerator
         - ApiPlatform\SchemaGenerator\AttributeGenerator\ConstraintAttributeGenerator
-        - ApiPlatform\SchemaGenerator\AttributeGenerator\SerializerGroupsAttributeGenerator
         - ApiPlatform\SchemaGenerator\AttributeGenerator\ConfigurationAttributeGenerator
 
     # Directories for custom generator twig templates
