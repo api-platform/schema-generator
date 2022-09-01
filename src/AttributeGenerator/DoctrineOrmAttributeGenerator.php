@@ -19,6 +19,7 @@ use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\Model\Use_;
 use Nette\PhpGenerator\Literal;
+
 use function Symfony\Component\String\u;
 
 /**
@@ -125,8 +126,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                         case 'bool':
                             $type = 'boolean';
                             break;
-                        // TODO: use more precise types for int (smallint, bigint...)
-                        case 'int':
+                        case 'int': // TODO: use more precise types for int (smallint, bigint...)
                             $type = 'integer';
                             break;
                         case 'string':
@@ -266,13 +266,13 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
         switch ($this->config['id']['generationStrategy']) {
             case 'uuid':
                 $type = 'guid';
-            break;
+                break;
             case 'auto':
                 $type = 'integer';
-            break;
+                break;
             default:
                 $type = 'string';
-            break;
+                break;
         }
 
         $attributes[] = new Attribute('ORM\Column', ['type' => $type]);

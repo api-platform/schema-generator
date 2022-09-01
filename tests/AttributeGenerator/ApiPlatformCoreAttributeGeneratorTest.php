@@ -87,7 +87,7 @@ class ApiPlatformCoreAttributeGeneratorTest extends TestCase
         $class = new SchemaClass('Enum', $resource);
         yield 'enum' => [$class, []];
 
-        yield 'with short name' => [(new SchemaClass('WithShortName', new RdfResource('https://schema.org/DifferentLocalName', new RdfGraph()))), [new Attribute('ApiResource', ['shortName' => 'DifferentLocalName', 'types' => ['https://schema.org/DifferentLocalName']])]];
+        yield 'with short name' => [new SchemaClass('WithShortName', new RdfResource('https://schema.org/DifferentLocalName', new RdfGraph())), [new Attribute('ApiResource', ['shortName' => 'DifferentLocalName', 'types' => ['https://schema.org/DifferentLocalName']])]];
     }
 
     /**

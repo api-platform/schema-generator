@@ -273,7 +273,7 @@ config:
 
 
 YAML
-                ,
+            ,
             $commandTester->getDisplay()
         );
     }
