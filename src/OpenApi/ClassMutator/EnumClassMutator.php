@@ -17,6 +17,7 @@ use ApiPlatform\SchemaGenerator\ClassMutator\EnumClassMutator as BaseEnumClassMu
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\OpenApi\Model\Constant as OpenApiConstant;
 use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
+
 use function Symfony\Component\String\u;
 
 final class EnumClassMutator extends BaseEnumClassMutator

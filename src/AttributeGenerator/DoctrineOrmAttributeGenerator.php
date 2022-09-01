@@ -19,6 +19,7 @@ use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\Model\Use_;
 use Nette\PhpGenerator\Literal;
+
 use function Symfony\Component\String\u;
 
 /**
@@ -125,8 +126,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                         case 'bool':
                             $type = 'boolean';
                             break;
-                        // TODO: use more precise types for int (smallint, bigint...)
-                        case 'int':
+                        case 'int': // TODO: use more precise types for int (smallint, bigint...)
                             $type = 'integer';
                             break;
                         case 'string':
@@ -215,7 +215,12 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                     $attributes[] = new Attribute('ORM\ManyToMany', ['targetEntity' => $relationName]);
                 }
                 $attributes[] = new Attribute('ORM\JoinTable', ['name' => $relationTableName]);
-                $attributes[] = new Attribute('ORM\InverseJoinColumn', ['unique' => true]);
+                // Self-referencing relation
+                if ($className === $property->reference->name()) {
+                    $attributes[] = new Attribute('ORM\InverseJoinColumn', ['name' => $this->generateIdentifierName($this->inflector->singularize($property->name())[0].ucfirst($property->reference->name()).'Id', 'inverse_join_column', $this->config)]);
+                } else {
+                    $attributes[] = new Attribute('ORM\InverseJoinColumn', ['unique' => true]);
+                }
                 break;
             case CardinalitiesExtractor::CARDINALITY_1_N:
                 if (null !== $property->mappedBy) {
@@ -224,7 +229,12 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                     $attributes[] = new Attribute('ORM\ManyToMany', ['targetEntity' => $relationName]);
                 }
                 $attributes[] = new Attribute('ORM\JoinTable', ['name' => $relationTableName]);
-                $attributes[] = new Attribute('ORM\InverseJoinColumn', ['nullable' => false, 'unique' => true]);
+                // Self-referencing relation
+                if ($className === $property->reference->name()) {
+                    $attributes[] = new Attribute('ORM\InverseJoinColumn', ['name' => $this->generateIdentifierName($this->inflector->singularize($property->name())[0].ucfirst($property->reference->name()).'Id', 'inverse_join_column', $this->config), 'nullable' => false]);
+                } else {
+                    $attributes[] = new Attribute('ORM\InverseJoinColumn', ['nullable' => false, 'unique' => true]);
+                }
                 break;
             case CardinalitiesExtractor::CARDINALITY_N_N:
                 $attributes[] = new Attribute('ORM\ManyToMany', ['targetEntity' => $relationName]);
@@ -256,13 +266,13 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
         switch ($this->config['id']['generationStrategy']) {
             case 'uuid':
                 $type = 'guid';
-            break;
+                break;
             case 'auto':
                 $type = 'integer';
-            break;
+                break;
             default:
                 $type = 'string';
-            break;
+                break;
         }
 
         $attributes[] = new Attribute('ORM\Column', ['type' => $type]);

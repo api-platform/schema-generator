@@ -72,7 +72,7 @@ class GenerateCommandTest extends TestCase
         return $this->friends;
     }
 PHP
-        , $person);
+            , $person);
     }
 
     public function testCustomAttributes(): void
@@ -106,17 +106,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Book
 {
 PHP
-        , $book);
+            , $book);
 
         // Attributes given as unordered map.
         $this->assertStringContainsString(<<<'PHP'
     #[ORM\OneToMany(targetEntity: 'App\Entity\Review', mappedBy: 'book', cascade: ['persist', 'remove'])]
 PHP
-        , $book);
+            , $book);
         $this->assertStringContainsString(<<<'PHP'
     #[ORM\OrderBy(name: 'ASC')]
 PHP
-        , $book);
+            , $book);
     }
 
     public function testFluentMutators(): void
@@ -136,7 +136,7 @@ PHP
         return $this;
     }
 PHP
-        , $person);
+            , $person);
 
         $this->assertStringContainsString(<<<'PHP'
     public function addFriend(Person $friend): self
@@ -255,7 +255,7 @@ PHP
         return $this->id;
     }
 PHP
-        , $person);
+            , $person);
 
         $this->assertStringNotContainsString('setId(', $person);
     }
@@ -363,7 +363,7 @@ PHP
     }
 
 PHP
-        , $person);
+            , $person);
     }
 
     public function testDoNotGenerateId(): void

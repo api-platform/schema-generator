@@ -19,6 +19,7 @@ use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
 use ApiPlatform\SchemaGenerator\Model\Use_;
 use Nette\PhpGenerator\Literal;
+
 use function Symfony\Component\String\u;
 
 /**

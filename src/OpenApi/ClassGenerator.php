@@ -34,6 +34,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\String\Inflector\InflectorInterface;
+
 use function Symfony\Component\String\u;
 
 final class ClassGenerator
