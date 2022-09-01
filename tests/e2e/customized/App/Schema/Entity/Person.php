@@ -138,7 +138,7 @@ class Person extends MyCustomClass implements MyCustomInterface
      */
     #[ORM\ManyToMany(targetEntity: 'App\Schema\Entity\Person')]
     #[ORM\JoinTable(name: 'person_person_siblings')]
-    #[ORM\InverseJoinColumn(unique: true)]
+    #[ORM\InverseJoinColumn(name: 'sibling_person_id')]
     #[ApiProperty(types: ['https://schema.org/siblings'])]
     private ?Collection $siblings = null;
 

@@ -130,6 +130,13 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
         $relation1NProperty->cardinality = CardinalitiesExtractor::CARDINALITY_1_N;
         $relation1NProperty->isArray = true;
         $vehicle->addProperty($relation1NProperty);
+        $relation1NSelfReferencingProperty = new Property('relation1_N_self_referencing');
+        $relation1NSelfReferencingProperty->rangeName = 'Vehicle';
+        $relation1NSelfReferencingProperty->range = new RdfResource('https://schema.org/Vehicle');
+        $relation1NSelfReferencingProperty->reference = new SchemaClass('Vehicle', new RdfResource('htts://schema.org/Vehicle', $graph));
+        $relation1NSelfReferencingProperty->cardinality = CardinalitiesExtractor::CARDINALITY_1_N;
+        $relation1NSelfReferencingProperty->isArray = true;
+        $vehicle->addProperty($relation1NSelfReferencingProperty);
         $relationNNProperty = new Property('relationN_N');
         $relationNNProperty->rangeName = 'QuantitativeValue';
         $relationNNProperty->range = new RdfResource('https://schema.org/QuantitativeValue');
@@ -229,6 +236,10 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
         $this->assertEquals(
             [new Attribute('ORM\ManyToMany', ['targetEntity' => 'App\Entity\QuantitativeValue']), new Attribute('ORM\JoinTable', ['name' => 'vehicle_quantitative_value_relation1_n']), new Attribute('ORM\InverseJoinColumn', ['nullable' => false, 'unique' => true])],
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('relation1_N'), 'Vehicle')
+        );
+        $this->assertEquals(
+            [new Attribute('ORM\ManyToMany', ['targetEntity' => 'App\Entity\Vehicle']), new Attribute('ORM\JoinTable', ['name' => 'vehicle_vehicle_relation1_n_self_referencing']), new Attribute('ORM\InverseJoinColumn', ['name' => 'relation1_n_self_referencing_vehicle_id', 'nullable' => false])],
+            $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('relation1_N_self_referencing'), 'Vehicle')
         );
         $this->assertEquals(
             [new Attribute('ORM\ManyToMany', ['targetEntity' => 'App\Entity\QuantitativeValue']), new Attribute('ORM\JoinTable', ['name' => 'vehicle_quantitative_value_relation_nn'])],

@@ -215,7 +215,12 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                     $attributes[] = new Attribute('ORM\ManyToMany', ['targetEntity' => $relationName]);
                 }
                 $attributes[] = new Attribute('ORM\JoinTable', ['name' => $relationTableName]);
-                $attributes[] = new Attribute('ORM\InverseJoinColumn', ['unique' => true]);
+                // Self-referencing relation
+                if ($className === $property->reference->name()) {
+                    $attributes[] = new Attribute('ORM\InverseJoinColumn', ['name' => $this->generateIdentifierName($this->inflector->singularize($property->name())[0].ucfirst($property->reference->name()).'Id', 'inverse_join_column', $this->config)]);
+                } else {
+                    $attributes[] = new Attribute('ORM\InverseJoinColumn', ['unique' => true]);
+                }
                 break;
             case CardinalitiesExtractor::CARDINALITY_1_N:
                 if (null !== $property->mappedBy) {
@@ -224,7 +229,12 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                     $attributes[] = new Attribute('ORM\ManyToMany', ['targetEntity' => $relationName]);
                 }
                 $attributes[] = new Attribute('ORM\JoinTable', ['name' => $relationTableName]);
-                $attributes[] = new Attribute('ORM\InverseJoinColumn', ['nullable' => false, 'unique' => true]);
+                // Self-referencing relation
+                if ($className === $property->reference->name()) {
+                    $attributes[] = new Attribute('ORM\InverseJoinColumn', ['name' => $this->generateIdentifierName($this->inflector->singularize($property->name())[0].ucfirst($property->reference->name()).'Id', 'inverse_join_column', $this->config), 'nullable' => false]);
+                } else {
+                    $attributes[] = new Attribute('ORM\InverseJoinColumn', ['nullable' => false, 'unique' => true]);
+                }
                 break;
             case CardinalitiesExtractor::CARDINALITY_N_N:
                 $attributes[] = new Attribute('ORM\ManyToMany', ['targetEntity' => $relationName]);
