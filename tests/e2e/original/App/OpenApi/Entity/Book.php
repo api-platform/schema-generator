@@ -46,7 +46,7 @@ class Book
      *
      * @see https://schema.org/name
      */
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: 'text', name: '`title`')]
     #[ApiProperty(types: ['https://schema.org/name'])]
     #[Assert\NotNull]
     private string $title;

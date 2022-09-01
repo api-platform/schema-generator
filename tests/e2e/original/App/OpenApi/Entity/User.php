@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
+#[ORM\Table(name: '`user`')]
 #[ApiResource(operations: [new Get(), new Put(), new Delete()])]
 class User
 {
@@ -41,7 +42,7 @@ class User
     #[Assert\NotNull]
     private string $email;
 
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: 'text', name: '`password`')]
     #[ApiProperty]
     #[Assert\NotNull]
     private string $password;
