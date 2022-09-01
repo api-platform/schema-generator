@@ -202,7 +202,7 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('enum'), 'Vehicle')
         );
         $this->assertEquals(
-            [new Attribute('ORM\Column', ['type' => 'json', 'nullable' => true])],
+            [new Attribute('ORM\Column', ['type' => 'json', 'nullable' => true, 'name' => '`collection`'])],
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('collection'), 'Vehicle')
         );
         $this->assertEquals(

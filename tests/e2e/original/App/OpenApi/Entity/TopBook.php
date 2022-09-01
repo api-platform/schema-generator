@@ -23,7 +23,7 @@ class TopBook
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: 'text', name: '`title`')]
     #[ApiProperty]
     #[Assert\NotNull]
     private string $title;
@@ -33,7 +33,7 @@ class TopBook
     #[Assert\NotNull]
     private string $author;
 
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: 'text', name: '`part`')]
     #[ApiProperty]
     #[Assert\NotNull]
     private string $part;

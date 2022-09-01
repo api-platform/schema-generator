@@ -486,7 +486,7 @@ PHP
      *
      * @see http://www.w3.org/ns/activitystreams#content
      */
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: 'text', nullable: true, name: '`content`')]
     #[ApiProperty(types: ['http://www.w3.org/ns/activitystreams#content'])]
     private ?string $content = null;
 PHP
