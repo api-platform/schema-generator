@@ -27,7 +27,7 @@ class Parchment
     /**
      * The title of the book.
      */
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: 'text', name: '`title`')]
     #[ApiProperty]
     #[Assert\NotNull]
     private string $title;

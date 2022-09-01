@@ -1476,6 +1476,6 @@ class ExtractCardinalitiesCommandTest extends TestCase
 }
 
 JSON
-, $commandTester->getDisplay());
+            , $commandTester->getDisplay());
     }
 }

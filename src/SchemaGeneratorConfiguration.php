@@ -241,6 +241,7 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                                         ->booleanNode('readable')->defaultTrue()->info('Is the property readable?')->end()
                                         ->booleanNode('writable')->defaultTrue()->info('Is the property writable?')->end()
                                         ->booleanNode('nullable')->defaultNull()->info('Is the property nullable? (if null, cardinality will be used: will be true if no cardinality found)')->end()
+                                        ->variableNode('defaultValue')->defaultNull()->info('The property default value')->end()
                                         ->booleanNode('required')->defaultTrue()->info('Is the property required?')->end()
                                         ->booleanNode('unique')->defaultFalse()->info('The property unique')->end()
                                         ->booleanNode('embedded')->defaultFalse()->info('Is the property embedded?')->end()

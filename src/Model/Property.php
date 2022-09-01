@@ -27,6 +27,8 @@ abstract class Property
     public string $cardinality;
     /** @var ?string the data type (array and object are not one) */
     public ?string $type = null;
+    /** @var mixed */
+    public $defaultValue = null;
     /** @var ?string the array data type (object is not one) */
     public ?string $arrayType = null;
     /** @var bool can be true and array type false if the property is an array of references */
@@ -148,7 +150,9 @@ abstract class Property
             $property->setNullable($this->isNullable);
         }
 
-        if (($default = $this->guessDefaultGeneratedValue($useDoctrineCollections)) !== -1) {
+        if (null !== $this->defaultValue) {
+            $property->setValue($this->defaultValue);
+        } elseif (($default = $this->guessDefaultGeneratedValue($useDoctrineCollections)) !== -1) {
             $property->setValue($default);
         }
 

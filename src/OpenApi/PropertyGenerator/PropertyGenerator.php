@@ -19,6 +19,7 @@ use ApiPlatform\SchemaGenerator\OpenApi\Model\Property as OpenApiProperty;
 use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGenerator as CommonPropertyGenerator;
 use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGeneratorInterface;
 use cebe\openapi\spec\Schema;
+
 use function Symfony\Component\String\u;
 
 final class PropertyGenerator implements PropertyGeneratorInterface

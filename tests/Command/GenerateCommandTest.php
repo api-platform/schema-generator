@@ -72,7 +72,7 @@ class GenerateCommandTest extends TestCase
         return $this->friends;
     }
 PHP
-        , $person);
+            , $person);
     }
 
     public function testCustomAttributes(): void
@@ -104,19 +104,18 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(types: ['https://schema.org/Book'], routePrefix: '/library')]
 #[MyAttribute]
 class Book
-{
 PHP
-        , $book);
+            , $book);
 
         // Attributes given as unordered map.
         $this->assertStringContainsString(<<<'PHP'
     #[ORM\OneToMany(targetEntity: 'App\Entity\Review', mappedBy: 'book', cascade: ['persist', 'remove'])]
 PHP
-        , $book);
+            , $book);
         $this->assertStringContainsString(<<<'PHP'
     #[ORM\OrderBy(name: 'ASC')]
 PHP
-        , $book);
+            , $book);
     }
 
     public function testFluentMutators(): void
@@ -136,7 +135,7 @@ PHP
         return $this;
     }
 PHP
-        , $person);
+            , $person);
 
         $this->assertStringContainsString(<<<'PHP'
     public function addFriend(Person $friend): self
@@ -206,6 +205,22 @@ PHP
         $this->assertStringNotContainsString('setName(', $webPage);
     }
 
+    public function testPropertyDefault(): void
+    {
+        $outputDir = __DIR__.'/../../build/property-default';
+        $config = __DIR__.'/../config/property-default.yaml';
+        $this->fs->mkdir($outputDir);
+        $commandTester = new CommandTester(new GenerateCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $book = file_get_contents("$outputDir/App/Entity/Book.php");
+
+        $this->assertStringContainsString(<<<'PHP'
+    private string $availability = 'https://schema.org/InStock';
+PHP
+            , $book);
+    }
+
     public function testReadableWritable(): void
     {
         $outputDir = __DIR__.'/../../build/readable-writable';
@@ -255,7 +270,7 @@ PHP
         return $this->id;
     }
 PHP
-        , $person);
+            , $person);
 
         $this->assertStringNotContainsString('setId(', $person);
     }
@@ -363,7 +378,7 @@ PHP
     }
 
 PHP
-        , $person);
+            , $person);
     }
 
     public function testDoNotGenerateId(): void
@@ -486,7 +501,7 @@ PHP
      *
      * @see http://www.w3.org/ns/activitystreams#content
      */
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: 'text', nullable: true, name: '`content`')]
     #[ApiProperty(types: ['http://www.w3.org/ns/activitystreams#content'])]
     private ?string $content = null;
 PHP
