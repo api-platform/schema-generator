@@ -1,0 +1,7 @@
+types:
+  ItemAvailability: ~
+  Book:
+    properties:
+      availability:
+        range: ItemAvailability
+        defaultValue: "https://schema.org/InStock"

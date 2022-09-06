@@ -240,6 +240,9 @@ config:
                     # Is the property nullable? (if null, cardinality will be used: will be true if no cardinality found)
                     nullable:             null
 
+                    # The property default value
+                    defaultValue:         null
+
                     # Is the property required?
                     required:             true
 

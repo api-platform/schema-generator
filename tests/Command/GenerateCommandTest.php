@@ -206,6 +206,22 @@ PHP
         $this->assertStringNotContainsString('setName(', $webPage);
     }
 
+    public function testPropertyDefault(): void
+    {
+        $outputDir = __DIR__.'/../../build/property-default';
+        $config = __DIR__.'/../config/property-default.yaml';
+        $this->fs->mkdir($outputDir);
+        $commandTester = new CommandTester(new GenerateCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+
+        $book = file_get_contents("$outputDir/App/Entity/Book.php");
+
+        $this->assertStringContainsString(<<<'PHP'
+    private string $availability = 'https://schema.org/InStock';
+PHP
+            , $book);
+    }
+
     public function testReadableWritable(): void
     {
         $outputDir = __DIR__.'/../../build/readable-writable';
