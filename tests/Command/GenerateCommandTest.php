@@ -104,6 +104,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(types: ['https://schema.org/Book'], routePrefix: '/library')]
 #[MyAttribute]
 class Book
+{
 PHP
             , $book);
 

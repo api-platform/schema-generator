@@ -45,8 +45,9 @@ final class Generator
             $graphs[] = $graph;
         }
 
+        $relationsUris = $configuration['relations']['uris'];
         $relations = [];
-        foreach ($configuration['relations']['uris'] as $relation) {
+        foreach ($relationsUris as $relation) {
             $relations[] = new \SimpleXMLElement($relation, 0, true);
         }
 

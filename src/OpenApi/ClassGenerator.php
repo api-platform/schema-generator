@@ -137,12 +137,14 @@ final class ClassGenerator
         }
 
         // Second pass
+        $useInterface = $config['useInterface'];
+        $generateId = $config['id']['generate'];
         foreach ($classes as $class) {
-            if ($config['useInterface']) {
+            if ($useInterface) {
                 (new ClassInterfaceMutator($config['namespaces']['interface']))($class, []);
             }
 
-            if ($config['id']['generate']) {
+            if ($generateId) {
                 (new ClassIdAppender(new IdPropertyGenerator(), $config))($class, []);
             }
 

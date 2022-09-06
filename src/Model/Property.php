@@ -150,9 +150,9 @@ abstract class Property
             $property->setNullable($this->isNullable);
         }
 
-        if (null !== $this->defaultValue) {
-            $property->setValue($this->defaultValue);
-        } elseif (($default = $this->guessDefaultGeneratedValue($useDoctrineCollections)) !== -1) {
+        if (null !== $default = $this->defaultValue) {
+            $property->setValue($default);
+        } elseif (-1 !== $default = $this->guessDefaultGeneratedValue($useDoctrineCollections)) {
             $property->setValue($default);
         }
 

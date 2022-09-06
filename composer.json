@@ -51,7 +51,7 @@
         "symfony/string": "^5.2 || ^6.0"
     },
     "require-dev": {
-        "api-platform/core": "^v2.7.0-beta.1",
+        "api-platform/core": "^v2.7.0-rc.1",
         "doctrine/orm": "^2.7",
         "myclabs/php-enum": "^1.7",
         "symfony/doctrine-bridge": "^5.2 || ^6.0",
