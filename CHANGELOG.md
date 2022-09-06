@@ -1,5 +1,20 @@
 # Changelog
 
+## 5.0.0
+
+* feat: add OpenAPI support
+* feat: add API Platform 2.7/3 attributes generation
+* feat: custom attributes and custom attribute arguments
+* feat: add Doctrine ORM inheritance support (discriminator)
+* feat: manage association overrides for Doctrine ORM
+* feat: add `defaultCardinality` configuration for relations
+* feat: add `defaultValue` in property configuration
+* feat: add `resolveTypes` and `allTypes` parameters
+* refactor: better handling of data type (including lang string)
+* fix: self-referencing relations (Doctrine ORM)
+* fix: update reserved keywords
+* fix: remove simple in ODM attributes
+
 ## 4.0.1
 
 * fix: use FQCN when using an enum in callback constraint and remove ApiResource from the enum
