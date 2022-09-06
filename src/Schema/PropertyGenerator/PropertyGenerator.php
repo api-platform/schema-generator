@@ -108,7 +108,9 @@ final class PropertyGenerator implements PropertyGeneratorInterface
                 $range = new RdfResource($mappedUri);
             }
 
-            $rangeName = $this->phpTypeConverter->escapeIdentifier($range->localName());
+            if (\is_string($range->localName())) {
+                $rangeName = $this->phpTypeConverter->escapeIdentifier($range->localName());
+            }
         }
 
         if (!$ranges) {
@@ -172,7 +174,10 @@ final class PropertyGenerator implements PropertyGeneratorInterface
      */
     private function getRanges(RdfResource $range, ?array $propertyConfig, array $config): array
     {
-        $localName = $range->localName();
+        $localName = null;
+        if (\is_string($range->localName())) {
+            $localName = $range->localName();
+        }
         $dataType = (bool) $this->typeConverter->getType($range);
         if (!$dataType) {
             if (null !== ($unionOf = $range->get('owl:unionOf'))) {

@@ -35,7 +35,7 @@
         "php": ">=7.4",
         "ext-json": "*",
         "doctrine/inflector": "^1.4.3 || ^2.0",
-        "easyrdf/easyrdf": "^1.1",
+        "sweetrdf/easyrdf": "^1.6",
         "friendsofphp/php-cs-fixer": "^2.15 || ^3.0",
         "league/html-to-markdown": "^5.0",
         "psr/log": "^1.0 || ^2.0 || ^3.0",

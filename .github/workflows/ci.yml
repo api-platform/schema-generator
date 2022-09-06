@@ -16,8 +16,9 @@ jobs:
         php:
           - '7.4'
           - '8.0'
+          - '8.1'
         include:
-          - php: '8.0'
+          - php: '8.1'
             coverage: true
     steps:
       - uses: actions/checkout@v2
@@ -48,11 +49,11 @@ jobs:
           sudo chown -R $(whoami):$(whoami) .
 
       - name: Install dependencies
-        if: startsWith(matrix.php, '8.0')
+        if: startsWith(matrix.php, '8.1')
         run: composer install --prefer-dist --no-interaction --no-progress --ansi
 
       - name: Update dependencies
-        if: "!startsWith(matrix.php, '8.0')"
+        if: "!startsWith(matrix.php, '8.1')"
         run: composer update --no-interaction --no-progress --ansi
 
       - name: Enable code coverage
@@ -75,7 +76,7 @@ jobs:
         run: vendor/bin/phpstan analyse --ansi
 
       - name: Run e2e tests
-        if: startsWith(matrix.php, '8.0')
+        if: startsWith(matrix.php, '8.')
         run: bin/compile
 
       - name: Upload coverage results to Coveralls

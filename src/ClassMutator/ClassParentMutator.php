@@ -53,7 +53,9 @@ final class ClassParentMutator implements ClassMutatorInterface
                 $this->logger ? $this->logger->info(sprintf('The type "%s" has several supertypes. Using the first one.', $class->rdfType())) : null;
             }
 
-            $class->withParent($this->phpTypeConverter->escapeIdentifier($subclassOf[0]->localName()));
+            if (\is_string($parentLocalName = $subclassOf[0]->localName())) {
+                $class->withParent($this->phpTypeConverter->escapeIdentifier($parentLocalName));
+            }
         }
 
         if ($class->hasParent() && isset($this->config['types'][$class->parent()]['namespaces']['class'])) {
