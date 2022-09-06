@@ -100,7 +100,10 @@ class CardinalitiesExtractor
             return self::CARDINALITY_UNKNOWN;
         }
 
-        $localName = $property->localName();
+        if (!\is_string($localName = $property->localName())) {
+            return self::CARDINALITY_UNKNOWN;
+        }
+
         $fromGoodRelations = $this->goodRelationsBridge->extractCardinality($localName);
         if (false !== $fromGoodRelations) {
             return $fromGoodRelations;

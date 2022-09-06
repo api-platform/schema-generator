@@ -88,7 +88,9 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
             }
             // All properties
             foreach ($this->propertiesMap[$class->rdfType()] ?? [] as $property) {
-                unset($remainingProperties[$property->localName()]);
+                if (\is_string($property->localName())) {
+                    unset($remainingProperties[$property->localName()]);
+                }
                 if ($property->hasProperty(self::SCHEMA_ORG_SUPERSEDED_BY)) {
                     $supersededBy = $property->get(self::SCHEMA_ORG_SUPERSEDED_BY);
                     $this->logger ? $this->logger->info(sprintf('The property "%s" is superseded by "%s". Using the superseding property.', $property->getUri(), $supersededBy->getUri())) : null;
@@ -131,7 +133,11 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
      */
     private function generateField(array $config, SchemaClass $class, RdfResource $type, ?array $typeConfig, array $cardinalities, RdfResource $typeProperty, bool $isCustom = false): void
     {
-        $property = ($this->propertyGenerator)($typeProperty->localName(), $config, $class, ['type' => $type, 'typeConfig' => $typeConfig, 'cardinalities' => $cardinalities, 'property' => $typeProperty], $isCustom);
+        $property = null;
+
+        if (\is_string($typeProperty->localName())) {
+            $property = ($this->propertyGenerator)($typeProperty->localName(), $config, $class, ['type' => $type, 'typeConfig' => $typeConfig, 'cardinalities' => $cardinalities, 'property' => $typeProperty], $isCustom);
+        }
 
         if ($property) {
             $class->addProperty($property);

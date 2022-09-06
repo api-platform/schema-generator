@@ -175,7 +175,9 @@ class TypesGenerator
             if (($config['types'][$class->name()]['allProperties'] ?? true) && isset($classes[$class->parent()])) {
                 $type = $class->resource();
                 foreach ($propertiesMap[$type->getUri()] as $property) {
-                    $propertyName = $property->localName();
+                    if (!\is_string($propertyName = $property->localName())) {
+                        continue;
+                    }
                     if (!$class->hasProperty($propertyName)) {
                         continue;
                     }
@@ -350,7 +352,7 @@ class TypesGenerator
             $typesResources[] = [
                 'resources' => $parentClasses,
                 'uris' => array_map(static fn (RdfResource $parentClass) => $parentClass->getUri(), $parentClasses),
-                'names' => array_map(fn (RdfResource $parentClass) => $this->phpTypeConverter->escapeIdentifier($parentClass->localName()), $parentClasses),
+                'names' => array_map(fn (RdfResource $parentClass) => \is_string($parentClass->localName()) ? $this->phpTypeConverter->escapeIdentifier($parentClass->localName()) : $parentClass->getUri(), $parentClasses),
             ];
             $map[$type->getUri()] = [];
         }
@@ -382,7 +384,10 @@ class TypesGenerator
      */
     private function addPropertyToMap(RdfResource $property, RdfResource $domain, array $typesResources, array $config, array &$map): void
     {
-        $propertyName = $property->localName();
+        $propertyName = $property->getUri();
+        if (\is_string($property->localName())) {
+            $propertyName = $property->localName();
+        }
         $deprecated = $property->isA('owl:DeprecatedProperty');
 
         if ($domain->isBNode()) {

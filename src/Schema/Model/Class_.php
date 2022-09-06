@@ -51,7 +51,11 @@ final class Class_ extends BaseClass_
 
     public function shortName(): string
     {
-        return $this->resource->localName();
+        if (\is_string($shortName = $this->resource->localName())) {
+            return $shortName;
+        }
+
+        return $this->name();
     }
 
     /**
