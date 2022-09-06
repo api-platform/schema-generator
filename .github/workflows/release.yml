@@ -35,7 +35,7 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          name: Release ${{ github.ref }}
+          name: Release ${{ github.ref_name }}
           body: ''
           draft: false
           prerelease: false
