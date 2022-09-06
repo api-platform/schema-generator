@@ -21,13 +21,13 @@ jobs:
           - php: '8.1'
             coverage: true
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Get Composer Cache Directory
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
       
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -44,7 +44,7 @@ jobs:
 
       - name: Install prerequisites
         run: |
-          wget -O box.phar https://github.com/humbug/box/releases/download/3.13.0/box.phar
+          wget -O box.phar https://github.com/humbug/box/releases/download/4.0.2/box.phar
           echo "BOX_BIN=$(pwd)/box.phar" >> $GITHUB_ENV
           sudo chown -R $(whoami):$(whoami) .
 
@@ -76,7 +76,7 @@ jobs:
         run: vendor/bin/phpstan analyse --ansi
 
       - name: Run e2e tests
-        if: startsWith(matrix.php, '8.')
+        if: startsWith(matrix.php, '8.1')
         run: bin/compile
 
       - name: Upload coverage results to Coveralls

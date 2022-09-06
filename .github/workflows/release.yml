@@ -13,12 +13,12 @@ jobs:
       upload_url: ${{ steps.step_upload_url.outputs.upload_url }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       
       - name: Setup PHP with extensions
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.0'
+          php-version: '8.1'
           extensions: json
           ini-values: memory_limit=-1
           tools: composer
@@ -27,30 +27,16 @@ jobs:
         run: composer install --prefer-dist --no-interaction --no-progress --ansi
       
       - name: Download box.phar
-        run: wget -O box.phar https://github.com/humbug/box/releases/download/3.13.0/box.phar
+        run: wget -O box.phar https://github.com/humbug/box/releases/download/4.0.2/box.phar
       
       - name: Compile project
         run: php ./box.phar compile
 
       - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          name: Release ${{ github.ref }}
           body: ''
           draft: false
           prerelease: false
-
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./schema.phar
-          asset_name: schema.phar
-          asset_content_type: application/x-php
+          files: schema.phar
