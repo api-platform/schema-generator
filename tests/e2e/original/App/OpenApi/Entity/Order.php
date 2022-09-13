@@ -33,7 +33,7 @@ class Order
     #[Assert\NotNull]
     private int $quantity;
 
-    #[ORM\Column(type: 'date')]
+    #[ORM\Column(type: 'datetime')]
     #[ApiProperty]
     #[Assert\Type(\DateTimeInterface::class)]
     #[Assert\NotNull]

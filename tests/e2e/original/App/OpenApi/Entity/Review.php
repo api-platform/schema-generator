@@ -78,7 +78,7 @@ class Review
     /**
      * Publication date of the review.
      */
-    #[ORM\Column(type: 'date', nullable: true)]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     #[ApiProperty]
     #[Assert\Type(\DateTimeInterface::class)]
     private ?\DateTimeInterface $publicationDate = null;

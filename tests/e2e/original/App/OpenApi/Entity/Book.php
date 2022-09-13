@@ -76,7 +76,7 @@ class Book
      *
      * @see https://schema.org/dateCreated
      */
-    #[ORM\Column(type: 'date')]
+    #[ORM\Column(type: 'datetime')]
     #[ApiProperty(types: ['https://schema.org/dateCreated'])]
     #[Assert\Type(\DateTimeInterface::class)]
     #[Assert\NotNull]
@@ -101,7 +101,7 @@ class Book
     #[ApiProperty]
     private ?string $cover = null;
 
-    #[ORM\Column(type: 'date', nullable: true)]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     #[ApiProperty]
     #[Assert\Type(\DateTimeInterface::class)]
     private ?\DateTimeInterface $archivedAt = null;
