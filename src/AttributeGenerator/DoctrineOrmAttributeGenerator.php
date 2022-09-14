@@ -108,8 +108,11 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                 case 'time':
                     $type = 'time';
                     break;
-                case 'dateTime':
+                case 'date':
                     $type = 'date';
+                    break;
+                case 'dateTime':
+                    $type = 'datetime';
                     break;
                 default:
                     $type = $phpType;
@@ -124,7 +127,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                             $type = 'text';
                             break;
                         case '\\'.\DateTimeInterface::class:
-                            $type = 'date';
+                            $type = 'datetime';
                             break;
                         case '\\'.\DateInterval::class:
                             $type = 'string';
