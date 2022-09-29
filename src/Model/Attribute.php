@@ -28,6 +28,14 @@ final class Attribute
     public bool $append = true;
 
     /**
+     * Custom explicitly configured attributes is not mergeable with next one
+     * but treated as repeated if given more than once.
+     *
+     * @see ApiPlatform\SchemaGenerator\Model\AddAttributeTrait
+     */
+    public bool $mergeable = true;
+
+    /**
      * @param (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal|\Nette\PhpGenerator\Literal[])[] $args
      */
     public function __construct(string $name, array $args = [])
@@ -35,7 +43,9 @@ final class Attribute
         $this->name = $name;
 
         $this->append = (bool) ($args['alwaysGenerate'] ?? true);
-        unset($args['alwaysGenerate']);
+        $this->mergeable = (bool) ($args['mergeable'] ?? true);
+
+        unset($args['alwaysGenerate'], $args['mergeable']);
 
         $this->args = $args;
     }

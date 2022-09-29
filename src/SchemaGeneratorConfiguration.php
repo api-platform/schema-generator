@@ -49,13 +49,11 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
         $namespacePrefix = $this->defaultPrefix ?? 'App\\';
 
         /* @see https://yaml.org/type/omap.html */
-        $transformOmap = fn (array $nodeConfig) => !empty(array_filter(
-            $nodeConfig,
-            fn ($v, $k) => \is_int($k) && \is_array($v) && 1 === \count($v) && \is_string(array_keys($v)[0]),
-            \ARRAY_FILTER_USE_BOTH
-        ))
-            ? array_reduce(array_values($nodeConfig), fn (array $map, array $v) => $map + $v, [])
-            : $nodeConfig;
+        $transformOmap = fn (array $nodeConfig) => array_map(
+            fn ($v, $k) => \is_int($k) ? $v : [$k => $v],
+            array_values($nodeConfig),
+            array_keys($nodeConfig)
+        );
 
         // @phpstan-ignore-next-line node is not null
         $attributesNode = fn () => (new NodeBuilder())
