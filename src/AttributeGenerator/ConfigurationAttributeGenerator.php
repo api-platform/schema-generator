@@ -32,31 +32,36 @@ final class ConfigurationAttributeGenerator extends AbstractAttributeGenerator
             $vocabAttributes = $this->config['vocabularies'][$class->resource()->getGraph()->getUri()]['attributes'] ?? [[]];
         }
 
-        $getAttributesNames = fn (array $config) => $config === [[]]
+        $getAttributesNames = static fn (array $config) => $config === [[]]
             ? []
             : array_unique(array_map(fn (array $v) => array_keys($v)[0], $config));
         $typeAttributesNames = $getAttributesNames($typeAttributes);
         $vocabAttributesNames = $getAttributesNames($vocabAttributes);
 
-        $getAttribute = fn (string $name, $args) => new Attribute(
+        $getAttribute = static fn (string $name, array $args) => new Attribute(
             $name,
-            (\is_array($args) ? $args : [$args]) + [
+            $args + [
+                // An attribute from a vocabulary cannot be appended if a same one has not
+                // previously been generated or if the same one is not mergeable.
+                // It allows vocabulary attributes configuration to only merge the attributes args.
                 'alwaysGenerate' => !\in_array($name, $vocabAttributesNames, true) ||
                     \in_array($name, $typeAttributesNames, true),
+                // Custom explicitly configured attributes is not mergeable with next one
+                // but treated as repeated if given more than once.
                 'mergeable' => false,
             ]
         );
 
         $attributes = [];
         foreach ($vocabAttributes as $configAttributes) {
-            foreach ($configAttributes ?? [] as $attributeName => $attributeArgs) {
+            foreach ($configAttributes as $attributeName => $attributeArgs) {
                 if (!\in_array($attributeName, $typeAttributesNames, true)) {
                     $attributes[] = $getAttribute($attributeName, $attributeArgs ?? []);
                 }
             }
         }
         foreach ($typeAttributes as $configAttributes) {
-            foreach ($configAttributes ?? [] as $attributeName => $attributeArgs) {
+            foreach ($configAttributes as $attributeName => $attributeArgs) {
                 $attributes[] = $getAttribute($attributeName, $attributeArgs ?? []);
             }
         }
@@ -74,7 +79,7 @@ final class ConfigurationAttributeGenerator extends AbstractAttributeGenerator
 
         $attributes = [];
         foreach ($propertyAttributes as $configAttributes) {
-            foreach ($configAttributes ?? [] as $attributeName => $attributeArgs) {
+            foreach ($configAttributes as $attributeName => $attributeArgs) {
                 $attributes[] = new Attribute(
                     $attributeName,
                     ($attributeArgs ?? []) + ['mergeable' => false]

@@ -40,8 +40,10 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
 
         $attributes = [];
         if ($class->hasChild && ($inheritanceAttributes = $this->config['doctrine']['inheritanceAttributes'])) {
-            foreach ($inheritanceAttributes as $attributeName => $attributeArgs) {
-                $attributes[] = new Attribute($attributeName, $attributeArgs);
+            foreach ($inheritanceAttributes as $configAttributes) {
+                foreach ($configAttributes as $attributeName => $attributeArgs) {
+                    $attributes[] = new Attribute($attributeName, $attributeArgs ?? []);
+                }
             }
         } elseif ($class->isAbstract) {
             $attributes[] = new Attribute('MongoDB\MappedSuperclass');

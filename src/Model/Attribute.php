@@ -25,13 +25,17 @@ final class Attribute
     /** @var (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal|\Nette\PhpGenerator\Literal[])[] */
     private array $args;
 
+    /**
+     * If this attribute can be appended if a same one has not previously been generated or if the same one is not mergeable?
+     *
+     * @see \ApiPlatform\SchemaGenerator\Model\AddAttributeTrait
+     */
     public bool $append = true;
 
     /**
-     * Custom explicitly configured attributes is not mergeable with next one
-     * but treated as repeated if given more than once.
+     * If this attribute mergeable with the next one?
      *
-     * @see ApiPlatform\SchemaGenerator\Model\AddAttributeTrait
+     * @see \ApiPlatform\SchemaGenerator\Model\AddAttributeTrait
      */
     public bool $mergeable = true;
 

@@ -18,7 +18,7 @@ parameters:
                 required: ?boolean,
                 unique: boolean,
                 embedded: boolean,
-                attributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]|null>
+                attributes: list<array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]|null>>
             }
         '''
         TypeConfiguration: '''
@@ -28,7 +28,7 @@ parameters:
                 abstract: ?boolean,
                 embeddable: boolean,
                 namespaces: array{class: ?string, interface: ?string},
-                attributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]|null>,
+                attributes: list<array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]|null>>,
                 parent: false|string,
                 guessFrom: string,
                 operations: array<string, ?array<string, string|int|bool|string[]|null>>,
@@ -38,7 +38,7 @@ parameters:
         '''
         Configuration: '''
             array{
-                 vocabularies: array{uri: string, format: string, allTypes: ?boolean, attributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]|null>}[],
+                 vocabularies: array{uri: string, format: string, allTypes: ?boolean, attributes: list<array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]|null>>}[],
                  vocabularyNamespace: string,
                  relations: array{uris: string[], defaultCardinality: string},
                  debug: boolean,
@@ -53,7 +53,7 @@ parameters:
                      useCollection: boolean,
                      resolveTargetEntityConfigPath: ?string,
                      resolveTargetEntityConfigType: 'XML'|'yaml',
-                     inheritanceAttributes: array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]>,
+                     inheritanceAttributes: list<array<string, (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal)[]|null>>,
                      inheritanceType: 'JOINED'|'SINGLE_TABLE'|'SINGLE_COLLECTION'|'TABLE_PER_CLASS'|'COLLECTION_PER_CLASS'|'NONE',
                      maxIdentifierLength: integer
                  },

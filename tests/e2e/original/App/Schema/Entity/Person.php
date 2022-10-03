@@ -31,7 +31,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     security: 'is_granted(\'ROLE_USER\')',
 )]
-#[UniqueEntity('email')]
+#[UniqueEntity('email', 'givenName')]
+#[UniqueEntity('familyName')]
 class Person extends Thing
 {
     /**

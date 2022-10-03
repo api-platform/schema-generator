@@ -18,8 +18,8 @@ trait AddAttributeTrait
     public function addAttribute(Attribute $attribute): self
     {
         if (!\in_array($attribute, $this->attributes, true)) {
-            $curAttribute = $this->getAttributeWithName($attribute->name());
-            if (!$curAttribute || !$curAttribute->mergeable) {
+            $previousAttribute = $this->getAttributeWithName($attribute->name());
+            if (!$previousAttribute || !$previousAttribute->mergeable) {
                 if ($attribute->append) {
                     $this->attributes[] = $attribute;
                 }

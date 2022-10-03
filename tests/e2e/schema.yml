@@ -23,6 +23,10 @@ types:
             ORM\Entity: ~
             ApiResource:
                 security: "is_granted('ROLE_USER')"
+            0:
+                UniqueEntity: ['givenName']
+            1:
+                UniqueEntity: ['familyName']
         properties:
             familyName: ~
             givenName: ~
