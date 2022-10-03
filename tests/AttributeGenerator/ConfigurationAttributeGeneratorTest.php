@@ -45,17 +45,18 @@ class ConfigurationAttributeGeneratorTest extends TestCase
 
         yield 'type configuration' => [
             $class,
-            ['types' => ['Foo' => ['attributes' => ['ApiResource' => ['routePrefix' => '/prefix']]]]],
-            [new Attribute('ApiResource', ['routePrefix' => '/prefix'])],
+            ['types' => ['Foo' => ['attributes' => [['ApiResource' => ['routePrefix' => '/prefix']]]]]],
+            [new Attribute('ApiResource', ['routePrefix' => '/prefix', 'mergeable' => false])],
         ];
 
         $class = new SchemaClass('Foo', new RdfResource('https://schema.org/Foo', new RdfGraph(SchemaGeneratorConfiguration::SCHEMA_ORG_URI)));
         $expectedAttribute = new Attribute('ApiResource', ['routePrefix' => '/prefix']);
         $expectedAttribute->append = false;
+        $expectedAttribute->mergeable = false;
 
         yield 'vocab configuration' => [
             $class,
-            ['vocabularies' => [SchemaGeneratorConfiguration::SCHEMA_ORG_URI => ['attributes' => ['ApiResource' => ['routePrefix' => '/prefix']]]]],
+            ['vocabularies' => [SchemaGeneratorConfiguration::SCHEMA_ORG_URI => ['attributes' => [['ApiResource' => ['routePrefix' => '/prefix']]]]]],
             [$expectedAttribute],
         ];
 
@@ -64,10 +65,10 @@ class ConfigurationAttributeGeneratorTest extends TestCase
         yield 'vocab and type configuration' => [
             $class,
             [
-                'vocabularies' => [SchemaGeneratorConfiguration::SCHEMA_ORG_URI => ['attributes' => ['ApiResource' => ['routePrefix' => '/prefix']]]],
-                'types' => ['Foo' => ['attributes' => ['ApiResource' => ['security' => "is_granted('ROLE_USER')"]]]],
+                'vocabularies' => [SchemaGeneratorConfiguration::SCHEMA_ORG_URI => ['attributes' => [['ApiResource' => ['routePrefix' => '/prefix']]]]],
+                'types' => ['Foo' => ['attributes' => [['ApiResource' => ['security' => "is_granted('ROLE_USER')"]]]]],
             ],
-            [new Attribute('ApiResource', ['security' => "is_granted('ROLE_USER')"])],
+            [new Attribute('ApiResource', ['security' => "is_granted('ROLE_USER')", 'mergeable' => false])],
         ];
     }
 
@@ -89,8 +90,8 @@ class ConfigurationAttributeGeneratorTest extends TestCase
 
         yield 'type configuration' => [
             $property,
-            ['types' => ['Res' => ['properties' => ['prop' => ['attributes' => ['ApiResource' => ['security' => "is_granted('ROLE_USER')"]]]]]]],
-            [new Attribute('ApiResource', ['security' => "is_granted('ROLE_USER')"])],
+            ['types' => ['Res' => ['properties' => ['prop' => ['attributes' => [['ApiResource' => ['security' => "is_granted('ROLE_USER')"]]]]]]]],
+            [new Attribute('ApiResource', ['security' => "is_granted('ROLE_USER')", 'mergeable' => false])],
         ];
     }
 

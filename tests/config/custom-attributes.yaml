@@ -5,6 +5,8 @@ types:
     attributes:
       - ORM\Entity: ~
       - ApiResource: { routePrefix: '/library' }
+      - ORM\UniqueConstraint: { name: "isbn", columns: ["isbn"] }
+      - ORM\UniqueConstraint: { name: "title", columns: ["title"] }
       - MyAttribute: ~
     properties:
       isbn: ~
@@ -17,6 +19,11 @@ types:
         attributes:
           ORM\OneToMany: { cascade: [persist, remove] }
           ORM\OrderBy: { name: ASC }
+          0:
+            ORM\InverseJoinColumn: { name: "first_join_column" }
+          1:
+            ORM\InverseJoinColumn: { name: "second_join_column" }
+
   Review:
     properties:
       book:

@@ -25,7 +25,19 @@ final class Attribute
     /** @var (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal|\Nette\PhpGenerator\Literal[])[] */
     private array $args;
 
+    /**
+     * If this attribute can be appended if a same one has not previously been generated or if the same one is not mergeable?
+     *
+     * @see \ApiPlatform\SchemaGenerator\Model\AddAttributeTrait
+     */
     public bool $append = true;
+
+    /**
+     * If this attribute mergeable with the next one?
+     *
+     * @see \ApiPlatform\SchemaGenerator\Model\AddAttributeTrait
+     */
+    public bool $mergeable = true;
 
     /**
      * @param (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal|\Nette\PhpGenerator\Literal[])[] $args
@@ -35,7 +47,9 @@ final class Attribute
         $this->name = $name;
 
         $this->append = (bool) ($args['alwaysGenerate'] ?? true);
-        unset($args['alwaysGenerate']);
+        $this->mergeable = (bool) ($args['mergeable'] ?? true);
+
+        unset($args['alwaysGenerate'], $args['mergeable']);
 
         $this->args = $args;
     }

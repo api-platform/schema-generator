@@ -35,6 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     security: 'is_granted(\'ROLE_USER\')',
 )]
 #[UniqueEntity('email')]
+#[UniqueEntity('givenName', 'familyName')]
 #[MyCustomAttribute(foo: 'bar')]
 class Person extends MyCustomClass implements MyCustomInterface
 {

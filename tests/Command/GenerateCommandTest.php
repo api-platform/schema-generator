@@ -102,6 +102,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity]
 #[ApiResource(types: ['https://schema.org/Book'], routePrefix: '/library')]
+#[ORM\UniqueConstraint(name: 'isbn', columns: ['isbn'])]
+#[ORM\UniqueConstraint(name: 'title', columns: ['title'])]
 #[MyAttribute]
 class Book
 {
@@ -115,6 +117,17 @@ PHP
             , $book);
         $this->assertStringContainsString(<<<'PHP'
     #[ORM\OrderBy(name: 'ASC')]
+PHP
+            , $book);
+        // Generated attribute could be merged with next one that is a configured one.
+        $this->assertStringContainsString(<<<'PHP'
+    #[ORM\InverseJoinColumn(nullable: false, unique: true, name: 'first_join_column')]
+PHP
+            , $book);
+        // Configured attribute could not be merged with next one and it is treated
+        // as repeated.
+        $this->assertStringContainsString(<<<'PHP'
+    #[ORM\InverseJoinColumn(name: 'second_join_column')]
 PHP
             , $book);
     }

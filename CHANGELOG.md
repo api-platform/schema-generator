@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.1.0
+
+* feat: repeatable attributes support
+
 ## 5.0.0
 
 * feat: add OpenAPI support

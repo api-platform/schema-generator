@@ -18,14 +18,19 @@ trait AddAttributeTrait
     public function addAttribute(Attribute $attribute): self
     {
         if (!\in_array($attribute, $this->attributes, true)) {
-            if (!$this->getAttributeWithName($attribute->name())) {
+            $previousAttribute = $this->getAttributeWithName($attribute->name());
+            if (!$previousAttribute || !$previousAttribute->mergeable) {
                 if ($attribute->append) {
                     $this->attributes[] = $attribute;
                 }
             } else {
                 $this->attributes = array_map(
                     fn (Attribute $attr) => $attr->name() === $attribute->name()
-                        ? new Attribute($attr->name(), array_merge($attr->args(), $attribute->args()))
+                        ? new Attribute($attr->name(), array_merge(
+                            $attr->args(),
+                            $attribute->args(),
+                            ['mergeable' => $attribute->mergeable]
+                        ))
                         : $attr,
                     $this->attributes
                 );
