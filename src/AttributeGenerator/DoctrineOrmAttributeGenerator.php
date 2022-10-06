@@ -213,7 +213,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                 $attributes[] = new Attribute('ORM\JoinTable', ['name' => $relationTableName]);
                 // Self-referencing relation
                 if ($className === $property->reference->name()) {
-                    $attributes[] = new Attribute('ORM\InverseJoinColumn', ['name' => $this->generateIdentifierName($this->inflector->singularize($property->name())[0].ucfirst($property->reference->name()).'Id', 'inverse_join_column', $this->config)]);
+                    $attributes[] = new Attribute('ORM\InverseJoinColumn', ['name' => $this->generateIdentifierName($this->inflector->singularize($property->name())[0].ucfirst($property->reference->name()).'Id', 'inverse_join_column', $this->config), 'unique' => true]);
                 } else {
                     $attributes[] = new Attribute('ORM\InverseJoinColumn', ['unique' => true]);
                 }
@@ -227,7 +227,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                 $attributes[] = new Attribute('ORM\JoinTable', ['name' => $relationTableName]);
                 // Self-referencing relation
                 if ($className === $property->reference->name()) {
-                    $attributes[] = new Attribute('ORM\InverseJoinColumn', ['name' => $this->generateIdentifierName($this->inflector->singularize($property->name())[0].ucfirst($property->reference->name()).'Id', 'inverse_join_column', $this->config), 'nullable' => false]);
+                    $attributes[] = new Attribute('ORM\InverseJoinColumn', ['name' => $this->generateIdentifierName($this->inflector->singularize($property->name())[0].ucfirst($property->reference->name()).'Id', 'inverse_join_column', $this->config), 'nullable' => false, 'unique' => true]);
                 } else {
                     $attributes[] = new Attribute('ORM\InverseJoinColumn', ['nullable' => false, 'unique' => true]);
                 }

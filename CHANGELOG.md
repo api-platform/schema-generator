@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.1.1
+
+* fix: missing unique for self-referencing relations
+
 ## 5.1.0
 
 * feat: repeatable attributes support
