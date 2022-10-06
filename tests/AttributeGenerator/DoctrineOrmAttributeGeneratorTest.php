@@ -238,7 +238,7 @@ class DoctrineOrmAttributeGeneratorTest extends TestCase
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('relation1_N'), 'Vehicle')
         );
         $this->assertEquals(
-            [new Attribute('ORM\ManyToMany', ['targetEntity' => 'App\Entity\Vehicle']), new Attribute('ORM\JoinTable', ['name' => 'vehicle_vehicle_relation1_n_self_referencing']), new Attribute('ORM\InverseJoinColumn', ['name' => 'relation1_n_self_referencing_vehicle_id', 'nullable' => false])],
+            [new Attribute('ORM\ManyToMany', ['targetEntity' => 'App\Entity\Vehicle']), new Attribute('ORM\JoinTable', ['name' => 'vehicle_vehicle_relation1_n_self_referencing']), new Attribute('ORM\InverseJoinColumn', ['name' => 'relation1_n_self_referencing_vehicle_id', 'nullable' => false, 'unique' => true])],
             $this->generator->generatePropertyAttributes($this->classMap['Vehicle']->getPropertyByName('relation1_N_self_referencing'), 'Vehicle')
         );
         $this->assertEquals(
