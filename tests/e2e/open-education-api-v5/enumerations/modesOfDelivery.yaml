@@ -1,0 +1,17 @@
+type: array
+description: |
+  The mode of delivery of the component (ECTS-mode of delivery)
+  - distance-learning: afstandsleren
+  - on campus: op de campus
+  - online: online
+  - hybrid: hybride
+  - situated: op locatie
+items:
+  type: string
+  enum:
+    - distance-learning
+    - on campus
+    - online
+    - hybrid
+    - situated
+  example: situated

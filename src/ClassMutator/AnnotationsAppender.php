@@ -119,7 +119,7 @@ final class AnnotationsAppender implements ClassMutatorInterface
                     $property->addGetterAnnotation($getterAnnotation);
                 }
 
-                if ($property->isArray) {
+                if ($property->isArray()) {
                     foreach ($annotationGenerator->generateAdderAnnotations($property) as $adderAnnotation) {
                         $property->addAdderAnnotation($adderAnnotation);
                     }

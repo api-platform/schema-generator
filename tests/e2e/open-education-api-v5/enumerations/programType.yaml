@@ -1,0 +1,15 @@
+type: string
+description: |
+  The type of this program
+  - program: opleiding
+  - minor: minor
+  - honours: honours
+  - specialization: specialisatie
+  - track: track
+enum:
+  - program
+  - minor
+  - honours
+  - specialization
+  - track
+example: program

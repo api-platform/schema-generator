@@ -1,0 +1,14 @@
+oneOf:
+  - $ref: '../schemas/ProgramOfferingAssociation.yaml'
+  - $ref: '../schemas/CourseOfferingAssociation.yaml'
+  - $ref: '../schemas/ComponentOfferingAssociation.yaml'
+properties:
+  offering:
+    description: The offering this association is for
+    oneOf:
+      - $ref: '../schemas/ComponentOffering.yaml'
+        title: ComponentOffering
+      - $ref: '../schemas/CourseOffering.yaml'
+        title: CourseOffering
+      - $ref: '../schemas/ProgramOffering.yaml'
+        title: ProgramOffering

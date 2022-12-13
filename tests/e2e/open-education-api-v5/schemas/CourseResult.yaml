@@ -1,0 +1,8 @@
+allOf:
+  - $ref: './Result.yaml'
+  - type: object
+    required:
+      - studyLoad
+    properties:
+      studyLoad:
+        $ref: './StudyLoadDescriptor.yaml'

@@ -30,7 +30,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
 
         $property->isCustom = $isCustom;
 
-        if ($property->isArray) {
+        if ($property->isArray()) {
             $class->hasConstructor = true;
         }
 

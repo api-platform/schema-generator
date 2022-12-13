@@ -1,0 +1,6 @@
+name: q
+in: query
+description: Filter by items having a name, abbreviation or description containing the given search term (exact partial match, case insensitive)
+required: false
+schema:
+  type: string

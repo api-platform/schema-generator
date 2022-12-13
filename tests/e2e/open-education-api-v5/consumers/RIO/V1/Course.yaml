@@ -1,0 +1,42 @@
+type: object
+description: RIO add-on attributes to a course that lead to a certifiable learning outcome
+required:
+  - educationOffererCode
+properties:
+  educationOffererCode:
+    type: string
+    description: |
+      onderwijsaanbiedercode
+      Een betekenisloze identifier voor een onderwijsaanbieder in de Registratie Instellingen en Opleidingen.
+      pattern: ^(?:\d{3}A\d{3})$
+  educationLocationCode:
+    type: string
+    description: |
+      onderwijslocatiecode
+      Een betekenisloze identifier voor een onderwijslocatie in de Registratie Instellingen en Opleidingen.
+    pattern: ^(?:\d{3}X\d{3})$
+  consentParticipationSTAP:
+    type: string
+    description: |
+      toestemmingDeelnameSTAP
+      Geeft aan of een AangebodenOpleiding beschikbaar is in het kader van de STAP-regeling en voorkomt in het Scholingsregister.
+    enum:
+      - permission_granted
+      - permission_not_granted
+  jointPartnerCodes:
+    type: array
+    items:
+      type: string
+      pattern: ^(?:\d{3}A\d{3})$
+    minItems: 1
+    description: |
+      samenwerkendeOnderwijsaanbiedercode
+      Code van de onderwijsaanbieder waarmee wordt samengewerkt OnderwijsaanbiederID-v01
+  foreignPartners:
+    type: array
+    items: string
+    minItems: 1
+    description: |
+      buitenlandsePartner
+      Beschrijving van de organisatie waarmee door een Nederlandse onderwijsbestuur wordt samengewerkt
+      bij het verzorgen van een Joint Degree.

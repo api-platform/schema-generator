@@ -1,0 +1,80 @@
+type: object
+description: |
+  A named period of time that can be used to communicate the various schedules and time periods an institution recognizes and uses to organize their education. AcademicSessions can be nested.
+  Offerings MAY be be linked to a specific AcademicSession to indicate that the specified Offering takes place during the AcademicSession, however this is not mandatory.
+required:
+  - academicSessionId
+  - name
+  - startDate
+  - endDate
+properties:
+  academicSessionId:
+    type: string
+    description: Unique id for this academic session
+    format: uuid
+    example: 123e4567-e89b-12d3-a456-426614174000
+    readOnly: true
+  academicSessionType:
+    $ref: '../enumerations/academicSessionType.yaml'
+  primaryCode:
+    description: The primary human readable identifier for this academic session. This is often the source identifier as defined by the institution.
+    $ref: './IdentifierEntry.yaml'
+    example:
+      codeType: identifier
+      code: '2012-Q1'
+  name:
+    type: array
+    description: The name of this academic session
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: Fall semester 2020
+  startDate:
+    type: string
+    description: The day on which this academic session starts, RFC3339 (full-date)
+    format: date
+    example: '2020-08-17'
+  endDate:
+    type: string
+    description: The day on which this academic session ends, RFC3339 (full-date)
+    format: date
+    example: '2020-12-18'
+  parent:
+    description: The parent Academicsession of this session (e.g. fall semester 20xx where the current session is a week 40). This object is [`expandable`](#tag/academic_sessions_model)
+    oneOf:
+      - $ref: './Identifier.yaml'
+        title: academicSessionId
+      - $ref: './AcademicSession.yaml'
+        title: Expanded AcademicSession    
+  children:
+    type: array
+    description: The list of Academicsession children of this Session (e.g. all academic sessions in fall semester 20xx). This object is [`expandable`](#tag/academic_sessions_model)
+    items:
+      oneOf:
+        - $ref: './Identifier.yaml'
+          title: academicSessionId
+        - $ref: './AcademicSession.yaml'
+          title: Expanded AcademicSession    
+  year:
+    description: The top level year of this session (e.g. 20xx where the current session is a week 40 of a semester). This object is [`expandable`](#tag/academic_sessions_model)
+    oneOf:
+      - $ref: './Identifier.yaml'
+        title: academicSessionId
+      - $ref: './AcademicSession.yaml'
+        title: Expanded AcademicSession
+  otherCodes:
+    type: array
+    description: An array of additional human readable codes/identifiers for the entity being described.
+    items:
+      $ref: './IdentifierEntry.yaml'
+  consumers:
+    description: The additional consumer elements that can be provided, see the [documentation on support for specific consumers](https://open-education-api.github.io/specification/#/consumers) for more information about this mechanism.
+    type: array
+    items:
+      $ref: './Consumer.yaml'
+    example:
+      $ref: '../consumers/TEST/V1/examples/TestConsumer.yaml'
+  ext:
+    $ref: './Ext.yaml'

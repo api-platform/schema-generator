@@ -1,0 +1,12 @@
+allOf:
+  - $ref: './Association.yaml'
+  - type: object
+    properties:
+      result:
+        $ref: './ProgramResult.yaml'
+      person:
+        description: The person this association is to
+        $ref: './Person.yaml'
+      offering:
+        description: The offering this association is for
+        $ref: './Offering.yaml'

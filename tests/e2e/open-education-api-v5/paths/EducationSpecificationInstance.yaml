@@ -1,0 +1,52 @@
+get:
+  summary: GET /education-specifications/{educationSpecificationId}
+  description: Get a single education specification.
+  tags:
+    - education specifications
+  parameters:
+    - name: educationSpecificationId
+      in: path
+      description: Education specification ID
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - $ref: '../parameters/returnTimelineOverrides.yaml'
+    - name: expand
+      in: query
+      explode: false
+      description: Optional properties to include, separated by a comma
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - parent
+            - children
+            - organization
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - title: Without timelineOverrides (default)
+                $ref: '../schemas/EducationSpecification.yaml'
+              - title: With timelineOverrides
+                $ref: '../schemas/EducationSpecificationExpanded.yaml'
+    '400':
+      $ref: '../schemas/ErrorBadRequest.yaml'
+    '401':
+      $ref: '../schemas/ErrorUnauthorized.yaml'
+    '403':
+      $ref: '../schemas/ErrorForbidden.yaml'
+    '404':
+      $ref: '../schemas/ErrorNotFound.yaml'
+    '405':
+      $ref: '../schemas/ErrorMethodNotAllowed.yaml'
+    '429':
+      $ref: '../schemas/ErrorTooManyRequests.yaml'
+    '500':
+      $ref: '../schemas/ErrorInternalServerError.yaml'

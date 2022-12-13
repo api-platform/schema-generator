@@ -1,0 +1,9 @@
+name: pageNumber
+in: query
+description: The page number to get. Page numbers start at 1.
+required: false
+schema:
+  type: integer
+  format: int32
+  example: 1
+  minimum: 1

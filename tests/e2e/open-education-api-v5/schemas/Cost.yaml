@@ -1,0 +1,38 @@
+type: object
+required:
+  - costType
+properties:
+  costType:
+    $ref: '../enumerations/costType.yaml'
+  amount:
+    type: string
+    pattern: '^\d+(?:\.\d+)?$'
+    description: The total amount of the cost as a string. Use a '.' (dot) as an optional separator. The numbers before the separator signify the major units of the currency, after the dot the minor units. Only a single separator is allowed. Do not use a comma.
+    example: '340.84'
+  vatAmount:
+    type: string
+    pattern: '^\d+(?:\.\d+)?$'
+    description: The part of the cost that is VAT, as a string. Use a '.' (dot) as an optional separator. The numbers before the separator signify the major units of the currency, after the dot the minor units. Only a single separator is allowed. Do not use a comma.
+    example: '40'
+  amountWithoutVat:
+    type: string
+    pattern: '^\d+(?:\.\d+)?$'
+    description: The part of the cost that is non-VAT. as a string. Use a '.' (dot) as an optional separator. The numbers before the separator signify the major units of the currency, after the dot the minor units. Only a single separator is allowed. Do not use a comma.
+    example: '300.84'
+  currency:
+    type: string
+    description: The currency this cost is in. Should correspond to one of the currency codes from ISO 4217.
+    example: EUR
+  displayAmount:
+    type: array
+    items:
+      $ref: './LanguageTypedString.yaml'
+    description: An array of optional pre-formatted strings in different locales. Clients can choose to use this string instead of rendering their own based on the current locale of the user.
+    example:
+      - language: nl-NL
+        value: '€380,84'
+      - language: en-US
+        value: '$401.17'
+  ext:
+    $ref: './Ext.yaml'
+additionalProperties: false

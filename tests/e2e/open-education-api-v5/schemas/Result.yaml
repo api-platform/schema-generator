@@ -1,0 +1,25 @@
+type: object
+description: A result as part of an association 
+required:
+  - state
+  - resultDate
+properties:
+  state:
+    $ref: '../enumerations/resultState.yaml'
+# added state based on request by CACI
+  pass:
+    $ref: '../enumerations/passState.yaml'
+  comment:
+    type: string
+    description: The comment on this result
+  score:
+    type: string
+    description: The score of this program/course/component association (based on resultValueType in offering)
+    example: '9'
+  resultDate:
+    type: string
+    description: The date this result has been published, RFC3339 (full-date)
+    format: date
+    example: 2020-09-28
+  ext:
+    $ref: './Ext.yaml'

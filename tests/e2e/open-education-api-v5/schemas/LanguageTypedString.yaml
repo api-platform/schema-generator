@@ -1,0 +1,13 @@
+type: object
+description: A String with an associated language code.
+properties:
+  language:
+    description: The language used in the described entity. A string formatted according to RFC3066.
+    type: string
+    pattern: "^[a-z]{2,4}(-[A-Z][a-z]{3})?(-([A-Z]{2}|[0-9]{3}))?$"
+  value:
+    description: String to describe the entity.
+    type: string
+example:
+  language: en-GB
+  value: program that is a place holder for all courses that are made available for student mobility

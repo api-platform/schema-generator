@@ -1,0 +1,121 @@
+get:
+  summary: GET /persons/{personId}/associations
+  description: Get a list of all associations for an individual person.
+  tags:
+    - persons
+  parameters:
+    - name: personId
+      in: path
+      description: Person ID
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - $ref: '../parameters/pageSize.yaml'
+    - $ref: '../parameters/pageNumber.yaml'
+    - $ref: '../parameters/consumer.yaml'
+    - name: associationType
+      in: query
+      description: Filter by association type
+      required: false
+      schema:
+        type: string
+        enum:
+          - programOffering
+          - courseOffering
+          - componentOffering
+    - name: role
+      in: query
+      description: Filter by role
+      required: false
+      schema:
+        $ref: '../enumerations/associationRole.yaml'
+    - name: state
+      in: query
+      description: Filter by state
+      required: false
+      schema:
+        $ref: '../enumerations/associationState.yaml'
+    - name: result-state
+      in: query
+      description: Filter by result state
+      required: false
+      schema:
+        $ref: '../enumerations/resultState.yaml'
+    - name: sort
+      in: query
+      explode: false
+      description: 'Sort by one or more attributes, the default is ascending. Prefixing the attribute with a minus sign `-` allows for descending sort. Examples: [ATTR | -ATTR | ATTR1,-ATTR2]'
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - associationId
+            - -associationId
+        default: [ associationId ]
+        example:
+          - associationId
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '../schemas/Pagination.yaml'
+              - type: object
+                required:
+                  - items
+                properties:
+                  items:
+                    type: array
+                    items:
+                      oneOf:
+                        - allOf:
+                            - $ref: '../schemas/ProgramOfferingAssociation.yaml'
+                            - type: object
+                              required:
+                                - offering
+                              properties:
+                                offering:
+                                  $ref: '../schemas/ProgramOffering.yaml'
+                                academicSession:
+                                  $ref: '../schemas/AcademicSession.yaml'
+                        - allOf:
+                            - $ref: '../schemas/CourseOfferingAssociation.yaml'
+                            - type: object
+                              required:
+                                - offering
+                              properties:
+                                offering:
+                                  $ref: '../schemas/CourseOffering.yaml'
+                                academicSession:
+                                  $ref: '../schemas/AcademicSession.yaml'
+                        - allOf:
+                            - $ref: '../schemas/ComponentOfferingAssociation.yaml'
+                            - type: object
+                              required:
+                                - offering
+                              properties:
+                                offering:
+                                  $ref: '../schemas/ComponentOffering.yaml'
+                                academicSession:
+                                  $ref: '../schemas/AcademicSession.yaml'
+                  ext:
+                    $ref: '../schemas/Ext.yaml'
+    '400':
+      $ref: '../schemas/ErrorBadRequest.yaml'
+    '401':
+      $ref: '../schemas/ErrorUnauthorized.yaml'
+    '403':
+      $ref: '../schemas/ErrorForbidden.yaml'
+    '404':
+      $ref: '../schemas/ErrorNotFound.yaml'
+    '405':
+      $ref: '../schemas/ErrorMethodNotAllowed.yaml'
+    '429':
+      $ref: '../schemas/ErrorTooManyRequests.yaml'
+    '500':
+      $ref: '../schemas/ErrorInternalServerError.yaml'

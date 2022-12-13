@@ -1,0 +1,95 @@
+type: object
+description: RIO add-on attributes to a collection of courses that lead to a certifiable learning outcome
+required:
+  - educationOffererCode
+properties:
+  educationOffererCode:
+    type: string
+    description: |
+      onderwijsaanbiedercode
+      Een betekenisloze identifier voor een onderwijsaanbieder in de Registratie Instellingen en Opleidingen.
+    pattern: ^(?:\d{3}A\d{3})$
+  educationLocationCode:
+    type: string
+    description: |
+      onderwijslocatiecode
+      Een betekenisloze identifier voor een onderwijslocatie in de Registratie Instellingen en Opleidingen.
+    pattern: ^(?:\d{3}X\d{3})$
+  consentParticipationSTAP:
+    type: string
+    description: |
+      toestemmingDeelnameSTAP
+      Geeft aan of een AangebodenOpleiding beschikbaar is in het kader van de STAP-regeling en voorkomt in het Scholingsregister.
+    enum:
+      - permission_granted
+      - permission_not_granted
+  jointPartnerCodes:
+    type: array
+    items:
+      type: string
+      pattern: ^(?:\d{3}A\d{3})$
+    minItems: 1
+    description: |
+      samenwerkendeOnderwijsaanbiedercode
+      Code van de onderwijsaanbieder waarmee wordt samengewerkt OnderwijsaanbiederID-v01
+  foreignPartners:
+    type: array
+    items: string
+    minItems: 1
+    description: |
+      buitenlandsePartner
+      Beschrijving van de organisatie waarmee door een Nederlandse onderwijsbestuur wordt samengewerkt
+      bij het verzorgen van een Joint Degree.
+  deficiency:
+    type: string
+    description: |
+      deficientie Geeft aan of inschrijving met onvoldoende vooropleiding mogelijk is
+      - deficiencies: DEFICIENTIES			Inschrijving mogelijk met onvoldoende vooropleiding
+      - no_dediciencies: GEEN_DEFICIENTIES			Inschrijving alleen mogelijk met voldoende vooropleiding
+    enum:
+      - deficiencies
+      - no_deficiencies
+  requirementsActivities:
+    type: string
+    description: |
+      eisenWerkzaamheden
+      Geeft aan of er eisen zijn gesteld aan het type werkzaamheden die verricht worden in het kader van de opleiding.
+      - requirements: EISEN			Er zijn eisen gesteld aan de werkzaamheden in het kader van de opleiding
+      - no_requirements: GEEN_EISEN			Er zijn geen eisen gesteld aan de werkzaamheden in het kader van de opleiding
+    enum:
+      - requirements
+      - no_requirements
+  propaedeuticPhase:
+    type: string
+    description: |
+      propadeutischeFase
+      Geeft aan of de aangeboden opleiding een propedeutische fase kent en of deze wordt afgesloten met een propedeutisch examen.
+      - no_propaedeutic_phase: GEEN_PROPEDEUTISCHE_FASE			Geen propedeutische fase
+      - propaedeutic_phase_exam: PROPEDEUTISCHE_FASE_EXAMEN			Propedeutische fase met examen
+      - propaedeutic_phase_no_exam: PROPEDEUTISCHE_FASE_ZONDER_EXAMEN			Propedeutische fase zonder examen
+    enum:
+      - no_propaedeutic_phase
+      - propaedeutic_phase_exam
+      - propaedeutic_phase_no_exam
+  studyChoiceCheck:
+    type: string
+    description: |
+      studiekeuzecheck
+      Specificeert of er en zo ja hoe een controle op geschiktheid van een aankomend student voor deelname aan gekozen studie plaatsvindt.
+      - no_study_choice_check: GEEN_STUDIEKEUZE_CHECK			Geen studiekeuzecheck
+      - study_choice_check_available: STUDIEKEUZE_CHECK_VAN_TOEPASSING			Studiekeuzecheck van toepassing
+      - study_choice_check_mandatory: STUDIEKEUZE_CHECK_VERPLICHT			Studiekeuzecheck verplicht
+    enum:
+      - no_study_choice_check
+      - study_choice_check_available
+      - study_choice_check_mandatory
+  acceleratedRoute:
+    type: string
+    description: |
+      versneldTraject
+      Geeft aan of een student een versneld programma volgt zodat het opleiding in minder tijd dan normaal doorlopen kan worden.
+      - accelerated_route: VERSNELD_TRAJECT			Versneld traject
+      - no_accelerated_route: GEEN_VERSNELD_TRAJECT			Geen versneld traject
+    enum:
+      - accelerated_route
+      - no_accelerated_route

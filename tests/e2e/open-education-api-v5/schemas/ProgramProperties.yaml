@@ -1,0 +1,195 @@
+type: object
+description: A collection of courses that lead to a certifiable learning outcome
+required:
+  - programType
+  - name
+  - abbreviation
+  - description
+  - primaryCode
+  - teachingLanguage
+properties:
+  primaryCode:
+    description: The primary human readable identifier for the program. This is often the source identifier as defined by the institution.
+    $ref: './IdentifierEntry.yaml'
+    example:
+      codeType: programCode
+      code: BIO
+    readOnly: true
+  programType:
+    $ref: '../enumerations/programType.yaml'
+  name:
+    description: The name of this program
+    type: array
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: Biology
+  abbreviation:
+    type: string
+    description: The abbreviation of this program
+    maxLength: 256
+    example: BIO
+  description:
+    type: array
+    description: The description of this program
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: The study of life
+  teachingLanguage:
+    type: string
+    description: The (primary) teaching language in which this program is given, should be a three-letter language code as specified by ISO 639-2.
+    minLength: 3
+    maxLength: 3
+    pattern: "^[a-z]{3}$"
+    example: nld
+  studyLoad:
+    $ref: './StudyLoadDescriptor.yaml'
+  qualificationAwarded:
+    $ref: '../enumerations/qualificationAwarded.yaml'
+  modeOfStudy:
+    $ref: '../enumerations/modeOfStudy.yaml'
+  modeOfDelivery:
+    $ref: '../enumerations/modesOfDelivery.yaml'
+  duration:
+    type: string
+    description: The duration of this program. The duration format is from the ISO 8601 ABNF as given in Appendix A of RFC 3339.
+    pattern: '^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$'
+    example: P1DT30H4S
+  firstStartDate:
+    type: string
+    description: The date when participants can follow this program for the first time.
+    format: date
+  levelOfQualification:
+    $ref: '../enumerations/levelOfQualification.yaml'
+  level:
+    $ref: '../enumerations/level.yaml'
+  sector:
+    $ref: '../enumerations/sector.yaml'
+  fieldsOfStudy:
+    type: string
+    description: Field(s) of study (e.g. ISCED-F) (http://uis.unesco.org/sites/default/files/documents/isced-fields-of-education-and-training-2013-en.pdf.
+    maxLength: 4
+    example: '0732'
+  enrollment:
+    type: array
+    items:
+      $ref: './LanguageTypedString.yaml'
+    description: The extra information that is provided for enrollment
+    example:
+      - language: en-GB
+        value: enrollment through SIS. [The limited implementation of Git Hub Markdown syntax](#tag/formatting-and-displaying-results-from-API) MAY be used for rich text representation.
+  resources:
+    type: array
+    description: An overview of the literature and other resources that is used in this course (ECTS-recommended reading and other sources)
+    items:
+      type: string
+    example: ['book to be announced', 'on-line resource x']
+  learningOutcomes:
+    type: array
+    description: List of learning outcomes at program level. It is advisable to limit the number of learning outcomes to approximately 20. It is also advisable to make sure that the program learning outcomes in the course catalogue correspond with those on the Diploma Supplement.
+    items:
+      type: array
+      minItems: 1
+      items:
+        $ref: './LanguageTypedString.yaml'
+      example:
+        - language: en-GB
+          value: 'Executable knowledge of research methods, including: Acquire knowledge of HCI research paradigms.'
+  assessment:
+    type: array
+    description: A description of the way exams for this course are taken (ECTS-assessment method and criteria).
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: Exam on campus
+  admissionRequirements:
+    type: array
+    description: This information may be given at an institutional level and/or at the level of individual programmes. Make sure that it is clear whether the information applies to fee-paying students (national and/or international) or to exchange students.
+    example: 
+      - language: en-GB
+        value: Students need to be enrolled at qualifying institutions of higher education that participate in this alliance
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+  qualificationRequirements:
+    type: array
+    description: Normally, students will receive a diploma when they have completed the (official) study program and have obtained the required number of credits. If there are any other specific requirements that students need to have fulfilled, mention them here.
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+  link:
+    type: string
+    description: URL of the program's website
+    format: uri
+    maxLength: 2048
+    example: https://bijvak.nl
+  educationSpecification:
+    description: The educationSpecification of which this program is a more concrete implementation. [`expandable`](#tag/education_specification_model)
+    oneOf:
+      - $ref: './Identifier.yaml'
+        title: educationSpecificationId
+      - $ref: './EducationSpecification.yaml'
+        title: EducationSpecification
+  otherCodes:
+    type: array
+    description: An array of additional human readable codes/identifiers for the entity being described.
+    items:
+      $ref: './IdentifierEntry.yaml'
+    example:
+    - codeType: crohoCreboCode
+      code: '59312'
+  addresses:
+    type: array
+    description: Addresses for this program
+    items:
+      $ref: './Address.yaml'
+  parent:
+    description: Parent program of which the current program is a child. This object is [`expandable`](#tag/program_model) 
+    oneOf:
+      - $ref: './Identifier.yaml'
+        title: programId
+      - $ref: './Program.yaml'
+        title: Expanded Program    
+  children:
+    type: array
+    description: Programs which are a part of this program (e.g specializations). This object is [`expandable`](#tag/program_model)
+    items:
+      oneOf:
+        - $ref: './Identifier.yaml'
+          title: programId
+        - $ref: './Program.yaml'
+          title: Expanded Program    
+  coordinators:
+    description: The person(s) responsible for this program. This object is [`expandable`](#tag/person_model)
+    type: array
+    items:
+      oneOf:
+      - $ref: './Identifier.yaml'
+        title: personId
+      - $ref: './Person.yaml'
+        title: Person object         
+  organization:
+    description: |
+      The organization providing this program. [`expandable`](#tag/organization_model)
+      By default only the `organizationId` (a string) is returned. If the client requested an expansion of `organization` the full organization object should be returned.
+    oneOf:
+      - $ref: './Identifier.yaml'
+        title: organizationId
+      - $ref: './Organization.yaml'
+        title: Organization object     
+  consumers:
+    description: The additional consumer elements that can be provided, see the [documentation on support for specific consumers](https://open-education-api.github.io/specification/#/consumers) for more information about this mechanism.
+    type: array
+    items:
+      $ref: './Consumer.yaml'
+    example:
+      $ref: '../consumers/RIO/V1/examples/Program.yaml'
+  ext:
+    $ref: './Ext.yaml'

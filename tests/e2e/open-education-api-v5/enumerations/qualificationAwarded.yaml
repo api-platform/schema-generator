@@ -1,0 +1,13 @@
+type: string
+description: Type of qualificaton that can be obtained on finishing the program
+enum:
+  - AD
+  - BA
+  - BSc
+  - LLB
+  - MA
+  - MSc
+  - LLM
+  - Phd
+  - None
+example: None

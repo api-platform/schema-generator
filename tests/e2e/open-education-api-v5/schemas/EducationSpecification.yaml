@@ -1,0 +1,12 @@
+allOf:
+  - $ref: '../schemas/EducationSpecificationId.yaml'
+  - $ref: '../schemas/EducationSpecificationProperties.yaml'
+  - properties:
+      validFrom:
+        description: The first day this EducationSpecification is valid (inclusive).
+        type: string
+        format: date
+      validTo:
+        description: The day this EducationSpecification ceases to be valid (e.g. exclusive).
+        type: string
+        format: date

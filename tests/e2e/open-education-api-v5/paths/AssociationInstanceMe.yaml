@@ -1,0 +1,33 @@
+post:
+  summary: POST /associations/me
+  description: POST a single association to enroll a person based on person information obtained from .wellknown endpoint and an offering. The offering can either be identified by an offeringId if known or the full offering details.
+  security:
+    - openId:
+      - associations:me.write
+  tags:
+    - associations
+
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../schemas/AssociationFull.yaml'
+
+
+  responses:
+    '201':
+      description: CREATED
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '../schemas/AssociationId.yaml'
+              - $ref: '../schemas/PostResponse.yaml'
+
+    '400':
+      description: Bad Request
+      content:
+        application/problem+json:
+          schema:
+            $ref: '../schemas/Problem.yaml'

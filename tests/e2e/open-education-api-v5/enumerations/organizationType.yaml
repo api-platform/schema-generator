@@ -1,0 +1,19 @@
+type: string
+description: |
+  The type of this organization. Each OOAPI endpoint should have a single organization with type `root`, describing the root organization.
+  - root: the root of this organization, representing the Educational Institution itself
+  - institute: instituut
+  - department: departement
+  - faculty: faculteit
+  - branch: vestiging
+  - academy: academie
+  - school: school
+enum:
+  - root
+  - institute
+  - department
+  - faculty
+  - branch
+  - academy
+  - school
+example: root

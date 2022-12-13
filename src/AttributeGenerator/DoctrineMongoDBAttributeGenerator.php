@@ -17,6 +17,7 @@ use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\Model\Attribute;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
+use ApiPlatform\SchemaGenerator\Model\Type\CompositeType;
 use ApiPlatform\SchemaGenerator\Model\Use_;
 use Nette\PhpGenerator\Literal;
 
@@ -86,34 +87,38 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
 
         $type = null;
         if ($property->isEnum) {
-            $type = $property->isArray ? 'simple_array' : 'string';
-        } elseif ($property->isArray && $property->type) {
+            $type = $property->isArray() ? 'simple_array' : 'string';
+        } elseif (!$property->reference && $property->isArray()) {
             $type = 'collection';
-        } elseif (!$property->isArray && $property->type && !$property->reference && null !== ($phpType = $this->phpTypeConverter->getPhpType($property, $this->config, []))) {
-            switch ($property->type) {
-                case 'time':
-                    $type = 'time';
-                    break;
-                case 'dateTime':
-                    $type = 'date';
-                    break;
-                default:
-                    $type = $phpType;
-                    switch ($phpType) {
-                        case 'bool':
-                            $type = 'boolean';
-                            break;
-                        case 'int':
-                            $type = 'integer';
-                            break;
-                        case '\\'.\DateTimeInterface::class:
-                            $type = 'date';
-                            break;
-                        case '\\'.\DateInterval::class:
-                            $type = 'string';
-                            break;
-                    }
-                    break;
+        } elseif ($property->type && !$property->reference && !$property->isArray() && null !== ($phpType = $this->phpTypeConverter->getPhpType($property, $this->config, []))) {
+            if ($property->type instanceof CompositeType) {
+                $type = 'raw';
+            } else {
+                switch ((string) $property->type) {
+                    case 'time':
+                        $type = 'time';
+                        break;
+                    case 'dateTime':
+                        $type = 'date';
+                        break;
+                    default:
+                        $type = $phpType;
+                        switch ($phpType) {
+                            case 'bool':
+                                $type = 'boolean';
+                                break;
+                            case 'int':
+                                $type = 'integer';
+                                break;
+                            case '\\'.\DateTimeInterface::class:
+                                $type = 'date';
+                                break;
+                            case '\\'.\DateInterval::class:
+                                $type = 'string';
+                                break;
+                        }
+                        break;
+                }
             }
         }
 

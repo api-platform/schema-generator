@@ -1,0 +1,18 @@
+type: object
+description: A time-line override of the program.
+required:
+  - validFrom
+  - program
+properties:
+  validFrom:
+    type: string
+    description: The day on which this timelineOverride starts (inclusive), RFC3339 (date)
+    format: date
+    example: '2021-09-01'
+  validTo:
+    type: string
+    description: The day on which this timelineOverride ends (exclusive), RFC3339 (date)
+    format: date
+    example: '2022-08-31'
+  program:
+    $ref: './ProgramProperties.yaml'

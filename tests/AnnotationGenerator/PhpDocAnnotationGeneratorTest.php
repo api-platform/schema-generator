@@ -17,9 +17,11 @@ use ApiPlatform\SchemaGenerator\AnnotationGenerator\PhpDocAnnotationGenerator;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Interface_;
 use ApiPlatform\SchemaGenerator\Model\Property;
+use ApiPlatform\SchemaGenerator\Model\Type\ArrayType;
 use ApiPlatform\SchemaGenerator\PhpTypeConverter;
 use ApiPlatform\SchemaGenerator\Schema\Model\Class_ as SchemaClass;
 use ApiPlatform\SchemaGenerator\Schema\Model\Property as SchemaProperty;
+use ApiPlatform\SchemaGenerator\Schema\Model\Type\PrimitiveType as SchemaPrimitiveType;
 use ApiPlatform\SchemaGenerator\SchemaGeneratorConfiguration;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
@@ -87,9 +89,8 @@ class PhpDocAnnotationGeneratorTest extends TestCase
         $resource = new RdfResource('https://schema.org/review', $graph);
         $resource->addResource('rdfs:comment', 'A review of the item.');
         $property->resource = $resource;
-        $property->isArray = true;
         $property->typeHint = 'array';
-        $property->type = 'string';
+        $property->type = new ArrayType(new SchemaPrimitiveType('string'));
         $property->range = new RdfResource('https://schema.org/Text');
 
         yield 'array of strings property' => [$property, 'Place', ['@var string[]|null A review of the item.', '@see https://schema.org/review', '']];
@@ -97,8 +98,8 @@ class PhpDocAnnotationGeneratorTest extends TestCase
         $property = new SchemaProperty('address');
         $graph = new RdfGraph();
         $property->isNullable = false;
-        $property->isArray = true;
         $property->typeHint = 'array';
+        $property->type = new ArrayType();
         $property->reference = new SchemaClass('PostalAddress', new RdfResource('https://schema.org/PostalAddress', $graph));
 
         yield 'reference property' => [$property, 'Place', ['@var Collection<PostalAddress> ', '']];

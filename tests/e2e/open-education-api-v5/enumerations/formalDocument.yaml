@@ -1,0 +1,15 @@
+type: string
+description: |
+  The type of formal document obtained after completion of this education
+    - diploma: DIPLOMA
+    - certificate: CERTIFICAAT
+    - no official document: GEEN OFFICIEEL DOCUMENT
+    - testimonial: GETUIGSCHRIFT
+    - school advice: SCHOOLADVIES
+enum:
+  - diploma
+  - certificate
+  - no official document
+  - testimonial
+  - school advice
+example: diploma

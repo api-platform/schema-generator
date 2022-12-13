@@ -199,18 +199,19 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
     {
         $suffix = $property->isNullable ? '|null' : '';
         if ($property->isEnum) {
-            if ($property->isArray) {
+            if ($property->isArray()) {
                 return 'string[]'.$suffix;
             }
 
             return 'string'.$suffix;
         }
 
-        $enforcedNonArrayProperty = clone $property;
-        $enforcedNonArrayProperty->isArray = false;
+        if (!$property->reference && null !== $phpDocType = $this->phpTypeConverter->getPhpType($property)) {
+            if ('array' === $phpDocType && $property->type) {
+                $phpDocType = $property->type->getPhp();
+            }
 
-        if (!$property->reference && null !== $phpDocType = $this->phpTypeConverter->getPhpType($enforcedNonArrayProperty)) {
-            return ($property->isArray ? sprintf('%s[]', $phpDocType) : $phpDocType).$suffix;
+            return $phpDocType.$suffix;
         }
 
         if (!$property->reference) {
@@ -218,7 +219,7 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         }
 
         $phpDocType = $property->reference->interfaceName() ?: $property->reference->name();
-        if (!$property->isArray || $adderOrRemover) {
+        if ($adderOrRemover || !$property->isArray()) {
             return $phpDocType.$suffix;
         }
 

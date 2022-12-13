@@ -1,0 +1,53 @@
+type: object
+description: The full street address
+required:
+  - addressType
+properties:
+  addressType:
+    $ref: '../enumerations/addressType.yaml'
+  street:
+    type: string
+    description: The street name
+    example: Moreelsepark
+  streetNumber:
+    type: string
+    description: The street number
+    example: "48"
+  additional:
+    type: array
+    description: Further details like building name, suite, apartment number, etc.
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: On the other side of the road
+  postalCode:
+    type: string
+    description: Postal code
+    example: 3511 EP
+  city:
+    type: string
+    description: name of the city / locality
+    example: Utrecht
+  countryCode:
+    type: string
+    description: the country code according to [iso-3166-1-alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
+    example: NL
+  geolocation:
+    type: object
+    description: Geolocation of the entrance of this address (WGS84 coordinate reference system)
+    required:
+      - latitude
+      - longitude
+    properties:
+      latitude:
+        type: number
+        format: double
+        example: 52.089123
+      longitude:
+        type: number
+        format: double
+        example: 5.113337
+  ext:
+    $ref: './Ext.yaml'

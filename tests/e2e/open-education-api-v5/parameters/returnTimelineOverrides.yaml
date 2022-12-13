@@ -1,0 +1,7 @@
+name: returnTimelineOverrides
+in: query
+description: Controls whether the attribute `timelineOverrides` is returned or not. The default is `false`, so this has to explicitly set to `true` if a client needs the timeline overrides. See [GET /education-specifications/{educationSpecificationId}](#tag/education-specifications/paths/~1education-specifications~1{educationSpecificationId}/get) for an example.
+required: false
+schema:
+  type: boolean
+  default: false

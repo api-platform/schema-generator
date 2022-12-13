@@ -1,0 +1,87 @@
+get:
+  summary: GET /groups
+  description: Get a list of all groups, ordered by name (ascending).
+  tags:
+    - groups
+  parameters:
+    - $ref: '../parameters/primaryCode.yaml'
+    - $ref: '../parameters/pageSize.yaml'
+    - $ref: '../parameters/pageNumber.yaml'
+    - $ref: '../parameters/consumer.yaml'
+    - $ref: '../parameters/search.yaml'
+    - name: groupType
+      in: query
+      description: Filter by group type
+      required: false
+      schema:
+        $ref: '../enumerations/groupType.yaml'
+    - name: sort
+      in: query
+      explode: false
+      description: 'Sort by one or more attributes, the default is ascending. Prefixing the attribute with a minus sign `-` allows for descending sort. Examples: [ATTR | -ATTR | ATTR1,-ATTR2]'
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - groupId
+            - name
+            - startDate
+            - -groupId
+            - -name
+            - -startDate
+        default: [ name ]
+        example:
+          - groupId
+          - -startDate
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - pageSize
+              - pageNumber
+              - hasPreviousPage
+              - hasNextPage
+              - items
+            properties:
+              pageSize:
+                type: integer
+                format: int32
+                description: The number of items per page
+              pageNumber:
+                type: integer
+                format: int32
+                description: The current page number
+              hasPreviousPage:
+                type: boolean
+                description: Whether there is a previous page
+              hasNextPage:
+                type: boolean
+                description: Whether there is a previous page
+              totalPages:
+                type: integer
+                format: int32
+                description: Total number of pages
+              items:
+                type: array
+                items:
+                  $ref: '../schemas/Group.yaml'
+              ext:
+                  $ref: '../schemas/Ext.yaml'
+    '400':
+      $ref: '../schemas/ErrorBadRequest.yaml'
+    '401':
+      $ref: '../schemas/ErrorUnauthorized.yaml'
+    '403':
+      $ref: '../schemas/ErrorForbidden.yaml'
+    '405':
+      $ref: '../schemas/ErrorMethodNotAllowed.yaml'
+    '429':
+      $ref: '../schemas/ErrorTooManyRequests.yaml'
+    '500':
+      $ref: '../schemas/ErrorInternalServerError.yaml'

@@ -1,0 +1,12 @@
+allOf:
+  - $ref: '../schemas/CourseId.yaml'
+  - $ref: '../schemas/CourseProperties.yaml'
+  - properties:
+      validFrom:
+        description: The first day this course is valid (inclusive).
+        type: string
+        format: date
+      validTo:
+        description: The day this course ceases to be valid (e.g. exclusive).
+        type: string
+        format: date

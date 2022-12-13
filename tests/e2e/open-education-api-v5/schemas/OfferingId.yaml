@@ -1,0 +1,11 @@
+type: object
+description: ID of Either a program, course or component offering which descrbes the program, course or offering in time 
+required:
+  - offeringId
+properties:
+  offeringId:
+    type: string
+    description: Unique id of this offering
+    format: uuid
+    example: 123e4567-e89b-12d3-a456-134564174000
+    readOnly: true
