@@ -1,0 +1,85 @@
+allOf:
+  - $ref: './Offering.yaml'
+  - type: object
+    required:
+      - modeOfStudy
+      - startDate
+      - endDate
+    properties:
+      startDate:
+        type: string
+        description: The moment on which this offering starts, RFC3339 (full-date)
+        format: date
+        example: 2019-08-21
+      endDate:
+        type: string
+        description: The moment on which this offering ends, RFC3339 (full-date)
+        format: date
+        example: 2019-10-23
+      enrollStartDate:
+        type: string
+        description: The first day on which a student can enroll for this course.
+        format: date
+        example: 2019-05-01
+      enrollEndDate:
+        type: string
+        description: The last day on which a student can enroll for this course.
+        format: date
+        example: 2019-08-01
+      flexibleEntryPeriodStart:
+        type: string
+        description: If this is a course wherein participants can start at various moments, without missing anything, use this attribute in combination with `flexibleEntryPeriodEnd`.
+        format: date
+      flexibleEntryPeriodEnd:
+        type: string
+        description: If this is a course wherein participants can start at various moments, without missing anything, use this attribute in combination with `flexibleEntryPeriodStart`.
+        format: date
+      addresses:
+        type: array
+        description: Addresses for this offering
+        items:
+          $ref: './Address.yaml'
+      priceInformation:
+        type: array
+        description: Price information for this offering.
+        items:
+          $ref: './Cost.yaml'
+      course:
+        description: |
+          The course that is offered in this courseoffering. [`expandable`](#tag/course_model)
+          By default only the `courseId` (a string) is returned. If the client requested an expansion of `course` the full course object should be returned.
+        oneOf:
+          - $ref: './Identifier.yaml'
+            title: courseId
+          - $ref: './Course.yaml'
+            title: Course object      
+      programOffering:
+        description: |
+          The programoffering where this courseoffering is related to. [`expandable`](#tag/program_offering_model)
+          By default only the `programOfferingId` (a string) is returned. If the client requested an expansion of `programOffering` the full programOffering object should be returned.
+        oneOf:
+          - $ref: './Identifier.yaml'
+            title: programOfferingId
+          - $ref: './ProgramOffering.yaml'
+            title: ProgramOffering object     
+      organization:
+        description: |
+          The organization that manages this courseoffering. [`expandable`](#tag/organization_model)
+          By default only the `organizationId` (a string) is returned. If the client requested an expansion of `organization` the full organization object should be returned.
+        oneOf:
+          - $ref: './Identifier.yaml'
+            title: organizationId
+          - $ref: './Organization.yaml'
+            title: Organization object     
+      academicSession:
+        description: |
+          The academicsession during which this courseoffering takes place. [`expandable`](#tag/academic_session_model)
+          By default only the `academicSessionId` (a string) is returned. If the client requested an expansion of `academicSession` the full academicsession object should be returned.
+        oneOf:
+          - $ref: './Identifier.yaml'
+            title: academicSessionId
+          - $ref: './AcademicSession.yaml'
+            title: AcademicSession object
+
+
+

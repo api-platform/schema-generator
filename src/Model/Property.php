@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\Model;
 
+use ApiPlatform\SchemaGenerator\Model\Type\ArrayType;
+use ApiPlatform\SchemaGenerator\Model\Type\Type;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpNamespace;
@@ -25,14 +27,10 @@ abstract class Property
 
     private string $name;
     public string $cardinality;
-    /** @var ?string the data type (array and object are not one) */
-    public ?string $type = null;
+    /** @var ?Type the data types (object is not one) */
+    public ?Type $type = null;
     /** @var mixed */
     public $defaultValue = null;
-    /** @var ?string the array data type (object is not one) */
-    public ?string $arrayType = null;
-    /** @var bool can be true and array type false if the property is an array of references */
-    public bool $isArray = false;
     public ?Class_ $reference = null;
     public bool $isReadable = true;
     public bool $isWritable = true;
@@ -75,6 +73,11 @@ abstract class Property
     abstract public function description(): ?string;
 
     abstract public function rdfType(): ?string;
+
+    public function isArray(): bool
+    {
+        return $this->type instanceof ArrayType;
+    }
 
     public function addAnnotation(string $annotation): self
     {
@@ -146,7 +149,7 @@ abstract class Property
             $property->setType($this->resolveName($namespace, $this->typeHint));
         }
 
-        if (!$this->isArray || $this->isTypeHintedAsCollection()) {
+        if (!$this->isArray() || $this->isTypeHintedAsCollection()) {
             $property->setNullable($this->isNullable);
         }
 
@@ -206,7 +209,7 @@ abstract class Property
         }
         if ($this->typeHint) {
             $getter->setReturnType($this->resolveName($namespace, $this->typeHint));
-            if ($this->isNullable && !$this->isArray) {
+            if ($this->isNullable && !$this->isArray()) {
                 $getter->setReturnNullable();
             }
         }
@@ -229,7 +232,7 @@ abstract class Property
         }
 
         $mutators = [];
-        if ($this->isArray) {
+        if ($this->isArray()) {
             $singularProperty = $singularize($this->name());
 
             $adder = (new Method('add'.ucfirst($singularProperty)))->setVisibility(ClassType::VISIBILITY_PUBLIC);
@@ -307,7 +310,7 @@ PHP,
      */
     private function guessDefaultGeneratedValue(bool $useDoctrineCollections = true)
     {
-        if ($this->isArray && !$this->isTypeHintedAsCollection() && ($this->isEnum || !$this->typeHint || 'array' === $this->typeHint || !$useDoctrineCollections)) {
+        if (($this->isEnum || !$this->typeHint || 'array' === $this->typeHint || !$useDoctrineCollections) && $this->isArray() && !$this->isTypeHintedAsCollection()) {
             return [];
         }
 

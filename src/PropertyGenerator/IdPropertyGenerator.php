@@ -15,6 +15,7 @@ namespace ApiPlatform\SchemaGenerator\PropertyGenerator;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\Model\Property;
+use ApiPlatform\SchemaGenerator\Model\Type\PrimitiveType;
 
 final class IdPropertyGenerator implements IdPropertyGeneratorInterface
 {
@@ -57,7 +58,7 @@ final class IdPropertyGenerator implements IdPropertyGeneratorInterface
         $property->isUnique = false;
         $property->isCustom = true;
         $property->isId = true;
-        $property->type = $type;
+        $property->type = new PrimitiveType($type);
         $property->typeHint = $typeHint;
 
         return $property;

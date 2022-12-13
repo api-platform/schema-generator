@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\ClassMutator;
 
 use ApiPlatform\SchemaGenerator\Model\Class_;
+use ApiPlatform\SchemaGenerator\Model\Type\ArrayType;
 use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
 
 final class ClassPropertiesTypehintMutator implements ClassMutatorInterface
@@ -48,9 +49,9 @@ final class ClassPropertiesTypehintMutator implements ClassMutatorInterface
                 $this->classes
             );
 
-            if ($property->isArray) {
+            if ($property->type instanceof ArrayType) {
                 $nonArrayForcedProperty = clone $property;
-                $nonArrayForcedProperty->isArray = false;
+                $nonArrayForcedProperty->type = $property->type->type;
 
                 $property->adderRemoverTypeHint = $this->phpTypeConverter->getPhpType($nonArrayForcedProperty, $this->config, $this->classes);
             }

@@ -25,11 +25,11 @@ final class PhpTypeConverter implements PhpTypeConverterInterface
             throw new \LogicException(sprintf('Property "%s" has to be an instance of "%s".', $property->name(), SchemaProperty::class));
         }
 
-        if ($property->isArray && $property->reference) {
+        if ($property->reference && $property->isArray()) {
             return ($config['doctrine']['useCollection'] ?? false) ? 'Collection' : 'array';
         }
 
-        if ($property->isArray) {
+        if ($property->isArray()) {
             return 'array';
         }
 
@@ -61,31 +61,7 @@ final class PhpTypeConverter implements PhpTypeConverterInterface
         }
 
         if ($property->type) {
-            switch ($property->type) {
-                case 'integer':
-                case 'negativeInteger':
-                case 'nonNegativeInteger':
-                case 'positiveInteger':
-                case 'nonPositiveInteger':
-                case 'byte':
-                    return 'int';
-                case 'boolean':
-                    return 'bool';
-                case 'float':
-                case 'double':
-                case 'decimal':
-                    return 'float';
-                case 'date':
-                case 'dateTime':
-                case 'time':
-                    return '\\'.\DateTimeInterface::class;
-                case 'duration':
-                    return '\\'.\DateInterval::class;
-                case 'mixed':
-                    return null;
-                default:
-                    return 'string';
-            }
+            return $property->type->getPhp();
         }
 
         $typeName = $property->rangeName;

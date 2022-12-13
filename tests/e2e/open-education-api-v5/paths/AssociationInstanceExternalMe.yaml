@@ -1,0 +1,41 @@
+post:
+  summary: POST /associations/external/me
+  description: |
+    POST a single association enroll a person based on person information obtained from .wellknown endpoint, an offering, 
+    and the organization/type=root information form the organization that is issuing this association. 
+    The offering can either be identified by an offeringId if known or the full offering details. 
+  security:
+    - openId:
+      - associations:external:me.write
+  tags:
+    - associations
+
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          required:
+            - remoteState
+          allOf:
+          - $ref: '../schemas/AssociationWrite.yaml'
+          - properties:
+              issuer:
+                $ref: '../schemas/Organization.yaml'
+
+  responses:
+    '201':
+      description: CREATED
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '../schemas/AssociationId.yaml'
+              - $ref: '../schemas/PostResponse.yaml'
+              - properties:
+                  state:
+                    $ref: '../enumerations/associationState.yaml' 
+
+
+    '400':
+      $ref: '../schemas/ErrorBadRequest.yaml'

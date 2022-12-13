@@ -1,0 +1,154 @@
+type: object
+description: A person that has a relationship with this institution
+required:
+  - givenName
+  - surname
+  - displayName
+  - affiliations
+  - mail
+  - primaryCode
+  - activeEnrollment
+properties:
+  primaryCode:
+    description: The primary human readable identifier for the person. This is often the source identifier as defined by the institution.
+    $ref: './IdentifierEntry.yaml'
+    example:
+      codeType: studentNumber
+      code: 0000000
+    # Returned by GET, not used in POST/PUT/PATCH
+    readOnly: true
+  givenName:
+    type: string
+    description: The first name of this person
+    maxLength: 256
+    example: Maartje
+  surnamePrefix:
+    type: string
+    description: The prefix of the family name of this person
+    example: van
+  surname:
+    type: string
+    description: The family name of this person
+    maxLength: 256
+    example: Damme
+  displayName:
+    type: string
+    description: The name of this person which will be displayed
+    maxLength: 256
+    example: Maartje van Damme
+  initials:
+    type: string
+    description: The initials of this person
+    example: MCW
+  activeEnrollment:
+    type: boolean
+    description: Whether this person has an active enrollment.
+    example: false
+  dateOfBirth:
+    type: string
+    description: The date of birth of this person, RFC3339 (full-date)
+    format: date
+    example: '2003-09-30'
+  cityOfBirth:
+    type: string
+    description: The city of birth of this person
+    example: Utrecht
+  countryOfBirth:
+    type: string
+    description: The country of birth of this person the country code according to [iso-3166-1-alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
+    example: NL
+  nationality:
+    type: string
+    description: The nationality of this person the nationality according to https://gist.github.com/zspine/2365808
+    example: Dutch
+  dateOfNationality:
+    type: string
+    description: The date of nationality of this person, RFC3339 (full-date)
+    format: date
+    example: '2003-09-30'
+  affiliations:
+    $ref: '../enumerations/personAffiliations.yaml'
+  mail:
+    type: string
+    description: The primary e-mailaddress of this person
+    format: email
+    maxLength: 256
+    example: vandamme.mcw@universiteitvanharderwijk.nl
+  secondaryMail:
+    type: string
+    description: The secondary e-mailaddress of this person
+    format: email
+    maxLength: 256
+    example: poekie@xyz.nl
+  telephoneNumber:
+    type: string
+    description: The telephone number of this person
+    maxLength: 256
+    example: +31 123 456 789
+  mobileNumber:
+    type: string
+    description: The mobile number of this person
+    maxLength: 256
+    example: +31 612 345 678
+  photoSocial:
+    type: string
+    description: The url of the informal picture of this person
+    format: uri
+    maxLength: 2048
+    example: https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Placeholder_female_superhero_c.png/203px-Placeholder_female_superhero_c.png
+  photoOfficial:
+    type: string
+    description: The url of the official picture of this person
+    format: uri
+    maxLength: 2048
+    example: https://upload.wikimedia.org/wikipedia/commons/6/66/Johannes_Vermeer_%281632-1675%29_-_The_Girl_With_The_Pearl_Earring_%281665%29.jpg
+  gender:
+    $ref: '../enumerations/gender.yaml'
+  titlePrefix:
+    type: string
+    description: A title prefix to be used for this person
+    example: drs
+  titleSuffix:
+    type: string
+    description: A title suffix to be used for this person
+    example: BSc
+  office:
+    type: string
+    description: The name of the office where this person is located
+  address:
+    $ref: './Address.yaml'
+  ICEName:
+    type: string
+    description: Full name of In Case of Emergency contact
+    maxLength: 256
+    example: Janne
+  ICEPhoneNumber:
+    type: string
+    description: Phone number of In Case of Emergency contact
+    maxLength: 256
+    example: +31 623 456 789
+  ICERelation:
+    $ref: '../enumerations/ICERelationType.yaml'
+  languageOfChoice:
+    type: array
+    description: The language(s) of choice for this person, RFC3066
+    items:
+      type: string
+      example: nl-NL
+  otherCodes:
+    type: array
+    description: An array of additional human readable codes/identifiers for the entity being described.
+    items:
+      $ref: './IdentifierEntry.yaml'
+    example:
+      - codeType: nationalIdentityNumber
+        code: '00000'
+  consumers:
+    description: The additional consumer elements that can be provided, see the [documentation on support for specific consumers](https://open-education-api.github.io/specification/#/consumers) for more information about this mechanism.
+    type: array
+    items:
+      $ref: './Consumer.yaml'
+    example:
+      $ref: '../consumers/TEST/V1/examples/TestConsumer.yaml'
+  ext:
+    $ref: './Ext.yaml'

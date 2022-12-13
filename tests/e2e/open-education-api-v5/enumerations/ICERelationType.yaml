@@ -1,0 +1,7 @@
+type: string
+description: Type of relation between person and In Case of Emergency contact
+enum:
+  - partner
+  - parent
+  - other
+example: partner

@@ -1,0 +1,81 @@
+type: object
+description: |
+  A group is simply a collection of persons. Groups can be used to accommodate various usecases.
+
+  Groups MAY optionally have a relation to an Offering, however the meaning of such relations is left unspecified and is left up to the implementer.
+required:
+  - groupId
+  - groupType
+  - name
+  - primaryCode
+properties:
+  groupId:
+    type: string
+    description: Unique id for this group
+    format: uuid
+    example: 123e4567-e89b-12d3-a456-426614174000
+  primaryCode:
+    description: The primary human readable identifier for this group. This is often the source identifier as defined by the institution.
+    $ref: './IdentifierEntry.yaml'
+    example:
+      codeType: groupCode
+      code: group-abc987
+  groupType:
+    $ref: '../enumerations/groupType.yaml'
+  name:
+    type: array
+    description: The name of this group
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: statistics students
+  description:
+    type: array
+    description: The description of this group
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: The group of students that follow statistics classes
+  startDate:
+    type: string
+    description: The day on which this group starts being active, RFC3339 (full-date)
+    format: date
+    example: '2020-08-17'
+  endDate:
+    type: string
+    description: The day on which this group ends being active, RFC3339 (full-date)
+    format: date
+    example: '2020-12-18'
+  personCount:
+    type: number
+    description: The number of persons that are member of this group
+    format: int32
+    minimum: 0
+    example: 183
+  otherCodes:
+    type: array
+    description: An array of additional human readable codes/identifiers for the entity being described.
+    items:
+      $ref: './IdentifierEntry.yaml'
+  consumers:
+    description: The additional consumer elements that can be provided, see the [documentation on support for specific consumers](https://open-education-api.github.io/specification/#/consumers) for more information about this mechanism.
+    type: array
+    items:
+      $ref: './Consumer.yaml'
+    example:
+      $ref: '../consumers/TEST/V1/examples/TestConsumer.yaml'
+  organization:
+    description: |
+      The organization that manages this group. [`expandable`](.#tag/organization_model)
+      By default only the `organizationId` (a string) is returned. If the client requested an expansion of `organization` the full organization object should be returned.
+    oneOf:
+      - $ref: './Identifier.yaml'
+        title: organizationId
+      - $ref: './Organization.yaml'
+        title: Expanded organization      
+  ext:
+    $ref: './Ext.yaml'

@@ -318,7 +318,7 @@ abstract class Class_
             }
 
             foreach ($sortedProperties as $property) {
-                if ($property->isArray && 'array' !== $property->typeHint && !$property->isEnum) {
+                if (!$property->isEnum && 'array' !== $property->typeHint && $property->isArray()) {
                     $constructor->addBody('$this->? = new ArrayCollection();', [$property->name()]);
                 }
             }

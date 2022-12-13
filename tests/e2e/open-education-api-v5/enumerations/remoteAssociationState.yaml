@@ -1,0 +1,9 @@
+type: string
+description: The state of this association for the institution performing the request.
+enum:
+  - pending
+  - canceled
+  - denied
+  - associated
+  - queued
+example: associated

@@ -1,0 +1,18 @@
+type: object
+description: A timeline override of the EducationSpecification.
+required:
+  - validFrom
+  - educationSpecification
+properties:
+  validFrom:
+    type: string
+    description: The day on which this timelineOverride starts (inclusive), RFC3339 (date)
+    format: date
+    example: '2021-09-01'
+  validTo:
+    type: string
+    description: The day on which this timelineOverride ends (exclusive), RFC3339 (date)
+    format: date
+    example: '2022-08-31'
+  educationSpecification:
+    $ref: './EducationSpecificationProperties.yaml'

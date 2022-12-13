@@ -1,0 +1,112 @@
+type: object
+description: |
+  The specification of an education object. This specification allows for other education objects to be derived from it.
+  It is used to aggregate education objects from a supplying institution.
+  It clusters programs to a main educationSpecification that is used in registries such as RIO. 
+required:
+  - primaryCode
+  - educationSpecificationType
+  - name
+properties:
+  primaryCode:
+    description: |
+      The primary human readable identifier for the entity. 
+      This will often take the form of a human readable code as defined by the institution or region
+    $ref: './IdentifierEntry.yaml'
+  otherCodes:
+    type: array
+    description: An array of additional human readable codes/identifiers for the entity being described.
+    items:
+      $ref: './IdentifierEntry.yaml'
+    example:
+      - codeType: crohoCreboCode
+        code: '1234123'
+  educationSpecificationType:
+    $ref: '../enumerations/educationSpecificationType.yaml'
+  name:
+    type: array
+    items:
+      $ref: './LanguageTypedString.yaml'
+    description: The name of this education specification
+    example:
+      - language: en-GB
+        value: Bachelor Chemical technology
+  abbreviation:
+    type: string
+    description: The abbreviation of this program
+    maxLength: 256
+    example: B Scheikundige Technologie
+  description:
+    type: array
+    items:
+      $ref: './LanguageTypedString.yaml'
+    description: The description of this program. [The limited implementation of Git Hub Markdown syntax](#tag/formatting-and-displaying-results-from-API) MAY be used for rich text representation.
+    example:
+      - language: en-GB
+        value: program that is a place holder for all courses that are made available for student mobility
+  formalDocument:
+    $ref: '../enumerations/formalDocument.yaml'
+  level:
+    $ref: '../enumerations/level.yaml'
+  sector:
+    $ref: '../enumerations/sector.yaml'
+  levelOfQualification:
+    $ref: '../enumerations/levelOfQualification.yaml'
+  fieldsOfStudy:
+    type: string
+    description: Field(s) of study (e.g. ISCED-F) (http://uis.unesco.org/sites/default/files/documents/isced-fields-of-education-and-training-2013-en.pdf.
+    maxLength: 4
+    example: '0732'
+  studyLoad:
+    $ref: './StudyLoadDescriptor.yaml'
+  learningOutcomes:
+    type: array
+    description: Statements that describe the knowledge or skills students should acquire by the end of a particular course or program (ECTS-learningoutcome).
+    items:
+      type: array
+      minItems: 1
+      items:
+        $ref: './LanguageTypedString.yaml'
+      example:
+      - language: en-GB
+        value: 'Executable knowledge of Chemical technology, including: Acquire knowledge of research paradigms.'
+  link:
+    type: string
+    description: URL of the program's website
+    format: uri
+    maxLength: 2048
+    example: https://bijvak.nl
+  parent:
+    description: The educationSpecification that is the parent of this educationSpecification if it exists. [`expandable`](#tag/education_specification_model)
+    oneOf:
+      - $ref: './Identifier.yaml'
+        title: educationSpecificationId
+      - $ref: './EducationSpecification.yaml'
+        title: EducationSpecification
+  children:
+    type: array
+    description: The EducationSpecifications that have this EducationSpecification as their parent. [`expandable`](#tag/education_specification_model)
+    items:
+      oneOf:
+        - $ref: './Identifier.yaml'
+          title: educationSpecificationId
+        - $ref: './EducationSpecification.yaml'
+          title: EducationSpecification
+  organization:
+    description: |
+      The organization that manages this group. [`expandable`](#tag/organization_model)
+      By default only the `organizationId` (a string) is returned. If the client requested an expansion of `organization` the full organization object should be returned.
+    oneOf:
+      - $ref: './Identifier.yaml'
+        title: organizationId
+      - $ref: './Organization.yaml'
+        title: Organization object
+  consumers:
+    description: The additional consumer elements that can be provided, see the [documentation on support for specific consumers](https://open-education-api.github.io/specification/#/consumers) for more information about this mechanism.
+    type: array
+    items:
+      $ref: './Consumer.yaml'
+    example:
+      $ref: '../consumers/RIO/V1/examples/EducationSpecification.yaml'
+  ext:
+    $ref: './Ext.yaml'

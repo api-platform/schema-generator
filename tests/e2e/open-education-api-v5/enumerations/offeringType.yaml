@@ -1,0 +1,7 @@
+type: string
+description: The type of offering based on the object that is offered
+enum:
+  - program
+  - course
+  - component
+example: course

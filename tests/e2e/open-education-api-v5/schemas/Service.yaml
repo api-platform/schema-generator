@@ -1,0 +1,34 @@
+type: object
+description: A metadataset providing details on the provider of this OOAPI implementation 
+required:
+  - contactEmail
+  - specification
+  - documentation
+properties:
+  contactEmail:
+    type: string
+    description: Contact e-mail address of the service owner
+    format: email
+    maxLength: 256
+    example: admin@universiteitvanharderwijk.nl
+  specification:
+    type: string
+    description: URL of the API specification (YAML or JSON, compliant with [Open API Specification v3](https://github.com/OAI/OpenAPI-Specification/))
+    format: uri
+    maxLength: 2048
+    example: https://rawgit.com/open-education-api/specification/v3/docs.html#tag/course-offerings/paths/~1course-offerings/get
+  documentation:
+    type: string
+    description: URL of the API documentation, including general terms and privacy statement
+    format: uri
+    maxLength: 2048
+    example: https://open-education-api.github.io/specification/v4/docs.html
+  consumers:
+    description: The additional consumer elements that can be provided, see the [documentation on support for specific consumers](https://open-education-api.github.io/specification/#/consumers) for more information about this mechanism.
+    type: array
+    items:
+      $ref: './Consumer.yaml'
+    example:
+      $ref: '../consumers/TEST/V1/examples/TestConsumer.yaml'
+  ext:
+    $ref: './Ext.yaml'

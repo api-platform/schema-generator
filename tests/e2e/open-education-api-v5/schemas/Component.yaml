@@ -1,0 +1,150 @@
+type: object
+description: A component is a part of a course
+required:
+  - componentId
+  - componentType
+  - name
+  - teachingLanguage
+  - abbreviation
+  - primaryCode
+properties:
+  componentId:
+    type: string
+    description: Unique id of this component
+    format: uuid
+    example: 123e4567-e89b-12d3-a456-426614174000
+    readOnly: true
+  primaryCode:
+    description: The primary human readable identifier for this component. This is often the source identifier as defined by the institution.
+    $ref: './IdentifierEntry.yaml'
+    example:
+      codeType: componentCode
+      code: INFOMQNM-WRKCLG-1
+    readOnly: true
+  componentType:
+    $ref: '../enumerations/componentType.yaml'
+  name:
+    type: array
+    description: The name of this component
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: Written test for INFOMQNM
+  abbreviation:
+    type: string
+    description: The abbreviation of this component
+    maxLength: 256
+    example: Test-INFOMQNM
+  modeOfDelivery:
+    $ref: '../enumerations/modesOfDelivery.yaml'
+  duration:
+    type: string
+    description: The duration of this component. The duration format is from the ISO 8601 ABNF as given in Appendix A of RFC 3339.
+    pattern: '^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$'
+    example: P1DT30H4S
+  description:
+    type: array
+    description: The description of this component.
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: >
+              'Prove executable knowledge of research methods, including:
+              Acquire knowledge of HCI research paradigms
+              Able to design suitable research studies (e.g., choose between within and between subject designs)
+              Define/apply/design metrics and scales
+              Define/produce materials (e.g., stimuli and questionnaires)
+              Define protocols for research studies
+              Understands and take in account concepts of reliability and validity
+              Analyze and improve methods and analysis of published scientific articles
+              Able to deliver scientific reports
+
+              Prove executable knowledge of ­­­statistics, including:
+              Handle hypothesis testing with complex designs (e.g., including , dependent, independent, and co variates)
+              Data preparation (e.g., coding and feature selection)
+              Reason towards adequate techniques to ensure valid outcomes (e.g., be aware of type I, type II errors)
+              Select an appropriate sampling method (e.g., stratified)
+              Perform parametric tests (e.g., repeated measures (M)ANOVA)
+              Perform non-parametric tests (e.g., Chi-square, Mann-Whitney, and Kruskal-Wallis)'
+  teachingLanguage:
+    type: string
+    description: The (primary) teaching language in which this component is given, should be a three-letter language code as specified by ISO 639-2.
+    minLength: 3
+    maxLength: 3
+    pattern: "^[a-z]{3}$"
+    example: nld
+  learningOutcomes:
+    type: array
+    description: Statements that describe the knowledge or skills students should acquire by the end of a particular course (ECTS-learningoutcome).
+    items:
+      type: array
+      minItems: 1
+      items:
+        $ref: './LanguageTypedString.yaml'
+      example:
+      - language: en-GB
+        value: 'Executable knowledge of research methods, including: Acquire knowledge of HCI research paradigms.'
+  enrollment:
+    type: array
+    items:
+      $ref: './LanguageTypedString.yaml'
+    description: The extra information that is provided for enrollment
+    example:
+      - language: en-GB
+        value: enrollment through SIS. [The limited implementation of Git Hub Markdown syntax](#tag/formatting-and-displaying-results-from-API) MAY be used for rich text representation.
+  resources:
+    type: array
+    description: An overview of the literature and other resources that is used in this course (ECTS-recommended reading and other sources)
+    items:
+      type: string
+    example: ['book to be announced', 'on-line resource x']
+  assessment:
+    type: array
+    description: A description of the way exams for this course are taken (ECTS-assessment method and criteria).
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: Exam on campus
+  addresses:
+    type: array
+    description: Addresses for this component
+    items:
+      $ref: './Address.yaml'
+  otherCodes:
+    type: array
+    description: An array of additional human readable codes/identifiers for the entity being described.
+    items:
+      $ref: './IdentifierEntry.yaml'
+  course:
+    description: |
+      The course of which this component is a part. [`expandable`](#tag/course_model)
+      By default only the `courseId` (a string) is returned. If the client requested an expansion of `course` the full course object should be returned.
+    oneOf:
+      - $ref: './Identifier.yaml'
+        title: courseId
+      - $ref: './Course.yaml'
+        title: Course object  
+  organization:
+    description: |
+      The organization which provides this component. [`expandable`](#tag/organization_model)
+      By default only the `organizationId` (a string) is returned. If the client requested an expansion of `organization` the full organization object should be returned.
+    oneOf:
+      - $ref: './Identifier.yaml'
+        title: organizationId
+      - $ref: './Organization.yaml'
+        title: Organization object  
+  consumers:
+    description: The additional consumer elements that can be provided, see the [documentation on support for specific consumers](https://open-education-api.github.io/specification/#/consumers) for more information about this mechanism.
+    type: array
+    items:
+      $ref: './Consumer.yaml'
+    example:
+      $ref: '../consumers/TEST/V1/examples/TestConsumer.yaml'
+  ext:
+    $ref: './Ext.yaml'

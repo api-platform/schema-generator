@@ -1,0 +1,13 @@
+type: string
+description: |
+  The type of the cost. This is an *extensible enumeration*.
+
+  The following values have been defined in the specification:
+    - `STAP eligible`: the costs that a student can get STAP subsidy for
+    - `total costs`: the total costs that a student is to pay to follow this offering
+  
+  Implementations are allowed to add additional values to those above, as long as they do not overlap in definition to existing values.
+example: total costs
+x-ooapi-extensible-enum:
+  - STAP eligible
+  - total costs

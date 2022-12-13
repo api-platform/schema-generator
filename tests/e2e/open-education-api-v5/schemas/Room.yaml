@@ -1,0 +1,100 @@
+type: object
+description: An area within a building where education can take place
+required:
+  - roomId
+  - roomType
+  - name
+  - primaryCode
+properties:
+  roomId:
+    type: string
+    description: Unique id for this room
+    format: uuid
+    example: 123e4567-e89b-12d3-a456-332114174000
+  primaryCode:
+    description: The primary human readable identifier for the room. This is often the source identifier as defined by the institution.
+    $ref: './IdentifierEntry.yaml'
+    example:
+      codeType: roomCode
+      code: Bb4.54
+  roomType:
+    $ref: '../enumerations/roomType.yaml'
+  abbreviation:
+    type: string
+    description: The abbreviation of the name of this room
+    maxLength: 256
+    example: Bb4.54
+  name:
+    type: array
+    description: The name of this room
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: Beatrix building room 4.54
+  description:
+    type: array
+    description: The description of this room. [The limited implementation of Git Hub Markdown syntax](#tag/formatting-and-displaying-results-from-API) MAY be used for rich text representation.
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: External education and exam room 4.54
+  totalSeats:
+    type: integer
+    format: int32
+    description: The total number of seats located in the room
+    example: 300
+  availableSeats:
+    type: integer
+    format: int32
+    description: The total number of available (=non-reserved) seats in the room
+    example: 200
+  floor:
+    type: string
+    description: The floor on which this room is located
+    example: '4'
+  wing:
+    type: string
+    description: The wing in which this room is located
+    example: None
+  geolocation:
+    type: object
+    description: Geolocation of the entrance of this room (WGS84 coordinate reference system)
+    required:
+      - latitude
+      - longitude
+    properties:
+      latitude:
+        type: number
+        format: double
+        example: 52.088255
+      longitude:
+        type: number
+        format: double
+        example: 5.106669
+  otherCodes:
+    type: array
+    description: An array of additional human readable codes/identifiers for the entity being described.
+    items:
+      $ref: './IdentifierEntry.yaml'
+  building:
+    description: |
+      The building in which the room is located. [`expandable`](#tag/building_model)
+      By default only the `buildingId` (a string) is returned. If the client requested an expansion of `building` the full building object should be returned.
+    oneOf:
+      - $ref: './Identifier.yaml'
+        title: buildingId
+      - $ref: './Building.yaml'
+        title: Building object    
+  consumers:
+    description: The additional consumer elements that can be provided, see the [documentation on support for specific consumers](https://open-education-api.github.io/specification/#/consumers) for more information about this mechanism.
+    type: array
+    items:
+      $ref: './Consumer.yaml'
+    example:
+      $ref: '../consumers/TEST/V1/examples/TestConsumer.yaml'
+  ext:
+    $ref: './Ext.yaml'

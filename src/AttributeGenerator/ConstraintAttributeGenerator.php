@@ -42,8 +42,8 @@ final class ConstraintAttributeGenerator extends AbstractAttributeGenerator
 
         $asserts = [];
 
-        if (!$property->isArray && $property->type) {
-            switch ($property->type) {
+        if ($property->type && !$property->isArray()) {
+            switch ((string) $property->type) {
                 case 'url':
                     $asserts[] = new Attribute('Assert\Url');
                     break;
@@ -74,7 +74,7 @@ final class ConstraintAttributeGenerator extends AbstractAttributeGenerator
         if ($property->isEnum && $property->reference) {
             $args = ['callback' => [new Literal(sprintf('%s::class', $property->reference->name())), 'toArray']];
 
-            if ($property->isArray) {
+            if ($property->isArray()) {
                 $args['multiple'] = true;
             }
 

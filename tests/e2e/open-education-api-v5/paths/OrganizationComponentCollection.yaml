@@ -1,0 +1,74 @@
+get:
+  summary: GET /organizations/{organizationId}/components
+  description: Get an ordered list of all components for a given organization, ordered by name.
+  tags:
+    - organizations
+  parameters:
+    - name: organizationId
+      in: path
+      description: Organization ID
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - $ref: '../parameters/pageSize.yaml'
+    - $ref: '../parameters/pageNumber.yaml'
+    - $ref: '../parameters/consumer.yaml'
+    - $ref: '../parameters/search.yaml'
+    - $ref: '../parameters/teachingLanguage.yaml'
+    - name: componentType
+      in: query
+      description: Filter by component type
+      required: false
+      schema:
+        $ref: '../enumerations/componentType.yaml'
+    - name: sort
+      in: query
+      explode: false
+      description: 'Sort by one or more attributes, the default is ascending. Prefixing the attribute with a minus sign `-` allows for descending sort. Examples: [ATTR | -ATTR | ATTR1,-ATTR2]'
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - componentId
+            - name
+            - -componentId
+            - -name
+        default: [ name ]
+        example:
+          - componentId
+          - -name
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '../schemas/Pagination.yaml'
+              - type: object
+                required:
+                  - items
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '../schemas/Component.yaml'
+                  ext:
+                    $ref: '../schemas/Ext.yaml'
+    '400':
+      $ref: '../schemas/ErrorBadRequest.yaml'
+    '401':
+      $ref: '../schemas/ErrorUnauthorized.yaml'
+    '403':
+      $ref: '../schemas/ErrorForbidden.yaml'
+    '404':
+      $ref: '../schemas/ErrorNotFound.yaml'
+    '405':
+      $ref: '../schemas/ErrorMethodNotAllowed.yaml'
+    '429':
+      $ref: '../schemas/ErrorTooManyRequests.yaml'
+    '500':
+      $ref: '../schemas/ErrorInternalServerError.yaml'

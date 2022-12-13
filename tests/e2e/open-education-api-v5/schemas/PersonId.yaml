@@ -1,0 +1,11 @@
+type: object
+# description: ID of a person that has a relationship with this institution 
+properties:
+  personId:
+    type: string
+    description: Unique id of this person
+    format: uuid
+    example: 123e4567-e89b-12d3-a456-426614174000
+required:
+  - personId
+  

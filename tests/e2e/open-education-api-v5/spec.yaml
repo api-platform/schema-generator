@@ -1,0 +1,355 @@
+openapi: "3.0.3"
+info:
+  version: "5.0.0"
+  title: Open Education API
+  description: |
+    OpenAPI (fka Swagger) specification for the Open Education API.
+
+    <figure>
+    	<a target="_blank" href="OOAPIv5_model.png">
+      <img src="OOAPIv5_model.png" alt="OOAPI information model that feeds OOAPI specification" width="70%" class="img-responsive">
+      </a>
+      <figcaption> OOAPI information model that feeds OOAPI specification (click to enlage)</figcaption>
+    </figure>
+
+    The model provides an overview of how the objects on which the API is specified are related. The overarching concept educations is not found in the in the end points of the API. The smaller concepts of programOffering, courseOffering and conceptOffering are all found in the offering endpoint. The different types of association can all be found in the association endpoint.
+    
+    The original file for this model can be found <a target="_blank" href="OOAPIv5_model_v0.4.drawio">here</a>
+
+    The program relations object is not found as a separate endpoint but relations between programs can be found within the program endpoint by expanding that endpoint.
+
+    Information about earlier meetings and presentations can be found <a target="_blank" href="https://github.com/open-education-api/notulen">here</a>
+
+    Information on the EDU-API model that was also used for this api is shown <a target="_blank" href="eduapi.png">here</a>
+
+
+
+  x-logo:
+    url: ../logo.png
+
+servers:
+  - url: http://demo01.eduapi.nl/v5
+    description: SURF demo implementation
+
+tags:
+  - name: service metadata
+    description: The service API provides additional metadata needed to make the OOAPI fit for this organization.
+  - name: academic sessions
+    description: The academic sessions API provides information about the different time periods a program can be offered.
+  - name: associations
+    description: |
+      The associations API provides information about the association between an offering and a person (e.g. students, lecturers, etc).
+      Associations can be posted between institutions This requires information details on the offering and the persons.
+      To allow for this information a complete person object and offering object can be part of the API.
+      The structure is explained in the following model:
+      <table>
+        <tr>
+         <td></td>
+         <td colspan=3 align=center>offering</td>
+        </tr>
+        <tr>
+         <td rowspan=3>student</td>
+         <td></td>
+         <!-- <td>internal</td>
+         -->
+         <td>external</td>
+        </tr>
+        <tr>
+         <td>internal</td>
+         <!-- <td>POST <a href="#tag/offerings/paths/~1offerings~1{offeringId}~1associations~1external/post">/offerings/{offeringId}/associations/me</a> local enrollment based on selected offering
+          This call will allow for a local student using his .wellknown credentials to enroll for the offering identified by the offeringId
+          <br>Alternatively the association can also be created through POST <a href="#tag/associations/paths/~1associations~1me/post">/associations/me</a>
+         </td>
+         -->
+         <td>POST <a href="#tag/associations/paths/~1associations~1external~1me/post">/associations/external/me</a> gets student details from .wellknown at home institution. It passes offering details (provided by external institution) to the home institution so the home institution can create a placeholder for the offering and its results. 
+         </td>
+        </tr>
+        <tr>
+         <td>external</td>
+          <!--
+          <td>
+          This method is not yet implemented it requires full student details and offering details. This would mean the 
+          OOAPI message would contain more than one resource in the message. At the moment the student mobility project is looking into
+          a sollution.
+          <br> Alternatively it could be achieved through using two calls:
+          <ul>
+           <li>create student with POST <a href="#tag/persons/paths/~1persons~1{personId}/post">/persons</a></li>
+           <li><a href="#tag/offerings/paths/~1offerings~1{offeringId}~1associations~1external/post">/offerings/{offeringId}/associations/me</a></li>
+          </ul>
+          for the enrollment
+         </td>
+          -->
+         <td>no support needed</td>
+        </tr>
+      </table>
+      Direct update of current information: <a href="#tag/associations/paths/~1associations~1{associationId}/patch"> PATCH /associations/{associationId}</a>
+      This call is currently limited to passing results and a remote state. For future use other association resource information could be passed. 
+      More information on the support for student mobility can be found 
+      <a href="https://swimlanes.io/d/s5mfpj7Si">here</a>
+
+  - name: buildings
+    description: The building API provides a building that is currently used by the organization. Including all location details.
+  - name: courses
+    description: The courses API provides a self-contained and formally structured learning experience. Aimed at providing learning outcomes to students. Usually placed in the context of a program.
+  - name: components
+    description: The components API provides information about components being part of parent courses.
+  - name: education specifications
+    description: |
+      The education specification API provides information on the specification of an education object.
+      This specification allows for other education objects to be derived from it.
+      It is used to aggregate education objects from a supplying institution.
+      It clusters programs to a main educationSpecification that is used in registries such as RIO.
+  - name: groups
+    description: The groups API provides information about groups that are related to organizations, persons and offerings. Groups of students that are related to an offering are typically used for rostering. The rostering application assigns students based on these groups. For example, class 1b will be assigned to the course offering on monday morning. Not all groups are related to an offering. A group of people can also be a team that is working on a task outside the OOAPI scope. These can be teams of students, but also teams of employees.
+  - name: news
+    description: The news API provides news feeds and items regarding a specific subject.
+  - name: offerings
+    description: The offerings API provides information about offerings which have a global timeframe, e.g. a period to which students can enroll.
+  - name: organizations
+    description: The organizations API provides the organizations that are responsible for the execution and recognition of education.
+  - name: persons
+    description: The persons API provides information about persons related to an organization.
+  - name: programs
+    description: The programs API provides a coherent set of educational components, aimed at the realization of competences or objectives in the field of knowledge, insight, attitudes and skills that the person who completes the program must have.
+  - name: rooms
+    description: The rooms API provides the part of a building where an activity can take place. Including detail information on the resources available, number of seats, etc. (Updated continuously)
+
+  - name: service_model
+    x-displayName: Service
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/Service" />
+  - name: education_specification_model
+    x-displayName: EducationSpecification
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/EducationSpecification" />
+  - name: program_model
+    x-displayName: Program
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/Program" />
+  - name: course_model
+    x-displayName: Course
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/Course" />
+  - name: component_model
+    x-displayName: Component
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/Component" />
+  - name: program_offering_model
+    x-displayName: ProgramOffering
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/ProgramOffering" />
+  - name: course_offering_model
+    x-displayName: CourseOffering
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/CourseOffering" />
+  - name: component_offering_model
+    x-displayName: ComponentOffering
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/ComponentOffering" />
+  - name: association_model
+    x-displayName: Association
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/Association" />
+  - name: person_model
+    x-displayName: Person
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/Person" />
+  - name: group_model
+    x-displayName: Group
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/Group" />
+  - name: academic_session_model
+    x-displayName: AcademicSession
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/AcademicSession" />
+  - name: organization_model
+    x-displayName: Organization
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/Organization" />
+  - name: building_model
+    x-displayName: Building
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/Building" />
+  - name: room_model
+    x-displayName: Room
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/Room" />
+  - name: news_feed_model
+    x-displayName: NewsFeed
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/NewsFeed" />
+  - name: news_item_model
+    x-displayName: NewsItem
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/NewsItem" />
+
+x-tagGroups:
+  - name: Requests and respones
+    tags: 
+      - service metadata
+      - academic sessions
+      - associations
+      - buildings
+      - courses
+      - components
+      - education specifications
+      - groups
+      - news
+      - offerings
+      - organizations
+      - persons
+      - programs
+      - rooms
+  - name: Models
+    tags:
+      - service_model
+      - academic_session_model
+      - association_model
+      - building_model
+      - component_model
+      - component_offering_model
+      - course_model
+      - course_offering_model
+      - education_specification_model
+      - group_model
+      - news_feed_model
+      - news_item_model
+      - organization_model
+      - person_model
+      - program_model
+      - program_offering_model
+      - room_model
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+    openId:
+      type: openIdConnect
+      openIdConnectUrl: https://example.nl/.well-known/openid-configuration
+  schemas:
+    # allOf: 
+    #   - $ref: 'schemas/Service.yaml'
+    #   - $ref: schemas/AcademicSession.yaml
+    #   - $ref: schemas/Building.yaml
+    #   - $ref: schemas/Component.yaml
+    #   - $ref: schemas/ComponentOffering.yaml
+    #   - $ref: schemas/Course.yaml
+    #   - $ref: schemas/CourseOffering.yaml
+    #   - $ref: schemas/EducationSpecification.yaml
+    #   - $ref: schemas/Group.yaml
+    #   - $ref: schemas/NewsFeed.yaml
+    #   - $ref: schemas/NewsItem.yaml
+    #   - $ref: schemas/Organization.yaml
+    #   - $ref: schemas/Person.yaml
+    #   - $ref: schemas/Program.yaml
+    #   - $ref: schemas/ProgramOffering.yaml
+    #   - $ref: schemas/Room.yaml
+    #   - $ref: schemas/AssociationFull.yaml
+
+paths:
+  /:
+    $ref: paths/Service.yaml
+  /persons:
+    $ref: paths/PersonCollection.yaml
+  /persons/me:
+    $ref: paths/PersonMe.yaml
+  /persons/{personId}:
+    $ref: paths/PersonInstance.yaml
+  /persons/{personId}/associations:
+    $ref: paths/PersonAssociationCollection.yaml
+  /persons/{personId}/groups:
+    $ref: paths/PersonGroupCollection.yaml
+  /organizations:
+    $ref: paths/OrganizationCollection.yaml
+  /organizations/{organizationId}:
+    $ref: paths/OrganizationInstance.yaml
+  /organizations/{organizationId}/programs:
+    $ref: paths/OrganizationProgramCollection.yaml
+  /organizations/{organizationId}/courses:
+    $ref: paths/OrganizationCourseCollection.yaml
+  /organizations/{organizationId}/components:
+    $ref: paths/OrganizationComponentCollection.yaml
+  /organizations/{organizationId}/offerings:
+    $ref: paths/OrganizationOfferingCollection.yaml
+  /organizations/{organizationId}/groups:
+    $ref: paths/OrganizationGroupCollection.yaml
+  /organizations/{organizationId}/education-specifications:
+    $ref: paths/OrganizationEducationSpecificationCollection.yaml
+  /academic-sessions:
+    $ref: paths/AcademicSessionCollection.yaml
+  /academic-sessions/{academicSessionId}:
+    $ref: paths/AcademicSessionInstance.yaml
+  /academic-sessions/{academicSessionId}/offerings:
+    $ref: paths/AcademicSessionOfferingCollection.yaml
+  /programs:
+    $ref: paths/ProgramCollection.yaml
+  /programs/{programId}:
+    $ref: paths/ProgramInstance.yaml
+  /programs/{programId}/programs:
+    $ref: paths/ProgramProgramCollection.yaml
+  /programs/{programId}/courses:
+    $ref: paths/ProgramCourseCollection.yaml
+  /programs/{programId}/offerings:
+    $ref: paths/ProgramOfferingCollection.yaml
+  /courses:
+    $ref: paths/CourseCollection.yaml
+  /courses/{courseId}:
+    $ref: paths/CourseInstance.yaml
+  /courses/{courseId}/components:
+    $ref: paths/CourseComponentCollection.yaml
+  /courses/{courseId}/offerings:
+    $ref: paths/CourseOfferingCollection.yaml
+  /components/{componentId}:
+    $ref: paths/ComponentInstance.yaml
+  /components/{componentId}/offerings:
+    $ref: paths/ComponentOfferingCollection.yaml
+  /offerings/{offeringId}:
+    $ref: paths/OfferingInstance.yaml
+  /offerings/{offeringId}/associations:
+    $ref: paths/OfferingAssociationCollection.yaml
+  # /offerings/{offeringId}/associations/me:
+  #   $ref: paths/OfferingAssociationInstanceMe.yaml
+  /offerings/{offeringId}/groups:
+    $ref: paths/OfferingGroupCollection.yaml
+  /associations/{associationId}:
+    $ref: paths/AssociationInstance.yaml
+  # /associations/me:
+  #   $ref: paths/AssociationInstanceMe.yaml
+  /associations/external/me:
+    $ref: paths/AssociationInstanceExternalMe.yaml
+  /buildings:
+    $ref: paths/BuildingCollection.yaml
+  /buildings/{buildingId}:
+    $ref: paths/BuildingInstance.yaml
+  /buildings/{buildingId}/rooms:
+    $ref: paths/BuildingRoomCollection.yaml
+  /rooms:
+    $ref: paths/RoomCollection.yaml
+  /rooms/{roomId}:
+    $ref: paths/RoomInstance.yaml
+  /news-feeds:
+    $ref: paths/NewsFeedCollection.yaml
+  /news-feeds/{newsFeedId}:
+    $ref: paths/NewsFeedInstance.yaml
+  /news-feeds/{newsFeedId}/news-items:
+    $ref: paths/NewsFeedItemCollection.yaml
+  /news-items/{newsItemId}:
+    $ref: paths/NewsItemInstance.yaml
+  /education-specifications:
+    $ref: paths/EducationSpecificationCollection.yaml
+  /education-specifications/{educationSpecificationId}:
+    $ref: paths/EducationSpecificationInstance.yaml
+  /education-specifications/{educationSpecificationId}/education-specifications:
+    $ref: paths/EducationSpecificationEducationSpecificationCollection.yaml
+  /education-specifications/{educationSpecificationId}/courses:
+    $ref: paths/EducationSpecificationCourseCollection.yaml
+  /education-specifications/{educationSpecificationId}/programs:
+    $ref: paths/EducationSpecificationProgramCollection.yaml
+  /groups:
+    $ref: paths/GroupCollection.yaml
+  /groups/{groupId}:
+    $ref: paths/GroupInstance.yaml
+  /groups/{groupId}/persons:
+    $ref: paths/GroupPersonCollection.yaml

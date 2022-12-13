@@ -1,0 +1,29 @@
+type: object
+description: RIO add-on attributes to the offerings of either a collection of courses or courses that lead to a certifiable learning outcome
+required:
+  - registrationStatus
+  - requiredPermissionRegistration
+properties:
+  explanationRequiredPermission:
+    type: string
+    description: |
+      toelichtingVereisteToestemming
+      Is een tekstuele toelichting op de voor aanmelding vereiste toestemming van de onderwijsaanbieder
+  requiredPermissionRegistration:
+    type: string
+    description: |
+      toestemmingVereistVoorAanmelding
+      Geeft aan of een aspirant-student voor een bepaald cohort van een aangeboden opleiding toestemming van de onderwijsaanbieder nodig heeft om zich aan te mogen melden.
+      - yes: JA
+      - no: NEE
+    enum:
+      - yes
+      - no
+  registrationStatus:
+    type: string
+    description: |
+      cohortStatus
+      De toegestane waarden voor de status van een cohort van een aangeboden opleiding. Hiermee kan bijvoorbeeld worden aangegeven of een bepaald cohort open staat voor aanmelding, of dat het gesloten is.
+    enum:
+      - open
+      - closed

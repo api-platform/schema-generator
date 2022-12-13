@@ -1,0 +1,18 @@
+type: object
+description: A system message as a response to a POST message 
+required:
+  - message
+properties:
+  message:
+    description: information displayed to user
+    type: array
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: Your enrollment was partly succesful, you have been placed on the waitinglist 
+  redirect:
+    description: URL where additional information can be found e.g. by use of deeplink
+    type: string
+    format: uri

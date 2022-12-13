@@ -1,0 +1,7 @@
+type: string
+description: The state of this result
+enum:
+  - unknown
+  - passed
+  - failed
+example: passed

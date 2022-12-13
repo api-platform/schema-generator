@@ -1,0 +1,41 @@
+post:
+  summary: POST offerings/{offeringId}/associations/me
+  description: |
+    POST a single association to enroll a person based on hte .wellknown information of the person at the institution. The offeringId is provided in the path. 
+  security:
+    - openId:
+      - associations:me.write
+  tags:
+    - offerings
+  parameters:
+    - name: offeringId
+      in: path
+      description: Offering ID
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../schemas/AssociationProperties.yaml'
+
+  responses:
+    '201':
+      description: CREATED
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '../schemas/AssociationId.yaml'
+              - $ref: '../schemas/PostResponse.yaml'
+
+    '400':
+      description: Bad Request
+      content:
+        application/problem+json:
+          schema:
+            $ref: '../schemas/Problem.yaml'

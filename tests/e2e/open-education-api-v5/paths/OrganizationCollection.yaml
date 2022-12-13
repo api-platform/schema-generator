@@ -1,0 +1,65 @@
+get:
+  summary: GET /organizations
+  description: Get an ordered list of all organizations, ordered by name.
+  tags:
+    - organizations
+  parameters:
+    - $ref: '../parameters/primaryCode.yaml'
+    - $ref: '../parameters/pageSize.yaml'
+    - $ref: '../parameters/pageNumber.yaml'
+    - $ref: '../parameters/consumer.yaml'
+    - $ref: '../parameters/search.yaml'
+    - name: organizationType
+      in: query
+      description: Filter by organization type
+      required: false
+      schema:
+        $ref: '../enumerations/organizationType.yaml'
+    - name: sort
+      in: query
+      explode: false
+      description: 'Sort by one or more attributes, the default is ascending. Prefixing the attribute with a minus sign `-` allows for descending sort. Examples: [ATTR | -ATTR | ATTR1,-ATTR2]'
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - organizationId
+            - name
+            - -organizationId
+            - -name
+        default: [ name ]
+        example:
+          - name
+          - -organizationId
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '../schemas/Pagination.yaml'
+              - type: object
+                required:
+                  - items
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '../schemas/Organization.yaml'
+                  ext:
+                    $ref: '../schemas/Ext.yaml'
+    '400':
+      $ref: '../schemas/ErrorBadRequest.yaml'
+    '401':
+      $ref: '../schemas/ErrorUnauthorized.yaml'
+    '403':
+      $ref: '../schemas/ErrorForbidden.yaml'
+    '405':
+      $ref: '../schemas/ErrorMethodNotAllowed.yaml'
+    '429':
+      $ref: '../schemas/ErrorTooManyRequests.yaml'
+    '500':
+      $ref: '../schemas/ErrorInternalServerError.yaml'

@@ -19,6 +19,7 @@ use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
 use ApiPlatform\SchemaGenerator\PhpTypeConverter;
 use ApiPlatform\SchemaGenerator\Schema\Model\Class_ as SchemaClass;
 use ApiPlatform\SchemaGenerator\Schema\Model\Property;
+use ApiPlatform\SchemaGenerator\Schema\Model\Type\PrimitiveType as SchemaPrimitiveType;
 use ApiPlatform\SchemaGenerator\Schema\PropertyGenerator\PropertyGenerator as SchemaPropertyGenerator;
 use ApiPlatform\SchemaGenerator\Schema\TypeConverter;
 use ApiPlatform\SchemaGenerator\SchemaGeneratorConfiguration;
@@ -105,14 +106,14 @@ class ClassPropertiesAppenderTest extends TestCase
         $expectedArticleBodyProperty->resource = new RdfResource('https://schema.org/articleBody', $graph);
         $expectedArticleBodyProperty->range = new RdfResource('https://schema.org/Text', $graph);
         $expectedArticleBodyProperty->rangeName = 'Text';
-        $expectedArticleBodyProperty->type = 'string';
+        $expectedArticleBodyProperty->type = new SchemaPrimitiveType('string');
         $expectedArticleBodyProperty->isNullable = true;
         $expectedArticleSectionProperty = new Property('articleSection');
         $expectedArticleSectionProperty->cardinality = CardinalitiesExtractor::CARDINALITY_UNKNOWN;
         $expectedArticleSectionProperty->resource = new RdfResource('https://schema.org/articleSection', $graph);
         $expectedArticleSectionProperty->range = new RdfResource('https://schema.org/Text', $graph);
         $expectedArticleSectionProperty->rangeName = 'Text';
-        $expectedArticleSectionProperty->type = 'string';
+        $expectedArticleSectionProperty->type = new SchemaPrimitiveType('string');
         $expectedArticleSectionProperty->isNullable = true;
         yield 'no configuration' => [clone $article, (clone $article)->addProperty($expectedArticleBodyProperty)->addProperty($expectedArticleSectionProperty), $graph];
 
@@ -123,7 +124,7 @@ class ClassPropertiesAppenderTest extends TestCase
         $expectedGivenNameProperty->resource = new RdfResource('https://schema.org/givenName', $graph);
         $expectedGivenNameProperty->range = new RdfResource('https://schema.org/Text', $graph);
         $expectedGivenNameProperty->rangeName = 'Text';
-        $expectedGivenNameProperty->type = 'string';
+        $expectedGivenNameProperty->type = new SchemaPrimitiveType('string');
         $expectedGivenNameProperty->isNullable = true;
         $expectedGivenNameProperty->isRequired = true;
         yield 'with configuration' => [clone $person, (clone $person)->addProperty($expectedGivenNameProperty), $graph];

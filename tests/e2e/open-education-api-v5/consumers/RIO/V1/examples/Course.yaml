@@ -1,0 +1,6 @@
+- consumerKey: rio
+  educationOffererCode: 123A321
+  educationLocationCode: 334X123
+  consentParticipationSTAP: permission_granted
+  jointPartnerCodes: [123A123]
+  foreignPartners: ["Harvard University"]

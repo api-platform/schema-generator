@@ -15,10 +15,12 @@ namespace ApiPlatform\SchemaGenerator\Tests\AttributeGenerator;
 
 use ApiPlatform\SchemaGenerator\AttributeGenerator\ConstraintAttributeGenerator;
 use ApiPlatform\SchemaGenerator\Model\Attribute;
+use ApiPlatform\SchemaGenerator\Model\Type\ArrayType;
 use ApiPlatform\SchemaGenerator\Model\Use_;
 use ApiPlatform\SchemaGenerator\PhpTypeConverter;
 use ApiPlatform\SchemaGenerator\Schema\Model\Class_ as SchemaClass;
 use ApiPlatform\SchemaGenerator\Schema\Model\Property;
+use ApiPlatform\SchemaGenerator\Schema\Model\Type\PrimitiveType as SchemaPrimitiveType;
 use ApiPlatform\SchemaGenerator\TypesGenerator;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
@@ -93,14 +95,14 @@ class ConstraintAttributeGeneratorTest extends TestCase
 
         $property = new Property('prop');
         $property->resource = new RdfResource('https://schema.org/email');
-        $property->type = 'string';
+        $property->type = new SchemaPrimitiveType('string');
         $property->isNullable = false;
         yield 'email' => [$property, [new Attribute('Assert\Email'), new Attribute('Assert\NotNull')]];
 
         $property = new Property('prop');
         $property->reference = new SchemaClass('Enum', new RdfResource('https://schema.org/Enum', new RdfGraph()));
         $property->isEnum = true;
-        $property->isArray = true;
+        $property->type = new ArrayType();
         yield 'enum' => [$property, [new Attribute('Assert\Choice', ['callback' => [new Literal('Enum::class'), 'toArray'], 'multiple' => true])]];
     }
 

@@ -33,13 +33,12 @@ class Pet
     /**
      * @var string[]
      */
+    #[ORM\Column(type: 'json')]
     #[ApiProperty]
     #[Assert\NotNull]
     private array $photoUrls = [];
 
-    /**
-     * @var string[]
-     */
+    #[ORM\Column(type: 'json')]
     #[ApiProperty]
     #[Assert\NotNull]
     private array $tags = [];
@@ -110,9 +109,6 @@ class Pet
         }
     }
 
-    /**
-     * @return string[]
-     */
     public function getTags(): array
     {
         return $this->tags;

@@ -1,0 +1,52 @@
+type: object
+description: A placeholder or collection of news items
+required:
+  - newsFeedId
+  - newsFeedType
+  - name
+  - description
+properties:
+  newsFeedId:
+    type: string
+    description: Unique id for this news feed
+    format: uuid
+    example: 123e4567-e89b-12d3-a456-134564174222
+  newsFeedType:
+    type: string
+    description: The type of the object this news feed relates to
+    enum:
+      - organization
+      - program
+      - course
+      - component
+      - person
+      - building
+      - room
+    example: room
+  name:
+    type: array
+    description: The name for this news feed
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: room Bb 4.35 news
+  description:
+    type: array
+    description: The description of this news feed.
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: all information on what happens in room Bb 4.35
+  consumers:
+    description: The additional consumer elements that can be provided, see the [documentation on support for specific consumers](https://open-education-api.github.io/specification/#/consumers) for more information about this mechanism.
+    type: array
+    items:
+      $ref: './Consumer.yaml'
+    example:
+      $ref: '../consumers/TEST/V1/examples/TestConsumer.yaml'
+  ext:
+    $ref: './Ext.yaml'

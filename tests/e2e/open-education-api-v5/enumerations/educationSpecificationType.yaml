@@ -1,0 +1,13 @@
+type: string
+description: |
+  The type of education specification
+    - program: HOOPLEIDING
+    - privateProgram: PARTICULIEREOPLEIDING
+    - programCluster: HOONDERWIJSEENHEDENCLUSTER
+    - course: HOONDERWIJSEENHEID
+enum:
+  - program
+  - privateProgram
+  - cluster
+  - course
+example: program

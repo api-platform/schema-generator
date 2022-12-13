@@ -15,7 +15,12 @@ namespace ApiPlatform\SchemaGenerator\OpenApi\PropertyGenerator;
 
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
+use ApiPlatform\SchemaGenerator\Model\Type\ArrayType;
+use ApiPlatform\SchemaGenerator\Model\Type\Type;
+use ApiPlatform\SchemaGenerator\Model\Type\UnionType;
 use ApiPlatform\SchemaGenerator\OpenApi\Model\Property as OpenApiProperty;
+use ApiPlatform\SchemaGenerator\OpenApi\Model\Type\PrimitiveType;
+use ApiPlatform\SchemaGenerator\OpenApi\SchemaTraversalTrait;
 use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGenerator as CommonPropertyGenerator;
 use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGeneratorInterface;
 use cebe\openapi\spec\Schema;
@@ -24,6 +29,8 @@ use function Symfony\Component\String\u;
 
 final class PropertyGenerator implements PropertyGeneratorInterface
 {
+    use SchemaTraversalTrait;
+
     private PropertyGeneratorInterface $propertyGenerator;
 
     public function __construct(?PropertyGeneratorInterface $propertyGenerator = null)
@@ -41,7 +48,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
         $schemaProperty = $context['property'];
 
         $openApiProperty = new OpenApiProperty($name);
-        $openApiProperty->isArray = 'array' === $schemaProperty->type;
+        $openApiProperty->type = $this->getType($schemaProperty);
 
         $openApiProperty = ($this->propertyGenerator)($name, $config, $class, $context, $isCustom, $openApiProperty);
 
@@ -51,10 +58,6 @@ final class PropertyGenerator implements PropertyGeneratorInterface
 
         $requiredFields = $schema->required ?? [];
 
-        $openApiProperty->type = $this->getType($schemaProperty->type, $schemaProperty->format);
-        $openApiProperty->arrayType = $openApiProperty->isArray && $schemaProperty->items instanceof Schema
-            ? $this->getType($schemaProperty->items->type, $schemaProperty->items->format)
-            : null;
         if ($schemaProperty->description) {
             $openApiProperty->setDescription($schemaProperty->description);
         }
@@ -70,22 +73,66 @@ final class PropertyGenerator implements PropertyGeneratorInterface
         return $openApiProperty;
     }
 
-    private function getType(string $type, ?string $format): ?string
+    private function getType(Schema $schemaProperty, bool $inComposite = false): ?Type
     {
+        if ($schemaProperty->oneOf) {
+            $types = [];
+            foreach ($schemaProperty->oneOf as $oneOfProperty) {
+                \assert($oneOfProperty instanceof Schema);
+                if ($oneOfType = $this->getType($oneOfProperty, true)) {
+                    $types[] = $oneOfType;
+                }
+            }
+
+            return new UnionType($types);
+        }
+
+        // Merge properties.
+        if ($schemaProperty->allOf) {
+            $type = 'string';
+            $format = 'string';
+            foreach ($this->getSchemaItem($schemaProperty) as $schemaPropertyItem) {
+                $type = $schemaPropertyItem->type ?? $type;
+                $format = $schemaPropertyItem->format ?? $format;
+            }
+            $schemaProperty = new Schema([
+                'type' => $type,
+                'format' => $format,
+            ]);
+        }
+
+        // Not supported.
+        if ($schemaProperty->anyOf || $schemaProperty->not) {
+            return null;
+        }
+
+        if ('array' === $schemaProperty->type) {
+            return new ArrayType($schemaProperty->items instanceof Schema ? $this->getType($schemaProperty->items) : null);
+        }
+
+        $type = $schemaProperty->type;
+        $format = $schemaProperty->format;
+
+        $primitiveType = new PrimitiveType($type);
+
         if ($format) {
             switch ($format) {
                 case 'int32':
                 case 'int64':
-                    return 'integer';
+                    $primitiveType = new PrimitiveType('integer');
+
+                    break;
                 default:
-                    return u(str_replace('-', '_', $format))->camel()->toString();
+                    $primitiveType = new PrimitiveType(u(str_replace('-', '_', $format))->camel()->toString());
             }
+
+            return $primitiveType;
         }
 
-        if (\in_array($type, ['array', 'object'], true)) {
+        if (!$inComposite && \in_array($type, ['array', 'object'], true)) {
             return null;
         }
 
-        return $type;
+        return $primitiveType;
     }
 }

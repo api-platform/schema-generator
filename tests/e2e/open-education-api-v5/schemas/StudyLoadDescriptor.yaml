@@ -1,0 +1,26 @@
+type: object
+description: The amount of effort to complete this education in the specified unit.
+properties:
+  studyLoadUnit:
+    description: |
+      The unit in which the studyload is specfied
+      - contacttime: CONTACTUUR	amount of time spent in classes
+      - ects: ECTS_PUNT	European Credit Transfer System
+      - sbu: SBU	studentloadhours
+      - sp: STUDIEPUNT studentpoints
+      - hour: UUR	hours
+    type: string
+    enum:
+      - contacttime
+      - ects
+      - sbu
+      - sp
+      - hour
+    example: ects
+  value:
+    description: The amount of load depicted in numbers
+    type: number
+    example: 3
+example:
+  studyLoadUnit: ects
+  value: 3

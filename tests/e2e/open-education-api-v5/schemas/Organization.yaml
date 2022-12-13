@@ -1,0 +1,104 @@
+type: object
+description: A description of a group of people working together to achieve a goal
+required:
+  - organizationId
+  - organizationType
+  - name
+  - shortName
+  - primaryCode
+properties:
+  organizationId:
+    type: string
+    description: Unique id of this organization
+    format: uuid
+    example: 123e4567-e89b-12d3-a456-123514174000
+    readOnly: true
+  primaryCode:
+    description: The primary human readable identifier for the organization. This is often the source identifier as defined by the institution.
+    $ref: './IdentifierEntry.yaml'
+    example:
+      codeType: orgId
+      code: Org01-Root
+    readOnly: true
+  organizationType:
+    $ref: '../enumerations/organizationType.yaml'
+  name:
+    type: array
+    description: The name of the organization
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: nl-NL
+      value: Coöperatie SURF U.A.
+  shortName:
+    type: string
+    description: Short name of the organization
+    maxLength: 256
+    example: SURF
+  description:
+    type: array
+    description: Any general description of the organization should clearly mention the type of higher education organization, especially in the case of a binary system. In Dutch; universiteit (university) or hogeschool (university of applied sciences).
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: nl-NL
+      value: SURF is een coöperatieve vereniging van Nederlandse onderwijs- en onderzoeksinstellingen waarin de leden hun krachten bundelen. De leden zijn eigenaar van SURF.
+  addresses:
+    type: array
+    description: Addresses of this organization
+    items:
+      $ref: './Address.yaml'
+  link:
+    type: string
+    description: URL of the organization's website
+    format: uri
+    maxLength: 2048
+    example: https://surf.nl
+  logo:
+    type: string
+    description: Logo of this organization
+    format: uri
+    maxLength: 2048
+    example: https://www.surf.nl/themes/surf/logo.svg
+  otherCodes:
+    type: array
+    description: An array of additional human readable codes/identifiers for the entity being described.
+    minItems: 1
+    items:
+      $ref: './IdentifierEntry.yaml'
+    example:
+      - codeType: brin
+        code: 00AA
+      - codeType: kvk
+        code: '12345678'
+  parent:
+    description: |
+      The organizational unit which is the parent of this organization. [`expandable`](#tag/organization_model)
+      By default only the `organizationId` (a string) is returned. If the client requested an expansion of `organization` the full organization object should be returned.
+    oneOf:
+      - $ref: './Identifier.yaml'
+        title: organizationId
+      - $ref: './Organization.yaml'
+        title: Organization object     
+  children:
+      type: array
+      description: |
+        All the organizational units for which this organization is the parent. [`expandable`](#tag/organization_model)
+        By default only the `organizationId` (a string) is returned. If the client requested an expansion of `organization` the full organization object should be returned.
+      items:
+        oneOf:
+          - $ref: './Identifier.yaml'
+            title: organizationId
+          - $ref: './Organization.yaml'
+            title: Organization object     
+  consumers:
+    description: The additional consumer elements that can be provided, see the [documentation on support for specific consumers](https://open-education-api.github.io/specification/#/consumers) for more information about this mechanism.
+    type: array
+    items:
+      $ref: './Consumer.yaml'
+    example:
+      $ref: '../consumers/TEST/V1/examples/TestConsumer.yaml'
+  ext:
+    $ref: './Ext.yaml'

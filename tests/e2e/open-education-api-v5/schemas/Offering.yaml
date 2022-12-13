@@ -1,0 +1,3 @@
+allOf:
+  - $ref: '../schemas/OfferingId.yaml'
+  - $ref: '../schemas/OfferingProperties.yaml'

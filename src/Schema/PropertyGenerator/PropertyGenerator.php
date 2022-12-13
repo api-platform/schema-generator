@@ -17,10 +17,12 @@ use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
+use ApiPlatform\SchemaGenerator\Model\Type\ArrayType;
 use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
 use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGenerator as CommonPropertyGenerator;
 use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGeneratorInterface;
 use ApiPlatform\SchemaGenerator\Schema\Model\Property as SchemaProperty;
+use ApiPlatform\SchemaGenerator\Schema\Model\Type\PrimitiveType;
 use ApiPlatform\SchemaGenerator\Schema\TypeConverter;
 use EasyRdf\Resource as RdfResource;
 use Psr\Log\LoggerAwareTrait;
@@ -134,7 +136,11 @@ final class PropertyGenerator implements PropertyGeneratorInterface
         ], true);
 
         $schemaProperty = new SchemaProperty($name);
-        $schemaProperty->isArray = $isArray;
+        if ($isArray) {
+            $schemaProperty->type = new ArrayType($type ? new PrimitiveType($type) : null);
+        } elseif ($type) {
+            $schemaProperty->type = new PrimitiveType($type);
+        }
 
         $schemaProperty = ($this->propertyGenerator)($name, $config, $class, $context, $isCustom, $schemaProperty);
 
@@ -150,7 +156,6 @@ final class PropertyGenerator implements PropertyGeneratorInterface
         $schemaProperty->resource = $typeProperty;
         $schemaProperty->range = $range;
         $schemaProperty->rangeName = $rangeName;
-        $schemaProperty->type = $type;
         $schemaProperty->defaultValue = $propertyConfig['defaultValue'] ?? null;
         $schemaProperty->cardinality = $cardinality;
         $schemaProperty->isReadable = $propertyConfig['readable'] ?? true;

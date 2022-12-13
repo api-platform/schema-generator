@@ -40,6 +40,7 @@ use function Symfony\Component\String\u;
 final class ClassGenerator
 {
     use LoggerAwareTrait;
+    use SchemaTraversalTrait;
 
     private InflectorInterface $inflector;
     private PhpTypeConverterInterface $phpTypeConverter;
@@ -153,7 +154,7 @@ final class ClassGenerator
                 if ($reference = $classes[preg_replace('/Ids?$/', '', $this->inflector->singularize(u($property->name())->title()->toString())[0])] ?? null) {
                     $property->reference = $reference;
                     $property->cardinality = $property->isNullable ? CardinalitiesExtractor::CARDINALITY_0_1 : CardinalitiesExtractor::CARDINALITY_1_1;
-                    if ($property->isArray) {
+                    if ($property->isArray()) {
                         $property->cardinality = $property->isNullable ? CardinalitiesExtractor::CARDINALITY_0_N : CardinalitiesExtractor::CARDINALITY_1_N;
                     }
                 }
@@ -166,7 +167,7 @@ final class ClassGenerator
 
             // Try to guess the mapped by from the references
             foreach ($class->properties() as $property) {
-                if ($property->reference && $property->isArray) {
+                if ($property->reference && $property->isArray()) {
                     $mappedByName = strtolower($class->name());
                     foreach ($property->reference->properties() as $referenceProperty) {
                         if ($mappedByName === $referenceProperty->name()) {
@@ -227,7 +228,12 @@ final class ClassGenerator
             $class->setRdfType($schema->externalDocs->url);
         }
 
-        foreach ($schema->properties as $propertyName => $schemaProperty) {
+        $schemaProperties = [];
+        foreach ($this->getSchemaItem($schema) as $schemaItem) {
+            $schemaProperties = array_merge($schemaProperties, $schemaItem->properties);
+        }
+
+        foreach ($schemaProperties as $propertyName => $schemaProperty) {
             \assert($schemaProperty instanceof Schema);
             $property = ($this->propertyGenerator)($propertyName, $config, $class, ['schema' => $schema, 'property' => $schemaProperty]);
             if ($property) {

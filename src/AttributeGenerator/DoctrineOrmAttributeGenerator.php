@@ -17,6 +17,7 @@ use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\Model\Attribute;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
+use ApiPlatform\SchemaGenerator\Model\Type\CompositeType;
 use ApiPlatform\SchemaGenerator\Model\Use_;
 use Nette\PhpGenerator\Literal;
 
@@ -102,10 +103,10 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
 
         $type = null;
         if ($property->isEnum) {
-            $type = $property->isArray ? 'simple_array' : 'string';
-        } elseif ($property->isArray && $property->type) {
+            $type = $property->isArray() ? 'simple_array' : 'string';
+        } elseif (!$property->reference && $property->isArray()) {
             $type = 'json';
-        } elseif (!$property->isArray && $property->type && !$property->reference && null !== ($phpType = $this->phpTypeConverter->getPhpType($property, $this->config, []))) {
+        } elseif ($property->type && !$property instanceof CompositeType && !$property->reference && !$property->isArray() && null !== ($phpType = $this->phpTypeConverter->getPhpType($property, $this->config, []))) {
             switch ($property->type) {
                 case 'time':
                     $type = 'time';

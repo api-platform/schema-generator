@@ -1,0 +1,59 @@
+type: string
+description: |
+  The code/identifier type. 
+  
+  This is an *extensible enumeration*. Use `x-` to prefix custom values
+  
+  The predefined values are:
+    - `brin`: The registration number for a Dutch educational institution that is issued by the Dutch Ministry of Education, Culture and Science
+    - `crohoCreboCode`: programs with a CREBO and CROHO number are accredited by the Dutch Ministry of Education, Culture and Science (OCW)
+    - `programCode`: Identifier for the program (collection of courses)
+    - `componentCode`: The code for a component (part of a course)
+    - `offeringCode`: The code to identify a specific offering (program, course or component offering)
+    - `organizationId`: The identifier for the organization
+    - `buildingId`: The number or code to identify a building
+    - `bagId`: The identification of a building as it is known in the Dutch Building Administration (BAG)
+    - `roomCode`: The code for a room
+    - `systemId`: Identifier assigned to an entity in context of a specific system
+    - `productId`: Identifier assigned to a specific product
+    - `nationalIdentityNumber`: Identifier assigned by the governement of the person. e.g. a social security number in the USA
+    - `studentNumber`: Identifier for the student
+    - `studielinkNumber`: Identifier for the person as determined by Studielink
+    - `esi`: European Student Identifier
+    - `userName`: The name of a user
+    - `accountId`: Identifier assigned to a specific account
+    - `emailAdress`: An email address
+    - `groupCode`: The identifier for a group (of persons)
+    - `isbn`: International Standard Book Number that serve as product identifiers for Books
+    - `issn`: International Standard Book Number that serve as product identifiers for periodicals
+    - `orcId`: Open Researcher and Contributor ID
+    - `uuid`: A universally unique identifier
+    - `schacHome`: Home organization using the domain name of the organization
+    - `identifier`: Generic Identifier
+x-ooapi-extensible-enum:
+  - brin
+  - crohoCreboCode
+  - programCode
+  - componentCode
+  - offeringCode
+  - organizationId
+  - buildingId
+  - bagId
+  - roomCode
+  - systemId
+  - productId
+  - nationalIdentityNumber
+  - studentNumber
+  - studielinkNumber
+  - esi
+  - userName
+  - accountId
+  - emailAdress
+  - groupCode
+  - isbn
+  - issn
+  - orcId
+  - uuid
+  - schacHome
+  - identifier
+example: identifier

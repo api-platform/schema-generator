@@ -40,3 +40,8 @@ php schema.phar generate tmp/original tests/e2e/schema_openapi_ref.yml -n -vv --
 diff tests/e2e/original/App/OpenApi/Entity/Order.php tmp/original/App/OpenApi/Entity/Order.php;
 diff tests/e2e/original/App/OpenApi/Entity/Pet.php tmp/original/App/OpenApi/Entity/Pet.php;
 diff tests/e2e/original/App/OpenApi/Entity/User.php tmp/original/App/OpenApi/Entity/User.php;
+
+php schema.phar generate tmp/original tests/e2e/schema_open_education_api.yml -n -vv --ansi;
+
+diff tests/e2e/original/App/OpenApi/Entity/AcademicSession.php tmp/original/App/OpenApi/Entity/AcademicSession.php;
+diff tests/e2e/original/App/OpenApi/Entity/Association.php tmp/original/App/OpenApi/Entity/Association.php;

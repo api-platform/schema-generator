@@ -1,0 +1,8 @@
+allOf:
+  - $ref: './Association.yaml'
+  - type: object
+    properties:
+      result:
+        $ref: './CourseResult.yaml'
+      person:
+        $ref: './PersonId.yaml'

@@ -1,0 +1,6 @@
+name: consumer
+in: query
+description: Request entities meant for a specific consumer. This query parameter is independent from the `consumers` attribute. See the [documentation on support for specific consumers](https://open-education-api.github.io/specification/#/consumers) for more information about this mechanism.
+required: false
+schema:
+  type: string

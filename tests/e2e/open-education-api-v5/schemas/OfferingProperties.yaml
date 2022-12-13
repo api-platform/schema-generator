@@ -1,0 +1,128 @@
+type: object
+description: Either a program, course or component offering which descrbes the program, course or offering in time
+required:
+  - primaryCode
+  - offeringType
+  - name
+  - description
+  - teachingLanguage
+  - resultExpected
+properties:
+  primaryCode:
+    description: The primary human readable identifier for this offering. This is often the source identifier as defined by the institution.
+    $ref: './IdentifierEntry.yaml'
+    example:
+      codeType: offeringCode
+      code: INFOMQNM-20FS
+    readOnly: true
+  offeringType:
+    type: string
+    description: The type of this offering
+    enum:
+      - program
+      - course
+      - component
+    example: component
+  academicSession:
+    $ref: './AcademicSession.yaml'
+  name:
+    type: array
+    description: The name of this offering
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: Final written test for INFOMQNM for fall semseter 2020
+  abbreviation:
+    type: string
+    description: The abbreviation or internal code used to identify this offering
+    maxLength: 256
+    example: Test-INFOMQNM-20FS
+  description:
+    type: array
+    description: The description of this offering.
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: |
+              'Prove in writing knowledge of research methods, including:
+              Acquire knowledge of HCI research paradigms
+              Able to design suitable research studies (e.g., choose between within and between subject designs)
+              Define/apply/design metrics and scales
+              Define/produce materials (e.g., stimuli and questionnaires)
+              Define protocols for research studies
+              Understands and take in account concepts of reliability and validity
+              Analyze and improve methods and analysis of published scientific articles
+              Able to deliver scientific reports
+              Prove in writing knowledge of ­­­statistics, including:
+              Handle hypothesis testing with complex designs (e.g., including , dependent, independent, and co variates)
+              Data preparation (e.g., coding and feature selection)
+              Reason towards adequate techniques to ensure valid outcomes (e.g., be aware of type I, type II errors)
+              Select an appropriate sampling method (e.g., stratified)
+              Perform parametric tests (e.g., repeated measures (M)ANOVA)
+              Perform non-parametric tests (e.g., Chi-square, Mann-Whitney, and Kruskal-Wallis)'
+  teachingLanguage:
+    type: string
+    description: The (primary) teaching language in which this offering is given, should be a three-letter language code as specified by ISO 639-2.
+    minLength: 3
+    maxLength: 3
+    pattern: "^[a-z]{3}$"
+    example: nld
+  modeOfDelivery:
+    $ref: '../enumerations/modesOfDelivery.yaml'
+  maxNumberStudents:
+    type: number
+    description: The maximum number of students allowed to enroll for this offering
+    format: int32
+    minimum: 0
+    example: 200
+  enrolledNumberStudents:
+    type: number
+    description: The number of students that have already enrolled for this offering
+    format: int32
+    minimum: 0
+    example: 150
+  pendingNumberStudents:
+    type: number
+    description: The number of students that have a pending enrollment request for this offering
+    format: int32
+    minimum: 0
+    example: 50
+  minNumberStudents:
+    type: number
+    description: The minimum number of students needed for this offering to proceed
+    format: int32
+    minimum: 0
+    example: 15
+  resultExpected:
+    type: boolean
+    description: |
+      resultExpected, previously knwon as isLineItem is used so the specific instance of the object is identified as being an element that CAN contain “grade” information.
+      Offerings do not always have to result in a grade or an other type of result. 
+      If there is a result expected from a programOffering/courseOffering/componentOffering the is resultExpected field should parse true
+    example: true
+  resultValueType:
+    $ref: '../enumerations/resultValueType.yaml'
+  link:
+    type: string
+    description: URL of this offering's webpage.
+    format: uri
+    maxLength: 2048
+    example: https://osiris.uu.nl/osiris_student_uuprd/OnderwijsCatalogusZoekCursus.do#submitForm?cursuscode=INFOMQNM
+  otherCodes:
+    type: array
+    description: An array of additional human readable codes/identifiers for the entity being described.
+    items:
+      $ref: './IdentifierEntry.yaml'
+  consumers:
+    description: The additional consumer elements that can be provided, see the [documentation on support for specific consumers](https://open-education-api.github.io/specification/#/consumers) for more information about this mechanism.
+    type: array
+    items:
+      $ref: './Consumer.yaml'
+    example:
+      $ref: '../consumers/RIO/V1/examples/Offering.yaml'
+  ext:
+    $ref: './Ext.yaml'

@@ -14,7 +14,9 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\OpenApi\PropertyGenerator;
 
 use ApiPlatform\SchemaGenerator\Model\Property;
+use ApiPlatform\SchemaGenerator\Model\Type\PrimitiveType;
 use ApiPlatform\SchemaGenerator\OpenApi\Model\Property as OpenApiProperty;
+use ApiPlatform\SchemaGenerator\OpenApi\Model\Type\PrimitiveType as OpenApiPrimitiveType;
 use ApiPlatform\SchemaGenerator\PropertyGenerator\IdPropertyGenerator as CommonIdPropertyGenerator;
 use ApiPlatform\SchemaGenerator\PropertyGenerator\IdPropertyGeneratorInterface;
 
@@ -29,6 +31,10 @@ final class IdPropertyGenerator implements IdPropertyGeneratorInterface
 
     public function __invoke(string $generationStrategy, bool $supportsWritableId, ?Property $property = null): Property
     {
-        return ($this->idPropertyGenerator)($generationStrategy, $supportsWritableId, new OpenApiProperty('id'));
+        $idProperty = ($this->idPropertyGenerator)($generationStrategy, $supportsWritableId, new OpenApiProperty('id'));
+
+        $idProperty->type = $idProperty->type instanceof PrimitiveType ? new OpenApiPrimitiveType($idProperty->type->name) : null;
+
+        return $idProperty;
     }
 }

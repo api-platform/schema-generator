@@ -1,0 +1,80 @@
+allOf:
+  - $ref: './Offering.yaml'
+  - type: object
+    required:
+      - startDateTime
+      - endDateTime
+    properties:
+      startDateTime:
+        type: string
+        description: The moment on which this offering starts, RFC3339 (date-time)
+        format: date-time
+        example: 2020-12-15
+      endDateTime:
+        type: string
+        description: The moment on which this offering ends, RFC3339 (date-time)
+        format: date-time
+        example: 2020-12-16
+      enrollStartDate:
+        type: string
+        description: The first day on which a student can enroll for this course.
+        format: date
+      enrollEndDate:
+        type: string
+        description: The last day on which a student can enroll for this course.
+        format: date
+      resultWeight:
+        type: integer
+        description: The result weight of this offering
+        minimum: 0
+        maximum: 100
+        example: 100
+      addresses:
+        type: array
+        description: Addresses for this offering
+        items:
+          $ref: './Address.yaml'
+      priceInformation:
+        type: array
+        description: Price information for this offering.
+        items:
+          $ref: './Cost.yaml'
+      room:
+        $ref: './Room.yaml'
+      component:
+        description: |
+          The component that is offered in this componentoffering. [`expandable`](#tag/component_model)
+          By default only the `componentId` (a string) is returned. If the client requested an expansion of `component` the full component object should be returned.
+        oneOf:
+          - $ref: './Identifier.yaml'
+            title: componentId
+          - $ref: './Component.yaml'
+            title: Component object      
+      courseOffering:
+        description: |
+          The courseoffering where this componentoffering is related to. [`expandable`](#tag/course_offering_model)
+          By default only the `courseOfferingId` (a string) is returned. If the client requested an expansion of `courseOffering` the full courseOffering object should be returned.
+        oneOf:
+          - $ref: './Identifier.yaml'
+            title: courseOfferingId
+          - $ref: './CourseOffering.yaml'
+            title: CourseOffering object     
+      organization:
+        description: |
+          The organization that manages this componentoffering. [`expandable`](#tag/organization_model)
+          By default only the `organizationId` (a string) is returned. If the client requested an expansion of `organization` the full organization object should be returned.
+        oneOf:
+          - $ref: './Identifier.yaml'
+            title: organizationId
+          - $ref: './Organization.yaml'
+            title: Organization object     
+      academicSession:
+        description: |
+          The academicsession during which this componentoffering takes place. [`expandable`](#tag/academic_session_model)
+          By default only the `academicSessionId` (a string) is returned. If the client requested an expansion of `academicSession` the full academicsession object should be returned.
+        oneOf:
+          - $ref: './Identifier.yaml'
+            title: academicSessionId
+          - $ref: './AcademicSession.yaml'
+            title: AcademicSession object
+

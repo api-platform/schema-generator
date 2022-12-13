@@ -1,0 +1,42 @@
+type: object
+description: RIO add-on attributes to an education specification
+required:
+properties:
+  educationSpecificationSubType:
+    type: string
+    description: |
+      The subtype of the EducationSpecification. At the moment only used for EducationSpecification's of the type `program`:
+      Allowed subtypes when type = `program`:
+        - variant:  if the subtype attribute is set to `variant`, the program maps to a HoOpleiding of 'soort' `VARIANT`
+        - *...*: if the `educationSpecificationSubType`` attribute is absent, the program maps to a HoOpleiding of 'soort' `OPLEIDING`
+    enum:
+      - variant
+    example: program
+  category:
+    type: array
+    description: |
+      A classification for programs in non-formal education. Used when describing EducationSpecification's that will map to a `articuliereOpleiding in RIO
+    minItems: 0
+    maxItems: 3
+    items:
+      type: string
+      enum:
+        - business_and_project_support
+        - economy
+        - behavior_and_society
+        - healthcare_and_sport
+        - hobby_and_leisure_time
+        - agriculture_food_and_natural_environment
+        - management_and_project_management
+        - nature
+        - education
+        - law
+        - cross_sectoral
+        - language_and_culture
+        - technology_and_ict
+        - tourism_hospitality_and_recreation
+        - transport_and_logistics
+        - security_and_defense
+    example: 
+      - business_and_project_support
+      - economy

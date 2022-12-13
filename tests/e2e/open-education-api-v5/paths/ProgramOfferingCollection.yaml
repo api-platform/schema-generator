@@ -1,0 +1,98 @@
+get:
+  summary: GET /programs/{programId}/offerings
+  description: Get a list of all offerings for this program, ordered chronologically.
+  tags:
+    - programs
+  parameters:
+    - name: programId
+      in: path
+      description: Program ID
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - $ref: '../parameters/pageSize.yaml'
+    - $ref: '../parameters/pageNumber.yaml'
+    - $ref: '../parameters/consumer.yaml'
+    - $ref: '../parameters/search.yaml'
+    - $ref: '../parameters/teachingLanguage.yaml'
+    - name: modeOfStudy
+      in: query
+      description: Filter by modeOfStudy
+      required: false
+      schema:
+        $ref: '../enumerations/modeOfStudy.yaml'
+    - name: resultExpected
+      in: query
+      description: Filter by resultExpected
+      required: false
+      schema:
+        type: boolean
+    - name: since
+      in: query
+      description: Filter all offerings by providing a minimum start date for the corresponding academic session, RFC3339 (full-date). By default only future offerings are shown (equal to `?since=<today>`).
+      required: false
+      schema:
+        type: string
+        format: date
+    - name: until
+      in: query
+      description: Filter all offerings by providing a maximum end date for the corresponding academic session, RFC3339 (full-date).
+      required: false
+      schema:
+        type: string
+        format: date
+    - name: sort
+      in: query
+      explode: false
+      description: 'Sort by one or more attributes, the default is ascending. Prefixing the attribute with a minus sign `-` allows for descending sort. Examples: [ATTR | -ATTR | ATTR1,-ATTR2]'
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - offeringId
+            - name
+            - startDate
+            - endDate
+            - -offeringId
+            - -name
+            - -startDate
+            - -endDate
+        default: [ startDate ]
+        example:
+          - name
+          - -startDate
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '../schemas/Pagination.yaml'
+              - type: object
+                required:
+                  - items
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '../schemas/ProgramOffering.yaml'
+                  ext:
+                    $ref: '../schemas/Ext.yaml'
+    '400':
+      $ref: '../schemas/ErrorBadRequest.yaml'
+    '401':
+      $ref: '../schemas/ErrorUnauthorized.yaml'
+    '403':
+      $ref: '../schemas/ErrorForbidden.yaml'
+    '404':
+      $ref: '../schemas/ErrorNotFound.yaml'
+    '405':
+      $ref: '../schemas/ErrorMethodNotAllowed.yaml'
+    '429':
+      $ref: '../schemas/ErrorTooManyRequests.yaml'
+    '500':
+      $ref: '../schemas/ErrorInternalServerError.yaml'

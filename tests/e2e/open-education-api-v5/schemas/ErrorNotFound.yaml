@@ -1,0 +1,5 @@
+description: Not Found
+content:
+  application/problem+json:
+    schema:
+      $ref: 'Problem.yaml'

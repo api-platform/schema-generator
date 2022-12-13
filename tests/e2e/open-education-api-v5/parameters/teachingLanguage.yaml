@@ -1,0 +1,10 @@
+name: teachingLanguage
+in: query
+description: Filter by teachingLanguage, which is a string describing the main teaching language, should be a three-letter language code as specified by ISO 639-2.
+required: false
+schema:
+  type: string
+  pattern: "^[a-z]{3}$"
+  minLength: 3
+  maxLength: 3
+example: nld

@@ -1,0 +1,33 @@
+type: object
+description: A relationship between a person object and an offering
+required:
+  - associationType
+  - role
+  - state
+properties:
+  associationType:
+    type: string
+    description: The type of this association
+    enum:
+      - programOfferingAssociation
+      - courseOfferingAssociation
+      - componentOfferingAssociation
+    example: componentOfferingAssociation
+    readOnly: true
+  role:
+    $ref: '../enumerations/associationRole.yaml'
+  state:
+    $ref: '../enumerations/associationState.yaml'
+    readOnly: true
+  remoteState:
+    $ref: '../enumerations/remoteAssociationState.yaml'
+    writeOnly: true
+  consumers:
+    description: The additional consumer elements that can be provided, see the [documentation on support for specific consumers](https://open-education-api.github.io/specification/#/consumers) for more information about this mechanism.
+    type: array
+    items:
+      $ref: './Consumer.yaml'
+    example:
+      $ref: '../consumers/TEST/V1/examples/TestConsumer.yaml'
+  ext:
+    $ref: './Ext.yaml'

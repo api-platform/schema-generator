@@ -1,0 +1,6 @@
+name: q
+in: query
+description: Filter by persons having a givenName, surNamePrefix, surname, displayName, initials, mail or secondaryMail containing the given search term (exact partial match, case insensitive)
+required: false
+schema:
+  type: string

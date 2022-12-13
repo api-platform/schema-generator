@@ -1,0 +1,4 @@
+- consumerKey: rio
+  explanationRequiredPermission: Toestemming is vereist omdat we daarom vragen.
+  requiredPermissionRegistration: yes
+  registrationStatus: open

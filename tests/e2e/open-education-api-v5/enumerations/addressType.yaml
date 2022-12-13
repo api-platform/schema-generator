@@ -1,0 +1,14 @@
+type: string
+description: |
+  Address type
+  - postal: post
+  - visit: bezoek
+  - deliveries: bezorg
+  - billing: factuur
+  - teaching: the address where education takes place
+enum:
+  - postal
+  - visit
+  - deliveries
+  - billing
+  - teaching

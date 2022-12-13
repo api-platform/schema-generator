@@ -1,0 +1,10 @@
+allOf:
+  - $ref: './Program.yaml'
+  - type: object
+    description: These properties are only present when explicitly included. This allows for creating and displaying structures of programs
+    properties:
+      timelineOverrides:
+        description: Timeline overrides allow an implementation to provide versions of entities that will be valid in the future or have been in the past.
+        type: array
+        items:
+          $ref: './TimelineOverrideProgram.yaml'

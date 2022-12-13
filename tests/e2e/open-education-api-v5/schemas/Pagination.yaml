@@ -1,0 +1,32 @@
+type: object
+required:
+  - pageSize
+  - pageNumber
+  - hasPreviousPage
+  - hasNextPage
+  - items
+properties:
+  pageSize:
+    type: integer
+    format: int32
+    description: The number of items per page
+    example: 10
+  pageNumber:
+    type: integer
+    format: int32
+    description: The current page number
+    example: 1
+    minimum: 1
+  hasPreviousPage:
+    type: boolean
+    description: Whether there is a previous page
+    example: false
+  hasNextPage:
+    type: boolean
+    description: Whether there is a previous page
+    example: true
+  totalPages:
+    type: integer
+    format: int32
+    description: Total number of pages
+    example: 8

@@ -1,0 +1,83 @@
+type: object
+description: A newsitem contains the message and metadata of that message
+required:
+  - newsItemId
+  - name
+properties:
+  newsItemId:
+    type: string
+    description: Unique id for this news item
+    format: uuid
+    example: 123e4567-e89b-12d3-a456-122564174000
+  newsItemType:
+    $ref: '../enumerations/newsItemType.yaml'
+  name:
+    type: array
+    description: The name for this news item
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: Room Bb 4.35 will be un available from 2020-09-29 until 2020-09-30
+  authors:
+    type: array
+    description: The authors of the article with this news item
+    items:
+      type: string
+      maxLength: 256
+    example: ['admin@universiteitvanharderwijk.nl']
+  image:
+    type: string
+    description: The url containing the address of the image belonging to this news item
+    format: uri
+    maxLength: 2048
+    example: https://upload.wikimedia.org/wikipedia/commons/4/44/Antu_emblem-unavailable.svg
+  link:
+    type: string
+    description: The url containing the address of the article belonging to this news item
+    format: uri
+    maxLength: 2048
+    example: https://www.universiteitvanharderwijk.nl/cms/ruimtegebrek
+  content:
+    type: array
+    description: The content of this news item.
+    minItems: 1
+    items:
+      $ref: './LanguageTypedString.yaml'
+    example:
+    - language: en-GB
+      value: 'The room Bb 4.35 will be under maintenance'
+  newsFeeds:
+    description: The newsFeeds where this item can be found. [`expandable`](#tag/news_feed_model)
+    type: array
+    items:
+      oneOf:
+        - $ref: './Identifier.yaml'
+          title: newsFeedId
+        - $ref: './NewsFeed.yaml'
+          title: NewsFeed
+  validFrom:
+    type: string
+    description: The moment from which this news item is valid, RFC3339 (date-time)
+    format: date-time
+    example: 2020-09-28T08:30:00.000Z
+  validUntil:
+    type: string
+    description: The moment until which this news item is valid, RFC3339 (date-time)
+    format: date-time
+    example: 2020-09-30T20:00:00.000Z
+  lastModified:
+    type: string
+    description: The moment on which this news item was updated, RFC3339 (date-time)
+    format: date-time
+    example: 2020-09-28T00:00:00.000Z
+  consumers:
+    description: The additional consumer elements that can be provided, see the [documentation on support for specific consumers](https://open-education-api.github.io/specification/#/consumers) for more information about this mechanism.
+    type: array
+    items:
+      $ref: './Consumer.yaml'
+    example:
+      $ref: '../consumers/TEST/V1/examples/TestConsumer.yaml'
+  ext:
+    $ref: './Ext.yaml'

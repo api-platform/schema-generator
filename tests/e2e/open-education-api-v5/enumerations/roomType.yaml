@@ -1,0 +1,25 @@
+type: string
+description: |
+  The type of this room
+  - general purpose: algemeen
+  - lecture room: collegezaal
+  - computer room: computerruimte
+  - laboratory: laboratorium
+  - office: kantoor
+  - workspace: werkruimte
+  - exam location: tentamenruimte
+  - study room: studieruimte
+  - examination room: onderzoekskamer
+  - conference room: vergaderkamer
+enum:
+  - general purpose
+  - lecture room
+  - computer room
+  - laboratory
+  - office
+  - workspace
+  - exam location
+  - study room
+  - examination room
+  - conference room
+example: exam location
