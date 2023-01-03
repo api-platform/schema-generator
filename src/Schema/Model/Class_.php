@@ -66,10 +66,18 @@ final class Class_ extends BaseClass_
         return array_filter($this->resource->all('rdfs:subClassOf', 'resource'), static fn (RdfResource $resource) => !$resource->isBNode());
     }
 
-    public function isEnum(): bool
+    /**
+     * @param $resource
+     * @return bool
+     */
+    public function isEnum($resource = null): bool
     {
-        $subClassOf = $this->resource->get('rdfs:subClassOf');
+        if (is_null($resource)) {
+            $parentClass = $this->resource->get('rdfs:subClassOf');
+        } else {
+            $parentClass = $resource->get('rdfs:subClassOf');
+        }
 
-        return $subClassOf && self::SCHEMA_ORG_ENUMERATION === $subClassOf->getUri();
+        return !is_null($parentClass) && ($parentClass->getUri() === self::SCHEMA_ORG_ENUMERATION || $this->isEnum($parentClass));
     }
 }
