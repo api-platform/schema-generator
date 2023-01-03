@@ -66,10 +66,6 @@ final class Class_ extends BaseClass_
         return array_filter($this->resource->all('rdfs:subClassOf', 'resource'), static fn (RdfResource $resource) => !$resource->isBNode());
     }
 
-    /**
-     * @param $resource
-     * @return bool
-     */
     public function isEnum(RdfResource $resource = null): bool
     {
         $parentClass = ($resource ?? $this->resource)->get('rdfs:subClassOf');
