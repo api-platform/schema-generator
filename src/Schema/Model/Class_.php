@@ -72,11 +72,7 @@ final class Class_ extends BaseClass_
      */
     public function isEnum($resource = null): bool
     {
-        if (is_null($resource)) {
-            $parentClass = $this->resource->get('rdfs:subClassOf');
-        } else {
-            $parentClass = $resource->get('rdfs:subClassOf');
-        }
+        $parentClass = ($resource ?? $this->resource)->get('rdfs:subClassOf');
 
         return !is_null($parentClass) && ($parentClass->getUri() === self::SCHEMA_ORG_ENUMERATION || $this->isEnum($parentClass));
     }
