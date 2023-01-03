@@ -70,7 +70,7 @@ final class Class_ extends BaseClass_
      * @param $resource
      * @return bool
      */
-    public function isEnum($resource = null): bool
+    public function isEnum(RdfResource $resource = null): bool
     {
         $parentClass = ($resource ?? $this->resource)->get('rdfs:subClassOf');
 
