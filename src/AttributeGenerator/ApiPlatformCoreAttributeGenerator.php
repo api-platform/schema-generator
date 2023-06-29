@@ -78,6 +78,13 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
             } else {
                 $arguments['operations'] = [];
                 foreach ($class->operations as $operationMetadataClass => $methodConfig) {
+                    // https://github.com/api-platform/schema-generator/issues/405
+                    if (\array_key_exists('class', $methodConfig ?? [])) {
+                        /** @var string $operationMetadataClass */
+                        $operationMetadataClass = $methodConfig['class'];
+                        unset($methodConfig['class']);
+                    }
+
                     $arguments['operations'][] = new Literal(sprintf('new %s(...?:)',
                         $operationMetadataClass,
                     ), [$methodConfig ?? []]);
