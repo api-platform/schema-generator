@@ -75,7 +75,7 @@ class ClassPropertiesAppenderTest extends TestCase
     /**
      * @dataProvider provideInvokeTestCases
      */
-    public function testInvoke(SchemaClass $class, SchemaClass $expectedClass, RdfGraph &$graph = null, ?string $loggerMessage = null): void
+    public function testInvoke(SchemaClass $class, SchemaClass $expectedClass, RdfGraph &$graph = null, string $loggerMessage = null): void
     {
         if ($graph) {
             $this->graph = $graph;

@@ -36,14 +36,11 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
 
     private ?string $defaultPrefix;
 
-    public function __construct(?string $defaultPrefix = null)
+    public function __construct(string $defaultPrefix = null)
     {
         $this->defaultPrefix = $defaultPrefix;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $namespacePrefix = $this->defaultPrefix ?? 'App\\';

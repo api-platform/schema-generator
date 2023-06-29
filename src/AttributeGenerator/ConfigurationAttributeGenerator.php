@@ -21,9 +21,6 @@ use ApiPlatform\SchemaGenerator\Schema\Model\Class_ as SchemaClass;
 
 final class ConfigurationAttributeGenerator extends AbstractAttributeGenerator
 {
-    /**
-     * {@inheritdoc}
-     */
     public function generateClassAttributes(Class_ $class): array
     {
         $typeAttributes = $this->config['types'][$class->name()]['attributes'] ?? [[]];
@@ -44,8 +41,8 @@ final class ConfigurationAttributeGenerator extends AbstractAttributeGenerator
                 // An attribute from a vocabulary cannot be appended if a same one has not
                 // previously been generated or if the same one is not mergeable.
                 // It allows vocabulary attributes configuration to only merge the attributes args.
-                'alwaysGenerate' => !\in_array($name, $vocabAttributesNames, true) ||
-                    \in_array($name, $typeAttributesNames, true),
+                'alwaysGenerate' => !\in_array($name, $vocabAttributesNames, true)
+                    || \in_array($name, $typeAttributesNames, true),
                 // Custom explicitly configured attributes is not mergeable with next one
                 // but treated as repeated if given more than once.
                 'mergeable' => false,
@@ -69,9 +66,6 @@ final class ConfigurationAttributeGenerator extends AbstractAttributeGenerator
         return $attributes;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generatePropertyAttributes(Property $property, string $className): array
     {
         $typeConfig = $this->config['types'][$className] ?? null;
@@ -90,9 +84,6 @@ final class ConfigurationAttributeGenerator extends AbstractAttributeGenerator
         return $attributes;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateUses(Class_ $class): array
     {
         $uses = [];

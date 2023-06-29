@@ -128,7 +128,7 @@ final class FilesGenerator
      */
     private function namespaceToDir(string $namespace, array $config): string
     {
-        if (null !== ($prefix = $config['namespaces']['prefix'] ?? null) && 0 === strpos($namespace, $prefix)) {
+        if (null !== ($prefix = $config['namespaces']['prefix'] ?? null) && str_starts_with($namespace, $prefix)) {
             $namespace = substr($namespace, \strlen($prefix));
         }
 

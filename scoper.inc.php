@@ -36,7 +36,7 @@ return [
         // TODO: Temporary patch until the issue is fixed upstream
         // @link https://github.com/humbug/php-scoper/issues/285
         function (string $filePath, string $prefix, string $content): string {
-            if (false === strpos($content, '@')) {
+            if (!str_contains($content, '@')) {
                 return $content;
             }
 
@@ -52,7 +52,7 @@ return [
             );
         },
         function (string $filePath, string $prefix, string $content): string {
-            if (0 !== strpos($filePath, 'src/AnnotationGenerator/')) {
+            if (!str_starts_with($filePath, 'src/AnnotationGenerator/')) {
                 return $content;
             }
 

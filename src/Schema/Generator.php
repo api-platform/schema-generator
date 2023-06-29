@@ -36,7 +36,7 @@ final class Generator
         $graphs = [];
         foreach ($configuration['vocabularies'] as $uri => $vocab) {
             $graph = new RdfGraph($uri);
-            if (0 === strpos($uri, 'http://') || 0 === strpos($uri, 'https://')) {
+            if (str_starts_with($uri, 'http://') || str_starts_with($uri, 'https://')) {
                 $graph->load($uri, $vocab['format']);
             } else {
                 $graph->parseFile($uri, $vocab['format']);

@@ -379,8 +379,8 @@ class TypesGenerator
 
     /**
      * @param array{resources: RdfResource[], uris: string[], names: string[]}[] $typesResources
-     * @param Configuration                $config
-     * @param array<string, RdfResource[]> $map
+     * @param Configuration                                                      $config
+     * @param array<string, RdfResource[]>                                       $map
      */
     private function addPropertyToMap(RdfResource $property, RdfResource $domain, array $typesResources, array $config, array &$map): void
     {

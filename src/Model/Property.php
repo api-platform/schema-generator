@@ -29,8 +29,9 @@ abstract class Property
     public string $cardinality;
     /** @var ?Type the data types (object is not one) */
     public ?Type $type = null;
-    /** @var mixed */
-    public $defaultValue = null;
+
+    /** @phpstan-ignore-next-line */
+    public $defaultValue;
     public ?Class_ $reference = null;
     public bool $isReadable = true;
     public bool $isWritable = true;
@@ -139,7 +140,7 @@ abstract class Property
         return $this;
     }
 
-    public function toNetteProperty(PhpNamespace $namespace, string $visibility = null, bool $useDoctrineCollections = true, ?NetteProperty $property = null): NetteProperty
+    public function toNetteProperty(PhpNamespace $namespace, string $visibility = null, bool $useDoctrineCollections = true, NetteProperty $property = null): NetteProperty
     {
         $property ??= new NetteProperty($this->name);
 

@@ -96,7 +96,7 @@ class CardinalitiesExtractor
             return self::CARDINALITY_0_N;
         }
 
-        if (0 !== strpos($property->getUri(), 'https://schema.org')) {
+        if (!str_starts_with($property->getUri(), 'https://schema.org')) {
             return self::CARDINALITY_UNKNOWN;
         }
 
@@ -117,19 +117,16 @@ class CardinalitiesExtractor
         if (
             // https://schema.org/acceptedOffer, https://schema.org/acceptedPaymentMethod, https://schema.org/exerciseType
             preg_match('/\(s\)/', $comment)
-            ||
             // https://schema.org/follows
-            preg_match('/^The most generic uni-directional social relation./', $comment)
-            ||
-            preg_match('/one or more/i', $comment)
+            || preg_match('/^The most generic uni-directional social relation./', $comment)
+            || preg_match('/one or more/i', $comment)
         ) {
             return self::CARDINALITY_0_N;
         }
 
         if (
             preg_match('/^is/', $localName)
-        ||
-            preg_match('/^The /', $comment)
+            || preg_match('/^The /', $comment)
         ) {
             return self::CARDINALITY_0_1;
         }

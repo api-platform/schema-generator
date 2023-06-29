@@ -21,9 +21,6 @@ final class DoctrineOrmAssociationOverrideAttributeGenerator extends AbstractAtt
 {
     use GenerateIdentifierNameTrait;
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateLateClassAttributes(Class_ $class): array
     {
         if ($class->isAbstract || !($parentName = $class->parent())) {

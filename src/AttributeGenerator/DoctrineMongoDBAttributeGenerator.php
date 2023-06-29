@@ -30,9 +30,6 @@ use function Symfony\Component\String\u;
  */
 final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
 {
-    /**
-     * {@inheritdoc}
-     */
     public function generateClassAttributes(Class_ $class): array
     {
         if ($class->isEnum()) {
@@ -72,9 +69,6 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
         return $attributes;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generatePropertyAttributes(Property $property, string $className): array
     {
         if (null === $property->type && null === $property->reference) {
@@ -146,9 +140,6 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateUses(Class_ $class): array
     {
         return $class->isEnum() ? [] : [new Use_('Doctrine\ODM\MongoDB\Mapping\Annotations', 'MongoDB')];

@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.2.0
+
+* feat: improve type detection
+
 ## 5.1.1
 
 * fix: missing unique for self-referencing relations

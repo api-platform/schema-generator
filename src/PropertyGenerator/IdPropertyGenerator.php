@@ -19,7 +19,7 @@ use ApiPlatform\SchemaGenerator\Model\Type\PrimitiveType;
 
 final class IdPropertyGenerator implements IdPropertyGeneratorInterface
 {
-    public function __invoke(string $generationStrategy, bool $supportsWritableId, ?Property $property = null): Property
+    public function __invoke(string $generationStrategy, bool $supportsWritableId, Property $property = null): Property
     {
         if (!$property) {
             throw new \LogicException('A property must be given.');

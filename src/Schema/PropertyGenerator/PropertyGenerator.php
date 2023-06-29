@@ -42,7 +42,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
     private TypeConverter $typeConverter;
     private PropertyGeneratorInterface $propertyGenerator;
 
-    public function __construct(GoodRelationsBridge $goodRelationsBridge, TypeConverter $typeConverter, PhpTypeConverterInterface $phpTypeConverter, ?PropertyGeneratorInterface $propertyGenerator = null)
+    public function __construct(GoodRelationsBridge $goodRelationsBridge, TypeConverter $typeConverter, PhpTypeConverterInterface $phpTypeConverter, PropertyGeneratorInterface $propertyGenerator = null)
     {
         $this->goodRelationsBridge = $goodRelationsBridge;
         $this->typeConverter = $typeConverter;
@@ -59,7 +59,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
      *     property: RdfResource
      * } $context
      */
-    public function __invoke(string $name, array $config, Class_ $class, array $context, bool $isCustom = false, ?Property $property = null): ?Property
+    public function __invoke(string $name, array $config, Class_ $class, array $context, bool $isCustom = false, Property $property = null): ?Property
     {
         $type = $context['type'];
         $typeConfig = $context['typeConfig'];
@@ -200,8 +200,8 @@ final class PropertyGenerator implements PropertyGeneratorInterface
         }
 
         if (
-            (!isset($propertyConfig['range']) || $propertyConfig['range'] === $localName) &&
-            (empty($config['types']) || isset($config['types'][$localName]) || $dataType)
+            (!isset($propertyConfig['range']) || $propertyConfig['range'] === $localName)
+            && (empty($config['types']) || isset($config['types'][$localName]) || $dataType)
         ) {
             return [$range];
         }
