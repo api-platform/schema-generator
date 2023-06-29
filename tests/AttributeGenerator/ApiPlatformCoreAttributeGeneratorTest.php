@@ -73,6 +73,13 @@ class ApiPlatformCoreAttributeGeneratorTest extends TestCase
 
         $class = new SchemaClass('WithOperations', new RdfResource('https://schema.org/WithOperations', new RdfGraph()));
         $class->operations = [
+            ['class' => 'Get', 'routeName' => 'api_about_get'],
+            ['class' => 'Get', 'routeName' => 'api_alternate_get'],
+        ];
+        yield 'with numeric operations' => [$class, [new Attribute('ApiResource', ['types' => ['https://schema.org/WithOperations'], 'operations' => [new Literal('new Get(...?:)', [['routeName' => 'api_about_get']]), new Literal('new Get(...?:)', [['routeName' => 'api_alternate_get']])]])]];
+
+        $class = new SchemaClass('WithOperations', new RdfResource('https://schema.org/WithOperations', new RdfGraph()));
+        $class->operations = [
             'item' => ['get' => ['route_name' => 'api_about_get']],
             'collection' => [],
         ];

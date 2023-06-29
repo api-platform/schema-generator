@@ -47,7 +47,7 @@ abstract class Class_
     public bool $isAbstract = false;
     public bool $hasChild = false;
     public bool $isEmbeddable = false;
-    /** @var array<string, ?array<string, string|int|bool|string[]|null>> */
+    /** @var array<string|int, ?array<string, string|int|bool|string[]|null>> */
     public array $operations = [];
 
     /**
