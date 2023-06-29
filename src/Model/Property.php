@@ -30,6 +30,7 @@ abstract class Property
     /** @var ?Type the data types (object is not one) */
     public ?Type $type = null;
 
+    /** @phpstan-ignore-next-line */
     public $defaultValue;
     public ?Class_ $reference = null;
     public bool $isReadable = true;
