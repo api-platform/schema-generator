@@ -47,33 +47,21 @@ abstract class AbstractAttributeGenerator implements AttributeGeneratorInterface
         $this->classes = $classes;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateClassAttributes(Class_ $class): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generatePropertyAttributes(Property $property, string $className): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateLateClassAttributes(Class_ $class): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateUses(Class_ $class): array
     {
         return [];

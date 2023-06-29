@@ -39,9 +39,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
 {
-    /**
-     * {@inheritdoc}
-     */
     public function generateClassAttributes(Class_ $class): array
     {
         if ($class->hasChild || $class->isEnum()) {
@@ -110,9 +107,6 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
         return $resolver->resolve($operations);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generatePropertyAttributes(Property $property, string $className): array
     {
         $arguments = [];
@@ -128,9 +122,6 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
         return $property->isCustom ? [] : [new Attribute('ApiProperty', $arguments)];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateUses(Class_ $class): array
     {
         if ($this->config['apiPlatformOldAttributes']) {

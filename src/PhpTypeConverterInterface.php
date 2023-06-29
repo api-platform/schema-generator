@@ -30,7 +30,7 @@ interface PhpTypeConverterInterface
      * Gets the PHP type of this field.
      *
      * @param Configuration|array{} $config
-     * @param Class_[] $classes
+     * @param Class_[]              $classes
      */
     public function getPhpType(Property $property, array $config = [], array $classes = []): ?string;
 

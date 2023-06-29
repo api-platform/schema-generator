@@ -48,73 +48,46 @@ abstract class AbstractAnnotationGenerator implements AnnotationGeneratorInterfa
         $this->classes = $classes;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateClassAnnotations(Class_ $class): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateInterfaceAnnotations(Class_ $class): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateConstantAnnotations(Constant $constant): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generatePropertyAnnotations(Property $property, string $className): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateGetterAnnotations(Property $property): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateSetterAnnotations(Property $property): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateAdderAnnotations(Property $property): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateRemoverAnnotations(Property $property): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateUses(Class_ $class): array
     {
         return [];

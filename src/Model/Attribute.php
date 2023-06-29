@@ -22,7 +22,7 @@ final class Attribute
 
     private string $name;
 
-    /** @var (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal|\Nette\PhpGenerator\Literal[])[] */
+    /** @var (int|bool|string|string[]|string[][]|\Nette\PhpGenerator\Literal|\Nette\PhpGenerator\Literal[]|null)[] */
     private array $args;
 
     /**
@@ -40,7 +40,7 @@ final class Attribute
     public bool $mergeable = true;
 
     /**
-     * @param (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal|\Nette\PhpGenerator\Literal[])[] $args
+     * @param (int|bool|string|string[]|string[][]|\Nette\PhpGenerator\Literal|\Nette\PhpGenerator\Literal[]|null)[] $args
      */
     public function __construct(string $name, array $args = [])
     {
@@ -60,7 +60,7 @@ final class Attribute
     }
 
     /**
-     * @return (int|bool|null|string|string[]|string[][]|\Nette\PhpGenerator\Literal|\Nette\PhpGenerator\Literal[])[]
+     * @return (int|bool|string|string[]|string[][]|\Nette\PhpGenerator\Literal|\Nette\PhpGenerator\Literal[]|null)[]
      */
     public function args(): array
     {

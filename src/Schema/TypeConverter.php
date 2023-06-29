@@ -109,9 +109,9 @@ final class TypeConverter
             return $onDatatype->getUri();
         }
 
-        if ($range->isBNode() &&
-            null !== ($unionOf = $range->get('owl:unionOf')) &&
-            null !== ($rdfFirst = $unionOf->get('rdf:first'))) {
+        if ($range->isBNode()
+            && null !== ($unionOf = $range->get('owl:unionOf'))
+            && null !== ($rdfFirst = $unionOf->get('rdf:first'))) {
             return $rdfFirst->getUri();
         }
 

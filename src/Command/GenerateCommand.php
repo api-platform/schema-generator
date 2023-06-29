@@ -38,9 +38,6 @@ final class GenerateCommand extends Command
     private ?string $namespacePrefix = null;
     private ?string $defaultOutput = null;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         $this->readComposer();
@@ -72,9 +69,6 @@ final class GenerateCommand extends Command
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

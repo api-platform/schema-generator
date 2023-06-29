@@ -29,9 +29,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 final class ExtractCardinalitiesCommand extends Command
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         $this
@@ -42,9 +39,6 @@ final class ExtractCardinalitiesCommand extends Command
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $vocabFile = $input->getOption('vocabulary-file');
@@ -53,7 +47,7 @@ final class ExtractCardinalitiesCommand extends Command
         $graph = new RdfGraph();
 
         $format = pathinfo($vocabFile, \PATHINFO_EXTENSION) ?: 'guess';
-        if (0 === strpos($vocabFile, 'http://') || 0 === strpos($vocabFile, 'https://')) {
+        if (str_starts_with($vocabFile, 'http://') || str_starts_with($vocabFile, 'https://')) {
             $graph->load($input->getOption('vocabulary-file'), $format);
         } else {
             $graph->parseFile($input->getOption('vocabulary-file'), $format);

@@ -27,9 +27,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 final class ConstraintAttributeGenerator extends AbstractAttributeGenerator
 {
-    /**
-     * {@inheritdoc}
-     */
     public function generatePropertyAttributes(Property $property, string $className): array
     {
         if ($property->isId) {
@@ -84,9 +81,6 @@ final class ConstraintAttributeGenerator extends AbstractAttributeGenerator
         return $asserts;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateUses(Class_ $class): array
     {
         if ($class->isEnum()) {
@@ -113,9 +107,6 @@ final class ConstraintAttributeGenerator extends AbstractAttributeGenerator
         return $uses;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateClassAttributes(Class_ $class): array
     {
         if ($class->isEnum()) {

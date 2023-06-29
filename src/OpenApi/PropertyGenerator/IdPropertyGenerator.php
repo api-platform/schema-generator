@@ -24,12 +24,12 @@ final class IdPropertyGenerator implements IdPropertyGeneratorInterface
 {
     private IdPropertyGeneratorInterface $idPropertyGenerator;
 
-    public function __construct(?IdPropertyGeneratorInterface $idPropertyGenerator = null)
+    public function __construct(IdPropertyGeneratorInterface $idPropertyGenerator = null)
     {
         $this->idPropertyGenerator = $idPropertyGenerator ?? new CommonIdPropertyGenerator();
     }
 
-    public function __invoke(string $generationStrategy, bool $supportsWritableId, ?Property $property = null): Property
+    public function __invoke(string $generationStrategy, bool $supportsWritableId, Property $property = null): Property
     {
         $idProperty = ($this->idPropertyGenerator)($generationStrategy, $supportsWritableId, new OpenApiProperty('id'));
 

@@ -214,7 +214,7 @@ abstract class Class_
     /**
      * @param Configuration $config
      */
-    public function toNetteFile(array $config, InflectorInterface $inflector, ?PhpFile $file = null): PhpFile
+    public function toNetteFile(array $config, InflectorInterface $inflector, PhpFile $file = null): PhpFile
     {
         $useDoctrineCollections = $config['doctrine']['useCollection'];
         $useAccessors = $config['accessorMethods'];

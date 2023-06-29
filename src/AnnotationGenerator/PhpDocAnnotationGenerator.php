@@ -31,9 +31,6 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
 
     private HtmlConverter $htmlToMarkdown;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(PhpTypeConverterInterface $phpTypeConverter, InflectorInterface $inflector, array $config, array $classes)
     {
         parent::__construct($phpTypeConverter, $inflector, $config, $classes);
@@ -41,25 +38,16 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         $this->htmlToMarkdown = new HtmlConverter();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateClassAnnotations(Class_ $class): array
     {
         return $this->generateDoc($class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateInterfaceAnnotations(Class_ $class): array
     {
         return $this->generateDoc($class, true);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateConstantAnnotations(Constant $constant): array
     {
         $annotations = $this->formatDoc($constant->comment(), true);
@@ -68,9 +56,6 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         return $annotations;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generatePropertyAnnotations(Property $property, string $className): array
     {
         $description = $this->formatDoc((string) $property->description(), true);
@@ -92,9 +77,6 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         return $annotations;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateGetterAnnotations(Property $property): array
     {
         if (!$this->isDocUseful($property)) {
@@ -104,9 +86,6 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         return [sprintf('@return %s', $this->toPhpDocType($property))];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateSetterAnnotations(Property $property): array
     {
         if (!$this->isDocUseful($property)) {
@@ -116,9 +95,6 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         return [sprintf('@param %s $%s', $this->toPhpDocType($property), $property->name())];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateAdderAnnotations(Property $property): array
     {
         if (!$this->isDocUseful($property, true)) {
@@ -128,9 +104,6 @@ final class PhpDocAnnotationGenerator extends AbstractAnnotationGenerator
         return [sprintf('@param %s $%s', $this->toPhpDocType($property, true), $this->inflector->singularize($property->name())[0])];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateRemoverAnnotations(Property $property): array
     {
         if (!$this->isDocUseful($property, true)) {

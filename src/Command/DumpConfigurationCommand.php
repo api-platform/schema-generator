@@ -26,9 +26,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 final class DumpConfigurationCommand extends Command
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         $this
@@ -36,9 +33,6 @@ final class DumpConfigurationCommand extends Command
             ->setDescription('Dump configuration');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $configuration = new SchemaGeneratorConfiguration();
