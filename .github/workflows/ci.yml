@@ -8,9 +8,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
-env:
-  COVERAGE: '0'
-
 jobs:
   build:
     name: Build and Test
@@ -21,12 +18,20 @@ jobs:
           - '7.4'
           - '8.0'
           - '8.1'
+          - '8.2'
         include:
-          - php: '8.1'
-            coverage: true
-            phpstan: true
+          - php: '8.2'
+            latest: true
     steps:
       - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          ini-values: memory_limit=-1
+          coverage: pcov
+          tools: composer, cs2pr, php-cs-fixer
 
       - name: Get Composer Cache Directory
         id: composer-cache
@@ -38,15 +43,6 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      - name: Setup PHP with extensions
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: json
-          ini-values: memory_limit=-1
-          coverage: pcov
-          tools: composer, cs2pr, php-cs-fixer
-
       - name: Install prerequisites
         run: |
           wget -O box.phar https://github.com/humbug/box/releases/download/4.3.8/box.phar
@@ -54,39 +50,34 @@ jobs:
           sudo chown -R $(whoami):$(whoami) .
 
       - name: Install dependencies
-        if: startsWith(matrix.php, '8.1')
+        if: matrix.latest
         run: composer install --prefer-dist --no-interaction --no-progress --ansi
 
       - name: Update dependencies
-        if: "!startsWith(matrix.php, '8.1')"
+        if: "!matrix.latest"
         run: composer update --no-interaction --no-progress --ansi
 
       - name: Enable code coverage
-        if: matrix.coverage
+        if: matrix.latest
         run: echo "COVERAGE=1" >> $GITHUB_ENV
 
-      - name: Run phpunit
-        run: |
-          mkdir -p build/logs/phpunit
-          if [ "$COVERAGE" = '1' ]; then
-            vendor/bin/simple-phpunit --coverage-clover build/logs/phpunit/clover.xml
-          else
-            vendor/bin/simple-phpunit
-          fi
+      - name: Run PHPUnit
+        run: vendor/bin/simple-phpunit ${{ matrix.latest && '--coverage-clover build/logs/phpunit/clover.xml' || '' }}
 
-      - name: Run php-cs-fixer
+      - name: Run PHP CS Fixer
+        if: matrix.latest
         run: php-cs-fixer fix --dry-run --format=checkstyle --ansi | cs2pr
 
-      - name: Run phpstan
-        if: matrix.phpstan
+      - name: Run PHPStan 
+        if: matrix.latest
         run: vendor/bin/phpstan analyse --ansi
 
       - name: Run e2e tests
-        if: startsWith(matrix.php, '8.1')
+        if: matrix.latest
         run: bin/compile
 
       - name: Upload coverage results to Coveralls
-        if: matrix.coverage
+        if: matrix.latest
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
