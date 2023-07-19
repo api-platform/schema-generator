@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.2.2
+
+* fix: detect enum detection when an ancestor is an enum
+
+## 5.2.1
+
+* fix: allow declaring multiple operations using the same class
+
 ## 5.2.0
 
 * feat: improve type detection
