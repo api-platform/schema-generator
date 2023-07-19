@@ -132,6 +132,7 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
     public function generateUses(Class_ $class): array
     {
         if ($this->config['apiPlatformOldAttributes']) {
+            // @phpstan-ignore-next-line
             return [new Use_(OldApiResource::class), new Use_(OldApiProperty::class)];
         }
 
