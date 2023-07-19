@@ -70,6 +70,6 @@ final class Class_ extends BaseClass_
     {
         $parentClass = ($resource ?? $this->resource)->get('rdfs:subClassOf');
 
-        return $parentClass && ($parentClass->getUri() === self::SCHEMA_ORG_ENUMERATION || $this->isEnum($parentClass));
+        return $parentClass && (self::SCHEMA_ORG_ENUMERATION === $parentClass->getUri() || $this->isEnum($parentClass));
     }
 }
