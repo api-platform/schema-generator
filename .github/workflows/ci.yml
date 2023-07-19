@@ -24,6 +24,7 @@ jobs:
         include:
           - php: '8.1'
             coverage: true
+            phpstan: true
     steps:
       - uses: actions/checkout@v3
 
@@ -77,6 +78,7 @@ jobs:
         run: php-cs-fixer fix --dry-run --format=checkstyle --ansi | cs2pr
 
       - name: Run phpstan
+        if: matrix.phpstan
         run: vendor/bin/phpstan analyse --ansi
 
       - name: Run e2e tests
