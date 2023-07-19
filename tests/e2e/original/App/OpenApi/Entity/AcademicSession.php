@@ -224,14 +224,14 @@ class AcademicSession
         return $this->year;
     }
 
-    public function addOtherCod(string $otherCod): void
+    public function addOtherCode(string $otherCode): void
     {
-        $this->otherCodes[] = $otherCod;
+        $this->otherCodes[] = $otherCode;
     }
 
-    public function removeOtherCod(string $otherCod): void
+    public function removeOtherCode(string $otherCode): void
     {
-        if (false !== $key = array_search($otherCod, $this->otherCodes, true)) {
+        if (false !== $key = array_search($otherCode, $this->otherCodes, true)) {
             unset($this->otherCodes[$key]);
         }
     }
