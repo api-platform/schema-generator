@@ -65,9 +65,7 @@ jobs:
 
       - name: Run PHPUnit
         run: vendor/bin/simple-phpunit ${{ matrix.latest && '--coverage-clover build/logs/phpunit/clover.xml' || '' }}
-        env:
-          SYMFONY_PHPUNIT_VERSION: '9.5'
-  
+ 
       - name: Run PHP CS Fixer
         if: matrix.latest
         run: php-cs-fixer fix --dry-run --format=checkstyle --ansi | cs2pr
