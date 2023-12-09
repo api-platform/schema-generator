@@ -19,11 +19,13 @@ jobs:
           - '8.0'
           - '8.1'
           - '8.2'
+          - '8.3'
         include:
-          - php: '8.2'
+          - php: '8.3'
             latest: true
+      fail-fast: false
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -45,7 +47,7 @@ jobs:
 
       - name: Install prerequisites
         run: |
-          wget -O box.phar https://github.com/humbug/box/releases/download/4.3.8/box.phar
+          wget -O box.phar https://github.com/humbug/box/releases/download/4.5.1/box.phar
           echo "BOX_BIN=$(pwd)/box.phar" >> $GITHUB_ENV
           sudo chown -R $(whoami):$(whoami) .
 
@@ -54,7 +56,7 @@ jobs:
         run: composer install --prefer-dist --no-interaction --no-progress --ansi
 
       - name: Update dependencies
-        if: "!matrix.latest"
+        if: '!matrix.latest'
         run: composer update --no-interaction --no-progress --ansi
 
       - name: Enable code coverage
@@ -63,7 +65,7 @@ jobs:
 
       - name: Run PHPUnit
         run: vendor/bin/simple-phpunit ${{ matrix.latest && '--coverage-clover build/logs/phpunit/clover.xml' || '' }}
-
+ 
       - name: Run PHP CS Fixer
         if: matrix.latest
         run: php-cs-fixer fix --dry-run --format=checkstyle --ansi | cs2pr
