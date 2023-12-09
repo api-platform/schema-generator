@@ -9,16 +9,14 @@ jobs:
   build:
     name: Create Release and Upload Release Asset
     runs-on: ubuntu-latest
-    outputs:
-      upload_url: ${{ steps.step_upload_url.outputs.upload_url }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Setup PHP with extensions
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: '8.3'
           extensions: json
           ini-values: memory_limit=-1
           tools: composer
@@ -27,7 +25,7 @@ jobs:
         run: composer install --prefer-dist --no-interaction --no-progress --ansi
       
       - name: Download box.phar
-        run: wget -O box.phar https://github.com/humbug/box/releases/download/4.2.0/box.phar
+        run: wget -O box.phar https://github.com/humbug/box/releases/download/4.5.1/box.phar
       
       - name: Compile project
         run: php ./box.phar compile
