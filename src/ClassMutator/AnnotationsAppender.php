@@ -16,7 +16,7 @@ namespace ApiPlatform\SchemaGenerator\ClassMutator;
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\AnnotationGeneratorInterface;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Use_;
-use EasyRdf\Resource as RdfResource;
+use ApiPlatform\SchemaGenerator\Schema\Rdf\RdfResource;
 
 final class AnnotationsAppender implements ClassMutatorInterface
 {

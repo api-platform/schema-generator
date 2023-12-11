@@ -19,7 +19,7 @@ use ApiPlatform\SchemaGenerator\PropertyGenerator\IdPropertyGenerator as CommonI
 use ApiPlatform\SchemaGenerator\PropertyGenerator\IdPropertyGeneratorInterface;
 use ApiPlatform\SchemaGenerator\Schema\Model\Property as SchemaProperty;
 use ApiPlatform\SchemaGenerator\Schema\Model\Type\PrimitiveType as SchemaPrimitiveType;
-use EasyRdf\Resource as RdfResource;
+use ApiPlatform\SchemaGenerator\Schema\Rdf\RdfResource;
 
 final class IdPropertyGenerator implements IdPropertyGeneratorInterface
 {

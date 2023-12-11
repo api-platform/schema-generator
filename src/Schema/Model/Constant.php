@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\Schema\Model;
 
 use ApiPlatform\SchemaGenerator\Model\Constant as BaseConstant;
-use EasyRdf\Resource as RdfResource;
+use ApiPlatform\SchemaGenerator\Schema\Rdf\RdfResource;
 
 final class Constant extends BaseConstant
 {
