@@ -25,8 +25,10 @@ final class ConfigurationAttributeGenerator extends AbstractAttributeGenerator
     {
         $typeAttributes = $this->config['types'][$class->name()]['attributes'] ?? [[]];
         $vocabAttributes = [[]];
+
         if ($class instanceof SchemaClass) {
-            $vocabAttributes = $this->config['vocabularies'][$class->resource()->getGraph()->getUri()]['attributes'] ?? [[]];
+            $graphUri = (null !== $class->resource()->getGraph()) ? $class->resource()->getGraph()->getUri() : null;
+            $vocabAttributes = $this->config['vocabularies'][$graphUri]['attributes'] ?? [[]];
         }
 
         $getAttributesNames = static fn (array $config) => $config === [[]]
