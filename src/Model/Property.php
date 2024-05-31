@@ -140,7 +140,7 @@ abstract class Property
         return $this;
     }
 
-    public function toNetteProperty(PhpNamespace $namespace, string $visibility = null, bool $useDoctrineCollections = true, NetteProperty $property = null): NetteProperty
+    public function toNetteProperty(PhpNamespace $namespace, ?string $visibility = null, bool $useDoctrineCollections = true, ?NetteProperty $property = null): NetteProperty
     {
         $property ??= new NetteProperty($this->name);
 

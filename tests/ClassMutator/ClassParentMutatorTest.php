@@ -53,7 +53,7 @@ class ClassParentMutatorTest extends TestCase
     /**
      * @dataProvider provideInvokeTestCases
      */
-    public function testInvoke(SchemaClass $class, SchemaClass $expectedClass, string $loggerMessage = null): void
+    public function testInvoke(SchemaClass $class, SchemaClass $expectedClass, ?string $loggerMessage = null): void
     {
         if ($loggerMessage) {
             $this->loggerProphecy->info($loggerMessage)->shouldBeCalled();

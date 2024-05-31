@@ -19,7 +19,7 @@ final class Use_
 
     private ?string $alias;
 
-    public function __construct(string $name, string $alias = null)
+    public function __construct(string $name, ?string $alias = null)
     {
         $this->name = $name;
         $this->alias = $alias;

@@ -109,7 +109,7 @@ abstract class Class_
         return $this->interface ? $this->interface->namespace() : null;
     }
 
-    public function interfaceToNetteFile(string $fileHeader = null): PhpFile
+    public function interfaceToNetteFile(?string $fileHeader = null): PhpFile
     {
         if (!$this->interface) {
             throw new \LogicException(sprintf("'%s' has no interface attached.", $this->name));
@@ -214,7 +214,7 @@ abstract class Class_
     /**
      * @param Configuration $config
      */
-    public function toNetteFile(array $config, InflectorInterface $inflector, PhpFile $file = null): PhpFile
+    public function toNetteFile(array $config, InflectorInterface $inflector, ?PhpFile $file = null): PhpFile
     {
         $useDoctrineCollections = $config['doctrine']['useCollection'];
         $useAccessors = $config['accessorMethods'];
