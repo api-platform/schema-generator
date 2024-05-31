@@ -110,7 +110,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
             return new ArrayType($schemaProperty->items instanceof Schema ? $this->getType($schemaProperty->items) : null);
         }
 
-        if (is_array($schemaProperty->type)) {
+        if (\is_array($schemaProperty->type)) {
             // TODO: add support for OpenAPI 3.1
             return null;
         }
