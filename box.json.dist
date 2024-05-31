@@ -15,7 +15,7 @@
     "vendor/twig/twig/src/TwigTest.php"
   ],
   "directories": [
-    "vendor/cebe/php-openapi/src/spec"
+    "vendor/devizzent/cebe-php-openapi/src/spec"
   ],
   "force-autodiscovery": true,
 
