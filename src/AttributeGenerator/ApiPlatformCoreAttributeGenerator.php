@@ -23,6 +23,9 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\OpenApi\Model\Operation;
+use ApiPlatform\OpenApi\Model\Parameter;
+use ApiPlatform\OpenApi\Model\Response;
 use ApiPlatform\SchemaGenerator\Model\Attribute;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\Model\Property;
@@ -39,6 +42,21 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
 {
+    /**
+     * Hints for not typed array parameters.
+     */
+    private const PRAMETER_TYPE_HINTS = [
+        Operation::class => [
+            'responses' => Response::class.'[]',
+            'parameters' => Parameter::class.'[]',
+        ],
+    ];
+
+    /**
+     * @var array<class-string, array<string, string|null>>
+     */
+    private static array $parameterTypes = [];
+
     public function generateClassAttributes(Class_ $class): array
     {
         if ($class->hasChild || $class->isEnum()) {
@@ -84,7 +102,21 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
                         $operationMetadataClass = $methodConfig['class'];
                         unset($methodConfig['class']);
                     }
-
+                    if (\is_array($methodConfig['openapi'] ?? null)) {
+                        $methodConfig['openapi'] = Literal::new(
+                            'Operation',
+                            self::extractParameters(Operation::class, $methodConfig['openapi'])
+                        );
+                        $class->addUse(new Use_(Operation::class));
+                        array_walk_recursive(
+                            self::$parameterTypes,
+                            function (?string $type) use ($class) {
+                                if (null !== $type) {
+                                    $class->addUse(new Use_(str_replace('[]', '', $type)));
+                                }
+                            }
+                        );
+                    }
                     $arguments['operations'][] = new Literal(sprintf('new %s(...?:)',
                         $operationMetadataClass,
                     ), [$methodConfig ?? []]);
@@ -93,6 +125,53 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
         }
 
         return [new Attribute('ApiResource', $arguments)];
+    }
+
+    /**
+     * @param class-string $type
+     * @param mixed[]      $values
+     *
+     * @return mixed[]
+     */
+    private static function extractParameters(string $type, array $values): array
+    {
+        $types = self::$parameterTypes[$type] ??=
+            (static::PRAMETER_TYPE_HINTS[$type] ?? []) + array_reduce(
+                (new \ReflectionClass($type))->getConstructor()?->getParameters() ?? [],
+                static fn (array $types, \ReflectionParameter $refl) => $types + [
+                    $refl->getName() => $refl->getType() instanceof \ReflectionNamedType
+                            && !$refl->getType()->isBuiltin()
+                        ? $refl->getType()->getName()
+                        : null,
+                ],
+                []
+            );
+
+        $parameters = array_intersect_key($values, $types);
+        foreach ($parameters as $name => $parameter) {
+            $type = $types[$name];
+            if (null !== $type && \is_array($parameter)) {
+                $isArrayType = str_ends_with($type, '[]');
+                $type = $isArrayType ? substr($type, 0, -2) : $type;
+                $shortName = (new \ReflectionClass($type))->getShortName();
+                $parameters[$name] = $isArrayType
+                    ? array_map(
+                        static fn (array $values) => Literal::new(
+                            $shortName,
+                            self::extractParameters($type, $values)
+                        ),
+                        $parameter
+                    )
+                    : Literal::new(
+                        $shortName,
+                        \ArrayObject::class === $type
+                            ? [$parameter]
+                            : self::extractParameters($type, $parameter)
+                    );
+            }
+        }
+
+        return $parameters;
     }
 
     /**
