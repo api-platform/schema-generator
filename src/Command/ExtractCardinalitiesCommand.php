@@ -15,8 +15,8 @@ namespace ApiPlatform\SchemaGenerator\Command;
 
 use ApiPlatform\SchemaGenerator\CardinalitiesExtractor;
 use ApiPlatform\SchemaGenerator\GoodRelationsBridge;
+use ApiPlatform\SchemaGenerator\Schema\Rdf\RdfGraph;
 use ApiPlatform\SchemaGenerator\SchemaGeneratorConfiguration;
-use EasyRdf\Graph as RdfGraph;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

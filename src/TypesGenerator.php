@@ -28,12 +28,13 @@ use ApiPlatform\SchemaGenerator\Schema\Model\Class_ as SchemaClass;
 use ApiPlatform\SchemaGenerator\Schema\Model\Property as SchemaProperty;
 use ApiPlatform\SchemaGenerator\Schema\PropertyGenerator\IdPropertyGenerator;
 use ApiPlatform\SchemaGenerator\Schema\PropertyGenerator\PropertyGenerator;
+use ApiPlatform\SchemaGenerator\Schema\Rdf\RdfGraph;
+use ApiPlatform\SchemaGenerator\Schema\Rdf\RdfResource;
 use ApiPlatform\SchemaGenerator\Schema\TypeConverter;
+use ApiPlatform\SchemaGenerator\SchemaGeneratorConfigurationHolder as Config;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use EasyRdf\Graph as RdfGraph;
 use EasyRdf\RdfNamespace;
-use EasyRdf\Resource as RdfResource;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\String\Inflector\InflectorInterface;
@@ -107,6 +108,10 @@ class TypesGenerator
         if (!$graphs) {
             throw new \InvalidArgumentException('At least one graph must be injected.');
         }
+
+        // From here, we also make the config easily accessible as a static
+        // information in a dedicated holder class.
+        Config::set($config);
 
         [$typeNamesToGenerate, $types] = $this->defineTypesToGenerate($graphs, $config);
 
@@ -452,7 +457,8 @@ class TypesGenerator
                     }
 
                     $typeName = $this->phpTypeConverter->escapeIdentifier($type->localName());
-                    if (!($config['types'][$typeName]['exclude'] ?? false)) {
+                    $typeId = $type->localId();
+                    if (!($config['types'][$typeId]['exclude'] ?? false)) {
                         if ($config['resolveTypes'] || $vocabAllTypes) {
                             $allTypes[$typeName] = $type;
                         }
@@ -464,7 +470,7 @@ class TypesGenerator
             }
         }
 
-        foreach ($config['types'] as $typeName => $typeConfig) {
+        foreach ($config['types'] as $typeId => $typeConfig) {
             if ($typeConfig['exclude']) {
                 continue;
             }
@@ -474,20 +480,21 @@ class TypesGenerator
             foreach ($graphs as $graph) {
                 $resources = $graph->resources();
 
-                $typeIri = $vocabularyNamespace.$typeName;
+                $typeIri = $vocabularyNamespace.$typeId;
                 if (isset($resources[$typeIri])) {
                     $resource = $graph->resource($typeIri);
                     break;
                 }
             }
 
-            $typeName = $this->phpTypeConverter->escapeIdentifier($typeName);
             if ($resource) {
+                $typeName = $this->phpTypeConverter->escapeIdentifier($resource->localName() ?? '');
                 $allTypes[$typeName] = $resource;
                 if (!\in_array($typeName, $typeNamesToGenerate, true)) {
                     $typeNamesToGenerate[] = $typeName;
                 }
             } else {
+                $typeName = $this->phpTypeConverter->escapeIdentifier($typeId);
                 $this->logger ? $this->logger->warning('Type "{typeName}" cannot be found. Using "{guessFrom}" type to generate entity.', ['typeName' => $typeName, 'guessFrom' => $typeConfig['guessFrom']]) : null;
                 if (isset($graph)) {
                     $type = $graph->resource($vocabularyNamespace.$typeConfig['guessFrom']);

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\Schema;
 
-use EasyRdf\Resource as RdfResource;
+use ApiPlatform\SchemaGenerator\Schema\Rdf\RdfResource;
 
 final class TypeConverter
 {

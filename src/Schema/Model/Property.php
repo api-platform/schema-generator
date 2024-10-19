@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\Schema\Model;
 
 use ApiPlatform\SchemaGenerator\Model\Property as BaseProperty;
-use EasyRdf\Resource as RdfResource;
+use ApiPlatform\SchemaGenerator\Schema\Rdf\RdfResource;
 
 final class Property extends BaseProperty
 {
