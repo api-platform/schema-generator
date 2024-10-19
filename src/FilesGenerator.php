@@ -149,7 +149,7 @@ final class FilesGenerator
 
         // to keep compatibility with both versions of php-cs-fixer: 2.x and 3.x
         // ruleset object must be created depending on which class is available
-        $rulesetClass = class_exists(LegacyRuleSet::class) ? LegacyRuleSet::class : Ruleset::class;
+        $rulesetClass = class_exists(LegacyRuleSet::class) ? LegacyRuleSet::class : RuleSet::class;
         $fixers = (new FixerFactory())
             ->registerBuiltInFixers()
             ->useRuleSet(new $rulesetClass([ // @phpstan-ignore-line

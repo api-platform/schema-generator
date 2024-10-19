@@ -48,7 +48,7 @@ final class Interface_
         return $this;
     }
 
-    public function toNetteFile(string $fileHeader = null): PhpFile
+    public function toNetteFile(?string $fileHeader = null): PhpFile
     {
         $file = (new PhpFile())
             ->setStrictTypes(true)

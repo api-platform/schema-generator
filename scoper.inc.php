@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 return [
     'whitelist' => [
-        \ApiPlatform\Core\Annotation\ApiProperty::class,
-        \ApiPlatform\Core\Annotation\ApiResource::class,
+        ApiPlatform\Core\Annotation\ApiProperty::class,
+        ApiPlatform\Core\Annotation\ApiResource::class,
     ],
     'patchers' => [
         function (string $filePath, string $prefix, string $content): string {

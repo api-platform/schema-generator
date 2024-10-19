@@ -17,5 +17,5 @@ use ApiPlatform\SchemaGenerator\Model\Property;
 
 interface IdPropertyGeneratorInterface
 {
-    public function __invoke(string $generationStrategy, bool $supportsWritableId, Property $property = null): Property;
+    public function __invoke(string $generationStrategy, bool $supportsWritableId, ?Property $property = null): Property;
 }

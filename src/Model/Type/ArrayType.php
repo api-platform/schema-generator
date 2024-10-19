@@ -17,7 +17,7 @@ final class ArrayType implements Type
 {
     public ?Type $type;
 
-    public function __construct(Type $type = null)
+    public function __construct(?Type $type = null)
     {
         $this->type = $type;
     }

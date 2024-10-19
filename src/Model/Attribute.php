@@ -28,14 +28,14 @@ final class Attribute
     /**
      * If this attribute can be appended if a same one has not previously been generated or if the same one is not mergeable?
      *
-     * @see \ApiPlatform\SchemaGenerator\Model\AddAttributeTrait
+     * @see AddAttributeTrait
      */
     public bool $append = true;
 
     /**
      * If this attribute mergeable with the next one?
      *
-     * @see \ApiPlatform\SchemaGenerator\Model\AddAttributeTrait
+     * @see AddAttributeTrait
      */
     public bool $mergeable = true;
 
