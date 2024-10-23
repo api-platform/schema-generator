@@ -56,10 +56,10 @@ config:
     relations:
 
         # OWL relation URIs containing cardinality information in the GoodRelations format
-        uris:                 # Example: 'https://archive.org/services/purl/goodrelations/v1.owl'
+        uris:                 # Example: 'https://www.heppnetz.de/ontologies/goodrelations/v1.owl'
 
             # Default:
-            - https://archive.org/services/purl/goodrelations/v1.owl
+            - https://www.heppnetz.de/ontologies/goodrelations/v1.owl
 
         # The default cardinality to use when it cannot be extracted
         defaultCardinality:   (1..1) # One of "(0..1)"; "(0..*)"; "(1..1)"; "(1..*)"; "(*..0)"; "(*..1)"; "(*..*)"
