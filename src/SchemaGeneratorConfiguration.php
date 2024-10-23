@@ -31,7 +31,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 final class SchemaGeneratorConfiguration implements ConfigurationInterface
 {
     public const SCHEMA_ORG_URI = 'https://schema.org/version/latest/schemaorg-current-https.rdf';
-    public const GOOD_RELATIONS_URI = 'https://archive.org/services/purl/goodrelations/v1.owl';
+    public const GOOD_RELATIONS_URI = 'https://www.heppnetz.de/ontologies/goodrelations/v1.owl';
     public const SCHEMA_ORG_NAMESPACE = 'https://schema.org/';
 
     private ?string $defaultPrefix;
