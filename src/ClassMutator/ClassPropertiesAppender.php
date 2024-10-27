@@ -16,8 +16,8 @@ namespace ApiPlatform\SchemaGenerator\ClassMutator;
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGeneratorInterface;
 use ApiPlatform\SchemaGenerator\Schema\Model\Class_ as SchemaClass;
-use EasyRdf\Graph as RdfGraph;
-use EasyRdf\Resource as RdfResource;
+use ApiPlatform\SchemaGenerator\Schema\Rdf\RdfGraph;
+use ApiPlatform\SchemaGenerator\Schema\Rdf\RdfResource;
 use Psr\Log\LoggerAwareTrait;
 
 final class ClassPropertiesAppender implements ClassMutatorInterface

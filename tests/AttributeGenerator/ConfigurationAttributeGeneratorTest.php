@@ -19,9 +19,9 @@ use ApiPlatform\SchemaGenerator\Model\Use_;
 use ApiPlatform\SchemaGenerator\PhpTypeConverter;
 use ApiPlatform\SchemaGenerator\Schema\Model\Class_ as SchemaClass;
 use ApiPlatform\SchemaGenerator\Schema\Model\Property;
+use ApiPlatform\SchemaGenerator\Schema\Rdf\RdfGraph;
+use ApiPlatform\SchemaGenerator\Schema\Rdf\RdfResource;
 use ApiPlatform\SchemaGenerator\SchemaGeneratorConfiguration;
-use EasyRdf\Graph as RdfGraph;
-use EasyRdf\Resource as RdfResource;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\String\Inflector\EnglishInflector;
 

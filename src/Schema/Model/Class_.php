@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\Schema\Model;
 
 use ApiPlatform\SchemaGenerator\Model\Class_ as BaseClass_;
-use EasyRdf\Resource as RdfResource;
+use ApiPlatform\SchemaGenerator\Schema\Rdf\RdfResource;
 
 final class Class_ extends BaseClass_
 {

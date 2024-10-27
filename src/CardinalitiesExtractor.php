@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator;
 
-use EasyRdf\Graph as RdfGraph;
-use EasyRdf\Resource as RdfResource;
+use ApiPlatform\SchemaGenerator\Schema\Rdf\RdfGraph;
+use ApiPlatform\SchemaGenerator\Schema\Rdf\RdfResource;
 
 /**
  * Extracts cardinalities from the OWL definition, from GoodRelations or from Schema.org's comments.
@@ -104,7 +104,7 @@ class CardinalitiesExtractor
             return self::CARDINALITY_UNKNOWN;
         }
 
-        $fromGoodRelations = $this->goodRelationsBridge->extractCardinality($localName);
+        $fromGoodRelations = $this->goodRelationsBridge->extractCardinality($property->localId());
         if (false !== $fromGoodRelations) {
             return $fromGoodRelations;
         }

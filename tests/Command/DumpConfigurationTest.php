@@ -46,6 +46,15 @@ config:
             # Generate all types for this vocabulary, even if an explicit configuration exists. If allTypes is enabled globally, it can be disabled for this particular vocabulary
             allTypes:             null
 
+            # Make use of the label information when possible to define all entities names in this vocabulary?
+            nameAllFromLabels:    false
+
+            # The language to use, with this vocabulary, among the labels when used as entities names, e.g., en
+            language:             null
+
+            # The naming convention to use, with this vocabulary, when naming entities from their labels; the default value is camel case (possible values are "snake case" or "camel case"), classes have first charater in uppercase
+            namingConvention:     null
+
             # Attributes (merged with generated attributes)
             attributes:           []
 
@@ -164,6 +173,15 @@ config:
     # Generate all types, even if an explicit configuration exists
     allTypes:             false
 
+    # Make use of the label information when possible to define all entities names?
+    nameAllFromLabels:    false
+
+    # The language to use among the labels when used as entities names, e.g., en
+    language:             null
+
+    # The naming convention to use when naming entities from their labels; the default value is camel case (possible values are "snake case" or "camel case"), classes have first charater in uppercase
+    namingConvention:     null
+
     # If a type is present in a vocabulary but not explicitly imported (types) or if the vocabulary is not totally imported (allTypes), it will be generated
     resolveTypes:         false
 
@@ -184,6 +202,15 @@ config:
 
             # Is the class embeddable?
             embeddable:           false
+
+            # Make use of the label if possible to define this type entity name?
+            nameFromLabel:        false
+
+            # The language to use among the labels when used as entity name for the current type, e.g., en
+            language:             null
+
+            # The naming convention to use when naming entities from the labels related to the current type; the default value is camel case (possible values are "snake case" or "camel case"), classes have first charater in uppercase
+            namingConvention:     null
 
             # Type namespaces
             namespaces:

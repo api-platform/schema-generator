@@ -17,7 +17,7 @@ use ApiPlatform\SchemaGenerator\ClassMutator\EnumClassMutator as BaseEnumClassMu
 use ApiPlatform\SchemaGenerator\Model\Class_;
 use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
 use ApiPlatform\SchemaGenerator\Schema\Model\Constant as SchemaConstant;
-use EasyRdf\Graph as RdfGraph;
+use ApiPlatform\SchemaGenerator\Schema\Rdf\RdfGraph;
 
 final class EnumClassMutator extends BaseEnumClassMutator
 {

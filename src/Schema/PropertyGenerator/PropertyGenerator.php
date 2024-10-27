@@ -23,8 +23,8 @@ use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGenerator as CommonPro
 use ApiPlatform\SchemaGenerator\PropertyGenerator\PropertyGeneratorInterface;
 use ApiPlatform\SchemaGenerator\Schema\Model\Property as SchemaProperty;
 use ApiPlatform\SchemaGenerator\Schema\Model\Type\PrimitiveType;
+use ApiPlatform\SchemaGenerator\Schema\Rdf\RdfResource;
 use ApiPlatform\SchemaGenerator\Schema\TypeConverter;
-use EasyRdf\Resource as RdfResource;
 use Psr\Log\LoggerAwareTrait;
 
 final class PropertyGenerator implements PropertyGeneratorInterface
