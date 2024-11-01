@@ -1,0 +1,106 @@
+types:
+  Saml:
+    operations:
+      login:
+        class: Get
+        name: "login"
+        uriTemplate: "/saml/{id}/login"
+        controller: "App\\Controller\\SamlController::login"
+        openapi:
+          tags: ["Auth"]
+          summary: "SAML authentication."
+          description: "SAML authentication."
+          responses:
+            302:
+              description: "Initialization successful."
+              headers:
+                Location:
+                  required: true
+                  description: "SAML login page redirection."
+                  schema:
+                    type: "string"
+                    format: "url"
+            403: { description: "SAML disabled." }
+            404: { description: "SAML not found." }
+      acs:
+        class: Post
+        name: "acs"
+        uriTemplate: "/saml/{id}/acs"
+        controller: "App\\Controller\\SamlController::acs"
+        inputFormats:
+          urlencoded: ['application/x-www-form-urlencoded']
+        openapi:
+          tags: ["Auth"]
+          summary: "SAML ACS."
+          description: "SAML ACS."
+          responses:
+            302:
+              description: "Authentication successful."
+              headers:
+                Location:
+                  required: true
+                  description: "Redirection page."
+                  schema:
+                    type: "string"
+                    format: "url"
+            401: { description: "Authentication failed."}
+            403: { description: "SAML disabled." }
+            404: { description: "SAML not found." }
+          requestBody:
+            required: true
+            content:
+              "application/x-www-form-urlencoded":
+                schema:
+                    type: object
+                    properties:
+                      SAMLResponse:
+                        type: string
+                        description: "SAML login response."
+                required: ["SAMLResponse"]
+      logout:
+        class: Get
+        name: "logout"
+        uriTemplate: "/saml/{id}/logout"
+        controller: "App\\Controller\\SamlController::logout"
+        openapi:
+          tags: ["Auth"]
+          summary: "SAML logout."
+          description: "SAML logout."
+          parameters:
+            - name: "SAMLRequest"
+              in: "query"
+              schema: { type: "string" }
+              required: true
+              description: "SAML logout request."
+            - name: "RelayState"
+              in: "query"
+              schema: { type: "string" }
+              required: false
+              description: "SAML logout response redirect URL."
+            - name: "Signature"
+              in: "query"
+              schema: { type: "string" }
+              required: false
+              description: "SAML signature."
+          responses:
+            302:
+              description: "Logout successful."
+              headers:
+                Location:
+                  required: true
+                  description: "SAML logout response redirect URL."
+                  schema:
+                    type: "string"
+                    format: "url"
+
+            403: { description: "Logout failed." }
+            404: { description: "SAML not found." }
+    attributes:
+      ApiResource:
+        shortName: "Saml"
+    properties:
+      name:
+        nullable: false
+        attributes:
+          ApiProperty:
+            iris: [ "https://schema.org/name" ]

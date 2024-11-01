@@ -539,6 +539,145 @@ PHP
         self::assertFalse($this->fs->exists("$outputDir/App/Entity/Travel.php"));
     }
 
+    public function testOpenapiOperationProperty(): void
+    {
+        $outputDir = __DIR__.'/../../build/openapi-operation-property';
+        $config = __DIR__.'/../config/openapi-operation-property.yaml';
+
+        $this->fs->mkdir($outputDir);
+
+        $commandTester = new CommandTester(new GenerateCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+        $source = file_get_contents("$outputDir/App/Entity/Saml.php");
+
+        $this->assertStringContainsString(<<<'PHP'
+use ApiPlatform\OpenApi\Model\Operation;
+use ApiPlatform\OpenApi\Model\Parameter;
+use ApiPlatform\OpenApi\Model\RequestBody;
+use ApiPlatform\OpenApi\Model\Response;
+PHP
+            , $source);
+
+        $this->assertStringContainsString(<<<'PHP'
+#[ApiResource(
+    shortName: 'Saml',
+    types: ['https://schema.org/Thing'],
+    operations: [
+        new Get(
+            name: 'login',
+            uriTemplate: '/saml/{id}/login',
+            controller: 'App\Controller\SamlController::login',
+            openapi: new Operation(
+                tags: ['Auth'],
+                summary: 'SAML authentication.',
+                description: 'SAML authentication.',
+                responses: [
+                    302 => new Response(
+                        description: 'Initialization successful.',
+                        headers: new \ArrayObject([
+                            'Location' => [
+                                'required' => true,
+                                'description' => 'SAML login page redirection.',
+                                'schema' => ['type' => 'string', 'format' => 'url'],
+                            ],
+                        ]),
+                    ),
+                    403 => new Response(description: 'SAML disabled.'),
+                    404 => new Response(description: 'SAML not found.'),
+                ],
+            ),
+        ),
+        new Post(
+            name: 'acs',
+            uriTemplate: '/saml/{id}/acs',
+            controller: 'App\Controller\SamlController::acs',
+            inputFormats: ['urlencoded' => ['application/x-www-form-urlencoded']],
+            openapi: new Operation(
+                tags: ['Auth'],
+                summary: 'SAML ACS.',
+                description: 'SAML ACS.',
+                responses: [
+                    302 => new Response(
+                        description: 'Authentication successful.',
+                        headers: new \ArrayObject([
+                            'Location' => [
+                                'required' => true,
+                                'description' => 'Redirection page.',
+                                'schema' => ['type' => 'string', 'format' => 'url'],
+                            ],
+                        ]),
+                    ),
+                    401 => new Response(description: 'Authentication failed.'),
+                    403 => new Response(description: 'SAML disabled.'),
+                    404 => new Response(description: 'SAML not found.'),
+                ],
+                requestBody: new RequestBody(
+                    required: true,
+                    content: new \ArrayObject([
+                        'application/x-www-form-urlencoded' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => ['SAMLResponse' => ['type' => 'string', 'description' => 'SAML login response.']],
+                            ],
+                            'required' => ['SAMLResponse'],
+                        ],
+                    ]),
+                ),
+            ),
+        ),
+        new Get(
+            name: 'logout',
+            uriTemplate: '/saml/{id}/logout',
+            controller: 'App\Controller\SamlController::logout',
+            openapi: new Operation(
+                tags: ['Auth'],
+                summary: 'SAML logout.',
+                description: 'SAML logout.',
+                parameters: [
+                    new Parameter(
+                        name: 'SAMLRequest',
+                        in: 'query',
+                        schema: ['type' => 'string'],
+                        required: true,
+                        description: 'SAML logout request.',
+                    ),
+                    new Parameter(
+                        name: 'RelayState',
+                        in: 'query',
+                        schema: ['type' => 'string'],
+                        required: false,
+                        description: 'SAML logout response redirect URL.',
+                    ),
+                    new Parameter(
+                        name: 'Signature',
+                        in: 'query',
+                        schema: ['type' => 'string'],
+                        required: false,
+                        description: 'SAML signature.',
+                    ),
+                ],
+                responses: [
+                    302 => new Response(
+                        description: 'Logout successful.',
+                        headers: new \ArrayObject([
+                            'Location' => [
+                                'required' => true,
+                                'description' => 'SAML logout response redirect URL.',
+                                'schema' => ['type' => 'string', 'format' => 'url'],
+                            ],
+                        ]),
+                    ),
+                    403 => new Response(description: 'Logout failed.'),
+                    404 => new Response(description: 'SAML not found.'),
+                ],
+            ),
+        ),
+    ],
+)]
+PHP
+            , $source);
+    }
+
     public function testGenerationWithoutConfigFileQuestion(): void
     {
         // No config file is given.
