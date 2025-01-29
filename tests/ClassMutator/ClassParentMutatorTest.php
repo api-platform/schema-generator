@@ -67,7 +67,7 @@ class ClassParentMutatorTest extends TestCase
     /**
      * @return \Generator<array{0: SchemaClass, 1: SchemaClass, 2?: string}>
      */
-    public function provideInvokeTestCases(): \Generator
+    public static function provideInvokeTestCases(): \Generator
     {
         $graph = new RdfGraph();
         $product = new SchemaClass('Product', new RdfResource('https://schema.org/Product', $graph));

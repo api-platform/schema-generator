@@ -42,7 +42,7 @@ class GenerateCommandTest extends TestCase
         $this->assertEquals(0, $commandTester->execute(['output' => $output, 'config' => $config]));
     }
 
-    public function getArguments(): iterable
+    public static function getArguments(): iterable
     {
         yield 'blog' => [__DIR__.'/../../build/blog/', __DIR__.'/../config/blog.yaml'];
         yield 'ecommerce' => [__DIR__.'/../../build/ecommerce/', __DIR__.'/../config/ecommerce.yaml'];
@@ -489,7 +489,7 @@ PHP
      * @see https://schema.org/award
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(types: ['https://schema.org/award'])]
+    #[ApiProperty(iri: 'https://schema.org/award')]
     private ?string $award = null;
 PHP
             , $creativeWork);

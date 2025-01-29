@@ -35,7 +35,7 @@ class ConfigurationAttributeGeneratorTest extends TestCase
         $this->assertEquals($attributes, $this->generator($config)->generateClassAttributes($class));
     }
 
-    public function provideGenerateClassAttributesCases(): \Generator
+    public static function provideGenerateClassAttributesCases(): \Generator
     {
         $class = new SchemaClass('Foo', new RdfResource('https://schema.org/Foo', new RdfGraph()));
 
@@ -80,7 +80,7 @@ class ConfigurationAttributeGeneratorTest extends TestCase
         $this->assertEquals($attributes, $this->generator($config)->generatePropertyAttributes($property, 'Res'));
     }
 
-    public function provideGeneratePropertyAttributesCases(): \Generator
+    public static function provideGeneratePropertyAttributesCases(): \Generator
     {
         $property = new Property('prop');
 
@@ -103,7 +103,7 @@ class ConfigurationAttributeGeneratorTest extends TestCase
         $this->assertEquals($uses, $this->generator($config)->generateUses($class));
     }
 
-    public function provideGenerateUsesCases(): \Generator
+    public static function provideGenerateUsesCases(): \Generator
     {
         $class = new SchemaClass('Foo', new RdfResource('https://schema.org/Foo', new RdfGraph()));
 

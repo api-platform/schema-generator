@@ -59,7 +59,7 @@ class ApiPlatformCoreAttributeGeneratorTest extends TestCase
         $this->assertEquals($attributes, $this->generator($oldAttributes)->generateClassAttributes($class));
     }
 
-    public function provideGenerateClassAttributesCases(): \Generator
+    public static function provideGenerateClassAttributesCases(): \Generator
     {
         yield 'classical' => [new SchemaClass('Res', new RdfResource('https://schema.org/Res', new RdfGraph())), [new Attribute('ApiResource', ['types' => ['https://schema.org/Res']])]];
 
@@ -105,7 +105,7 @@ class ApiPlatformCoreAttributeGeneratorTest extends TestCase
         $this->assertEquals($attributes, $this->generator($oldAttributes)->generatePropertyAttributes($property, 'Res'));
     }
 
-    public function provideGeneratePropertyAttributesCases(): \Generator
+    public static function provideGeneratePropertyAttributesCases(): \Generator
     {
         $property = new Property('prop');
         $property->resource = new RdfResource('https://schema.org/prop');

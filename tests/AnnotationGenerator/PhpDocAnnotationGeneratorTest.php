@@ -56,7 +56,7 @@ class PhpDocAnnotationGeneratorTest extends TestCase
         $this->assertSame($annotations, $this->generator->generateClassAnnotations($class));
     }
 
-    public function provideGenerateClassAnnotationsCases(): \Generator
+    public static function provideGenerateClassAnnotationsCases(): \Generator
     {
         $class = new SchemaClass('Res', new RdfResource('https://schema.org/Res'));
         $class->interface = new Interface_('Interface', '/foo');
@@ -74,7 +74,7 @@ class PhpDocAnnotationGeneratorTest extends TestCase
         $this->assertSame($annotations, $this->generator->generatePropertyAnnotations($property, $className));
     }
 
-    public function provideGeneratePropertyAnnotationsCases(): \Generator
+    public static function provideGeneratePropertyAnnotationsCases(): \Generator
     {
         $property = new SchemaProperty('telephone');
         $graph = new RdfGraph();

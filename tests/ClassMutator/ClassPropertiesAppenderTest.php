@@ -94,7 +94,7 @@ class ClassPropertiesAppenderTest extends TestCase
     /**
      * @return \Generator<array{0: SchemaClass, 1: SchemaClass, 2?: ?RdfGraph, 3?: string}>
      */
-    public function provideInvokeTestCases(): \Generator
+    public static function provideInvokeTestCases(): \Generator
     {
         $product = new SchemaClass('Product', new RdfResource('https://schema.org/Product'));
         yield 'no configuration no properties in map' => [clone $product, clone $product, null, 'Properties for "https://schema.org/Product" not found in the map.'];

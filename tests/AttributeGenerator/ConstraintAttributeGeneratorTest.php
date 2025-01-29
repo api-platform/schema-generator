@@ -51,7 +51,7 @@ class ConstraintAttributeGeneratorTest extends TestCase
         $this->assertEquals($attributes, $this->generator->generateClassAttributes($class));
     }
 
-    public function provideGenerateClassAttributesCases(): \Generator
+    public static function provideGenerateClassAttributesCases(): \Generator
     {
         $graph = new RdfGraph();
         $resource = new RdfResource('https://schema.org/Enum', $graph);
@@ -87,7 +87,7 @@ class ConstraintAttributeGeneratorTest extends TestCase
         $this->assertEquals($attributes, $this->generator->generatePropertyAttributes($property, 'Res'));
     }
 
-    public function provideGeneratePropertyAttributesCases(): \Generator
+    public static function provideGeneratePropertyAttributesCases(): \Generator
     {
         $property = new Property('prop');
         $property->isId = true;

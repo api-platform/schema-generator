@@ -39,30 +39,27 @@
         "friendsofphp/php-cs-fixer": "^2.15 || ^3.0",
         "league/html-to-markdown": "^5.0",
         "psr/log": "^1.0 || ^2.0 || ^3.0",
-        "symfony/config": "^5.2 || ^6.0 || ^7.0" ,
-        "symfony/console": "^5.2 || ^6.0  || ^7.0",
-        "symfony/yaml": "^5.2 || ^6.0 || ^7.0",
-        "symfony/filesystem": "^5.2 || ^6.0 || ^7.0",
+        "symfony/config": "^5.4 || ^6.4 || ^7.0" ,
+        "symfony/console": "^5.4 || ^6.4  || ^7.0",
+        "symfony/yaml": "^5.4 || ^6.4 || ^7.0",
+        "symfony/filesystem": "^5.4 || ^6.4 || ^7.0",
         "twig/twig": "^3.0",
         "nette/php-generator": "^3.6 || ^4.0",
         "nikic/php-parser": "^4.13 || ^5.0",
         "devizzent/cebe-php-openapi": "^1.0.3",
-        "symfony/string": "^5.2 || ^6.0 || ^7.0"
+        "symfony/string": "^5.4 || ^6.4 || ^7.0"
     },
     "require-dev": {
-        "api-platform/core": "^2.7 || ^3.0",
-        "doctrine/orm": "^2.7",
+        "api-platform/core": "^3.0 || ^4.0",
+        "doctrine/orm": "^2.7 || ^3.0",
         "myclabs/php-enum": "^1.7",
-        "symfony/doctrine-bridge": "^5.2 || ^6.0 || ^7.0",
-        "symfony/phpunit-bridge": "^5.2 || ^6.0 || ^7.0",
-        "symfony/serializer": "^5.2 || ^6.0 || ^7.0",
-        "symfony/validator": "^5.2 || ^6.0 || ^7.0",
+        "symfony/doctrine-bridge": "^5.4 || ^6.4 || ^7.0",
+        "symfony/phpunit-bridge": "^5.4 || ^6.4 || ^7.0",
+        "symfony/serializer": "^5.4 || ^6.4 || ^7.0",
+        "symfony/validator": "^5.4 || ^6.4 || ^7.0",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpstan/phpstan": "^1.2.0",
-        "symfony/finder": "^5.2 || ^6.0 || ^7.0"
-    },
-    "conflict": {
-        "sebastian/comparator": ">=5.0"
+        "phpstan/phpstan": "^2.1",
+        "symfony/finder": "^5.4 || ^6.4 || ^7.0"
     },
     "bin": [
         "bin/schema"
