@@ -65,14 +65,14 @@ final class FilesGenerator
             $classDir = $this->namespaceToDir($class->namespace, $config);
             $this->filesystem->mkdir($classDir);
 
-            $path = sprintf('%s%s.php', $classDir, $className);
+            $path = \sprintf('%s%s.php', $classDir, $className);
 
             $file = null;
             if (file_exists($path) && is_file($path) && is_readable($path) && $fileContent = file_get_contents($path)) {
-                $choice = $this->io->askQuestion(new ChoiceQuestion(sprintf('File "%s" already exists, keep your changes and update it (use) or overwrite it (overwrite)?', $path), ['use', 'overwrite'], 0));
+                $choice = $this->io->askQuestion(new ChoiceQuestion(\sprintf('File "%s" already exists, keep your changes and update it (use) or overwrite it (overwrite)?', $path), ['use', 'overwrite'], 0));
                 if ('use' === $choice) {
                     $file = PhpFile::fromCode($fileContent);
-                    $this->logger ? $this->logger->info(sprintf('Using "%s" as base file.', $path)) : null;
+                    $this->logger ? $this->logger->info(\sprintf('Using "%s" as base file.', $path)) : null;
                 }
             }
 
@@ -88,7 +88,7 @@ final class FilesGenerator
                 $interfaceDir = $this->namespaceToDir($class->interfaceNamespace(), $config);
                 $this->filesystem->mkdir($interfaceDir);
 
-                $path = sprintf('%s%s.php', $interfaceDir, $class->interfaceName());
+                $path = \sprintf('%s%s.php', $interfaceDir, $class->interfaceName());
                 $generatedFiles[] = $path;
                 file_put_contents($path, $this->printer->printFile($class->interfaceToNetteFile($config['header'] ?? null)));
 
@@ -132,7 +132,7 @@ final class FilesGenerator
             $namespace = substr($namespace, \strlen($prefix));
         }
 
-        return sprintf('%s/%s/', $config['output'], str_replace('\\', '/', $namespace));
+        return \sprintf('%s/%s/', $config['output'], str_replace('\\', '/', $namespace));
     }
 
     /**

@@ -190,7 +190,7 @@ abstract class Property
         \Closure $singularize,
         PhpNamespace $namespace,
         bool $useDoctrineCollections = true,
-        bool $useFluentMutators = false
+        bool $useFluentMutators = false,
     ): array {
         return array_merge(
             $this->generateMutators($singularize, $namespace, $useDoctrineCollections, $useFluentMutators),
@@ -201,7 +201,7 @@ abstract class Property
     private function generateGetter(PhpNamespace $namespace): Method
     {
         if (!$this->isReadable) {
-            throw new \LogicException(sprintf("Property '%s' is not readable.", $this->name));
+            throw new \LogicException(\sprintf("Property '%s' is not readable.", $this->name));
         }
 
         $getter = (new Method('get'.ucfirst($this->name)))->setVisibility(ClassType::VISIBILITY_PUBLIC);
@@ -226,7 +226,7 @@ abstract class Property
         \Closure $singularize,
         PhpNamespace $namespace,
         bool $useDoctrineCollections = true,
-        bool $useFluentMutators = false
+        bool $useFluentMutators = false,
     ): array {
         if (!$this->isWritable) {
             return [];
@@ -246,7 +246,7 @@ abstract class Property
                 $parameter->setType($this->adderRemoverTypeHint ? $this->resolveName($namespace, $this->adderRemoverTypeHint) : $this->adderRemoverTypeHint);
             }
             $adder->addBody(
-                sprintf('$this->%s[] = %s;', $this->name(), ($this->isEnum ? '(string) ' : '')."$$singularProperty")
+                \sprintf('$this->%s[] = %s;', $this->name(), ($this->isEnum ? '(string) ' : '')."$$singularProperty")
             );
             if ($useFluentMutators) {
                 $adder->addBody('');
@@ -265,13 +265,13 @@ abstract class Property
             }
 
             if ($useDoctrineCollections && $this->typeHint && 'array' !== $this->typeHint && !$this->isEnum) {
-                $remover->addBody(sprintf(
+                $remover->addBody(\sprintf(
                     '$this->%s->removeElement(%s);',
                     $this->name(),
                     "$$singularProperty"
                 ));
             } else {
-                $remover->addBody(sprintf(<<<'PHP'
+                $remover->addBody(\sprintf(<<<'PHP'
 if (false !== $key = array_search(%s, %s, true)) {
     unset($this->%s[$key]);
 }

@@ -61,7 +61,7 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
             $attributes[] = new Attribute('MongoDB\Document');
             $attributes[] = new Attribute('MongoDB\InheritanceType', [\in_array($this->config['doctrine']['inheritanceType'], ['SINGLE_COLLECTION', 'COLLECTION_PER_CLASS', 'NONE'], true) ? $this->config['doctrine']['inheritanceType'] : 'SINGLE_COLLECTION']);
             $attributes[] = new Attribute('MongoDB\DiscriminatorField', ['discr']);
-            $attributes[] = new Attribute('MongoDB\DiscriminatorMap', [array_reduce($mapNames, fn (array $map, string $mapName) => $map + [u($mapName)->camel()->toString() => new Literal(sprintf('%s::class', $mapName))], [])]);
+            $attributes[] = new Attribute('MongoDB\DiscriminatorMap', [array_reduce($mapNames, fn (array $map, string $mapName) => $map + [u($mapName)->camel()->toString() => new Literal(\sprintf('%s::class', $mapName))], [])]);
         } else {
             $attributes[] = new Attribute('MongoDB\Document');
         }

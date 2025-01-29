@@ -50,7 +50,7 @@ final class ClassParentMutator implements ClassMutatorInterface
 
         if (null === $class->parent() && $subclassOf = $class->getSubClassOf()) {
             if (\count($subclassOf) > 1) {
-                $this->logger ? $this->logger->info(sprintf('The type "%s" has several supertypes. Using the first one.', $class->rdfType())) : null;
+                $this->logger ? $this->logger->info(\sprintf('The type "%s" has several supertypes. Using the first one.', $class->rdfType())) : null;
             }
 
             if (\is_string($parentLocalName = $subclassOf[0]->localName())) {

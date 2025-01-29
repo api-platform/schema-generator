@@ -22,7 +22,7 @@ final class PhpTypeConverter implements PhpTypeConverterInterface
     public function getPhpType(Property $property, array $config = [], array $classes = []): ?string
     {
         if (!$property instanceof SchemaProperty) {
-            throw new \LogicException(sprintf('Property "%s" has to be an instance of "%s".', $property->name(), SchemaProperty::class));
+            throw new \LogicException(\sprintf('Property "%s" has to be an instance of "%s".', $property->name(), SchemaProperty::class));
         }
 
         if ($property->reference && $property->isArray()) {

@@ -73,7 +73,7 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
                         }
                         $targetArguments[$method] = $methodArguments;
                     }
-                    $arguments[sprintf('%sOperations', $operationTarget)] = $targetArguments;
+                    $arguments[\sprintf('%sOperations', $operationTarget)] = $targetArguments;
                 }
             } else {
                 $arguments['operations'] = [];
@@ -85,7 +85,7 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
                         unset($methodConfig['class']);
                     }
 
-                    $arguments['operations'][] = new Literal(sprintf('new %s(...?:)',
+                    $arguments['operations'][] = new Literal(\sprintf('new %s(...?:)',
                         $operationMetadataClass,
                     ), [$methodConfig ?? []]);
                 }

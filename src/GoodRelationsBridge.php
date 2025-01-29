@@ -87,7 +87,7 @@ class GoodRelationsBridge
     public function exists(string $id): bool
     {
         foreach ($this->relations as $relation) {
-            $result = $relation->xpath(sprintf('//*[@rdf:about="%s"]', $this->getPropertyUrl($id)));
+            $result = $relation->xpath(\sprintf('//*[@rdf:about="%s"]', $this->getPropertyUrl($id)));
             if (!empty($result)) {
                 return true;
             }
@@ -104,7 +104,7 @@ class GoodRelationsBridge
     public function extractCardinality(string $id)
     {
         foreach ($this->relations as $relation) {
-            $result = $relation->xpath(sprintf('//*[@rdf:about="%s"]/rdfs:label', $this->getPropertyUrl($id)));
+            $result = $relation->xpath(\sprintf('//*[@rdf:about="%s"]/rdfs:label', $this->getPropertyUrl($id)));
             if (!$result) {
                 continue;
             }

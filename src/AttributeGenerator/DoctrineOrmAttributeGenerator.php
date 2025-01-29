@@ -69,7 +69,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
             $attributes[] = new Attribute('ORM\Entity');
             $attributes[] = new Attribute('ORM\InheritanceType', [\in_array($this->config['doctrine']['inheritanceType'], ['JOINED', 'SINGLE_TABLE', 'TABLE_PER_CLASS', 'NONE'], true) ? $this->config['doctrine']['inheritanceType'] : 'JOINED']);
             $attributes[] = new Attribute('ORM\DiscriminatorColumn', ['name' => 'discr']);
-            $attributes[] = new Attribute('ORM\DiscriminatorMap', [array_reduce($mapNames, fn (array $map, string $mapName) => $map + [u($mapName)->camel()->toString() => new Literal(sprintf('%s::class', $mapName))], [])]);
+            $attributes[] = new Attribute('ORM\DiscriminatorMap', [array_reduce($mapNames, fn (array $map, string $mapName) => $map + [u($mapName)->camel()->toString() => new Literal(\sprintf('%s::class', $mapName))], [])]);
         } else {
             $attributes[] = new Attribute('ORM\Entity');
         }
@@ -79,7 +79,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                 continue;
             }
 
-            $attributes[] = new Attribute('ORM\Table', ['name' => sprintf('`%s`', $this->generateIdentifierName($class->name(), 'table', $this->config))]);
+            $attributes[] = new Attribute('ORM\Table', ['name' => \sprintf('`%s`', $this->generateIdentifierName($class->name(), 'table', $this->config))]);
         }
 
         return $attributes;
@@ -150,7 +150,7 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
 
             foreach (self::RESERVED_KEYWORDS as $keyword) {
                 if (0 === strcasecmp($keyword, $property->name())) {
-                    $args['name'] = sprintf('`%s`', $property->name());
+                    $args['name'] = \sprintf('`%s`', $property->name());
                     break;
                 }
             }
@@ -281,16 +281,16 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
 
         if (null !== $reference->interfaceName()) {
             if (isset($this->config['types'][$reference->name()]['namespaces']['interface'])) {
-                return sprintf('%s\\%s', $this->config['types'][$reference->name()]['namespaces']['interface'], $reference->interfaceName());
+                return \sprintf('%s\\%s', $this->config['types'][$reference->name()]['namespaces']['interface'], $reference->interfaceName());
             }
 
-            return sprintf('%s\\%s', $this->config['namespaces']['interface'], $reference->interfaceName());
+            return \sprintf('%s\\%s', $this->config['namespaces']['interface'], $reference->interfaceName());
         }
 
         if (isset($this->config['types'][$reference->name()]['namespaces']['class'])) {
-            return sprintf('%s\\%s', $this->config['types'][$reference->name()]['namespaces']['class'], $reference->name());
+            return \sprintf('%s\\%s', $this->config['types'][$reference->name()]['namespaces']['class'], $reference->name());
         }
 
-        return sprintf('%s\\%s', $this->config['namespaces']['entity'], $reference->name());
+        return \sprintf('%s\\%s', $this->config['namespaces']['entity'], $reference->name());
     }
 }
