@@ -25,13 +25,13 @@ jobs:
         run: composer install --prefer-dist --no-interaction --no-progress --ansi
       
       - name: Download box.phar
-        run: wget -O box.phar https://github.com/humbug/box/releases/download/4.5.1/box.phar
+        run: wget -O box.phar https://github.com/humbug/box/releases/download/4.6.2/box.phar
       
       - name: Compile project
         run: php ./box.phar compile
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           name: Release ${{ github.ref_name }}
           body: ''
