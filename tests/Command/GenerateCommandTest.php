@@ -489,7 +489,7 @@ PHP
      * @see https://schema.org/award
      */
     #[ORM\Column(type: 'text', nullable: true)]
-    #[ApiProperty(iri: 'https://schema.org/award')]
+    #[ApiProperty(types: ['https://schema.org/award'])]
     private ?string $award = null;
 PHP
             , $creativeWork);
