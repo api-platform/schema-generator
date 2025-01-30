@@ -30,6 +30,6 @@ final class ClassInterfaceMutator implements ClassMutatorInterface
      */
     public function __invoke(Class_ $class, array $context): void
     {
-        $class->interface = new Interface_(sprintf('%sInterface', $class->name()), $this->desiredNamespace);
+        $class->interface = new Interface_(\sprintf('%sInterface', $class->name()), $this->desiredNamespace);
     }
 }

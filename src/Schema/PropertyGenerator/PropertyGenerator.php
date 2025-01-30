@@ -73,12 +73,12 @@ final class PropertyGenerator implements PropertyGeneratorInterface
 
         // Warn when property are not part of GoodRelations
         if ($config['checkIsGoodRelations'] && !$this->goodRelationsBridge->exists($name)) {
-            $this->logger ? $this->logger->warning(sprintf('The property "%s" (type "%s") is not part of GoodRelations.', $propertyUri, $typeUri)) : null;
+            $this->logger ? $this->logger->warning(\sprintf('The property "%s" (type "%s") is not part of GoodRelations.', $propertyUri, $typeUri)) : null;
         }
 
         // Warn when properties are legacy
         if (preg_match('/legacy spelling/', (string) $typeProperty->get('rdfs:comment'))) {
-            $this->logger ? $this->logger->warning(sprintf('The property "%s" (type "%s") is legacy.', $propertyUri, $typeUri)) : null;
+            $this->logger ? $this->logger->warning(\sprintf('The property "%s" (type "%s") is legacy.', $propertyUri, $typeUri)) : null;
         }
 
         $ranges = [];
@@ -94,12 +94,12 @@ final class PropertyGenerator implements PropertyGeneratorInterface
             if (isset($propertyConfig['range'])) {
                 $ranges[] = new RdfResource($propertyConfig['range'], $type->getGraph());
             } else {
-                $this->logger ? $this->logger->error(sprintf('The property "%s" (type "%s") has an unknown type. Add its type to the config file.', $propertyUri, $typeUri)) : null;
+                $this->logger ? $this->logger->error(\sprintf('The property "%s" (type "%s") has an unknown type. Add its type to the config file.', $propertyUri, $typeUri)) : null;
             }
         }
 
         if (\count($ranges) > 1) {
-            $this->logger ? $this->logger->info(sprintf('The property "%s" (type "%s") has several types. Using the first one ("%s"). Other possible options: "%s".', $propertyUri, $typeUri, $ranges[0]->getUri(), implode('", "', array_map(static fn (RdfResource $range) => $range->getUri(), $ranges)))) : null;
+            $this->logger ? $this->logger->info(\sprintf('The property "%s" (type "%s") has several types. Using the first one ("%s"). Other possible options: "%s".', $propertyUri, $typeUri, $ranges[0]->getUri(), implode('", "', array_map(static fn (RdfResource $range) => $range->getUri(), $ranges)))) : null;
         }
 
         $rangeName = null;
@@ -145,7 +145,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
         $schemaProperty = ($this->propertyGenerator)($name, $config, $class, $context, $isCustom, $schemaProperty);
 
         if (!$schemaProperty instanceof SchemaProperty) {
-            throw new \LogicException(sprintf('Property has to be an instance of "%s".', SchemaProperty::class));
+            throw new \LogicException(\sprintf('Property has to be an instance of "%s".', SchemaProperty::class));
         }
 
         $isNullable = (bool) ($propertyConfig['nullable'] ?? !\in_array($cardinality, [

@@ -58,12 +58,12 @@ final class AnnotationsAppender implements ClassMutatorInterface
     {
         $interfaceNamespace = isset($this->classes[$class->name()]) ? $this->classes[$class->name()]->interfaceNamespace() : null;
         if ($interfaceNamespace && $class->interfaceNamespace() !== $class->namespace) {
-            $class->addUse(new Use_(sprintf('%s\\%s', $class->interfaceNamespace(), $class->interfaceName())));
+            $class->addUse(new Use_(\sprintf('%s\\%s', $class->interfaceNamespace(), $class->interfaceName())));
         }
 
         foreach ($class->properties() as $property) {
             if ($property->reference && $property->reference->interfaceName()) {
-                $class->addUse(new Use_(sprintf(
+                $class->addUse(new Use_(\sprintf(
                     '%s\\%s',
                     $property->reference->interfaceNamespace(),
                     $property->reference->interfaceName()

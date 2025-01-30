@@ -69,7 +69,7 @@ final class ConstraintAttributeGenerator extends AbstractAttributeGenerator
         }
 
         if ($property->isEnum && $property->reference) {
-            $args = ['callback' => [new Literal(sprintf('%s::class', $property->reference->name())), 'toArray']];
+            $args = ['callback' => [new Literal(\sprintf('%s::class', $property->reference->name())), 'toArray']];
 
             if ($property->isArray()) {
                 $args['multiple'] = true;
@@ -96,7 +96,7 @@ final class ConstraintAttributeGenerator extends AbstractAttributeGenerator
                 $enumName = $property->reference->name();
                 $enumClass = $this->classes[$enumName];
                 $enumNamespace = $enumClass->namespace ?? $this->config['namespaces']['enum'];
-                $use = new Use_(sprintf('%s\%s', $enumNamespace, $enumName));
+                $use = new Use_(\sprintf('%s\%s', $enumNamespace, $enumName));
 
                 if (!\in_array($use, $uses, true)) {
                     $uses[] = $use;

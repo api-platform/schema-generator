@@ -78,26 +78,26 @@ final class ClassGenerator
             $showOperation = $pathItem->get;
             $editOperation = $pathItem->put ?? $pathItem->patch;
             if (null === $showOperation && null === $editOperation) {
-                $this->logger ? $this->logger->warning(sprintf('No get, put or patch operation found for path "%s"', $path)) : null;
+                $this->logger ? $this->logger->warning(\sprintf('No get, put or patch operation found for path "%s"', $path)) : null;
                 continue;
             }
 
             $showSchema = null;
             if ($showOperation && $showOperation->responses && null !== $responseSchema = ($showOperation->responses[200]->content['application/json']->schema ?? null)) {
-                $this->logger ? $this->logger->info(sprintf('Using show schema from get operation response for "%s" resource.', $name)) : null;
+                $this->logger ? $this->logger->info(\sprintf('Using show schema from get operation response for "%s" resource.', $name)) : null;
                 $showSchema = $responseSchema;
             }
             if (!$showSchema && $openApi->components && isset($openApi->components->schemas[$name])) {
-                $this->logger ? $this->logger->info(sprintf('Using "%s" show schema from components.', $name)) : null;
+                $this->logger ? $this->logger->info(\sprintf('Using "%s" show schema from components.', $name)) : null;
                 $showSchema = $openApi->components->schemas[$name];
             }
             $editSchema = null;
             if ($editOperation && $editOperation->requestBody instanceof RequestBody && null !== $requestBodySchema = ($editOperation->requestBody->content['application/json']->schema ?? null)) {
-                $this->logger ? $this->logger->info(sprintf('Using edit schema from put operation request body for "%s" resource.', $name)) : null;
+                $this->logger ? $this->logger->info(\sprintf('Using edit schema from put operation request body for "%s" resource.', $name)) : null;
                 $editSchema = $requestBodySchema;
             }
             if (null === $showSchema && null === $editSchema) {
-                $this->logger ? $this->logger->warning(sprintf('No schema found for path "%s"', $path)) : null;
+                $this->logger ? $this->logger->warning(\sprintf('No schema found for path "%s"', $path)) : null;
                 continue;
             }
 
@@ -122,7 +122,7 @@ final class ClassGenerator
             $putOperation = $pathItem->put;
             $patchOperation = $pathItem->patch;
             $deleteOperation = $pathItem->delete;
-            $pathCollection = $openApi->paths->getPath(sprintf('/%s', $collectionResourceName));
+            $pathCollection = $openApi->paths->getPath(\sprintf('/%s', $collectionResourceName));
             $listOperation = $pathCollection->get ?? null;
             $createOperation = $pathCollection->post ?? null;
             $class->operations = array_merge(

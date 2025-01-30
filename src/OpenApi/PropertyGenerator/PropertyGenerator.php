@@ -53,7 +53,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
         $openApiProperty = ($this->propertyGenerator)($name, $config, $class, $context, $isCustom, $openApiProperty);
 
         if (!$openApiProperty instanceof OpenApiProperty) {
-            throw new \LogicException(sprintf('Property has to be an instance of "%s".', OpenApiProperty::class));
+            throw new \LogicException(\sprintf('Property has to be an instance of "%s".', OpenApiProperty::class));
         }
 
         $requiredFields = $schema->required ?? [];

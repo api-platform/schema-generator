@@ -28,6 +28,6 @@ interface PropertyGeneratorInterface
         Class_ $class,
         array $context,
         bool $isCustom = false,
-        ?Property $property = null
+        ?Property $property = null,
     ): ?Property;
 }

@@ -36,7 +36,7 @@ final class Generator
         $configurationDirectory = Path::getDirectory($configurationPath);
         $openApiFilePath = Path::join($configurationDirectory, $openApiFile);
         if (!$openApiFileRealPath = realpath($openApiFilePath)) {
-            throw new \InvalidArgumentException(sprintf('The file "%s" isn\'t readable.', $openApiFilePath));
+            throw new \InvalidArgumentException(\sprintf('The file "%s" isn\'t readable.', $openApiFilePath));
         }
         $extension = Path::getExtension($openApiFileRealPath);
         if ('json' === $extension) {

@@ -35,7 +35,7 @@ final class IdPropertyGenerator implements IdPropertyGeneratorInterface
         $idProperty = ($this->idPropertyGenerator)($generationStrategy, $supportsWritableId, new SchemaProperty('id'));
 
         if (!$idProperty instanceof SchemaProperty) {
-            throw new \LogicException(sprintf('ID property has to be an instance of "%s".', SchemaProperty::class));
+            throw new \LogicException(\sprintf('ID property has to be an instance of "%s".', SchemaProperty::class));
         }
 
         $idProperty->type = $idProperty->type instanceof PrimitiveType ? new SchemaPrimitiveType($idProperty->type->name) : null;

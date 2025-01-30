@@ -124,7 +124,7 @@ class TypesGenerator
             $class = $classes[$typeNameToGenerate];
             while (($parent = $class->parent()) && !$class->isParentEnum()) {
                 if (!isset($classes[$parent])) {
-                    $this->logger ? $this->logger->error(sprintf('The type "%s" (parent of "%s") doesn\'t exist', $parent, $class->rdfType())) : null;
+                    $this->logger ? $this->logger->error(\sprintf('The type "%s" (parent of "%s") doesn\'t exist', $parent, $class->rdfType())) : null;
                     break;
                 }
                 if (!\in_array($parent, $typeNamesToGenerate, true)) {
@@ -151,7 +151,7 @@ class TypesGenerator
 
             foreach ($class->properties() as $property) {
                 if (!$property instanceof SchemaProperty) {
-                    throw new \LogicException(sprintf('Property "%s" has to be an instance of "%s".', $property->name(), SchemaProperty::class));
+                    throw new \LogicException(\sprintf('Property "%s" has to be an instance of "%s".', $property->name(), SchemaProperty::class));
                 }
                 $typeName = $property->rangeName;
                 if (isset($classes[$typeName])) {

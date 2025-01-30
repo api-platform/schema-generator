@@ -112,7 +112,7 @@ abstract class Class_
     public function interfaceToNetteFile(?string $fileHeader = null): PhpFile
     {
         if (!$this->interface) {
-            throw new \LogicException(sprintf("'%s' has no interface attached.", $this->name));
+            throw new \LogicException(\sprintf("'%s' has no interface attached.", $this->name));
         }
 
         return $this->interface->toNetteFile($fileHeader);

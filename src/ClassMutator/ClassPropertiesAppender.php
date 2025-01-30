@@ -84,7 +84,7 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
         } else {
             $remainingProperties = $typeConfig['properties'] ?? [];
             if (!isset($this->propertiesMap[$class->rdfType()])) {
-                $this->logger ? $this->logger->warning(sprintf('Properties for "%s" not found in the map.', $class->rdfType())) : null;
+                $this->logger ? $this->logger->warning(\sprintf('Properties for "%s" not found in the map.', $class->rdfType())) : null;
             }
             // All properties
             foreach ($this->propertiesMap[$class->rdfType()] ?? [] as $property) {
@@ -93,7 +93,7 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
                 }
                 if ($property->hasProperty(self::SCHEMA_ORG_SUPERSEDED_BY)) {
                     $supersededBy = $property->get(self::SCHEMA_ORG_SUPERSEDED_BY);
-                    $this->logger ? $this->logger->info(sprintf('The property "%s" is superseded by "%s". Using the superseding property.', $property->getUri(), $supersededBy->getUri())) : null;
+                    $this->logger ? $this->logger->info(\sprintf('The property "%s" is superseded by "%s". Using the superseding property.', $property->getUri(), $supersededBy->getUri())) : null;
                 } else {
                     $this->generateField($this->config, $class, $class->resource(), $typeConfig, $cardinalities, $property);
                 }
@@ -117,7 +117,7 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
      */
     private function generateCustomField(string $propertyName, RdfResource $type, ?array $typeConfig, array $cardinalities, SchemaClass $class, array $config): void
     {
-        $this->logger ? $this->logger->info(sprintf('The property "%s" (type "%s") is a custom property.', $propertyName, $type->getUri())) : null;
+        $this->logger ? $this->logger->info(\sprintf('The property "%s" (type "%s") is a custom property.', $propertyName, $type->getUri())) : null;
         $customResource = new RdfResource('_:'.$propertyName, new RdfGraph());
         $customResource->add('rdfs:range', $type);
 

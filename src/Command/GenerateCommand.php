@@ -80,7 +80,7 @@ final class GenerateCommand extends Command
         if ($dir = realpath($outputDir)) {
             if (!is_dir($dir)) {
                 if (!$defaultOutput) {
-                    throw new \InvalidArgumentException(sprintf('The file "%s" is not a directory.', $dir));
+                    throw new \InvalidArgumentException(\sprintf('The file "%s" is not a directory.', $dir));
                 }
 
                 $dir = $defaultOutput;
@@ -88,7 +88,7 @@ final class GenerateCommand extends Command
             }
 
             if (!is_writable($dir)) {
-                throw new \InvalidArgumentException(sprintf('The "%s" directory is not writable.', $dir));
+                throw new \InvalidArgumentException(\sprintf('The "%s" directory is not writable.', $dir));
             }
 
             $outputDir = $dir;
@@ -96,29 +96,29 @@ final class GenerateCommand extends Command
             (new Filesystem())->mkdir($outputDir);
             $outputDir = realpath($outputDir);
             if (!$outputDir) {
-                throw new \InvalidArgumentException(sprintf('The "%s" directory cannot be created.', $outputDir));
+                throw new \InvalidArgumentException(\sprintf('The "%s" directory cannot be created.', $outputDir));
             }
         }
 
         if ($configArgument) {
             if (!file_exists($configArgument)) {
-                throw new \InvalidArgumentException(sprintf('The file "%s" doesn\'t exist.', $configArgument));
+                throw new \InvalidArgumentException(\sprintf('The file "%s" doesn\'t exist.', $configArgument));
             }
 
             if (!is_file($configArgument)) {
-                throw new \InvalidArgumentException(sprintf('"%s" isn\'t a file.', $configArgument));
+                throw new \InvalidArgumentException(\sprintf('"%s" isn\'t a file.', $configArgument));
             }
 
             if (!is_readable($configArgument)) {
-                throw new \InvalidArgumentException(sprintf('The file "%s" isn\'t readable.', $configArgument));
+                throw new \InvalidArgumentException(\sprintf('The file "%s" isn\'t readable.', $configArgument));
             }
 
             if (false === ($configContent = file_get_contents($configArgument))) {
-                throw new \RuntimeException(sprintf('Cannot read "%s" content.', $configArgument));
+                throw new \RuntimeException(\sprintf('Cannot read "%s" content.', $configArgument));
             }
         } elseif (is_readable(self::DEFAULT_CONFIG_FILE)) {
             if (false === ($configContent = file_get_contents(self::DEFAULT_CONFIG_FILE))) {
-                throw new \RuntimeException(sprintf('Cannot read "%s" content.', self::DEFAULT_CONFIG_FILE));
+                throw new \RuntimeException(\sprintf('Cannot read "%s" content.', self::DEFAULT_CONFIG_FILE));
             }
         } else {
             if (!$io->askQuestion(new ConfirmationQuestion('Your project has no config file. The entire vocabulary will be imported.'.\PHP_EOL.'Continue?', false))) {
