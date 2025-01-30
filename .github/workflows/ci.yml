@@ -59,7 +59,7 @@ jobs:
         run: echo "COVERAGE=1" >> $GITHUB_ENV
 
       - name: Run PHPUnit
-        run: vendor/bin/phpunit ${{ matrix.latest && '--coverage-clover build/logs/phpunit/clover.xml' || '' }}
+        run: vendor/bin/phpunit ${{ matrix.php == '8.4' && '--coverage-clover build/logs/phpunit/clover.xml' || '' }}
  
       - name: Run PHP CS Fixer
         if: "matrix.php == '8.3'"
