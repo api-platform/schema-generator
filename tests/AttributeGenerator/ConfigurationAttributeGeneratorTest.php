@@ -22,14 +22,13 @@ use ApiPlatform\SchemaGenerator\Schema\Model\Property;
 use ApiPlatform\SchemaGenerator\SchemaGeneratorConfiguration;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\String\Inflector\EnglishInflector;
 
 class ConfigurationAttributeGeneratorTest extends TestCase
 {
-    /**
-     * @dataProvider provideGenerateClassAttributesCases
-     */
+    #[DataProvider('provideGenerateClassAttributesCases')]
     public function testGenerateClassAttributes(SchemaClass $class, array $config, array $attributes): void
     {
         $this->assertEquals($attributes, $this->generator($config)->generateClassAttributes($class));
@@ -72,9 +71,7 @@ class ConfigurationAttributeGeneratorTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideGeneratePropertyAttributesCases
-     */
+    #[DataProvider('provideGeneratePropertyAttributesCases')]
     public function testGeneratePropertyAttributes(Property $property, array $config, array $attributes): void
     {
         $this->assertEquals($attributes, $this->generator($config)->generatePropertyAttributes($property, 'Res'));
@@ -95,9 +92,7 @@ class ConfigurationAttributeGeneratorTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideGenerateUsesCases
-     */
+    #[DataProvider('provideGenerateUsesCases')]
     public function testGenerateUses(SchemaClass $class, array $config, array $uses): void
     {
         $this->assertEquals($uses, $this->generator($config)->generateUses($class));

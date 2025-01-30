@@ -25,6 +25,7 @@ use ApiPlatform\SchemaGenerator\TypesGenerator;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
 use Nette\PhpGenerator\Literal;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\String\Inflector\EnglishInflector;
@@ -43,9 +44,7 @@ class ConstraintAttributeGeneratorTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider provideGenerateClassAttributesCases
-     */
+    #[DataProvider('provideGenerateClassAttributesCases')]
     public function testGenerateClassAttributes(SchemaClass $class, array $attributes): void
     {
         $this->assertEquals($attributes, $this->generator->generateClassAttributes($class));
@@ -79,9 +78,7 @@ class ConstraintAttributeGeneratorTest extends TestCase
         yield 'multiple unique properties' => [$class, [new Attribute('UniqueEntity', ['fields' => ['bar', 'baz']])]];
     }
 
-    /**
-     * @dataProvider provideGeneratePropertyAttributesCases
-     */
+    #[DataProvider('provideGeneratePropertyAttributesCases')]
     public function testGeneratePropertyAttributes(Property $property, array $attributes): void
     {
         $this->assertEquals($attributes, $this->generator->generatePropertyAttributes($property, 'Res'));

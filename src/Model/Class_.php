@@ -223,7 +223,7 @@ abstract class Class_
         $fieldVisibility = $config['fieldVisibility'];
 
         $file ??= new PhpFile();
-        if (null !== $fileHeader && false !== $fileHeader && !$file->getComment()) {
+        if ($fileHeader && !$file->getComment()) {
             // avoid nested doc-block for configurations that already have * as delimiter
             $file->setComment(Helpers::unformatDocComment($fileHeader));
         }

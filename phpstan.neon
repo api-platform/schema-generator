@@ -59,7 +59,7 @@ parameters:
                  },
                  validator: array{assertType: boolean},
                  author: false|string,
-                 fieldVisibility: string,
+                 fieldVisibility: 'private'|'protected'|'public'|null,
                  accessorMethods: boolean,
                  fluentMutatorMethods: boolean,
                  rangeMapping: array<string, string>,

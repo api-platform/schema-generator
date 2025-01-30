@@ -115,7 +115,7 @@ class GoodRelationsBridge
             }
             preg_match('/\(.\.\..\)/', $xmlResult, $matches);
 
-            return $matches[0];
+            return $matches[0] ?? false;
         }
 
         return false;

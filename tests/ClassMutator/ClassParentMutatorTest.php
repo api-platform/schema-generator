@@ -20,6 +20,7 @@ use ApiPlatform\SchemaGenerator\Schema\Model\Class_ as SchemaClass;
 use ApiPlatform\SchemaGenerator\SchemaGeneratorConfiguration;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -50,9 +51,7 @@ class ClassParentMutatorTest extends TestCase
         $this->classParentMutator->setLogger($this->loggerProphecy->reveal());
     }
 
-    /**
-     * @dataProvider provideInvokeTestCases
-     */
+    #[DataProvider('provideInvokeTestCases')]
     public function testInvoke(SchemaClass $class, SchemaClass $expectedClass, ?string $loggerMessage = null): void
     {
         if ($loggerMessage) {

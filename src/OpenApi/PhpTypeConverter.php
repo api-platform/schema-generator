@@ -18,7 +18,7 @@ use ApiPlatform\SchemaGenerator\PhpTypeConverterInterface;
 
 final class PhpTypeConverter implements PhpTypeConverterInterface
 {
-    public function getPhpType(Property $property, array $config = [], array $classes = []): ?string
+    public function getPhpType(Property $property, array $config = [], array $classes = []): string
     {
         if ($property->reference && $property->isArray()) {
             return ($config['doctrine']['useCollection'] ?? false) ? 'Collection' : 'array';

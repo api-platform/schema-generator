@@ -133,6 +133,9 @@ class TypesGenerator
                 $class = $classes[$parent];
             }
         }
+        /**
+         * @var array<string, SchemaClass> $classes
+         */
         $classes = array_intersect_key($classes, array_flip($typeNamesToGenerate));
         $types = array_intersect_key($types, array_flip($typeNamesToGenerate));
 
@@ -140,7 +143,6 @@ class TypesGenerator
 
         // Second pass
         foreach ($classes as $class) {
-            /** @var $class SchemaClass */
             if ($class->hasParent() && !$class->isParentEnum()) {
                 $parentClass = $classes[$class->parent()] ?? null;
                 if ($parentClass) {
@@ -183,7 +185,6 @@ class TypesGenerator
                     }
 
                     $parentConfig = $config['types'][$class->parent()] ?? null;
-                    /** @var SchemaClass|null $parentClass */
                     $parentClass = $classes[$class->parent()];
 
                     while ($parentClass) {

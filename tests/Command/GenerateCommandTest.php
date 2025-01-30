@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\Tests\Command;
 
 use ApiPlatform\SchemaGenerator\Command\GenerateCommand;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -31,9 +32,7 @@ class GenerateCommandTest extends TestCase
         $this->fs = new Filesystem();
     }
 
-    /**
-     * @dataProvider getArguments
-     */
+    #[DataProvider('getArguments')]
     public function testCommand(string $output, string $config): void
     {
         $this->fs->mkdir($output);

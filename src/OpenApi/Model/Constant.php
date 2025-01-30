@@ -17,7 +17,6 @@ use ApiPlatform\SchemaGenerator\Model\Constant as BaseConstant;
 
 final class Constant extends BaseConstant
 {
-    private ?string $comment = null;
     private string $value;
 
     public function __construct(string $name, string $value)
@@ -34,6 +33,6 @@ final class Constant extends BaseConstant
 
     public function comment(): string
     {
-        return (string) $this->comment;
+        return '';
     }
 }

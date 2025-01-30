@@ -25,6 +25,7 @@ use ApiPlatform\SchemaGenerator\Schema\TypeConverter;
 use ApiPlatform\SchemaGenerator\SchemaGeneratorConfiguration;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -72,9 +73,7 @@ class ClassPropertiesAppenderTest extends TestCase
         $this->classPropertiesAppender->setLogger($this->loggerProphecy->reveal());
     }
 
-    /**
-     * @dataProvider provideInvokeTestCases
-     */
+    #[DataProvider('provideInvokeTestCases')]
     public function testInvoke(SchemaClass $class, SchemaClass $expectedClass, ?RdfGraph &$graph = null, ?string $loggerMessage = null): void
     {
         if ($graph) {

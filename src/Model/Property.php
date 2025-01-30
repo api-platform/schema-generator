@@ -19,6 +19,7 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\Property as NetteProperty;
+use Nette\PhpGenerator\Visibility;
 
 abstract class Property
 {
@@ -140,11 +141,14 @@ abstract class Property
         return $this;
     }
 
+    /**
+     * @param 'private'|'protected'|'public'|null $visibility
+     */
     public function toNetteProperty(PhpNamespace $namespace, ?string $visibility = null, bool $useDoctrineCollections = true, ?NetteProperty $property = null): NetteProperty
     {
         $property ??= new NetteProperty($this->name);
 
-        $property->setVisibility($visibility ?? ClassType::VISIBILITY_PRIVATE);
+        $property->setVisibility($visibility ?? Visibility::Private);
 
         if ($this->typeHint) {
             $property->setType($this->resolveName($namespace, $this->typeHint));
