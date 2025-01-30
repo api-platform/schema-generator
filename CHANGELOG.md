@@ -1,11 +1,13 @@
 # Changelog
 
-## 5.3.3
+## 5.2.4
 
-* [ea14c3b](https://github.com/api-platform/core/commit/ea14c3b5c52a54e3b4b055a6d5da5a2397a1b3e0) fix: replace of GoodRelations OWL file (#431)
-* [1bb5502](https://github.com/api-platform/core/commit/1bb5502b9b7b0cb767f7fbb16f80934bb57fbbdd) chore: update deps (#426)
-* [997f6f8](https://github.com/api-platform/core/commit/997f6f811faa75006aeff72cec26fe291bb8eaab) ci: upgrade deps and use PHP 8.3 (#420)
-* [8d683f2](https://github.com/api-platform/core/commit/8d683f2504450a39ac787d8b4f7e5710d15dd129) feat: allow symfony 7
+* feat: compatibility with PHP 8.4
+
+## 5.2.3
+
+* feat: compatibility with Symfony 7
+* fix: replace of GoodRelations OWL file (#431)
 
 ## 5.2.2
 
