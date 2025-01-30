@@ -22,6 +22,10 @@ trait ResolveNameTrait
 {
     private function resolveName(PhpNamespace $namespace, string $name): string
     {
-        return $namespace->resolveName($name);
+        if (method_exists(PhpNamespace::class, 'resolveName')) { // @phpstan-ignore-line
+            return $namespace->resolveName($name);
+        }
+
+        return $name;
     }
 }
