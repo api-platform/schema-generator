@@ -18,9 +18,6 @@ jobs:
           - '8.2'
           - '8.3'
           - '8.4'
-        include:
-          - php: '8.4'
-            latest: true
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
@@ -50,34 +47,34 @@ jobs:
           sudo chown -R $(whoami):$(whoami) .
 
       - name: Install dependencies
-        if: matrix.latest
+        if: "matrix.php == '8.4'"
         run: composer install --prefer-dist --no-interaction --no-progress --ansi
 
       - name: Update dependencies
-        if: '!matrix.latest'
+        if: "matrix.php != '8.4'"
         run: composer update --no-interaction --no-progress --ansi
 
       - name: Enable code coverage
-        if: matrix.latest
+        if: "matrix.php == '8.4'"
         run: echo "COVERAGE=1" >> $GITHUB_ENV
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit ${{ matrix.latest && '--coverage-clover build/logs/phpunit/clover.xml' || '' }}
  
       - name: Run PHP CS Fixer
-        if: matrix.latest
+        if: "matrix.php == '8.3'"
         run: php-cs-fixer fix --dry-run --format=checkstyle --ansi | cs2pr
 
       - name: Run PHPStan 
-        if: matrix.latest
+        if: "matrix.php == '8.4'"
         run: vendor/bin/phpstan analyse --ansi
 
       - name: Run e2e tests
-        if: matrix.latest
+        if: "matrix.php == '8.4'"
         run: bin/compile
 
       - name: Upload coverage results to Coveralls
-        if: matrix.latest
+        if: "matrix.php == '8.4'"
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
