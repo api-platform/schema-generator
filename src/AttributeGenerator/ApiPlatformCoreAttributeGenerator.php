@@ -111,7 +111,12 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
         $resolver->setAllowedTypes('item', 'array');
         $resolver->setAllowedTypes('collection', 'array');
 
-        return $resolver->resolve($operations);
+        /**
+         * @var T $operations
+         */
+        $operations = $resolver->resolve($operations);
+
+        return $operations;
     }
 
     public function generatePropertyAttributes(Property $property, string $className): array

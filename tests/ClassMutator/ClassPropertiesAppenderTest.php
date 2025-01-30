@@ -25,6 +25,7 @@ use ApiPlatform\SchemaGenerator\Schema\TypeConverter;
 use ApiPlatform\SchemaGenerator\SchemaGeneratorConfiguration;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -72,9 +73,7 @@ class ClassPropertiesAppenderTest extends TestCase
         $this->classPropertiesAppender->setLogger($this->loggerProphecy->reveal());
     }
 
-    /**
-     * @dataProvider provideInvokeTestCases
-     */
+    #[DataProvider('provideInvokeTestCases')]
     public function testInvoke(SchemaClass $class, SchemaClass $expectedClass, ?RdfGraph &$graph = null, ?string $loggerMessage = null): void
     {
         if ($graph) {
@@ -94,7 +93,7 @@ class ClassPropertiesAppenderTest extends TestCase
     /**
      * @return \Generator<array{0: SchemaClass, 1: SchemaClass, 2?: ?RdfGraph, 3?: string}>
      */
-    public function provideInvokeTestCases(): \Generator
+    public static function provideInvokeTestCases(): \Generator
     {
         $product = new SchemaClass('Product', new RdfResource('https://schema.org/Product'));
         yield 'no configuration no properties in map' => [clone $product, clone $product, null, 'Properties for "https://schema.org/Product" not found in the map.'];

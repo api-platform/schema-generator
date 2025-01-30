@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
 class PostalAddress extends ContactPoint
 {
     /**
-     * The country. For example, USA. You can also provide the two-letter \[ISO 3166-1 alpha-2 country code\](http://en.wikipedia.org/wiki/ISO\_3166-1).
+     * The country. Recommended to be in 2-letter \[ISO 3166-1 alpha-2\](http://en.wikipedia.org/wiki/ISO\_3166-1) format, for example "US". For backward compatibility, a 3-letter \[ISO 3166-1 alpha-3\](https://en.wikipedia.org/wiki/ISO\_3166-1\_alpha-3) country code such as "SGP" or a full country name such as "Singapore" can also be used.
      *
      * @see https://schema.org/addressCountry
      */

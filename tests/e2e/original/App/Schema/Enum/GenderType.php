@@ -13,9 +13,9 @@ use MyCLabs\Enum\Enum;
  */
 class GenderType extends Enum
 {
-    /** @var string The female gender. */
-    public const FEMALE = 'https://schema.org/Female';
-
     /** @var string The male gender. */
     public const MALE = 'https://schema.org/Male';
+
+    /** @var string The female gender. */
+    public const FEMALE = 'https://schema.org/Female';
 }

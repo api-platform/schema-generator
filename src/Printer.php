@@ -25,7 +25,7 @@ final class Printer extends NettePrinter
         $this->linesBetweenMethods = 1;
         // If the type name cannot be resolved with the namespace and its uses (nette/php-generator >= 4),
         // disable type resolving to avoid using the root namespace.
-        if (!method_exists(PhpNamespace::class, 'resolveName')) {
+        if (!method_exists(PhpNamespace::class, 'resolveName')) { // @phpstan-ignore-line
             $this->setTypeResolving(false);
         }
     }

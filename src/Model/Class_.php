@@ -223,7 +223,7 @@ abstract class Class_
         $fieldVisibility = $config['fieldVisibility'];
 
         $file ??= new PhpFile();
-        if (null !== $fileHeader && false !== $fileHeader && !$file->getComment()) {
+        if ($fileHeader && !$file->getComment()) {
             // avoid nested doc-block for configurations that already have * as delimiter
             $file->setComment(Helpers::unformatDocComment($fileHeader));
         }
@@ -255,7 +255,7 @@ abstract class Class_
                 $netteAttributes[] = $attribute->toNetteAttribute($namespace);
             }
         }
-        $class->setAttributes($netteAttributes);
+        $class->setAttributes(array_values($netteAttributes));
 
         if (!$class->getComment()) {
             foreach ($this->annotations as $annotation) {
@@ -289,7 +289,7 @@ abstract class Class_
                 $netteConstants[] = $constant->toNetteConstant();
             }
         }
-        $class->setConstants($netteConstants);
+        $class->setConstants(array_values($netteConstants));
 
         $sortedProperties = isset($this->properties['id']) ? ['id' => $this->properties['id']] + $this->properties : $this->properties;
 

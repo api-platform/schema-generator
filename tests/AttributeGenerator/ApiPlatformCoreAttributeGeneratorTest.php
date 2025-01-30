@@ -33,6 +33,7 @@ use ApiPlatform\SchemaGenerator\TypesGenerator;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
 use Nette\PhpGenerator\Literal;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\String\Inflector\EnglishInflector;
 
@@ -51,15 +52,13 @@ class ApiPlatformCoreAttributeGeneratorTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider provideGenerateClassAttributesCases
-     */
+    #[DataProvider('provideGenerateClassAttributesCases')]
     public function testGenerateClassAttributes(SchemaClass $class, array $attributes, bool $oldAttributes = false): void
     {
         $this->assertEquals($attributes, $this->generator($oldAttributes)->generateClassAttributes($class));
     }
 
-    public function provideGenerateClassAttributesCases(): \Generator
+    public static function provideGenerateClassAttributesCases(): \Generator
     {
         yield 'classical' => [new SchemaClass('Res', new RdfResource('https://schema.org/Res', new RdfGraph())), [new Attribute('ApiResource', ['types' => ['https://schema.org/Res']])]];
 
@@ -97,15 +96,13 @@ class ApiPlatformCoreAttributeGeneratorTest extends TestCase
         yield 'with short name' => [new SchemaClass('WithShortName', new RdfResource('https://schema.org/DifferentLocalName', new RdfGraph())), [new Attribute('ApiResource', ['shortName' => 'DifferentLocalName', 'types' => ['https://schema.org/DifferentLocalName']])]];
     }
 
-    /**
-     * @dataProvider provideGeneratePropertyAttributesCases
-     */
+    #[DataProvider('provideGeneratePropertyAttributesCases')]
     public function testGeneratePropertyAttributes(Property $property, array $attributes, bool $oldAttributes = false): void
     {
         $this->assertEquals($attributes, $this->generator($oldAttributes)->generatePropertyAttributes($property, 'Res'));
     }
 
-    public function provideGeneratePropertyAttributesCases(): \Generator
+    public static function provideGeneratePropertyAttributesCases(): \Generator
     {
         $property = new Property('prop');
         $property->resource = new RdfResource('https://schema.org/prop');

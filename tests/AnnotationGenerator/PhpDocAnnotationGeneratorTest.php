@@ -25,6 +25,7 @@ use ApiPlatform\SchemaGenerator\Schema\Model\Type\PrimitiveType as SchemaPrimiti
 use ApiPlatform\SchemaGenerator\SchemaGeneratorConfiguration;
 use EasyRdf\Graph as RdfGraph;
 use EasyRdf\Resource as RdfResource;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\String\Inflector\EnglishInflector;
@@ -48,15 +49,13 @@ class PhpDocAnnotationGeneratorTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider provideGenerateClassAnnotationsCases
-     */
+    #[DataProvider('provideGenerateClassAnnotationsCases')]
     public function testGenerateClassAnnotations(Class_ $class, array $annotations): void
     {
         $this->assertSame($annotations, $this->generator->generateClassAnnotations($class));
     }
 
-    public function provideGenerateClassAnnotationsCases(): \Generator
+    public static function provideGenerateClassAnnotationsCases(): \Generator
     {
         $class = new SchemaClass('Res', new RdfResource('https://schema.org/Res'));
         $class->interface = new Interface_('Interface', '/foo');
@@ -66,15 +65,13 @@ class PhpDocAnnotationGeneratorTest extends TestCase
         yield 'with resource' => [new SchemaClass('Res', new RdfResource('https://schema.org/Res', $graph)), ['@see https://schema.org/Res', '@author Bill']];
     }
 
-    /**
-     * @dataProvider provideGeneratePropertyAnnotationsCases
-     */
+    #[DataProvider('provideGeneratePropertyAnnotationsCases')]
     public function testGeneratePropertyAnnotations(Property $property, string $className, array $annotations): void
     {
         $this->assertSame($annotations, $this->generator->generatePropertyAnnotations($property, $className));
     }
 
-    public function provideGeneratePropertyAnnotationsCases(): \Generator
+    public static function provideGeneratePropertyAnnotationsCases(): \Generator
     {
         $property = new SchemaProperty('telephone');
         $graph = new RdfGraph();

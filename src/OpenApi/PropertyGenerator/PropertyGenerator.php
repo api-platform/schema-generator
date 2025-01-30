@@ -42,7 +42,7 @@ final class PropertyGenerator implements PropertyGeneratorInterface
      * @param Configuration                           $config
      * @param array{schema: Schema, property: Schema} $context
      */
-    public function __invoke(string $name, array $config, Class_ $class, array $context, bool $isCustom = false, ?Property $property = null): ?Property
+    public function __invoke(string $name, array $config, Class_ $class, array $context, bool $isCustom = false, ?Property $property = null): Property
     {
         $schema = $context['schema'];
         $schemaProperty = $context['property'];

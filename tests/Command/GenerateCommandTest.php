@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator\Tests\Command;
 
 use ApiPlatform\SchemaGenerator\Command\GenerateCommand;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -31,9 +32,7 @@ class GenerateCommandTest extends TestCase
         $this->fs = new Filesystem();
     }
 
-    /**
-     * @dataProvider getArguments
-     */
+    #[DataProvider('getArguments')]
     public function testCommand(string $output, string $config): void
     {
         $this->fs->mkdir($output);
@@ -42,7 +41,7 @@ class GenerateCommandTest extends TestCase
         $this->assertEquals(0, $commandTester->execute(['output' => $output, 'config' => $config]));
     }
 
-    public function getArguments(): iterable
+    public static function getArguments(): iterable
     {
         yield 'blog' => [__DIR__.'/../../build/blog/', __DIR__.'/../config/blog.yaml'];
         yield 'ecommerce' => [__DIR__.'/../../build/ecommerce/', __DIR__.'/../config/ecommerce.yaml'];
