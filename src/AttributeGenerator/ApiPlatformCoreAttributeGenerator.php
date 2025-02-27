@@ -139,7 +139,7 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
         $types = self::$parameterTypes[$type] ??=
             (static::PRAMETER_TYPE_HINTS[$type] ?? []) + array_reduce(
                 (new \ReflectionClass($type))->getConstructor()?->getParameters() ?? [],
-                static fn(array $types, \ReflectionParameter $refl) => $types + [
+                static fn (array $types, \ReflectionParameter $refl): array => $types + [
                     $refl->getName() => $refl->getType() instanceof \ReflectionNamedType
                         && !$refl->getType()->isBuiltin()
                         ? $refl->getType()->getName()
