@@ -148,28 +148,55 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
                 ],
                 []
             );
+        if (isset(self::$parameterTypes[$type])) {
+            $types = self::$parameterTypes[$type];
+        } else {
+            $types = static::PRAMETER_TYPE_HINTS[$type] ?? [];
+            $parameterRefls = (new \ReflectionClass($type))
+                ->getConstructor()
+                ?->getParameters() ?? [];
+            foreach ($parameterRefls as $refl) {
+                $paramName = $refl->getName();
+                if (\array_key_exists($paramName, $types)) {
+                    continue;
+                }
+                $paramType = $refl->getType();
+                if ($paramType instanceof \ReflectionNamedType && !$paramType->isBuiltin()) {
+                    $types[$paramName] = $paramType->getName();
+                } else {
+                    $types[$paramName] = null;
+                }
+            }
+            self::$parameterTypes[$type] = $types;
+        }
 
         $parameters = array_intersect_key($values, $types);
         foreach ($parameters as $name => $parameter) {
             $type = $types[$name];
-            if (null !== $type && \is_array($parameter)) {
-                $isArrayType = str_ends_with($type, '[]');
-                $type = $isArrayType ? substr($type, 0, -2) : $type;
-                $shortName = (new \ReflectionClass($type))->getShortName();
-                $parameters[$name] = $isArrayType
-                    ? array_map(
-                        static fn (array $values): Literal => Literal::new(
-                            $shortName,
-                            self::extractParameters($type, $values)
-                        ),
-                        $parameter
-                    )
-                    : Literal::new(
+            if (null === $type || !\is_array($parameter)) {
+                continue;
+            }
+            $isArrayType = str_ends_with($type, '[]');
+            /**
+             * @var class-string
+             */
+            $type = $isArrayType ? substr($type, 0, -2) : $type;
+            $shortName = (new \ReflectionClass($type))->getShortName();
+            if ($isArrayType) {
+                $parameters[$name] = [];
+                foreach ($parameter as $key => $values) {
+                    $parameters[$name][$key] = Literal::new(
                         $shortName,
-                        \ArrayObject::class === $type
-                            ? [$parameter]
-                            : self::extractParameters($type, $parameter)
+                        self::extractParameters($type, $values)
                     );
+                }
+            } else {
+                $parameters[$name] = Literal::new(
+                    $shortName,
+                    \ArrayObject::class === $type
+                        ? [$parameter]
+                        : self::extractParameters($type, $parameter)
+                );
             }
         }
 
