@@ -157,7 +157,7 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
                 $shortName = (new \ReflectionClass($type))->getShortName();
                 $parameters[$name] = $isArrayType
                     ? array_map(
-                        static fn(array $values) => Literal::new(
+                        static fn (array $values): Literal => Literal::new(
                             $shortName,
                             self::extractParameters($type, $values)
                         ),
