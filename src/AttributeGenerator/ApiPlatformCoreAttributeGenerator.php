@@ -111,7 +111,7 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
                         $class->addUse(new Use_(Operation::class));
                         array_walk_recursive(
                             self::$parameterTypes,
-                            function (?string $type): void use ($class) {
+                            function (?string $type) use ($class): void {
                                 if (null !== $type) {
                                     $class->addUse(new Use_(str_replace('[]', '', $type)));
                                 }
