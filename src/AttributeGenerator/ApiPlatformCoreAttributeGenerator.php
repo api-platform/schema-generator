@@ -118,6 +118,7 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
                             }
                         );
                     }
+
                     $arguments['operations'][] = new Literal(\sprintf('new %s(...?:)',
                         $operationMetadataClass,
                     ), [$methodConfig ?? []]);
