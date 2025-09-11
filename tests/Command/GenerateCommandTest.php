@@ -70,8 +70,7 @@ class GenerateCommandTest extends TestCase
     {
         return $this->friends;
     }
-PHP
-            , $person);
+PHP, $person);
     }
 
     public function testCustomAttributes(): void
@@ -106,29 +105,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[MyAttribute]
 class Book
 {
-PHP
-            , $book);
+PHP, $book);
 
         // Attributes given as unordered map.
         $this->assertStringContainsString(<<<'PHP'
     #[ORM\OneToMany(targetEntity: 'App\Entity\Review', mappedBy: 'book', cascade: ['persist', 'remove'])]
-PHP
-            , $book);
+PHP, $book);
         $this->assertStringContainsString(<<<'PHP'
     #[ORM\OrderBy(name: 'ASC')]
-PHP
-            , $book);
+PHP, $book);
         // Generated attribute could be merged with next one that is a configured one.
         $this->assertStringContainsString(<<<'PHP'
     #[ORM\InverseJoinColumn(nullable: false, unique: true, name: 'first_join_column')]
-PHP
-            , $book);
+PHP, $book);
         // Configured attribute could not be merged with next one and it is treated
         // as repeated.
         $this->assertStringContainsString(<<<'PHP'
     #[ORM\InverseJoinColumn(name: 'second_join_column')]
-PHP
-            , $book);
+PHP, $book);
     }
 
     public function testFluentMutators(): void
@@ -147,8 +141,7 @@ PHP
 
         return $this;
     }
-PHP
-            , $person);
+PHP, $person);
 
         $this->assertStringContainsString(<<<'PHP'
     public function addFriend(Person $friend): self
@@ -164,8 +157,7 @@ PHP
 
         return $this;
     }
-PHP
-            , $person);
+PHP, $person);
     }
 
     public function testDoNotGenerateAccessorMethods(): void
@@ -230,8 +222,7 @@ PHP
 
         $this->assertStringContainsString(<<<'PHP'
     private string $availability = 'https://schema.org/InStock';
-PHP
-            , $book);
+PHP, $book);
     }
 
     public function testReadableWritable(): void
@@ -274,16 +265,14 @@ PHP
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
-PHP
-            , $person);
+PHP, $person);
 
         $this->assertStringContainsString(<<<'PHP'
     public function getId(): ?int
     {
         return $this->id;
     }
-PHP
-            , $person);
+PHP, $person);
 
         $this->assertStringNotContainsString('setId(', $person);
     }
@@ -304,24 +293,21 @@ PHP
     #[ORM\Id]
     #[ORM\Column(type: 'string')]
     private string $id;
-PHP
-            , $person);
+PHP, $person);
 
         $this->assertStringContainsString(<<<'PHP'
     public function getId(): string
     {
         return $this->id;
     }
-PHP
-            , $person);
+PHP, $person);
 
         $this->assertStringContainsString(<<<'PHP'
     public function setId(string $id): void
     {
         $this->id = $id;
     }
-PHP
-            , $person);
+PHP, $person);
     }
 
     public function testGeneratedUuid(): void
@@ -342,16 +328,14 @@ PHP
     #[ORM\Column(type: 'guid')]
     #[Assert\Uuid]
     private ?string $id = null;
-PHP
-            , $person);
+PHP, $person);
 
         $this->assertStringContainsString(<<<'PHP'
     public function getId(): ?string
     {
         return $this->id;
     }
-PHP
-            , $person);
+PHP, $person);
 
         $this->assertStringNotContainsString('setId(', $person);
     }
@@ -373,16 +357,14 @@ PHP
     #[ORM\Column(type: 'guid')]
     #[Assert\Uuid]
     private string $id;
-PHP
-            , $person);
+PHP, $person);
 
         $this->assertStringContainsString(<<<'PHP'
     public function getId(): string
     {
         return $this->id;
     }
-PHP
-            , $person);
+PHP, $person);
 
         $this->assertStringContainsString(<<<'PHP'
     public function setId(string $id): void
@@ -390,8 +372,7 @@ PHP
         $this->id = $id;
     }
 
-PHP
-            , $person);
+PHP, $person);
     }
 
     public function testDoNotGenerateId(): void
@@ -463,8 +444,7 @@ PHP
         $this->assertStringContainsString(<<<'PHP'
     /** @var string The female gender. */
     public const FEMALE = 'https://schema.org/Female';
-PHP
-            , $gender);
+PHP, $gender);
 
         $this->assertStringNotContainsString('function setId(', $gender);
     }
@@ -490,8 +470,7 @@ PHP
     #[ORM\Column(type: 'text', nullable: true)]
     #[ApiProperty(types: ['https://schema.org/award'])]
     private ?string $award = null;
-PHP
-            , $creativeWork);
+PHP, $creativeWork);
 
         $this->assertStringNotContainsString('protected', $creativeWork);
     }
@@ -517,8 +496,7 @@ PHP
     #[ORM\Column(type: 'text', nullable: true, name: '`content`')]
     #[ApiProperty(types: ['http://www.w3.org/ns/activitystreams#content'])]
     private ?string $content = null;
-PHP
-            , $object);
+PHP, $object);
 
         $page = file_get_contents("$outputDir/App/Entity/Page.php");
 
@@ -531,11 +509,45 @@ PHP
 #[ORM\Entity]
 #[ApiResource(types: ['http://www.w3.org/ns/activitystreams#Page'], routePrefix: 'as')]
 class Page extends Object_
-PHP
-            , $page);
+PHP, $page);
 
         self::assertFalse($this->fs->exists("$outputDir/App/Entity/Delete.php"));
         self::assertFalse($this->fs->exists("$outputDir/App/Entity/Travel.php"));
+    }
+
+    public function testGeneratedSimpleArray(): void
+    {
+        $outputDir = __DIR__.'/../../build/simple-array';
+        $config = __DIR__.'/../config/simple-array.yaml';
+
+        $this->fs->mkdir($outputDir);
+
+        $commandTester = new CommandTester(new GenerateCommand());
+        $this->assertEquals(0, $commandTester->execute(['output' => $outputDir, 'config' => $config]));
+        $source = file_get_contents("$outputDir/App/Entity/Project.php");
+
+        $this->assertStringContainsString(<<<'PHP'
+    /**
+     * @see _:shareWith
+     */
+    #[ORM\Column(type: 'simple_array', nullable: true)]
+    #[Assert\Unique]
+    private ?array $shareWith = [];
+PHP, $source);
+
+        $this->assertStringContainsString(<<<'PHP'
+    public function setShareWith(?array $shareWith): void
+    {
+        $this->shareWith = $shareWith;
+    }
+
+    public function getShareWith(): ?array
+    {
+        return $this->shareWith;
+    }
+PHP, $source);
+        $this->assertStringNotContainsString('function addShareWith', $source);
+        $this->assertStringNotContainsString('function removeShareWith', $source);
     }
 
     public function testGenerationWithoutConfigFileQuestion(): void

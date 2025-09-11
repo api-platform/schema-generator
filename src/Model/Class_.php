@@ -218,6 +218,7 @@ abstract class Class_
     {
         $useDoctrineCollections = $config['doctrine']['useCollection'];
         $useAccessors = $config['accessorMethods'];
+        $useSimpleArraySetter = $config['useSimpleArraySetter'];
         $useFluentMutators = $config['fluentMutatorMethods'];
         $fileHeader = $config['header'] ?? null;
         $fieldVisibility = $config['fieldVisibility'];
@@ -333,7 +334,7 @@ abstract class Class_
             foreach ($sortedProperties as $property) {
                 foreach ($property->generateNetteMethods(static function ($string) use ($inflector) {
                     return $inflector->singularize($string)[0];
-                }, $namespace, $useDoctrineCollections, $useFluentMutators) as $method) {
+                }, $namespace, $useDoctrineCollections, $useFluentMutators, $useSimpleArraySetter) as $method) {
                     $methods[] = $method;
                 }
             }

@@ -167,6 +167,7 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                 ->scalarNode('author')->defaultFalse()->info('The value of the phpDoc\'s @author annotation')->example('Kévin Dunglas <dunglas@gmail.com>')->end()
                 ->enumNode('fieldVisibility')->values(['private', 'protected', 'public'])->defaultValue('private')->cannotBeEmpty()->info('Visibility of entities fields')->end()
                 ->booleanNode('accessorMethods')->defaultTrue()->info('Set this flag to false to not generate getter, setter, adder and remover methods')->end()
+                ->booleanNode('useSimpleArraySetter')->defaultFalse()->info('Set this flag to true to generate setter method for simple arrays instead of adder and remover methods')->end()
                 ->booleanNode('fluentMutatorMethods')->defaultFalse()->info('Set this flag to true to generate fluent setter, adder and remover methods')->end()
                 ->arrayNode('rangeMapping')
                     ->useAttributeAsKey('name')

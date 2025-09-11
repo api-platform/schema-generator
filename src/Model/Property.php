@@ -81,6 +81,11 @@ abstract class Property
         return $this->type instanceof ArrayType;
     }
 
+    public function isSimpleArray(): bool
+    {
+        return 'array' === $this->typeHint;
+    }
+
     public function addAnnotation(string $annotation): self
     {
         if ('' === $annotation || !\in_array($annotation, $this->annotations, true)) {
@@ -154,7 +159,7 @@ abstract class Property
             $property->setType($this->resolveName($namespace, $this->typeHint));
         }
 
-        if (!$this->isArray() || $this->isTypeHintedAsCollection()) {
+        if (!$this->isArray() || $this->isSimpleArray() || $this->isTypeHintedAsCollection()) {
             $property->setNullable($this->isNullable);
         }
 
@@ -195,9 +200,10 @@ abstract class Property
         PhpNamespace $namespace,
         bool $useDoctrineCollections = true,
         bool $useFluentMutators = false,
+        bool $useSimpleArraySetter = false,
     ): array {
         return array_merge(
-            $this->generateMutators($singularize, $namespace, $useDoctrineCollections, $useFluentMutators),
+            $this->generateMutators($singularize, $namespace, $useDoctrineCollections, $useFluentMutators, $useSimpleArraySetter),
             $this->isReadable ? [$this->generateGetter($namespace)] : []
         );
     }
@@ -214,7 +220,7 @@ abstract class Property
         }
         if ($this->typeHint) {
             $getter->setReturnType($this->resolveName($namespace, $this->typeHint));
-            if ($this->isNullable && !$this->isArray()) {
+            if ($this->isNullable && (!$this->isArray() || $this->isSimpleArray())) {
                 $getter->setReturnNullable();
             }
         }
@@ -231,13 +237,14 @@ abstract class Property
         PhpNamespace $namespace,
         bool $useDoctrineCollections = true,
         bool $useFluentMutators = false,
+        bool $useSimpleArraySetter = false,
     ): array {
         if (!$this->isWritable) {
             return [];
         }
 
         $mutators = [];
-        if ($this->isArray()) {
+        if ($this->isArray() && (!$this->isSimpleArray() || !$useSimpleArraySetter)) {
             $singularProperty = $singularize($this->name());
 
             $adder = (new Method('add'.ucfirst($singularProperty)))->setVisibility(ClassType::VISIBILITY_PUBLIC);

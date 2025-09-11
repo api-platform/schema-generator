@@ -154,6 +154,9 @@ config:
     # Set this flag to false to not generate getter, setter, adder and remover methods
     accessorMethods:      true
 
+    # Set this flag to true to generate setter method for simple arrays instead of adder and remover methods
+    useSimpleArraySetter: false
+
     # Set this flag to true to generate fluent setter, adder and remover methods
     fluentMutatorMethods: false
     rangeMapping:
@@ -275,8 +278,7 @@ config:
     generatorTemplates:   []
 
 
-YAML
-            ,
+YAML,
             $commandTester->getDisplay()
         );
     }

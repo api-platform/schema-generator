@@ -1,0 +1,12 @@
+useSimpleArraySetter: true
+types:
+  Project:
+    properties:
+      name:
+        range: "https://schema.org/Text"
+      shareWith:
+        range: "https://schema.org/email"
+        cardinality: "(0..*)"
+        attributes:
+          Assert\Unique: ~
+          ORM\Column: { type: "simple_array" }

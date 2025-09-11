@@ -1475,7 +1475,6 @@ class ExtractCardinalitiesCommandTest extends TestCase
     "https:\/\/schema.org\/mainEntityOfPage": "unknown"
 }
 
-JSON
-            , $commandTester->getDisplay());
+JSON, $commandTester->getDisplay());
     }
 }

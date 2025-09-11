@@ -61,6 +61,7 @@ parameters:
                  author: false|string,
                  fieldVisibility: 'private'|'protected'|'public'|null,
                  accessorMethods: boolean,
+                 useSimpleArraySetter: boolean,
                  fluentMutatorMethods: boolean,
                  rangeMapping: array<string, string>,
                  allTypes: boolean,

@@ -105,7 +105,7 @@ class TypesGeneratorTest extends TestCase
         $article = file_get_contents("$this->outputDir/App/Entity/Article.php");
         $this->assertStringContainsString('abstract class Article extends CreativeWork', $article);
         $this->assertStringContainsString('private ?string $articleBody = null;', $article);
-        $this->assertStringContainsString('private array $articleSection = [];', $article);
+        $this->assertStringContainsString('private ?array $articleSection = [];', $article);
         $this->assertStringContainsString('public function setArticleBody(?string $articleBody): void', $article);
         $this->assertStringContainsString('public function getArticleBody(): ?string', $article);
         $this->assertStringContainsString('public function addArticleSection(string $articleSection): void', $article);
