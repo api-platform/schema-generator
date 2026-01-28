@@ -554,7 +554,7 @@ PHP, $source);
     {
         // No config file is given.
         $application = new Application();
-        $application->add(new GenerateCommand());
+        $application->addCommand(new GenerateCommand());
 
         $command = $application->find('generate');
         $commandTester = new CommandTester($command);
