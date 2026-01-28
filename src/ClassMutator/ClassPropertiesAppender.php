@@ -158,7 +158,7 @@ final class ClassPropertiesAppender implements ClassMutatorInterface
             return $this->getParentClasses($graphs, $resource, [$resource]);
         }
 
-        $filterBNodes = fn ($parentClasses) => array_filter($parentClasses, fn ($parentClass) => !$parentClass->isBNode());
+        $filterBNodes = static fn ($parentClasses) => array_filter($parentClasses, static fn ($parentClass) => !$parentClass->isBNode());
         if (!$subclasses = $resource->all('rdfs:subClassOf', 'resource')) {
             return $filterBNodes($parentClasses);
         }

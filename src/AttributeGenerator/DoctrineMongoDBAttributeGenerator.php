@@ -54,14 +54,14 @@ final class DoctrineMongoDBAttributeGenerator extends AbstractAttributeGenerator
                     $directChildren = array_merge($directChildren, array_filter($this->classes, fn (Class_ $childClass) => $parentName === $childClass->parent()));
                 }
                 $parentNames = array_keys($directChildren);
-                $childNames = array_merge($childNames, array_keys(array_filter($directChildren, fn (Class_ $childClass) => !$childClass->isAbstract)));
+                $childNames = array_merge($childNames, array_keys(array_filter($directChildren, static fn (Class_ $childClass) => !$childClass->isAbstract)));
             }
             $mapNames = array_merge([$class->name()], $childNames);
 
             $attributes[] = new Attribute('MongoDB\Document');
             $attributes[] = new Attribute('MongoDB\InheritanceType', [\in_array($this->config['doctrine']['inheritanceType'], ['SINGLE_COLLECTION', 'COLLECTION_PER_CLASS', 'NONE'], true) ? $this->config['doctrine']['inheritanceType'] : 'SINGLE_COLLECTION']);
             $attributes[] = new Attribute('MongoDB\DiscriminatorField', ['discr']);
-            $attributes[] = new Attribute('MongoDB\DiscriminatorMap', [array_reduce($mapNames, fn (array $map, string $mapName) => $map + [u($mapName)->camel()->toString() => new Literal(\sprintf('%s::class', $mapName))], [])]);
+            $attributes[] = new Attribute('MongoDB\DiscriminatorMap', [array_reduce($mapNames, static fn (array $map, string $mapName) => $map + [u($mapName)->camel()->toString() => new Literal(\sprintf('%s::class', $mapName))], [])]);
         } else {
             $attributes[] = new Attribute('MongoDB\Document');
         }

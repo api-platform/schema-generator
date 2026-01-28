@@ -25,7 +25,7 @@ trait AddAttributeTrait
                 }
             } else {
                 $this->attributes = array_map(
-                    fn (Attribute $attr) => $attr->name() === $attribute->name()
+                    static fn (Attribute $attr) => $attr->name() === $attribute->name()
                         ? new Attribute($attr->name(), array_merge(
                             $attr->args(),
                             $attribute->args(),
@@ -44,7 +44,7 @@ trait AddAttributeTrait
     {
         return array_values(array_filter(
             $this->attributes,
-            fn (Attribute $attr) => $attr->name() === $name
+            static fn (Attribute $attr) => $attr->name() === $name
         ))[0] ?? null;
     }
 }

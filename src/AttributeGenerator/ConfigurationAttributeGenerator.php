@@ -31,7 +31,7 @@ final class ConfigurationAttributeGenerator extends AbstractAttributeGenerator
 
         $getAttributesNames = static fn (array $config) => $config === [[]]
             ? []
-            : array_unique(array_map(fn (array $v) => array_keys($v)[0], $config));
+            : array_unique(array_map(static fn (array $v) => array_keys($v)[0], $config));
         $typeAttributesNames = $getAttributesNames($typeAttributes);
         $vocabAttributesNames = $getAttributesNames($vocabAttributes);
 

@@ -46,14 +46,14 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
         $namespacePrefix = $this->defaultPrefix ?? 'App\\';
 
         /* @see https://yaml.org/type/omap.html */
-        $transformOmap = fn (array $nodeConfig) => array_map(
-            fn ($v, $k) => \is_int($k) ? $v : [$k => $v],
+        $transformOmap = static fn (array $nodeConfig) => array_map(
+            static fn ($v, $k) => \is_int($k) ? $v : [$k => $v],
             array_values($nodeConfig),
             array_keys($nodeConfig)
         );
 
         // @phpstan-ignore-next-line node is not null
-        $attributesNode = fn () => (new NodeBuilder())
+        $attributesNode = static fn () => (new NodeBuilder())
             ->arrayNode('attributes')
                 ->info('Attributes (merged with generated attributes)')
                 ->variablePrototype()->end()
@@ -78,7 +78,7 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
                     ->defaultValue([self::SCHEMA_ORG_URI => ['format' => 'rdfxml']])
                     ->beforeNormalization()
                         ->ifArray()
-                        ->then(fn (array $v) => array_map(fn ($rdf) => \is_scalar($rdf) ? ['uri' => $rdf] : $rdf, $v))
+                        ->then(static fn (array $v) => array_map(static fn ($rdf) => \is_scalar($rdf) ? ['uri' => $rdf] : $rdf, $v))
                     ->end()
                     ->useAttributeAsKey('uri')
                     ->arrayPrototype()

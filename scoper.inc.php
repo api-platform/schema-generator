@@ -17,7 +17,7 @@ return [
         ApiPlatform\Core\Annotation\ApiResource::class,
     ],
     'patchers' => [
-        function (string $filePath, string $prefix, string $content): string {
+        static function (string $filePath, string $prefix, string $content): string {
             //
             // PHP-CS-Fixer patch
             //
@@ -35,7 +35,7 @@ return [
 
         // TODO: Temporary patch until the issue is fixed upstream
         // @link https://github.com/humbug/php-scoper/issues/285
-        function (string $filePath, string $prefix, string $content): string {
+        static function (string $filePath, string $prefix, string $content): string {
             if (!str_contains($content, '@')) {
                 return $content;
             }
@@ -51,7 +51,7 @@ return [
                 $content
             );
         },
-        function (string $filePath, string $prefix, string $content): string {
+        static function (string $filePath, string $prefix, string $content): string {
             if (!str_starts_with($filePath, 'src/AnnotationGenerator/')) {
                 return $content;
             }

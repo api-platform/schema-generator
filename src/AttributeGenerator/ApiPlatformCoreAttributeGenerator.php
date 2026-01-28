@@ -47,8 +47,8 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
      */
     private const PRAMETER_TYPE_HINTS = [
         Operation::class => [
-            'responses' => Response::class . '[]',
-            'parameters' => Parameter::class . '[]',
+            'responses' => Response::class.'[]',
+            'parameters' => Parameter::class.'[]',
         ],
     ];
 
@@ -111,7 +111,7 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
                         $class->addUse(new Use_(Operation::class));
                         array_walk_recursive(
                             self::$parameterTypes,
-                            function (?string $type) use ($class): void {
+                            static function (?string $type) use ($class): void {
                                 if (null !== $type) {
                                     $class->addUse(new Use_(str_replace('[]', '', $type)));
                                 }

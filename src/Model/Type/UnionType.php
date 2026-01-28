@@ -28,7 +28,7 @@ final class UnionType implements CompositeType
 
     public function __toString(): string
     {
-        return implode('|', array_map(fn (Type $type) => $type instanceof CompositeType ? '('.$type.')' : $type, $this->types));
+        return implode('|', array_map(static fn (Type $type) => $type instanceof CompositeType ? '('.$type.')' : $type, $this->types));
     }
 
     public function getPhp(): string
@@ -39,6 +39,6 @@ final class UnionType implements CompositeType
             $phpTypes[$type->getPhp()] = $type;
         }
 
-        return implode('|', array_map(fn (Type $type) => $type instanceof CompositeType ? '('.$type->getPhp().')' : $type->getPhp(), $phpTypes));
+        return implode('|', array_map(static fn (Type $type) => $type instanceof CompositeType ? '('.$type->getPhp().')' : $type->getPhp(), $phpTypes));
     }
 }

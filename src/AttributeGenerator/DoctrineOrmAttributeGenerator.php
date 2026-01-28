@@ -62,14 +62,14 @@ final class DoctrineOrmAttributeGenerator extends AbstractAttributeGenerator
                     $directChildren = array_merge($directChildren, array_filter($this->classes, fn (Class_ $childClass) => $parentName === $childClass->parent()));
                 }
                 $parentNames = array_keys($directChildren);
-                $childNames = array_merge($childNames, array_keys(array_filter($directChildren, fn (Class_ $childClass) => !$childClass->isAbstract)));
+                $childNames = array_merge($childNames, array_keys(array_filter($directChildren, static fn (Class_ $childClass) => !$childClass->isAbstract)));
             }
             $mapNames = array_merge([$class->name()], $childNames);
 
             $attributes[] = new Attribute('ORM\Entity');
             $attributes[] = new Attribute('ORM\InheritanceType', [\in_array($this->config['doctrine']['inheritanceType'], ['JOINED', 'SINGLE_TABLE', 'TABLE_PER_CLASS', 'NONE'], true) ? $this->config['doctrine']['inheritanceType'] : 'JOINED']);
             $attributes[] = new Attribute('ORM\DiscriminatorColumn', ['name' => 'discr']);
-            $attributes[] = new Attribute('ORM\DiscriminatorMap', [array_reduce($mapNames, fn (array $map, string $mapName) => $map + [u($mapName)->camel()->toString() => new Literal(\sprintf('%s::class', $mapName))], [])]);
+            $attributes[] = new Attribute('ORM\DiscriminatorMap', [array_reduce($mapNames, static fn (array $map, string $mapName) => $map + [u($mapName)->camel()->toString() => new Literal(\sprintf('%s::class', $mapName))], [])]);
         } else {
             $attributes[] = new Attribute('ORM\Entity');
         }

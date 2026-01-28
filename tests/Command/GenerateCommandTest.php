@@ -578,8 +578,7 @@ use ApiPlatform\OpenApi\Model\Operation;
 use ApiPlatform\OpenApi\Model\Parameter;
 use ApiPlatform\OpenApi\Model\RequestBody;
 use ApiPlatform\OpenApi\Model\Response;
-PHP
-            , $source);
+PHP, $source);
 
         $this->assertStringContainsString(<<<'PHP'
 #[ApiResource(
@@ -697,8 +696,6 @@ PHP
         ),
     ],
 )]
-PHP
-            , $source);
+PHP, $source);
     }
 }
-
