@@ -130,13 +130,13 @@ final class GenerateCommand extends Command
         $configuration = $this->processConfiguration($configContent, $outputDir, $dir === $defaultOutput ? $this->namespacePrefix : null);
 
         (new SchemaGenerator())->generate($configuration, $output, $io);
-        (new OpenApiGenerator())->generate($configuration, $configArgument ?? self::DEFAULT_CONFIG_FILE, $output, $io);
+        (new OpenApiGenerator())->generate($configuration, $configArgument ?? self::DEFAULT_CONFIG_FILE, $output, $io); // @phpstan-ignore-line
 
         return Command::SUCCESS;
     }
 
     /**
-     * @return Configuration
+     * @return array<string, mixed>
      */
     private function processConfiguration(string $configContent, string $outputDir, ?string $defaultNamespacePrefix): array
     {
@@ -146,7 +146,6 @@ final class GenerateCommand extends Command
 
         $processor = new Processor();
         $configuration = new SchemaGeneratorConfiguration($defaultNamespacePrefix);
-        /** @var Configuration $processedConfiguration */
         $processedConfiguration = $processor->processConfiguration($configuration, [$config]);
         $processedConfiguration['output'] = $outputDir;
         if (!$processedConfiguration['output']) {

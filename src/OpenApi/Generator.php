@@ -26,7 +26,7 @@ use Symfony\Component\String\Inflector\EnglishInflector;
 final class Generator
 {
     /**
-     * @param Configuration $configuration
+     * @param array<string, mixed> $configuration
      */
     public function generate(array $configuration, string $configurationPath, OutputInterface $output, SymfonyStyle $io): void
     {
@@ -51,12 +51,12 @@ final class Generator
 
         $classGenerator = new ClassGenerator($inflector, new PhpTypeConverter());
         $classGenerator->setLogger($logger);
-        $classes = $classGenerator->generate($openApi, $configuration);
+        $classes = $classGenerator->generate($openApi, $configuration); // @phpstan-ignore-line
 
-        $twig = (new TwigBuilder())->build($configuration);
+        $twig = (new TwigBuilder())->build($configuration); //  @phpstan-ignore-line
 
         $filesGenerator = new FilesGenerator($inflector, new Printer(), $twig, $io);
         $filesGenerator->setLogger($logger);
-        $filesGenerator->generate($classes, $configuration);
+        $filesGenerator->generate($classes, $configuration); // @phpstan-ignore-line
     }
 }

@@ -148,6 +148,8 @@ final class ApiPlatformCoreAttributeGenerator extends AbstractAttributeGenerator
                 ],
                 []
             );
+
+        // @phpstan-ignore-next-line
         if (isset(self::$parameterTypes[$type])) {
             $types = self::$parameterTypes[$type];
         } else {

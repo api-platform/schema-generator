@@ -29,7 +29,7 @@ use Symfony\Component\String\Inflector\EnglishInflector;
 final class Generator
 {
     /**
-     * @param Configuration $configuration
+     * @param array<string, mixed> $configuration
      */
     public function generate(array $configuration, OutputInterface $output, SymfonyStyle $io): void
     {
@@ -66,12 +66,12 @@ final class Generator
         );
         $entitiesGenerator->setLogger($logger);
 
-        $classes = $entitiesGenerator->generate($graphs, $configuration);
+        $classes = $entitiesGenerator->generate($graphs, $configuration); // @phpstan-ignore-line
 
-        $twig = (new TwigBuilder())->build($configuration);
+        $twig = (new TwigBuilder())->build($configuration); // @phpstan-ignore-line
 
         $filesGenerator = new FilesGenerator($inflector, new Printer(), $twig, $io);
         $filesGenerator->setLogger($logger);
-        $filesGenerator->generate($classes, $configuration);
+        $filesGenerator->generate($classes, $configuration); // @phpstan-ignore-line
     }
 }

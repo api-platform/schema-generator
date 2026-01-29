@@ -52,7 +52,6 @@ final class SchemaGeneratorConfiguration implements ConfigurationInterface
             array_keys($nodeConfig)
         );
 
-        // @phpstan-ignore-next-line node is not null
         $attributesNode = static fn () => (new NodeBuilder())
             ->arrayNode('attributes')
                 ->info('Attributes (merged with generated attributes)')

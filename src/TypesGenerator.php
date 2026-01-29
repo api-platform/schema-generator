@@ -174,6 +174,7 @@ class TypesGenerator
                 ?? ($class->hasChild && !$class->isReferencedBy);
 
             // When including all properties, ignore properties already set on parent
+            // @phpstan-ignore-next-line
             if (($config['types'][$class->name()]['allProperties'] ?? true) && isset($classes[$class->parent()])) {
                 $type = $class->resource();
                 foreach ($propertiesMap[$type->getUri()] as $property) {

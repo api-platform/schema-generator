@@ -21,7 +21,7 @@ use ApiPlatform\SchemaGenerator\Command\DumpConfigurationCommand;
 use ApiPlatform\SchemaGenerator\Command\GenerateCommand;
 
 $application = new Application();
-$application->add(new ExtractCardinalitiesCommand());
-$application->add(new DumpConfigurationCommand());
-$application->add(new GenerateCommand());
+$application->addCommand(new ExtractCardinalitiesCommand());
+$application->addCommand(new DumpConfigurationCommand());
+$application->addCommand(new GenerateCommand());
 $application->run();
