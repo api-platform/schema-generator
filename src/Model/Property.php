@@ -15,7 +15,6 @@ namespace ApiPlatform\SchemaGenerator\Model;
 
 use ApiPlatform\SchemaGenerator\Model\Type\ArrayType;
 use ApiPlatform\SchemaGenerator\Model\Type\Type;
-use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\Property as NetteProperty;
@@ -214,7 +213,7 @@ abstract class Property
             throw new \LogicException(\sprintf("Property '%s' is not readable.", $this->name));
         }
 
-        $getter = (new Method('get'.ucfirst($this->name)))->setVisibility(ClassType::VISIBILITY_PUBLIC);
+        $getter = (new Method('get'.ucfirst($this->name)))->setVisibility(Visibility::Public);
         foreach ($this->getterAnnotations as $annotation) {
             $getter->addComment($annotation);
         }
@@ -247,7 +246,7 @@ abstract class Property
         if ($this->isArray() && (!$this->isSimpleArray() || !$useSimpleArraySetter)) {
             $singularProperty = $singularize($this->name());
 
-            $adder = (new Method('add'.ucfirst($singularProperty)))->setVisibility(ClassType::VISIBILITY_PUBLIC);
+            $adder = (new Method('add'.ucfirst($singularProperty)))->setVisibility(Visibility::Public);
             $adder->setReturnType($useFluentMutators ? 'self' : 'void');
             foreach ($this->adderAnnotations() as $annotation) {
                 $adder->addComment($annotation);
@@ -265,7 +264,7 @@ abstract class Property
             }
             $mutators[] = $adder;
 
-            $remover = (new Method('remove'.ucfirst($singularProperty)))->setVisibility(ClassType::VISIBILITY_PUBLIC);
+            $remover = (new Method('remove'.ucfirst($singularProperty)))->setVisibility(Visibility::Public);
             $remover->setReturnType($useFluentMutators ? 'self' : 'void');
             foreach ($this->removerAnnotations as $annotation) {
                 $adder->addComment($annotation);
@@ -297,7 +296,7 @@ PHP,
 
             $mutators[] = $remover;
         } else {
-            $setter = (new Method('set'.ucfirst($this->name())))->setVisibility(ClassType::VISIBILITY_PUBLIC);
+            $setter = (new Method('set'.ucfirst($this->name())))->setVisibility(Visibility::Public);
             $setter->setReturnType($useFluentMutators ? 'self' : 'void');
             foreach ($this->setterAnnotations as $annotation) {
                 $setter->addComment($annotation);

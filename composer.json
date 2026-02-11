@@ -44,7 +44,7 @@
         "symfony/yaml": "^5.4 || ^6.4 || ^7.0 || ^8.0",
         "symfony/filesystem": "^5.4 || ^6.4 || ^7.0 || ^8.0",
         "twig/twig": "^3.0",
-        "nette/php-generator": "^3.6 || ^4.0",
+        "nette/php-generator": "^4.1.7",
         "nikic/php-parser": "^4.13 || ^5.0",
         "devizzent/cebe-php-openapi": "^1.0.3",
         "symfony/string": "^5.4 || ^6.4 || ^7.0 || ^8.0",

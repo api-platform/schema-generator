@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace ApiPlatform\SchemaGenerator\Model;
 
-use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Constant as NetteConstant;
+use Nette\PhpGenerator\Visibility;
 
 abstract class Constant
 {
@@ -49,7 +49,7 @@ abstract class Constant
     {
         $constant = (new NetteConstant($this->name))
             ->setValue($this->value())
-            ->setVisibility(ClassType::VISIBILITY_PUBLIC);
+            ->setVisibility(Visibility::Public);
 
         foreach ($this->annotations as $annotation) {
             $constant->addComment($annotation);
